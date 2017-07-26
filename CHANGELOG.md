@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v11.11.1
+
+- :arrow_up: Update to latest deps
+- :bug: `label` module was uppercases letter after an `'`. IE: `Helen's` => `Helen'S`
+
 ### v11.11.0
 
 
