@@ -13,7 +13,8 @@ tape('title case xformation', (t) => {
         ['VäikeSõjamäe', 'Väikesõjamäe'],
         ['abra CAda -bra', 'Abra Cada Bra'],
         ['our lady of whatever', 'Our Lady of Whatever'],
-        ['our lady OF whatever', 'Our Lady of Whatever']
+        ['our lady OF whatever', 'Our Lady of Whatever'],
+        ['St Martin\'s Neck Road', 'St Martin\'s Neck Road']
     ];
 
     for (let test of tests)
