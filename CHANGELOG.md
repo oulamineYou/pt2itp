@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.11.2
+
+- :white_check_mark: Adds the first split unit tests
+
 ### v11.11.1
 
 - :arrow_up: Update to latest deps
