@@ -1,0 +1,139 @@
+{
+    "type": "Feature",
+    "properties": {
+        "carmen:text": "Hill Top Road",
+        "carmen:center": [
+            -64.26819562911987,
+            44.54786745368044
+        ],
+        "carmen:addressnumber": [
+            null,
+            [
+                "8",
+                "10",
+                "12",
+                "14",
+                "16",
+                "18"
+            ]
+        ],
+        "carmen:rangetype": "tiger",
+        "carmen:parityl": [
+            [
+                "E"
+            ],
+            null
+        ],
+        "carmen:lfromhn": [
+            [
+                0
+            ],
+            null
+        ],
+        "carmen:ltohn": [
+            [
+                20
+            ],
+            null
+        ],
+        "carmen:parityr": [
+            [
+                null
+            ],
+            null
+        ],
+        "carmen:rfromhn": [
+            [
+                null
+            ],
+            null
+        ],
+        "carmen:rtohn": [
+            [
+                10
+            ],
+            null
+        ]
+    },
+    "geometry": {
+        "type": "GeometryCollection",
+        "geometries": [
+            {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [
+                            -64.27054524421692,
+                            44.54747368148878
+                        ],
+                        [
+                            -64.26584601402283,
+                            44.548261225872096
+                        ]
+                    ]
+                ]
+            },
+            {
+                "type": "MultiPoint",
+                "coordinates": [
+                    [
+                        -64.27004098892212,
+                        44.54781775558832
+                    ],
+                    [
+                        -64.26878571510315,
+                        44.548093013403566
+                    ],
+                    [
+                        -64.26747679710388,
+                        44.54839885389387
+                    ],
+                    [
+                        -64.26645755767822,
+                        44.548635879168515
+                    ],
+                    [
+                        -64.26933288574217,
+                        44.55552448238052
+                    ],
+                    null
+                ]
+            }
+        ]
+    },
+    "debug": [
+        {
+            "type": "featurecollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "start": true,
+                        "left": true
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -64.27004098892212,
+                            44.54781775558832
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "end": true,
+                        "left": true
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -64.26645755767822,
+                            44.548635879168515
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
