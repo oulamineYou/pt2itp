@@ -1,6 +1,6 @@
-const test = require('tape');
 const interpolize = require('../lib/interpolize');
 const turf = require('@turf/turf');
+const test = require('tape');
 const fs = require('fs');
 
 test('Drop Low', (t) => {
@@ -226,7 +226,7 @@ test('Interpolize - Ignore addresses above (average * 5) away from line', (t) =>
                 ]
             }
         },
-        number: ["8","10","12","14","16"]
+        number: ["8","10","12","14","16000"]
     }];
 
     let res = interpolize('Hill Top Road', segs, { debug: true });
