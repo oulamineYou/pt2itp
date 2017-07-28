@@ -1,6 +1,6 @@
-const test = require('tape');
 const interpolize = require('../lib/interpolize');
 const turf = require('@turf/turf');
+const test = require('tape');
 const fs = require('fs');
 
 test('Drop Low', (t) => {
@@ -185,11 +185,59 @@ test('Interpolize', (t) => {
                 'coordinates':[[[-77.21062123775481,39.17687343078357],[-77.21064805984497,39.1773849237293]]]
             },{
                 'type':'MultiPoint',
-                'coordinates':[[-77.21054881811142,39.1769482836422],[-77.2107258439064,39.176966996844406], [-77.21056759357452,39.17731007133552], [-77.21077680587769,39.177320467506085]]
+                'coordinates': [[-77.21054881811142,39.1769482836422],[-77.2107258439064,39.176966996844406], [-77.21056759357452,39.17731007133552], [-77.21077680587769,39.177320467506085]]
             }]
         }
     }, 'has expected props');
 
+    t.end();
+});
+
+/*
+ * . |                  .
+ *   | .
+ * . |
+ *   | .
+ * . |
+ * These errors typically happen due to data errors where an identically named street is missing from the source
+ * We retain the address point but don't use it to calculate the ITP
+ */
+test('Interpolize - Ignore addresses above (average * 5) away from line', (t) => {
+    let segs = [{
+        network: {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: [ [ -64.27054524421692, 44.54747368148878 ], [ -64.26584601402283, 44.548261225872096 ] ]
+            }
+        },
+        address: {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'MultiPoint',
+                coordinates: [
+                    [-64.27004098892212, 44.54781775558832],
+                    [-64.26878571510315, 44.548093013403566],
+                    [-64.26747679710388, 44.54839885389387],
+                    [-64.26645755767822, 44.548635879168515],
+                    [-64.26933288574217, 44.55552448238052]
+                ]
+            }
+        },
+        number: ["8","10","12","14","16000"]
+    }];
+
+    let res = interpolize('Hill Top Road', segs, { debug: true });
+
+    delete res.id;
+
+    if (process.env.UPDATE) {
+        fs.writeFileSync(__dirname + '/fixtures/itp-deviant.json', JSON.stringify(res, null, 4));
+        t.fail('had to update fixture');
+    }
+    t.deepEquals(res, require('./fixtures/itp-deviant.json'));
     t.end();
 });
 
@@ -223,7 +271,6 @@ test('Interpolize - Addr past line end', (t) => {
         },
         number: ["8","10","9","11","13","12"]
     }];
-
 
     let res = interpolize('Battleridge Place', segs, { debug: true });
 
