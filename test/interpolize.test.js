@@ -226,7 +226,7 @@ test('Interpolize - Ignore addresses above (average * 5) away from line', (t) =>
                 ]
             }
         },
-        number: ["8","10","12","14","16","18"]
+        number: ["8","10","12","14","16"]
     }];
 
     let res = interpolize('Hill Top Road', segs, { debug: true });
