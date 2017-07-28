@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.11.3
+
+- :bug: Prune before orphan address stage to prevent fragmentation between db and geojson
+
 ### v11.11.2
 
 - :white_check_mark: Adds the first split unit tests
