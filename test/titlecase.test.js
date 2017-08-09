@@ -14,7 +14,9 @@ tape('title case xformation', (t) => {
         ['abra CAda -bra', 'Abra Cada Bra'],
         ['our lady of whatever', 'Our Lady of Whatever'],
         ['our lady OF whatever', 'Our Lady of Whatever'],
-        ['St Martin\'s Neck Road', 'St Martin\'s Neck Road']
+        ['St Martin\'s Neck Road', 'St Martin\'s Neck Road'],
+        ['MT. MOOSILAUKE HWY', 'Mt. Moosilauke Hwy'],
+        ['some  miscellaneous rd (what happens to parentheses?)', 'Some Miscellaneous Rd (What Happens to Parentheses?)']
     ];
 
     for (let test of tests)
