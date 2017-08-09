@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.12.0
+
+- :tada: changes to test mode: CSV output & tokenless mode as default behavior
+
 ### v11.11.3
 
 - :bug: Prune before orphan address stage to prevent fragmentation between db and geojson
