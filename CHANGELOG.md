@@ -10,6 +10,14 @@
 
 ## Version History
 
+### v11.12.2
+
+- :bug: better handling of titlecasing of labels
+
+### v11.12.1
+
+- :bug: testmode syntax error :disappointed:
+
 ### v11.12.0
 
 - :tada: changes to test mode: CSV output & tokenless mode as default behavior
