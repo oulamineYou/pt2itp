@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.13.0
+
+- :rocket: optionally preserve 'source' attribute from address geojson
+
 ### v11.12.2
 
 - :bug: better handling of titlecasing of labels
