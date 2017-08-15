@@ -83,6 +83,11 @@ test('map - good run', (t) => {
             t.end();
         });
 
+        /**
+         * Standard Fixture compare/update
+         * @param {Object} res returned result
+         * @param {string} fixture Path to expected result file
+         */
         function checkFixture(res, fixture) {
             t.ok(res.id);
             delete res.id;

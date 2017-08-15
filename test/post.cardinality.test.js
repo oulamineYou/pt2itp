@@ -33,6 +33,11 @@ test('Post: Cardinality', (t) => {
     t.end();
 });
 
+/**
+ * Create input Feature given text
+ * @param {string} text
+ * @return {Object} GeoJSON Feature
+ */
 function f(text) {
     return post({
         type: 'Feature',

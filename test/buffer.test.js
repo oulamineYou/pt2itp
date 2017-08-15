@@ -83,6 +83,10 @@ test('Self Intersection Buffer', (t) => {
     t.end();
 });
 
+/**
+ * Round Polygon coords to avoid minor precision errors
+ * @param {Object} poly GeoJSON Polygon
+ */
 function round(poly) {
     poly.geometry.coordinates.map((poly) => {
         return poly.map((coords) => {
