@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.14.0
+
+- :rocket: Don't pick linker matches arbitrarily, instead return ties to match.js and let it break ties using the buffer geom
+
 ### v11.13.0
 
 - :rocket: optionally preserve 'source' attribute from address geojson
