@@ -38,5 +38,65 @@ test('Post: Dedupe', (t) => {
         }
     }), undefined);
 
+    t.deepEquals(post({
+        properties: {
+            'carmen:addressnumber': [[ 1 ]]
+        },
+        geometry: {
+            geometries: [{
+                coordinates: [[1,1]]
+            }]
+        }
+    }), {
+        properties: {
+            'carmen:addressnumber': [[1]]
+        },
+        geometry: {
+            geometries: [{
+                coordinates: [[1,1]]
+            }]
+        }
+    });
+
+    t.deepEquals(post({
+        properties: {
+            'carmen:addressnumber': [[ 1, 2, 3, 4 ]]
+        },
+        geometry: {
+            geometries: [{
+                coordinates: [[1,1], [2,2], [3,3], [4,4]]
+            }]
+        }
+    }), {
+        properties: {
+            'carmen:addressnumber': [[ 1, 2, 3, 4 ]]
+        },
+        geometry: {
+            geometries: [{
+                coordinates: [[1,1], [2,2], [3,3], [4,4]]
+            }]
+        }
+    });
+
+    t.deepEquals(post({
+        properties: {
+            'carmen:addressnumber': [[ 1, 2, 3, 4, 1, 2, 3, 4 ]]
+        },
+        geometry: {
+            geometries: [{
+                coordinates: [[1,1], [2,2], [3,3], [4,4], [1,1], [2,2], [3,3], [4,4]]
+            }]
+        }
+    }), {
+        properties: {
+            'carmen:addressnumber': [[ 1, 2, 3, 4 ]]
+        },
+        geometry: {
+            geometries: [{
+                coordinates: [[1,1], [2,2], [3,3], [4,4]]
+            }]
+        }
+    });
+
     t.end();
 });
