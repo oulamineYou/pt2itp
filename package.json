@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint index.js test/* lib/*",
     "coverage": "istanbul cover tape test/*.js && coveralls < ./coverage/lcov.info",
-    "doc": "./node_modules/documentation/bin/documentation.js lint ./lib/**",
+    "doc": "./node_modules/eslint/bin/eslint.js --rule 'require-jsdoc: 2' ./lib/** && ./node_modules/documentation/bin/documentation.js lint ./lib/**",
     "test": "tape test/*.test.js",
     "pretest": "echo 'DROP DATABASE pt_test; CREATE DATABASE pt_test;' | psql -U postgres && echo 'CREATE EXTENSION postgis' | psql -U postgres pt_test"
   },
@@ -48,6 +48,7 @@
   },
   "eslintConfig": {
     "rules": {
+      "require-jsdoc": 2,
       "no-use-before-define": [
         2,
         "nofunc"
