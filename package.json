@@ -14,7 +14,7 @@
     "pretest": "echo 'DROP DATABASE pt_test; CREATE DATABASE pt_test;' | psql -U postgres && echo 'CREATE EXTENSION postgis' | psql -U postgres pt_test"
   },
   "author": "Nicholas Ingalls <nicholas.ingalls@gmail.com>",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "dependencies": {
     "@mapbox/carmen": "^22.4.3",
     "@mapbox/geocoder-abbreviations": "^1.8.0",
@@ -50,11 +50,10 @@
     "rules": {
       "require-jsdoc": [ "error", {
         "require": {
-            "FunctionDeclaration": true,
-            "MethodDefinition": false,
-            "ClassDeclaration": false,
-            "ArrowFunctionExpression": false
-          }
+          "FunctionDeclaration": true,
+          "MethodDefinition": false,
+          "ClassDeclaration": false,
+          "ArrowFunctionExpression": false
         }
       }],
       "no-use-before-define": [
