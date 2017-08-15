@@ -9,6 +9,7 @@
   "scripts": {
     "lint": "eslint index.js test/* lib/*",
     "coverage": "istanbul cover tape test/*.js && coveralls < ./coverage/lcov.info",
+    "doc": "./node_modules/documentation/bin/documentation.js lint ./lib/**",
     "test": "tape test/*.test.js",
     "pretest": "echo 'DROP DATABASE pt_test; CREATE DATABASE pt_test;' | psql -U postgres && echo 'CREATE EXTENSION postgis' | psql -U postgres pt_test"
   },
@@ -38,6 +39,7 @@
     "wellknown": "^0.5.0"
   },
   "devDependencies": {
+    "documentation": "^5.2.1",
     "coveralls": "^2.11.4",
     "eslint": "^4.2.0",
     "istanbul": "^0.4.0",
