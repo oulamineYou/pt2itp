@@ -22,19 +22,19 @@ test('Post: Dedupe', (t) => {
 
     t.equals(post({
         properties: {
-            'carmen:addressnumber': [ 1 ]
+            'carmen:addressnumber': [[ 1 ]]
         }
     }), undefined);
 
     t.equals(post({
         properties: {
-            'carmen:addressnumber': [ 1, 2, 3, 4 ]
+            'carmen:addressnumber': [[ 1, 2, 3, 4 ]]
         }
     }), undefined);
 
     t.equals(post({
         properties: {
-            'carmen:addressnumber': [ 1, 2, 3, 4, 1, 2, 3, 4 ]
+            'carmen:addressnumber': [[ 1, 2, 3, 4, 1, 2, 3, 4 ]]
         }
     }), undefined);
 
