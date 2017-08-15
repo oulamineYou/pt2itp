@@ -17,12 +17,12 @@ tape('title case xformation', (t) => {
         ['St Martin\'s Neck Road', 'St Martin\'s Neck Road'],
         ['MT. MOOSILAUKE HWY', 'Mt. Moosilauke Hwy'],
         ['some  miscellaneous rd (what happens to parentheses?)', 'Some Miscellaneous Rd (What Happens to Parentheses?)'],
-	['main st NE', 'Main St NE'],
-	['main St NW', 'Main St NW'],
-	['SW Main St.', 'SW Main St.'],
-	['Main S.E. St', 'Main S.E. St'],
-	['main st ne', 'Main St NE'],
-	['nE. Main St', 'NE. Main St']
+        ['main st NE', 'Main St NE'],
+        ['main St NW', 'Main St NW'],
+        ['SW Main St.', 'SW Main St.'],
+        ['Main S.E. St', 'Main S.E. St'],
+        ['main st ne', 'Main St NE'],
+        ['nE. Main St', 'NE. Main St']
     ];
 
     for (let test of tests)
