@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v11.15.1
+
+- :bug: only discard duplicate house number sets when there is >1km separation between them
+- :rocket: of the remaining duplicate house number sets, only geocode the first entry (doing the rest is pointless)
+
 ### v11.15.0
 
 - :arrow_up: Adds DocumentationJS as Dev Dep
