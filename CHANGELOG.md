@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v11.15.0
+
+- :arrow_up: Adds DocumentationJS as Dev Dep
+- :pencil2: Add documentation js linting to circle and fix all bad JSDoc strings
+
 ### v11.14.0
 
 - :rocket: Don't pick linker matches arbitrarily, instead return ties to match.js and let it break ties using the buffer geom
