@@ -20,7 +20,7 @@ tape('title case xformation', (t) => {
         ['main st NE', 'Main St NE'],
         ['main St NW', 'Main St NW'],
         ['SW Main St.', 'SW Main St.'],
-        ['Main S.E. St', 'Main S.E. St'],
+        ['Main S.E. St', 'Main SE St'],
         ['main st ne', 'Main St NE'],
         ['nE. Main St', 'Ne. Main St']
     ];
