@@ -1,6 +1,6 @@
 {
   "name": "pt2itp",
-  "version": "11.15.1",
+  "version": "11.16.0",
   "description": "Attach interpolation values given a road network and address points",
   "main": "index.js",
   "bin": {
@@ -48,14 +48,17 @@
   },
   "eslintConfig": {
     "rules": {
-      "require-jsdoc": [ "error", {
-        "require": {
-          "FunctionDeclaration": true,
-          "MethodDefinition": false,
-          "ClassDeclaration": false,
-          "ArrowFunctionExpression": false
+      "require-jsdoc": [
+        "error",
+        {
+          "require": {
+            "FunctionDeclaration": true,
+            "MethodDefinition": false,
+            "ClassDeclaration": false,
+            "ArrowFunctionExpression": false
+          }
         }
-      }],
+      ],
       "no-use-before-define": [
         2,
         "nofunc"
