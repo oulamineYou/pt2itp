@@ -22,7 +22,7 @@ tape('title case xformation', (t) => {
         ['SW Main St.', 'SW Main St.'],
         ['Main S.E. St', 'Main S.E. St'],
         ['main st ne', 'Main St NE'],
-        ['nE. Main St', 'NE. Main St']
+        ['nE. Main St', 'Ne. Main St']
     ];
 
     for (let test of tests)
