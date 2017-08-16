@@ -10,9 +10,15 @@
 
 ## Version History
 
+### v11.17.0
+
+- :arrow_up: Update `pg` to major version `7.x` from `6.x` and bump `tmp` version
+- :rocket: Rewrite orphan code to into generic Orphan class
+- :tada: Add network orphan creation in addition to the current address_cluster orphan code (Network clusters not matched to an address cluster will be output with no ITP data)
+
 ### v11.16.1
 
-- :bug: :white_check_mark: handle cardinal directions (NW/NE/SW/SE) better in titlecase code & improve multilingual interface & warnings to it 
+- :bug: :white_check_mark: handle cardinal directions (NW/NE/SW/SE) better in titlecase code & improve multilingual interface & warnings to it
 
 ### v11.16.0
 
