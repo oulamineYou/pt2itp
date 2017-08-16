@@ -10,6 +10,12 @@
 
 ## Version History
 
+### v11.16.0
+
+:pencil2: Doc :hammer: ! Enforce JSDocs on all defined functions
+:pencil2: Doc all current functions to pass the above added test
+:rocket: Strip out dedupe function from split and re-impliment as a `post` function to give the `interpolate` module more signal and also allow further code isolation and testing.
+
 ### v11.15.1
 
 - :bug: only discard duplicate house number sets when there is >1km separation between them
