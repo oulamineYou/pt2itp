@@ -10,11 +10,15 @@
 
 ## Version History
 
+### v11.16.1
+
+- :bug: :white_check_mark: handle cardinal directions (NW/NE/SW/SE) better in titlecase code & improve multilingual interface & warnings to it 
+
 ### v11.16.0
 
-:pencil2: Doc :hammer: ! Enforce JSDocs on all defined functions
-:pencil2: Doc all current functions to pass the above added test
-:rocket: Strip out dedupe function from split and re-impliment as a `post` function to give the `interpolate` module more signal and also allow further code isolation and testing.
+- :pencil2: Doc :hammer: ! Enforce JSDocs on all defined functions
+- :pencil2: Doc all current functions to pass the above added test
+- :rocket: Strip out dedupe function from split and re-impliment as a `post` function to give the `interpolate` module more signal and also allow further code isolation and testing.
 
 ### v11.15.1
 
