@@ -30,7 +30,7 @@
     "fast-levenshtein": "^2.0.6",
     "lodash": "^4.17.4",
     "minimist": "^1.2.0",
-    "pg": "^6.4.1",
+    "pg": "^7.1.2",
     "pg-cursor": "^1.2.0",
     "progress": "^2.0.0",
     "split": "^1.0.0",
@@ -43,7 +43,7 @@
     "eslint": "^4.2.0",
     "istanbul": "^0.4.0",
     "tape": "^4.7.0",
-    "tmp": "0.0.31"
+    "tmp": "0.0.33"
   },
   "eslintConfig": {
     "rules": {

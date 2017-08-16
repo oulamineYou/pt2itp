@@ -64,7 +64,7 @@ test('Points far away shouldn\'t be clustered', (t) => {
             COMMIT;
         `, (err, res) => {
             t.error(err);
-            t.deepEquals(JSON.parse(res.rows[1].st_asgeojson), {"type":"MultiPoint","coordinates":[[9.52342987060547,47.1307974609776, 2]]}, 'ok not clustered');
+            t.deepEquals(JSON.parse(res[1].rows[1].st_asgeojson), {"type":"MultiPoint","coordinates":[[9.52342987060547,47.1307974609776, 2]]}, 'ok not clustered');
             t.end();
         });
     });
@@ -119,7 +119,7 @@ test('Points nearby should be clustered', (t) => {
             COMMIT;
         `, (err, res) => {
             t.error(err);
-            t.deepEquals(JSON.parse(res.rows[0].st_asgeojson), {"type":"MultiPoint","coordinates":[[9.51413869857788,47.1327243929639, 1],[9.51654195785522,47.1327243929639, 2]]}, 'ok not clustered');
+            t.deepEquals(JSON.parse(res[1].rows[0].st_asgeojson), {"type":"MultiPoint","coordinates":[[9.51413869857788,47.1327243929639, 1],[9.51654195785522,47.1327243929639, 2]]}, 'ok not clustered');
             t.end();
         });
     });
@@ -172,7 +172,7 @@ test('LinesStrings far away should not be clustered', (t) => {
             COMMIT;
         `, (err, res) => {
             t.error(err);
-            t.equals(res.rows[0].st_asgeojson.toString(), '{"type":"MultiLineString","coordinates":[[[9.50514793395996,47.1302719219553],[9.50094223022461,47.1302719219553]]]}', 'ok network is not clustered');
+            t.equals(res[1].rows[0].st_asgeojson.toString(), '{"type":"MultiLineString","coordinates":[[[9.50514793395996,47.1302719219553],[9.50094223022461,47.1302719219553]]]}', 'ok network is not clustered');
             t.end();
         });
     });
@@ -227,7 +227,7 @@ test('LinesStrings should be clustered', (t) => {
             COMMIT;
         `, (err, res) => {
             t.error(err);
-            t.equals(res.rows[0].st_asgeojson.toString(), '{"type":"MultiLineString","coordinates":[[[9.5167350769043,47.1327681860613],[9.51982498168945,47.132870369815]],[[9.51399922370911,47.1326951975457],[9.51251864433289,47.1326951975457]]]}', 'ok network is clustered');
+            t.equals(res[1].rows[0].st_asgeojson.toString(), '{"type":"MultiLineString","coordinates":[[[9.5167350769043,47.1327681860613],[9.51982498168945,47.132870369815]],[[9.51399922370911,47.1326951975457],[9.51251864433289,47.1326951975457]]]}', 'ok network is clustered');
             t.end();
         });
     });
