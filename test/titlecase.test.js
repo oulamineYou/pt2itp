@@ -1,6 +1,6 @@
 const tape = require('tape');
 const titlecase = require('../lib/label/titlecase').titleCase;
-const minors = require('title-case-minors');
+const minors = require('@mapbox/title-case')('en');
 
 tape('title case xformation', (t) => {
     let tests = [
@@ -16,7 +16,13 @@ tape('title case xformation', (t) => {
         ['our lady OF whatever', 'Our Lady of Whatever'],
         ['St Martin\'s Neck Road', 'St Martin\'s Neck Road'],
         ['MT. MOOSILAUKE HWY', 'Mt. Moosilauke Hwy'],
-        ['some  miscellaneous rd (what happens to parentheses?)', 'Some Miscellaneous Rd (What Happens to Parentheses?)']
+        ['some  miscellaneous rd (what happens to parentheses?)', 'Some Miscellaneous Rd (What Happens to Parentheses?)'],
+        ['main st NE', 'Main St NE'],
+        ['main St NW', 'Main St NW'],
+        ['SW Main St.', 'SW Main St.'],
+        ['Main S.E. St', 'Main SE St'],
+        ['main st ne', 'Main St NE'],
+        ['nE. Main St', 'Ne. Main St']
     ];
 
     for (let test of tests)
