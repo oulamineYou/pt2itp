@@ -10,6 +10,42 @@
 
 ## Version History
 
+### v11.16.0
+
+:pencil2: Doc :hammer: ! Enforce JSDocs on all defined functions
+:pencil2: Doc all current functions to pass the above added test
+:rocket: Strip out dedupe function from split and re-impliment as a `post` function to give the `interpolate` module more signal and also allow further code isolation and testing.
+
+### v11.15.1
+
+- :bug: only discard duplicate house number sets when there is >1km separation between them
+- :rocket: of the remaining duplicate house number sets, only geocode the first entry (doing the rest is pointless)
+
+### v11.15.0
+
+- :arrow_up: Adds DocumentationJS as Dev Dep
+- :pencil2: Add documentation js linting to circle and fix all bad JSDoc strings
+
+### v11.14.0
+
+- :rocket: Don't pick linker matches arbitrarily, instead return ties to match.js and let it break ties using the buffer geom
+
+### v11.13.0
+
+- :rocket: optionally preserve 'source' attribute from address geojson
+
+### v11.12.2
+
+- :bug: better handling of titlecasing of labels
+
+### v11.12.1
+
+- :bug: testmode syntax error :disappointed:
+
+### v11.12.0
+
+- :tada: changes to test mode: CSV output & tokenless mode as default behavior
+
 ### v11.11.3
 
 - :bug: Prune before orphan address stage to prevent fragmentation between db and geojson
