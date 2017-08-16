@@ -3,10 +3,12 @@ const test = require('tape');
 
 test('Post: Cardinality', (t) => {
     t.equals(post(), undefined);
-    t.deepEquals(post({}), undefined);
+    t.deepEquals(post({}), {});
     t.deepEquals(post({
         properties: {}
-    }), undefined);
+    }), {
+        properties: {}
+    });
 
     t.equals(f('Test'), 'Test');
     t.equals(f('Main St'), 'Main St');
