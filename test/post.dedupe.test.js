@@ -2,41 +2,63 @@ const post = require('../lib/post/dedupe').post;
 const test = require('tape');
 
 test('Post: Dedupe', (t) => {
-    t.equals(post(), undefined);
+    t.deepEquals(post(), undefined);
 
-    t.equals(post({
+    t.deepEquals(post({
         properties: undefined
-    }), undefined);
+    }), {
+        properties: undefined
+    });
 
-    t.equals(post({
+    t.deepEquals(post({
         properties: {
             'carmen:addressnumber': undefined
         }
-    }), undefined);
+    }), {
+        properties: {
+            'carmen:addressnumber': undefined
+        }
+    });
 
-    t.equals(post({
+    t.deepEquals(post({
         properties: {
             'carmen:addressnumber': []
         }
-    }), undefined);
+    }), {
+        properties: {
+            'carmen:addressnumber': []
+        }
+    });
 
-    t.equals(post({
+    t.deepEquals(post({
         properties: {
             'carmen:addressnumber': [[ 1 ]]
         }
-    }), undefined);
+    }), {
+        properties: {
+            'carmen:addressnumber': [[ 1 ]]
+        }
+    });
 
-    t.equals(post({
+    t.deepEquals(post({
         properties: {
             'carmen:addressnumber': [[ 1, 2, 3, 4 ]]
         }
-    }), undefined);
+    }), {
+        properties: {
+            'carmen:addressnumber': [[1, 2, 3, 4]]
+        }
+    });
 
-    t.equals(post({
+    t.deepEquals(post({
         properties: {
             'carmen:addressnumber': [[ 1, 2, 3, 4, 1, 2, 3, 4 ]]
         }
-    }), undefined);
+    }), {
+        properties: {
+            'carmen:addressnumber': [[ 1, 2, 3, 4, 1, 2, 3, 4 ]]
+        }
+    });
 
     t.deepEquals(post({
         properties: {
