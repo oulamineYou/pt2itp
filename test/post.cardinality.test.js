@@ -10,7 +10,6 @@ test('Post: Cardinality', (t) => {
         properties: {}
     });
 
-
     t.equals(f('Test'), 'Test');
     t.equals(f('Main St'), 'Main St');
     t.equals(f('S Main St'), 'S Main St,Main St S');
@@ -36,6 +35,11 @@ test('Post: Cardinality', (t) => {
     t.end();
 });
 
+/**
+ * Create input Feature given text
+ * @param {string} text
+ * @return {Object} GeoJSON Feature
+ */
 function f(text) {
     return post({
         type: 'Feature',
