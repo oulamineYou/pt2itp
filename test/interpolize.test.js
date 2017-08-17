@@ -247,6 +247,59 @@ test('Interpolize - Continious network - unique address duplicate num', (t) => {
 });
 
 /*
+ *  2  4  6  8                            10  8  6 4 2
+ * ---------------------------------------------------
+ *
+ * NH has several instances of continuous roads that have identical housenumbers. Since the road is so long the 4 on the left is in one town
+ * and the 4 on the right another. Since the road is continuous however the network is a single cluster and although the points will be grouped into
+ * two separate clusters, they will be merged together by the adoption module. This test ensures these issues are detected and the network_cluster output as
+ * two unique clusters
+ */
+test('Interpolize - Continious network - unique address duplicate num - different order', (t) => {
+    let segs = [{
+        network: {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: [[ -72.52744674682617, 45.900282732840324 ], [ -72.65018463134764, 45.79816953017265 ]]
+            }
+        },
+        address: {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'MultiPoint',
+                coordinates: [
+                    [ -72.65104293823242, 45.80846108136044 ],
+                    [ -72.64297485351562, 45.80810210576385 ],
+                    [ -72.6416015625, 45.81372579098662 ],
+                    [ -72.63490676879883, 45.81587939239973 ],
+
+                    [ -72.55027770996094, 45.886423557648435 ],
+                    [ -72.54547119140625, 45.8909640131969 ],
+                    [ -72.53094434738159, 45.8986550563925 ],
+                    [ -72.52995729446411, 45.89973022416613 ],
+                    [ -72.52869129180908, 45.90050672127712 ]
+                ]
+            }
+        },
+        number: [ 2, 4, 6, 8, 10, 8, 6, 4, 2]
+    }];
+
+    let res = interpolize('Complicated Ave', segs, { debug: true });
+
+    delete res.id;
+
+    if (process.env.UPDATE) {
+        fs.writeFileSync(__dirname + '/fixtures/itp-halfthedup2.json', JSON.stringify(res, null, 4));
+        t.fail('had to update fixture');
+    }
+    t.deepEquals(res, require('./fixtures/itp-halfthedup2.json'));
+    t.end();
+});
+
+/*
  * . |                  .
  *   | .
  * . |
