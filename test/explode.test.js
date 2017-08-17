@@ -1,4 +1,6 @@
 const test = require('tape');
+const fs = require('fs');
+
 // add test for feature that dedupe will collapse & should discard
 const Explode = require('../lib/explode');
 
@@ -343,7 +345,6 @@ test('explode', (t) => {
 });
 
 test('explode#join', (t) => {
-
     /*
      *  2  4  6  8                            4  6  8 10 12
      * ---------------------------------------------------
@@ -354,46 +355,43 @@ test('explode#join', (t) => {
      * two unique clusters
      */
     t.test('Explode#split - Continious network - unique address duplicate num', (q) => {
-        let segs = [{
-            network: {
+        const explode = new Explode();
+
+        let res = explode.split({
+            type: 'FeatureCollection',
+            features: [{
                 type: 'Feature',
                 properties: {},
                 geometry: {
                     type: 'LineString',
                     coordinates: [[ -72.52744674682617, 45.900282732840324 ], [ -72.65018463134764, 45.79816953017265 ]]
                 }
-            },
-            address: {
-                type: 'Feature',
-                properties: {},
-                geometry: {
-                    type: 'MultiPoint',
-                    coordinates: [
-                        [ -72.65104293823242, 45.80846108136044 ],
-                        [ -72.64297485351562, 45.80810210576385 ],
-                        [ -72.6416015625, 45.81372579098662 ],
-                        [ -72.63490676879883, 45.81587939239973 ],
+            }]
+        }, {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'MultiPoint',
+                coordinates: [
+                    [ -72.65104293823242, 45.80846108136044 ],
+                    [ -72.64297485351562, 45.80810210576385 ],
+                    [ -72.6416015625, 45.81372579098662 ],
+                    [ -72.63490676879883, 45.81587939239973 ],
 
-                        [ -72.55027770996094, 45.886423557648435 ],
-                        [ -72.54547119140625, 45.8909640131969 ],
-                        [ -72.53094434738159, 45.8986550563925 ],
-                        [ -72.52995729446411, 45.89973022416613 ],
-                        [ -72.52869129180908, 45.90050672127712 ]
-                    ]
-                }
-            },
-            number: [ 2, 4, 6, 8, 4, 6, 8, 10, 12]
-        }];
-
-        let res = interpolize('Complicated Ave', segs, { debug: true });
-
-        delete res.id;
+                    [ -72.55027770996094, 45.886423557648435 ],
+                    [ -72.54547119140625, 45.8909640131969 ],
+                    [ -72.53094434738159, 45.8986550563925 ],
+                    [ -72.52995729446411, 45.89973022416613 ],
+                    [ -72.52869129180908, 45.90050672127712 ]
+                ]
+            }
+        }, [ 2, 4, 6, 8, 4, 6, 8, 10, 12]);
 
         if (process.env.UPDATE) {
-            fs.writeFileSync(__dirname + '/fixtures/itp-halfthedup.json', JSON.stringify(res, null, 4));
+            fs.writeFileSync(__dirname + '/fixtures/explode-halfthedup.json', JSON.stringify(res, null, 4));
             q.fail('had to update fixture');
         }
-        q.deepEquals(res, require('./fixtures/itp-halfthedup.json'));
+        q.deepEquals(res, require('./fixtures/explode-halfthedup.json'));
         q.end();
     });
 
@@ -406,47 +404,44 @@ test('explode#join', (t) => {
      * two separate clusters, they will be merged together by the adoption module. This test ensures these issues are detected and the network_cluster output as
      * two unique clusters
      */
-    t.test('explode#split - Continious network - unique address duplicate num - different order', (q) => {
-        let segs = [{
-            network: {
+    t.skip('explode#split - Continious network - unique address duplicate num - different order', (q) => {
+        const explode = new Explode();
+
+        let res = explode.split({
+            type: 'FeatureCollection',
+            features: [{
                 type: 'Feature',
                 properties: {},
                 geometry: {
                     type: 'LineString',
                     coordinates: [[ -72.52744674682617, 45.900282732840324 ], [ -72.65018463134764, 45.79816953017265 ]]
                 }
-            },
-            address: {
-                type: 'Feature',
-                properties: {},
-                geometry: {
-                    type: 'MultiPoint',
-                    coordinates: [
-                        [ -72.65104293823242, 45.80846108136044 ],
-                        [ -72.64297485351562, 45.80810210576385 ],
-                        [ -72.6416015625, 45.81372579098662 ],
-                        [ -72.63490676879883, 45.81587939239973 ],
+            }]
+        }, {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'MultiPoint',
+                coordinates: [
+                    [ -72.65104293823242, 45.80846108136044 ],
+                    [ -72.64297485351562, 45.80810210576385 ],
+                    [ -72.6416015625, 45.81372579098662 ],
+                    [ -72.63490676879883, 45.81587939239973 ],
 
-                        [ -72.55027770996094, 45.886423557648435 ],
-                        [ -72.54547119140625, 45.8909640131969 ],
-                        [ -72.53094434738159, 45.8986550563925 ],
-                        [ -72.52995729446411, 45.89973022416613 ],
-                        [ -72.52869129180908, 45.90050672127712 ]
-                    ]
-                }
-            },
-            number: [ 2, 4, 6, 8, 10, 8, 6, 4, 2]
-        }];
-
-        let res = interpolize('Complicated Ave', segs, { debug: true });
-
-        delete res.id;
+                    [ -72.55027770996094, 45.886423557648435 ],
+                    [ -72.54547119140625, 45.8909640131969 ],
+                    [ -72.53094434738159, 45.8986550563925 ],
+                    [ -72.52995729446411, 45.89973022416613 ],
+                    [ -72.52869129180908, 45.90050672127712 ]
+                ]
+            }
+        }, [ 2, 4, 6, 8, 10, 8, 6, 4, 2]);
 
         if (process.env.UPDATE) {
-            fs.writeFileSync(__dirname + '/fixtures/itp-halfthedup2.json', JSON.stringify(res, null, 4));
+            fs.writeFileSync(__dirname + '/fixtures/explode-halfthedup2.json', JSON.stringify(res, null, 4));
             q.fail('had to update fixture');
         }
-        q.deepEquals(res, require('./fixtures/itp-halfthedup2.json'));
+        q.deepEquals(res, require('./fixtures/explode-halfthedup2.json'));
         q.end();
     });
 
