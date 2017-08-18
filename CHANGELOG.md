@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v11.18.0
+
+- :rocket: Change split distance to 500m
+- :rocket: Refactor `explode` module with better tests and modularity
+
 ### v11.17.0
 
 - :arrow_up: Update `pg` to major version `7.x` from `6.x` and bump `tmp` version
