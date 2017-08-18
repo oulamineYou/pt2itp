@@ -1,3 +1,4 @@
+const turf = require('@turf/turf');
 const test = require('tape');
 const fs = require('fs');
 
@@ -359,10 +360,13 @@ test('explode#split', (t) => {
         }]
     });
 
+    res = turf.truncate(res);
+
     if (process.env.UPDATE) {
         fs.writeFileSync(__dirname + '/fixtures/explode-halfthedup.json', JSON.stringify(res, null, 4));
         t.fail('had to update fixture');
     }
+
     t.deepEquals(res, require('./fixtures/explode-halfthedup.json'));
     t.end();
 });
