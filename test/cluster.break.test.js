@@ -4,8 +4,7 @@ const fs = require('fs');
 
 const cluster = new Cluster();
 
-test('cluster#break', (t) => {
-
+test('cluster#break - simple', (t) => {
     let segs = [{
         address: {
             type: 'Feature',
