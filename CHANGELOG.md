@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.19.0
+
+- :rocket: New deterministic ASCII based unit lookup encoder/decoder
+
 ### v11.18.0
 
 - :rocket: Change split distance to 500m
