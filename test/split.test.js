@@ -68,6 +68,10 @@ test('Split: Dulaney Valley Rd, MD', (t) => {
         split.split(1, (err, res) => {
             q.error(err);
 
+            t.equals(res.length, 1);
+
+            res = res[0];
+
             t.equals(res.type, 'Feature', 'Type should be feature');
             t.equals(res.geometry.type, 'GeometryCollection', 'Geometry should be GeometryCollection');
             t.equals(res.geometry.geometries.length, 2, 'GeometryCollection should have 2 child geometries');
