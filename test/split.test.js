@@ -81,11 +81,11 @@ test('Split: Dulaney Valley Rd, MD', (t) => {
             t.deepEquals(res.properties['carmen:parityl'], [ [ 'O', null, 'O', null, 'E', 'O', 'O', 'E', null, 'E', null, 'E', 'E', 'E', 'E', null, null ], null ], 'carmen:parityl should be stable');
             t.deepEquals(res.properties['carmen:parityr'], [ [ 'E', 'O', 'E', 'E', 'E', 'E', 'E', 'O', 'E', 'O', 'O', null, 'O', 'O', 'O', null, null ], null ], 'carmen:parityr should be stable');
 
-            t.deepEquals(res.properties['carmen:lfromhn'], [ [ 1021, null, 2101, null, 2004, 1411, 1311, 714, null, 13204, null, 12450, 12620, 12620, 13000, null, null ], null ], 'carmen:lfromhn should be stable');
-            t.deepEquals(res.properties['carmen:ltohn'], [ [ 1, null, 2205, null, 1800, 1317, 1213, 838, null, 13224, null, 12450, 12620, 12908, 20000, null, null ], null ], 'carmen:ltohn should be stable');
+            t.deepEquals(res.properties['carmen:lfromhn'], [ [ 1021, null, 2101, null, 2006, 1411, 1311, 714, null, 13204, null, 12450, 12620, 12620, 13000, null, null ], null ], 'carmen:lfromhn should be stable');
+            t.deepEquals(res.properties['carmen:ltohn'], [ [ 1, null, 2205, null, 1718, 1317, 1213, 838, null, 13224, null, 12450, 12620, 12908, 20000, null, null ], null ], 'carmen:ltohn should be stable');
 
-            t.deepEquals(res.properties['carmen:rfromhn'], [ [ 1024, 1021, 2300, 2122, 2004, 1710, 1306, 825, 2300, 13207, 12101, null, 12559, 12615, 12915, null, null ], null ], 'carmen:rfromhn should be stable');
-            t.deepEquals(res.properties['carmen:rtohn'], [ [ 0, 1021, 2296, 2010, 1800, 1322, 1200, 1021, 2300, 13209, 12301, null, 12615, 12911, 20001, null, null ], null ], 'carmen:rtohn should be stable');
+            t.deepEquals(res.properties['carmen:rfromhn'], [ [ 1024, 1021, 2300, 2126, 2006, 1710, 1322, 825, 2300, 13207, 12101, null, 12559, 12615, 12915, null, null ], null ], 'carmen:rfromhn should be stable');
+            t.deepEquals(res.properties['carmen:rtohn'], [ [ 0, 1021, 2296, 2010, 1718, 1314, 1200, 1021, 2300, 13209, 12301, null, 12615, 12911, 20001, null, null ], null ], 'carmen:rtohn should be stable');
 
             split.kill();
             q.end();
