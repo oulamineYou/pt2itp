@@ -140,16 +140,20 @@ test('Split: East Long Street', (t) => {
             country: 'us'
         });
 
-        split.split(2, (err, res) => {
+        split.split(2, (err, ress) => {
             q.error(err);
 
-            t.equals(res.type, 'Feature', 'Type should be feature');
-            t.equals(res.geometry.type, 'GeometryCollection', 'Geometry should be GeometryCollection');
-            t.equals(res.geometry.geometries.length, 2, 'GeometryCollection should have 2 child geometries');
+            t.equals(ress.length, 2);
 
-            t.equals(res.geometry.geometries[0].coordinates.length, 9);
+            for (let res of ress) {
+                t.equals(res.type, 'Feature', 'Type should be feature');
+                t.equals(res.geometry.type, 'GeometryCollection', 'Geometry should be GeometryCollection');
+                t.equals(res.geometry.geometries.length, 2, 'GeometryCollection should have 2 child geometries');
 
-            t.equals(res.properties['carmen:text'], 'East Long Street', 'Text should be East Long Street');
+                t.equals(res.geometry.geometries[0].coordinates.length, 1);
+
+                t.equals(res.properties['carmen:text'], 'East Long Street', 'Text should be East Long Street');
+            }
 
             split.kill();
             q.end();
