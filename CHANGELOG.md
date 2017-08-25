@@ -10,6 +10,12 @@
 
 ## Version History
 
+### v11.20.0
+
+- :rocket: Detect Duplicate `> 1km` in distance apart.
+- :rocket: If no duplicates are detected fallback to current `explode#split` module
+- :rocket: if duplicates are detected pass to to-be-written `cluster#split` module
+
 ### v11.19.1
 
 - :bug: Fix bug where `explode#split` would drop a section of the LineString
