@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v11.20.1
+
+- :rocket: Short-Circuit cluster#break calculation is line distance is less than 1
+- :bug: cluster#break change to >= & <= to avoid hard error if xInt was 0
+
 ### v11.20.0
 
 - :rocket: Detect Duplicate `> 1km` in distance apart.
