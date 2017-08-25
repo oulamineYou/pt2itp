@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.19.1
+
+- :bug: Fix bug where `explode#split` would drop a section of the LineString
+
 ### v11.19.0
 
 - :rocket: New deterministic ASCII based unit lookup encoder/decoder
