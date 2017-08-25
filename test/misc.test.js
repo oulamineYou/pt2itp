@@ -1,5 +1,6 @@
 const test = require('tape');
-const misc = require('../lib/misc');
+const Misc = require('../lib/misc');
+const misc = new Misc();
 
 test('misc.det2D', (t) => {
     t.equal(misc.det2D([0,0], [1,2], [3,4]), -2);
