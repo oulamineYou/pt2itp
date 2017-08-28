@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.20.2
+
+- :bug: Tilebelt function name needs to be capitalized.
+
 ### v11.20.1
 
 - :rocket: Short-Circuit cluster#break calculation is line distance is less than 1
