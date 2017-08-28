@@ -16,6 +16,9 @@ tape('Units#Encode/Decode', (t) => {
     t.equals(units.encode('1-1325'), '1.4549515053');
     t.equals(units.decode('1.4549515053'), '1-1325');
 
+    t.equals(units.encode('8000-8079'), '8000.4556485557');
+    t.equals(units.decode('8000.4556485557'), '8000-8079');
+
     t.equals(units.encode('12a'), '12.65');
     t.equals(units.decode('12.65'), '12a');
 
