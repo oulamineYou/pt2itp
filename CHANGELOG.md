@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.20.3
+
+- :white_check_marl: Added Unit module tests
+
 ### v11.20.2
 
 - :bug: Tilebelt function name needs to be capitalized.
