@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.20.4
+
+- :rocket: Optimize cluster#adoption query with `name_uniqueness` WHERE clause
+
 ### v11.20.3
 
 - :white_check_marl: Added Unit module tests
