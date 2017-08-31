@@ -36,7 +36,8 @@
     "simple-statistics": "^4.1.1",
     "split": "^1.0.0",
     "turf-line-slice-at-intersection": "^1.0.1",
-    "wellknown": "^0.5.0"
+    "wellknown": "^0.5.0",
+    "ya-csv": "^0.10.1"
   },
   "devDependencies": {
     "documentation": "^5.2.1",
