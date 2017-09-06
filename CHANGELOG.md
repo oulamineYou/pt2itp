@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v11.20.6
+
+- :tada: add SOFT & HARD modes to `NAME MISMATCH` output
+- :rocket: make `NAME MISMATCH` errors less needlessly verbose
+
 ### v11.20.5
 
 - :bug: fix & further optimize adoption code
