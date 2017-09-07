@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.20.7
+
+- :bug: fix `N` results in test mode (thx @boblannon!) 
+
 ### v11.20.6
 
 - :tada: add SOFT & HARD modes to `NAME MISMATCH` output
