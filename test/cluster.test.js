@@ -39,7 +39,7 @@ test('cluster.name', (t) => {
             CREATE TABLE address (id SERIAL, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, number INT, geom GEOMETRY(POINT, 4326));
             CREATE TABLE address_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, number TEXT, geom GEOMETRY(MULTIPOINT, 4326));
             CREATE TABLE network (id SERIAL, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, named BOOLEAN, geom GEOMETRY(LINESTRING, 4326));
-            CREATE TABLE network_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, address INT, geom GEOMETRY(MULTILINESTRING, 4326), buffer GEOMETRY(POLYGON, 4326));
+            CREATE TABLE network_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, address INT, geom GEOMETRY(MULTILINESTRING, 4326), buffer GEOMETRY(POLYGON, 4326), source_ids BIGINT[]);
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -192,7 +192,7 @@ test('cluster.network', (t) => {
         pool.query(`
             BEGIN;
             CREATE TABLE network (id SERIAL, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, geom GEOMETRY(LINESTRING, 4326));
-            CREATE TABLE network_cluster(ID SERIAL, text TEXT, _text TEXT, text_tokenless TEXT, geom GEOMETRY(GEOMETRY, 4326), buffer GEOMETRY(Polygon,4326), address INTEGER);
+            CREATE TABLE network_cluster(ID SERIAL, text TEXT, _text TEXT, text_tokenless TEXT, geom GEOMETRY(GEOMETRY, 4326), buffer GEOMETRY(Polygon,4326), address INTEGER, source_ids BIGINT[]);
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -224,13 +224,13 @@ test('cluster.network', (t) => {
 
     popQ.defer((done) => {
         pool.query(`
-            SELECT id, text, text_tokenless, ST_AsGeoJSON(geom) AS geom FROM network_cluster;
+            SELECT id, text, text_tokenless, ST_AsGeoJSON(geom) AS geom, source_ids FROM network_cluster;
         `, (err, res) => {
             t.error(err);
 
             t.equals(res.rows.length, 2);
-            t.deepEquals(res.rows[0], { geom: '{"type":"MultiLineString","coordinates":[[[-66.0539031028748,45.269616328423],[-66.0544180870056,45.2710358327684]],[[-66.0543537139893,45.2710056309179],[-66.0549330711365,45.2724553016121]]]}', id: 1, text: 'main st', text_tokenless: 'main' });
-            t.deepEquals(res.rows[1], { geom: '{"type":"MultiLineString","coordinates":[[[-113.501172065735,53.5513741378592],[-113.501129150391,53.5483654932333]],[[-113.501000404358,53.5483654932333],[-113.501043319702,53.5461471182574]]]}', id: 2, text: 'main st',  text_tokenless: 'main' });
+            t.deepEquals(res.rows[0], { geom: '{"type":"MultiLineString","coordinates":[[[-66.0539031028748,45.269616328423],[-66.0544180870056,45.2710358327684]],[[-66.0543537139893,45.2710056309179],[-66.0549330711365,45.2724553016121]]]}', id: 1, text: 'main st', text_tokenless: 'main', source_ids: [ '1', '2', '3', '4' ] });
+            t.deepEquals(res.rows[1], { geom: '{"type":"MultiLineString","coordinates":[[[-113.501172065735,53.5513741378592],[-113.501129150391,53.5483654932333]],[[-113.501000404358,53.5483654932333],[-113.501043319702,53.5461471182574]]]}', id: 2, text: 'main st',  text_tokenless: 'main', source_ids: [ '1', '2', '3', '4' ] });
             return done();
         });
     });
@@ -257,7 +257,7 @@ test('cluster.adoption', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            CREATE TABLE network_cluster (address BIGINT, geom GEOMETRY(LINESTRING, 4326), buffer GEOMETRY(GEOMETRY, 4326));
+            CREATE TABLE network_cluster (address BIGINT, geom GEOMETRY(LINESTRING, 4326), buffer GEOMETRY(GEOMETRY, 4326), source_ids BIGINT[]);
             CREATE TABLE address_cluster (id BIGINT, _text TEXT, geom GEOMETRY(GEOMETRY, 4326));
             COMMIT;
         `, (err, res) => {
@@ -327,7 +327,7 @@ test('cluster.prune', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            CREATE TABLE network_cluster (id BIGINT, address BIGINT, text TEXT, text_tokenless TEXT);
+            CREATE TABLE network_cluster (id BIGINT, address BIGINT, text TEXT, text_tokenless TEXT, source_ids BIGINT[]);
             CREATE TABLE address_cluster (id BIGINT, text TEXT, text_tokenless TEXT);
             COMMIT;
         `, (err, res) => {
@@ -381,7 +381,7 @@ test('cluster.prune', (t) => {
 
     popQ.defer((done) => {
         pool.query(`
-            SELECT * FROM network_cluster ORDER BY id ASC;
+            SELECT id, address, text, text_tokenless FROM network_cluster ORDER BY id ASC;
         `, (err, res) => {
             t.error(err);
             if (process.env.UPDATE) {
