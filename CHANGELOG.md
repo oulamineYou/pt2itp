@@ -10,13 +10,35 @@
 
 ## Version History
 
+### v11.20.10
+
+- :bug: Fix broken `stat` mode
+
+### v11.20.8/v11.20.9
+
+- :rocket: `minjur` => `osmium` conversion
+
+### v11.20.7
+
+- :bug: fix `N` results in test mode (thx @boblannon!)
+
+### v11.20.6
+
+- :tada: add SOFT & HARD modes to `NAME MISMATCH` output
+- :rocket: make `NAME MISMATCH` errors less needlessly verbose
+
+### v11.20.5
+
+- :bug: fix & further optimize adoption code
+- :white_check_mark: add more adoption tests to cluster
+
 ### v11.20.4
 
 - :rocket: Optimize cluster#adoption query with `name_uniqueness` WHERE clause
 
 ### v11.20.3
 
-- :white_check_marl: Added Unit module tests
+- :white_check_mark: Added Unit module tests
 
 ### v11.20.2
 
