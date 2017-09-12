@@ -10,9 +10,13 @@
 
 ## Version History
 
+### v11.20.8
+
+- :rocket: `minjur` => `osmium` conversion
+
 ### v11.20.7
 
-- :bug: fix `N` results in test mode (thx @boblannon!) 
+- :bug: fix `N` results in test mode (thx @boblannon!)
 
 ### v11.20.6
 
