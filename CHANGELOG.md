@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.22.0
+
+- :rocket: Add support for GEOJSONSEQ input
+
 ### v11.21.1
 
 - :arrow_up: Update to latest geocoder-abbr package
