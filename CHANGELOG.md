@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.21.0
+
+- :rocket: Add several checks for near zero length (Multi)LineStrings and remove them where possible as many tools choke on them
+
 ### v11.20.10
 
 - :bug: Fix broken `stat` mode
