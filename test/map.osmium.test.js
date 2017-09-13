@@ -33,7 +33,19 @@ test('Osmium', (t) => {
         geometry: {
             type: 'LineString'
         }
-    }), false, 'Feat must valid Highway');
+    }), false, 'Feat must be valid Highway');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            name: 'Test',
+            highway: 'primary'
+        },
+        geometry: {
+            type: 'LineString',
+            coordinates: [[0,0], [0,0]]
+        }
+    }), false, 'Feat must have length');
 
     //Streets allowed to be missing names
     for (let type of ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'residential', 'unclassified', 'living_street', 'pedestrian', 'road']) {
@@ -43,9 +55,10 @@ test('Osmium', (t) => {
                 highway: type
             },
             geometry: {
-                type: 'LineString'
+                type: 'LineString',
+                coordinates: [[0,0],[1,1]]
             }
-        }), { geometry: { type: 'LineString' }, properties: { street: '' }, type: 'Feature' }, `${type} is accepted`);
+        }), { geometry: { type: 'LineString', coordinates: [[0,0], [1,1]] }, properties: { street: '' }, type: 'Feature' }, `${type} is accepted`);
     }
 
     //Streets required to have names as they are lower quality tags
@@ -56,7 +69,8 @@ test('Osmium', (t) => {
                 highway: type
             },
             geometry: {
-                type: 'LineString'
+                type: 'LineString',
+                coordinates: [[0,0],[1,1]]
             }
         }), false, `${type} requires name`);
     }
@@ -69,9 +83,10 @@ test('Osmium', (t) => {
                 name: 'Test'
             },
             geometry: {
-                type: 'LineString'
+                type: 'LineString',
+                coordinates: [[0,0],[1,1]]
             }
-        }), { geometry: { type: 'LineString' }, properties: { street: 'Test' }, type: 'Feature' }, `${type} is accepted w/ name`);
+        }), { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { street: 'Test' }, type: 'Feature' }, `${type} is accepted w/ name`);
     }
 
     t.deepEquals(map({
@@ -83,9 +98,10 @@ test('Osmium', (t) => {
             alt_name: 'alt_name'
         },
         geometry: {
-            type: 'LineString'
+            type: 'LineString',
+            coordinates: [[0,0],[1,1]]
         }
-    }), { geometry: { type: 'LineString' }, properties: { street: [ 'name', 'loc_name', 'alt_name' ] }, type: 'Feature' }, 'AltNames');
+    }), { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { street: [ 'name', 'loc_name', 'alt_name' ] }, type: 'Feature' }, 'AltNames');
 
     t.deepEquals(map({
         type: 'Feature',
@@ -94,9 +110,10 @@ test('Osmium', (t) => {
             name: '1 Name;2 Name;3 Name'
         },
         geometry: {
-            type: 'LineString'
+            type: 'LineString',
+            coordinates: [[0,0],[1,1]]
         }
-    }), { geometry: { type: 'LineString' }, properties: { street: [ '1 Name', '2 Name', '3 Name' ] }, type: 'Feature' }, 'OSM ; AltNames');
+    }), { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { street: [ '1 Name', '2 Name', '3 Name' ] }, type: 'Feature' }, 'OSM ; AltNames');
 
     t.deepEquals(map({
         type: 'Feature',
@@ -105,9 +122,10 @@ test('Osmium', (t) => {
             name: '1 Name; '
         },
         geometry: {
-            type: 'LineString'
+            type: 'LineString',
+            coordinates: [[0,0],[1,1]]
         }
-    }), { geometry: { type: 'LineString' }, properties: { street: '1 Name' }, type: 'Feature' }, 'OSM ; AltNames null');
+    }), { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { street: '1 Name' }, type: 'Feature' }, 'OSM ; AltNames null');
 
     t.end();
 });
