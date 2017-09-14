@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.22.1
+
+- :bug: `cluster#break` could also potentially create near 0 length network segs
+
 ### v11.22.0
 
 - :rocket: Add support for GEOJSONSEQ input
