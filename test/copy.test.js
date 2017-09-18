@@ -36,7 +36,7 @@ tape('copy.js output - network', (t) => {
         output: tempFile,
         type: 'network',
         total: 1,
-        map: __dirname + '/../lib/map/minjur.js',
+        map: __dirname + '/../lib/map/osmium.js',
         solo: true,
         error: false,
         tokens: tokenize.createReplacer(['et'])
