@@ -80,7 +80,7 @@ test('Osmium', (t) => {
         t.deepEquals(map({
             type: 'Feature',
             properties: {
-	        "@id": 2,
+                "@id": 2,
                 highway: type,
                 name: 'Test'
             },
@@ -95,7 +95,7 @@ test('Osmium', (t) => {
         type: 'Feature',
         properties: {
             highway: 'motorway',
-	    "@id": 3,
+            "@id": 3,
             name: 'name',
             loc_name: 'loc_name',
             alt_name: 'alt_name'
@@ -106,14 +106,14 @@ test('Osmium', (t) => {
         }
     }), [
         { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'name' }, type: 'Feature' },
-	{ geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'loc_name' }, type: 'Feature' },
-	{ geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'alt_name' }, type: 'Feature' }], 'AltNames');
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'loc_name' }, type: 'Feature' },
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'alt_name' }, type: 'Feature' }], 'AltNames');
 
     t.deepEquals(map({
         type: 'Feature',
         properties: {
             "@id": 4,
-	    highway: 'motorway',
+            highway: 'motorway',
             name: '1 Name;2 Name;3 Name'
         },
         geometry: {
@@ -129,7 +129,7 @@ test('Osmium', (t) => {
     t.deepEquals(map({
         type: 'Feature',
         properties: {
-	    '@id': 5,
+            '@id': 5,
             highway: 'motorway',
             name: '1 Name; '
         },
