@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.22.2
+
+- :bug: Fix syntax error in `test` mode
+
 ### v11.22.1
 
 - :bug: `cluster#break` could also potentially create near 0 length network segs
