@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.23.0
+
+- :rocket: Update how `copy` CP handles writing to PSV files by using CSV Library instead of homebrew solution
+
 ### v11.22.2
 
 - :bug: Fix syntax error in `test` mode
