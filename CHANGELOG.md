@@ -10,6 +10,26 @@
 
 ## Version History
 
+### v11.22.2
+
+- :bug: Fix syntax error in `test` mode
+
+### v11.22.1
+
+- :bug: `cluster#break` could also potentially create near 0 length network segs
+
+### v11.22.0
+
+- :rocket: Add support for GEOJSONSEQ input
+
+### v11.21.1
+
+- :arrow_up: Update to latest geocoder-abbr package
+
+### v11.21.0
+
+- :rocket: Add several checks for near zero length (Multi)LineStrings and remove them where possible as many tools choke on them
+
 ### v11.20.10
 
 - :bug: Fix broken `stat` mode
