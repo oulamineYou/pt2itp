@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.24.0
+
+- :bug: Fix bug where the `name` module would not be run as `_text` fields were `NULL` instead of `''`
+
 ### v11.23.0
 
 - :rocket: Update how `copy` CP handles writing to PSV files by using CSV Library instead of homebrew solution
