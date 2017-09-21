@@ -318,7 +318,6 @@ test('cluster.adoption', (t) => {
     });
 });
 
-
 test('cluster.prune', (t) => {
     const popQ = Queue(1);
 
@@ -404,6 +403,72 @@ test('cluster.prune', (t) => {
         `, (err, res) => {
             t.error(err);
             t.end();
+        });
+    });
+});
+
+test('cluster.collapse - overlapping segments', (t) => {
+    pool.query(`
+        CREATE TABLE address_cluster (id BIGINT, "text" TEXT, text_tokenless TEXT, _text TEXT, geom Geometry(Geometry, 4326));
+        INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
+            1,
+            'main st',
+            'main',
+            'Main Street',
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2],[2,3],[3,4]]}'), 4326)
+        );
+        INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
+            2,
+            'independence ave',
+            'independence',
+            'Independence Avenue',
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6],[6,7]]}'), 4326)
+        );
+
+        CREATE TABLE network_cluster (id BIGINT, address BIGINT, _text TEXT, text TEXT, text_tokenless TEXT, source_ids BIGINT[]);
+        INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
+            1,
+            1,
+            'Main Street',
+            'main st',
+            'main',
+            '{1,2}'
+        );
+        INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
+            2,
+            2,
+            'Independence Avenue',
+            'independence ave',
+            'independence',
+            '{1,2}'
+        );
+    `, (err, res) => {
+        t.error(err, 'created & populated tables without error');
+        cluster.collapse((err) => {
+            t.error(err, 'cluster.collapse returned without error');
+            pool.query(`
+                SELECT id, address, _text, "text", text_tokenless FROM network_cluster;
+            `, (err, res) => {
+                t.equals(res.length, 1, 'only one row remains');
+                t.equals(res[0].id, 1, 'main st feature still exists');
+                t.equals(res[0]._text, 'Main Street,Independence Ave', '_text');
+                t.equals(res[0].text, 'main st,independence ave', 'text');
+                t.equals(res[0].text_tokenless, 'main,independence', 'text_tokenless');
+                t.equals(res[0].address, 1, 'address cluster id is 1');
+                pool.query(`
+                    SELECT id, ST_Dump(geom) FROM address_cluster ORDER BY id ASC;
+                `, (err, res) => {
+                    t.equals(res.filter((row) => { return row.id === 1; }).length, 5, '5 address points in cluster ID 1');
+                    t.equals(res.filter((row) => { return row.id === 2; }).length, 0, 'cluster ID 2 no longer exists');
+                    pool.query(`
+                        DROP TABLE network_cluster;
+                        DROP TABLE address_cluster;
+                    `, (err, res) => {
+                        t.error(err, 'dropped tables without error');
+                        t.end();
+                    });
+                });
+            });
         });
     });
 });
