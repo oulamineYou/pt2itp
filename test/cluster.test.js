@@ -449,17 +449,17 @@ test('cluster.collapse - overlapping segments', (t) => {
             pool.query(`
                 SELECT id, address, _text, "text", text_tokenless FROM network_cluster;
             `, (err, res) => {
-                t.equals(res.length, 1, 'only one row remains');
-                t.equals(res[0].id, 1, 'main st feature still exists');
-                t.equals(res[0]._text, 'Main Street,Independence Ave', '_text');
-                t.equals(res[0].text, 'main st,independence ave', 'text');
-                t.equals(res[0].text_tokenless, 'main,independence', 'text_tokenless');
-                t.equals(res[0].address, 1, 'address cluster id is 1');
+                t.equals(res.rows.length, 1, 'only one row remains');
+                t.equals(parseInt(res.rows[0].id), 1, 'main st feature still exists');
+                t.equals(res.rows[0]._text, 'Main Street,Independence Ave', '_text');
+                t.equals(res.rows[0].text, 'main st,independence ave', 'text');
+                t.equals(res.rows[0].text_tokenless, 'main,independence', 'text_tokenless');
+                t.equals(parseInt(res.rows[0].address), 1, 'address cluster id is 1');
                 pool.query(`
                     SELECT id, ST_Dump(geom) FROM address_cluster ORDER BY id ASC;
                 `, (err, res) => {
-                    t.equals(res.filter((row) => { return row.id === 1; }).length, 5, '5 address points in cluster ID 1');
-                    t.equals(res.filter((row) => { return row.id === 2; }).length, 0, 'cluster ID 2 no longer exists');
+                    t.equals(res.rows.filter((row) => { return row.id === 1; }).length, 5, '5 address points in cluster ID 1');
+                    t.equals(res.rows.filter((row) => { return row.id === 2; }).length, 0, 'cluster ID 2 no longer exists');
                     pool.query(`
                         DROP TABLE network_cluster;
                         DROP TABLE address_cluster;
