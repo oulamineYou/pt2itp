@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v11.22.3
+
+- :bug: Fix test mode output and formatting
+- :bug: Fix DE token bug introduced in latest geocoder-abbr package
+
 ### v11.22.2
 
 - :bug: Fix syntax error in `test` mode
