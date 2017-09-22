@@ -427,20 +427,20 @@ test('cluster.collapse - overlapping segments', (t) => {
 
         CREATE TABLE network_cluster (id BIGINT, address BIGINT, _text TEXT, text TEXT, text_tokenless TEXT, source_ids BIGINT[]);
         INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
-            1,
+            3,
             1,
             'Main Street',
             'main st',
             'main',
-            '{1,2}'
+            '{5,6}'
         );
         INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
-            2,
+            4,
             2,
             'Independence Avenue',
             'independence ave',
             'independence',
-            '{1,2}'
+            '{5,6}'
         );
     `, (err, res) => {
         t.error(err, 'created & populated tables without error');
@@ -450,16 +450,16 @@ test('cluster.collapse - overlapping segments', (t) => {
                 SELECT id, address, _text, "text", text_tokenless FROM network_cluster;
             `, (err, res) => {
                 t.equals(res.rows.length, 1, 'only one row remains');
-                t.equals(parseInt(res.rows[0].id), 1, 'main st feature still exists');
-                t.equals(res.rows[0]._text, 'Main Street,Independence Ave', '_text');
+                t.equals(parseInt(res.rows[0].id), 3, 'main st feature still exists');
+                t.equals(res.rows[0]._text, 'Main Street,Independence Avenue', '_text');
                 t.equals(res.rows[0].text, 'main st,independence ave', 'text');
                 t.equals(res.rows[0].text_tokenless, 'main,independence', 'text_tokenless');
                 t.equals(parseInt(res.rows[0].address), 1, 'address cluster id is 1');
                 pool.query(`
                     SELECT id, ST_Dump(geom) FROM address_cluster ORDER BY id ASC;
                 `, (err, res) => {
-                    t.equals(res.rows.filter((row) => { return row.id === 1; }).length, 5, '5 address points in cluster ID 1');
-                    t.equals(res.rows.filter((row) => { return row.id === 2; }).length, 0, 'cluster ID 2 no longer exists');
+                    t.equals(res.rows.filter((row) => { return parseInt(row.id) === 1; }).length, 5, '5 address points in cluster ID 1');
+                    t.equals(res.rows.filter((row) => { return parseInt(row.id) === 2; }).length, 0, 'cluster ID 2 no longer exists');
                     pool.query(`
                         DROP TABLE network_cluster;
                         DROP TABLE address_cluster;
