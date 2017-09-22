@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v11.24.1
+
+- :arrow_up: Update carmen & talisman to latest verisons
+
 ### v11.24.0
 
 - :bug: Fix bug where the `name` module would not be run as `_text` fields were `NULL` instead of `''`
