@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v12.0.0
+
+- Switch to `yarn` as our package manager. npm will continue to work but is no longer tested and will not get the benefits of a `yarn.lock` file.
+
 ### v11.24.1
 
 - :arrow_up: Update carmen & talisman to latest verisons
