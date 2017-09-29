@@ -683,9 +683,9 @@ test('cluster.collapse - substantial overlap (fail on text)', (t) => {
         INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
             4,
             2,
-            'Main Street',
-            'main st',
-            'main',
+            'Independence Avenue',
+            'independence ave',
+            'independence',
             '{5,6,7}'
         );
     `, (err, res) => {
@@ -703,9 +703,9 @@ test('cluster.collapse - substantial overlap (fail on text)', (t) => {
                 t.equals(res.rows[0].text_tokenless, 'main', 'text_tokenless');
                 t.deepEquals(res.rows[0].source_ids, ['5', '6'], 'source_ids #1');
                 t.equals(parseInt(res.rows[0].address), 1, 'address cluster id is 1');
-                t.equals(res.rows[1]._text, 'Main Street', '_text');
-                t.equals(res.rows[1].text, 'main st', 'text');
-                t.equals(res.rows[1].text_tokenless, 'main', 'text_tokenless');
+                t.equals(res.rows[1]._text, 'Independence Ave', '_text');
+                t.equals(res.rows[1].text, 'independence ave', 'text');
+                t.equals(res.rows[1].text_tokenless, 'independence', 'text_tokenless');
                 t.deepEquals(res.rows[1].source_ids, ['5', '6', '7'], 'source_ids #2');
                 t.deepEquals(parseInt(res.rows[1].address), 2, 'address cluster id is 2');
 
