@@ -465,7 +465,7 @@ test('cluster.prune', (t) => {
     });
 });
 
-test('cluster.collapse - overlapping segments', (t) => {
+test('cluster.collapse - identical segments', (t) => {
     pool.query(`
         CREATE TABLE address_cluster (id BIGINT, "text" TEXT, text_tokenless TEXT, _text TEXT, geom Geometry(Geometry, 4326));
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
@@ -483,7 +483,19 @@ test('cluster.collapse - overlapping segments', (t) => {
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6],[6,7]]}'), 4326)
         );
 
-        CREATE TABLE network_cluster (id BIGINT, address BIGINT, _text TEXT, text TEXT, text_tokenless TEXT, source_ids BIGINT[]);
+        CREATE TABLE network (id BIGINT, geom Geometry(geometry, 4326), network_length NUMERIC);
+        INSERT INTO network (id, geom, network_length) VALUES (
+            5,
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1],[1,2]]}'), 4326),
+            1.0
+        );
+        INSERT INTO network (id, geom, network_length) VALUES (
+            6,
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2],[2,2]]}'), 4326),
+            1.0
+        );
+
+        CREATE TABLE network_cluster (id BIGINT, address BIGINT, _text TEXT, text TEXT, text_tokenless TEXT, geom Geometry(Geometry, 4326), source_ids BIGINT[]);
         INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
             3,
             1,
