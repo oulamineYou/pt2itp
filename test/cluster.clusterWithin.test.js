@@ -134,7 +134,7 @@ test('LinesStrings far away should not be clustered', (t) => {
         pool.query(`
             BEGIN;
             DROP TABLE IF EXISTS network;
-            CREATE TABLE network (id SERIAL, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, named BOOLEAN, geom GEOMETRY(LINESTRINGZ, 4326));
+            CREATE TABLE network (id BIGINT, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, named BOOLEAN, geom GEOMETRY(LINESTRINGZ, 4326));
             CREATE TABLE network_cluster(ID SERIAL, text TEXT, _text TEXT, text_tokenless TEXT, geom GEOMETRY(GEOMETRYZ, 4326), buffer GEOMETRY(Polygon,4326), address INTEGER, source_ids BIGINT[]);
             COMMIT;
         `, (err, res) => {
@@ -187,7 +187,7 @@ test('LinesStrings should be clustered', (t) => {
             BEGIN;
             DROP TABLE IF EXISTS network;
             DROP TABLE IF EXISTS network_cluster;
-            CREATE TABLE network (id SERIAL, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, named BOOLEAN, geom GEOMETRY(LINESTRINGZ, 4326));
+            CREATE TABLE network (id BIGINT, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, named BOOLEAN, geom GEOMETRY(LINESTRINGZ, 4326));
             CREATE TABLE network_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, address INT, geom GEOMETRY(MULTILINESTRINGZ, 4326), buffer GEOMETRY(POLYGON, 4326), source_ids BIGINT[]);
             COMMIT;
         `, (err, res) => {
