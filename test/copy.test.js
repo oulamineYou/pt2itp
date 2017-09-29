@@ -20,7 +20,7 @@ tape('copy.js output - address', (t) => {
     });
     copy.start(() => {
         if (process.env.UPDATE) {
-            fs.createReadStream(tempFile).pipe(fs.createWriteStream(path.resolve(__dirname, './fixtures/copy.sample-output.psv')));
+            fs.createReadStream(tempFile).pipe(fs.createWriteStream(path.resolve(__dirname, './fixtures/copy.sample-output-address.psv')));
             t.fail('updated fixture');
         }
         else
