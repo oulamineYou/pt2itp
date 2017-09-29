@@ -601,7 +601,7 @@ test('cluster.collapse - substantial overlap (fail on length)', (t) => {
         cluster.collapse((err) => {
             t.error(err, 'cluster.collapse returned without error');
             pool.query(`
-                SELECT id, address, _text, "text", text_tokenless FROM network_cluster ORDER BY id ASC;
+                SELECT id, address, _text, "text", text_tokenless, source_ids FROM network_cluster ORDER BY id ASC;
             `, (err, res) => {
                 t.equals(res.rows.length, 2, 'two rows remain (did not collapse)');
                 t.equals(parseInt(res.rows[0].id), 3, 'main st feature #1 still exists');
@@ -609,13 +609,13 @@ test('cluster.collapse - substantial overlap (fail on length)', (t) => {
                 t.equals(res.rows[0]._text, 'Main Street', '_text');
                 t.equals(res.rows[0].text, 'main st', 'text');
                 t.equals(res.rows[0].text_tokenless, 'main', 'text_tokenless');
-                t.equals(res.rows[0].source_ids, '{5,6}', 'source_ids #1');
+                t.deepEquals(res.rows[0].source_ids, ['5', '6'], 'source_ids #1');
                 t.equals(parseInt(res.rows[0].address), 1, 'address cluster id is 1');
                 t.equals(res.rows[1]._text, 'Main Street', '_text');
                 t.equals(res.rows[1].text, 'main st', 'text');
                 t.equals(res.rows[1].text_tokenless, 'main', 'text_tokenless');
-                t.equals(res.rows[1].source_ids, '{5,6,7}', 'source_ids #1');
-                t.equals(parseInt(res.rows[1].address), 2, 'address cluster id is 2');
+                t.deepEquals(res.rows[1].source_ids, ['5', '6', '7'], 'source_ids #2');
+                t.deepEquals(parseInt(res.rows[1].address), 2, 'address cluster id is 2');
 
                 pool.query(`
                     SELECT id, ST_Dump(geom) FROM address_cluster ORDER BY id ASC;
@@ -693,7 +693,7 @@ test('cluster.collapse - substantial overlap (fail on text)', (t) => {
         cluster.collapse((err) => {
             t.error(err, 'cluster.collapse returned without error');
             pool.query(`
-                SELECT id, address, _text, "text", text_tokenless FROM network_cluster ORDER BY id ASC;
+                SELECT id, address, _text, "text", text_tokenless, source_ids FROM network_cluster ORDER BY id ASC;
             `, (err, res) => {
                 t.equals(res.rows.length, 2, 'two rows remain (did not collapse)');
                 t.equals(parseInt(res.rows[0].id), 3, 'main st feature #1 still exists');
@@ -701,13 +701,13 @@ test('cluster.collapse - substantial overlap (fail on text)', (t) => {
                 t.equals(res.rows[0]._text, 'Main Street', '_text');
                 t.equals(res.rows[0].text, 'main st', 'text');
                 t.equals(res.rows[0].text_tokenless, 'main', 'text_tokenless');
-                t.equals(res.rows[0].source_ids, '{5,6}', 'source_ids #1');
+                t.deepEquals(res.rows[0].source_ids, ['5', '6'], 'source_ids #1');
                 t.equals(parseInt(res.rows[0].address), 1, 'address cluster id is 1');
                 t.equals(res.rows[1]._text, 'Main Street', '_text');
                 t.equals(res.rows[1].text, 'main st', 'text');
                 t.equals(res.rows[1].text_tokenless, 'main', 'text_tokenless');
-                t.equals(res.rows[1].source_ids, '{5,6,7}', 'source_ids #1');
-                t.equals(parseInt(res.rows[1].address), 2, 'address cluster id is 2');
+                t.deepEquals(res.rows[1].source_ids, ['5', '6', '7'], 'source_ids #2');
+                t.deepEquals(parseInt(res.rows[1].address), 2, 'address cluster id is 2');
 
                 pool.query(`
                     SELECT id, ST_Dump(geom) FROM address_cluster ORDER BY id ASC;
