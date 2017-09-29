@@ -1,4 +1,4 @@
-const post = require('../lib/post/dedupe').post;
+const post = require('../lib/post/dedupe-address').post;
 const test = require('tape');
 
 test('Post: Dedupe', (t) => {
