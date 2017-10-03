@@ -10,6 +10,9 @@
 
 ## Version History
 
+### v12.0.2
+- :bug: ignore address and network clusters with `NULL` text to avoid breaking `titlecase`
+
 ### v12.0.1
 
 - :arrow_up: Update carmen & simple-statistics to the latest versions
