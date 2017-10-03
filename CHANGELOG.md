@@ -10,8 +10,8 @@
 
 ## Version History
 
-### v12.0.2
-- :bug: ignore address and network clusters with `NULL` text to avoid breaking `titlecase`
+### v12.0.3
+- :bug: Ignore address and network clusters with `NULL` text to avoid breaking `titlecase`
 
 ### v12.0.1
 
