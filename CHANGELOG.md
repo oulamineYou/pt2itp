@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v12.1.0
+
+- :tada: Supporting multiple names for network clusters
+
 ### v12.0.4
 - :bug: Ignore address and network clusters with `NULL` text to avoid breaking `titlecase`
 
