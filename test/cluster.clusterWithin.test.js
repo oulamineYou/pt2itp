@@ -134,8 +134,8 @@ test('LinesStrings far away should not be clustered', (t) => {
         pool.query(`
             BEGIN;
             DROP TABLE IF EXISTS network;
-            CREATE TABLE network (id SERIAL, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, named BOOLEAN, geom GEOMETRY(LINESTRING, 4326));
-            CREATE TABLE network_cluster(ID SERIAL, text TEXT, _text TEXT, text_tokenless TEXT, geom GEOMETRY(GEOMETRY, 4326), buffer GEOMETRY(Polygon,4326), address INTEGER);
+            CREATE TABLE network (id BIGINT, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, named BOOLEAN, geom GEOMETRY(LINESTRINGZ, 4326));
+            CREATE TABLE network_cluster(ID SERIAL, text TEXT, _text TEXT, text_tokenless TEXT, geom GEOMETRY(GEOMETRYZ, 4326), buffer GEOMETRY(Polygon,4326), address INTEGER, source_ids BIGINT[]);
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -147,8 +147,8 @@ test('LinesStrings far away should not be clustered', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO network (id, segment, text, text_tokenless, _text, geom) VALUES (1, 1, 'main st', 'main', 'Main Street', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "LineString", "coordinates": [[9.50514793395996,47.13027192195532],[9.50094223022461,47.13027192195532]]}'), 4326));
-            INSERT INTO network (id, segment, text, text_tokenless, _text, geom) VALUES (2, 1, 'main st', 'main', 'Main Street', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "LineString", "coordinates": [[9.523429870605469,47.1308412556617],[9.527077674865723,47.13091424672175]]}'), 4326));
+            INSERT INTO network (id, segment, text, text_tokenless, _text, geom) VALUES (1, 1, 'main st', 'main', 'Main Street', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "LineString", "coordinates": [[9.50514793395996,47.13027192195532,1],[9.50094223022461,47.13027192195532,1]]}'), 4326));
+            INSERT INTO network (id, segment, text, text_tokenless, _text, geom) VALUES (2, 1, 'main st', 'main', 'Main Street', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "LineString", "coordinates": [[9.523429870605469,47.1308412556617,2],[9.527077674865723,47.13091424672175,2]]}'), 4326));
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -187,8 +187,8 @@ test('LinesStrings should be clustered', (t) => {
             BEGIN;
             DROP TABLE IF EXISTS network;
             DROP TABLE IF EXISTS network_cluster;
-            CREATE TABLE network (id SERIAL, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, named BOOLEAN, geom GEOMETRY(LINESTRING, 4326));
-            CREATE TABLE network_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, address INT, geom GEOMETRY(MULTILINESTRING, 4326), buffer GEOMETRY(POLYGON, 4326));
+            CREATE TABLE network (id BIGINT, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, named BOOLEAN, geom GEOMETRY(LINESTRINGZ, 4326));
+            CREATE TABLE network_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, address INT, geom GEOMETRY(MULTILINESTRINGZ, 4326), buffer GEOMETRY(POLYGON, 4326), source_ids BIGINT[]);
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -200,8 +200,8 @@ test('LinesStrings should be clustered', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO network (id, segment, text, text_tokenless, _text, geom) VALUES (1, 1, 'main st', 'main', 'Main Street', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "LineString","coordinates": [[9.516735076904297,47.13276818606133],[9.519824981689451,47.132870369814995]]}'), 4326));
-            INSERT INTO network (id, segment, text, text_tokenless,_text, geom) VALUES (2, 1, 'main st', 'main', 'Main Street', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "LineString", "coordinates": [[9.513999223709106,47.132695197545665],[9.512518644332886,47.132695197545665]]},'), 4326));
+            INSERT INTO network (id, segment, text, text_tokenless, _text, geom) VALUES (1, 1, 'main st', 'main', 'Main Street', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "LineString","coordinates": [[9.516735076904297,47.13276818606133,1],[9.519824981689451,47.132870369814995,1]]}'), 4326));
+            INSERT INTO network (id, segment, text, text_tokenless,_text, geom) VALUES (2, 1, 'main st', 'main', 'Main Street', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "LineString", "coordinates": [[9.513999223709106,47.132695197545665,2],[9.512518644332886,47.132695197545665,2]]},'), 4326));
             COMMIT;
         `, (err, res) => {
             t.error(err);

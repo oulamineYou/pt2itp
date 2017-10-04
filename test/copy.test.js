@@ -6,11 +6,11 @@ const path = require('path');
 const copy = require('../lib/copy');
 const tokenize = require('../lib/tokenize');
 
-tape('copy.js output', (t) => {
+tape('copy.js output - address', (t) => {
     let tempFile = tmp.tmpNameSync();
     copy.init({
         id: 0,
-        read: __dirname + '/fixtures/copy.sample-input.geojson',
+        read: __dirname + '/fixtures/copy.sample-input-address.geojson',
         output: tempFile,
         type: 'address',
         total: 1,
@@ -20,11 +20,36 @@ tape('copy.js output', (t) => {
     });
     copy.start(() => {
         if (process.env.UPDATE) {
-            fs.createReadStream(tempFile).pipe(fs.createWriteStream(path.resolve(__dirname, './fixtures/copy.sample-output.psv')));
+            fs.createReadStream(tempFile).pipe(fs.createWriteStream(path.resolve(__dirname, './fixtures/copy.sample-output-address.psv')));
             t.fail('updated fixture');
         }
         else
-            t.equal(fs.readFileSync(tempFile).toString(), fs.readFileSync(__dirname + '/fixtures/copy.sample-output.psv').toString(), 'output is as expected');
+            t.equal(fs.readFileSync(tempFile).toString(), fs.readFileSync(__dirname + '/fixtures/copy.sample-output-address.psv').toString(), 'output is as expected');
         t.end();
     });
 });
+
+tape('copy.js output - network', (t) => {
+    let tempFile = tmp.tmpNameSync();
+    copy.init({
+        id: 0,
+        read: __dirname + '/fixtures/copy.sample-input-network.geojson',
+        output: tempFile,
+        type: 'network',
+        total: 1,
+        map: __dirname + '/../lib/map/osmium.js',
+        solo: true,
+        error: false,
+        tokens: tokenize.createReplacer(['et'])
+    });
+    copy.start(() => {
+        if (process.env.UPDATE) {
+            fs.rename(tempFile, __dirname + '/fixtures/copy.sample-output-network.psv');
+            t.fail('updated fixture');
+        }
+        else
+            t.equal(fs.readFileSync(tempFile).toString(), fs.readFileSync(__dirname + '/fixtures/copy.sample-output-network.psv').toString(), 'output is as expected');
+        t.end();
+    });
+});
+
