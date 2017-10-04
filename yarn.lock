@@ -10,9 +10,9 @@
     node-pre-gyp "~0.6.32"
     protozero "~1.5.1"
 
-"@mapbox/carmen@24.1.6":
-  version "24.1.6"
-  resolved "https://registry.yarnpkg.com/@mapbox/carmen/-/carmen-24.1.6.tgz#5e20d50f4969efbf35f804de678d6a92c2efa99f"
+"@mapbox/carmen@24.1.8":
+  version "24.1.8"
+  resolved "https://registry.yarnpkg.com/@mapbox/carmen/-/carmen-24.1.8.tgz#6cea41520dbb7b1342d0e2d24fee2c916d383e75"
   dependencies:
     "@mapbox/carmen-cache" "0.20.0"
     "@mapbox/geojsonhint" "^2.0.1"
