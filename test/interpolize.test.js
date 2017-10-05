@@ -157,7 +157,12 @@ test('Interpolize', (t) => {
                 ]
             }
         },
-        number:  ["8","10","9","11"]
+        number:  [
+            { num: "8", output: true },
+            { num: "10", output: true },
+            { num: "9", output: true },
+            { num:"11", output: true }
+        ]
     }];
 
     let res = interpolize('Battleridge Place', segs);
@@ -231,7 +236,17 @@ test('Interpolize - Continious network - unique address duplicate num', (t) => {
                 ]
             }
         },
-        number: [ 2, 4, 6, 8, 4, 6, 8, 10, 12]
+        number:  [
+            { num: "2", output: true },
+            { num: "4", output: true },
+            { num: "6", output: true },
+            { num:"8", output: true },
+            { num: "4", output: true },
+            { num: "6", output: true },
+            { num: "8", output: true },
+            { num: "10", output: true },
+            { num: "12", output: true }
+        ]
     }];
 
     let res = interpolize('Complicated Ave', segs, { debug: true });
@@ -284,7 +299,17 @@ test('Interpolize - Continious network - unique address duplicate num - differen
                 ]
             }
         },
-        number: [ 2, 4, 6, 8, 10, 8, 6, 4, 2]
+        number:  [
+            { num: "2", output: true },
+            { num: "4", output: true },
+            { num: "6", output: true },
+            { num:"8", output: true },
+            { num: "10", output: true },
+            { num: "8", output: true },
+            { num: "6", output: true },
+            { num: "4", output: true },
+            { num: "2", output: true }
+        ]
     }];
 
     let res = interpolize('Complicated Ave', segs, { debug: true });
@@ -332,7 +357,13 @@ test('Interpolize - Ignore addresses above (average * 5) away from line', (t) =>
                 ]
             }
         },
-        number: ["8","10","12","14","16000"]
+        number:  [
+            { num: "8", output: true },
+            { num: "10", output: true },
+            { num: "12", output: true },
+            { num:"14", output: true },
+            { num: "16000", output: true }
+        ]
     }];
 
     let res = interpolize('Hill Top Road', segs, { debug: true });
@@ -375,7 +406,14 @@ test('Interpolize - Addr past line end', (t) => {
                 ]
             }
         },
-        number: ["8","10","9","11","13","12"]
+        number:  [
+            { num: "8", output: true },
+            { num: "10", output: true },
+            { num: "9", output: true },
+            { num:"11", output: true },
+            { num: "13", output: true },
+            { num: "12", output: true }
+        ]
     }];
 
     let res = interpolize('Battleridge Place', segs, { debug: true });
@@ -418,7 +456,14 @@ test('Interpolize - Addr past line end - opposite', (t) => {
                 ]
             }
         },
-        number: ["8","10","9","11","13","12"]
+        number:  [
+            { num: "8", output: true },
+            { num: "10", output: true },
+            { num: "9", output: true },
+            { num:"11", output: true },
+            { num: "13", output: true },
+            { num: "12", output: true }
+        ]
     }];
 
     let res = interpolize('Battleridge Place', segs, { debug: true });
@@ -460,7 +505,12 @@ test('Interpolize - Addr past line end - bend', (t) => {
                 ]
             }
         },
-        number: [ "2", "4", "1", "3"]
+        number:  [
+            { num: "2", output: true },
+            { num: "4", output: true },
+            { num: "1", output: true },
+            { num:"3", output: true }
+        ]
     }];
 
     let res = interpolize('Battleridge Place', segs, { debug: true });
@@ -502,7 +552,12 @@ test('Interpolize - Addr past line end - bend - reverse', (t) => {
                 ]
             }
         },
-        number: [ "2", "4", "1", "3"]
+        number:  [
+            { num: "2", output: true },
+            { num: "4", output: true },
+            { num: "1", output: true },
+            { num:"3", output: true }
+        ]
     }];
 
     let res = interpolize('Battleridge Place', segs, { debug: true });
@@ -558,7 +613,19 @@ test('Interpolize - Hooked Road', (t) => {
                 ]
             }
         },
-        number: [ "2", "4", "6", "8", "10", "12", "1", "3", "5", "7", "9" ]
+        number:  [
+            { num: "2", output: true },
+            { num: "4", output: true },
+            { num: "6", output: true },
+            { num: "8", output: true },
+            { num: "10", output: true },
+            { num: "12", output: true },
+            { num: "1", output: true },
+            { num: "3", output: true },
+            { num: "5", output: true },
+            { num: "7", output: true },
+            { num: "9", output: true }
+        ]
     }];
 
     let res = interpolize('Tommy Bell Pl', segs, { debug: true });
