@@ -44,7 +44,7 @@ tape('copy.js output - network', (t) => {
     });
     copy.start(() => {
         if (process.env.UPDATE) {
-            fs.rename(tempFile, __dirname + '/fixtures/copy.sample-output-network.psv');
+            fs.createReadStream(tempFile).pipe(fs.createWriteStream(path.resolve(__dirname, './fixtures/copy.sample-output-network.psv')));
             t.fail('updated fixture');
         }
         else
