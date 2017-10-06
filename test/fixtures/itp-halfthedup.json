@@ -9,12 +9,12 @@
         "carmen:addressnumber": [
             null,
             [
-                2,
-                4,
-                6,
-                8,
-                10,
-                12
+                "2",
+                "4",
+                "6",
+                "8",
+                "10",
+                "12"
             ]
         ],
         "carmen:rangetype": "tiger",
