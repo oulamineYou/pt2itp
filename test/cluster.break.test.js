@@ -32,7 +32,55 @@ test('cluster#break - simple', (t) => {
                 ]
             }
         },
-        number: [1,2,3,4,5,6,7,8,8,7,6,5,4,3,2,1],
+        number: [{
+            num: "1",
+            output: true
+        },{
+            num: "2",
+            output: true
+        },{
+            num: "3",
+            output: true
+        },{
+            num: "4",
+            output: true
+        },{
+            num: "5",
+            output: true
+        },{
+            num: "6",
+            output: true
+        },{
+            num: "7",
+            output: true
+        },{
+            num: "8",
+            output: true
+        },{
+            num: "8",
+            output: true
+        },{
+            num: "7",
+            output: true
+        },{
+            num: "6",
+            output: true
+        },{
+            num: "5",
+            output: true
+        },{
+            num: "4",
+            output: true
+        },{
+            num: "3",
+            output: true
+        },{
+            num: "2",
+            output: true
+        },{
+            num: "1",
+            output: true
+        }],
         network: {
             "type": "Feature",
             "properties": {},
