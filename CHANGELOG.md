@@ -10,6 +10,12 @@
 
 ## Version History
 
+### v12.2.0
+
+- :tada: Add support for ephemeral points - points which are used to calculate the ITP segment but not output in the final result
+- :pencil2: Update README with all possible address properties
+- :white_check_mark: Increase coverage of unit module and add tests for ephemeral points
+
 ### v12.1.0
 
 - :tada: Supporting multiple names for network clusters
