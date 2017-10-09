@@ -14,7 +14,7 @@
     "pretest": "echo 'DROP DATABASE pt_test; CREATE DATABASE pt_test;' | psql -U postgres && echo 'CREATE EXTENSION postgis' | psql -U postgres pt_test"
   },
   "author": "Nicholas Ingalls <nicholas.ingalls@gmail.com>",
-  "license": "GPL-3.0",
+  "license": "BSD-2-Clause ",
   "dependencies": {
     "@mapbox/carmen": "24.1.8",
     "@mapbox/geocoder-abbreviations": "^2.0.0",
