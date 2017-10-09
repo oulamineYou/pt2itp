@@ -98,7 +98,8 @@ test('Osmium', (t) => {
             "@id": 3,
             name: 'name',
             loc_name: 'loc_name',
-            alt_name: 'alt_name'
+            alt_name: 'alt_name',
+            ref: 'ref'
         },
         geometry: {
             type: 'LineString',
@@ -107,7 +108,8 @@ test('Osmium', (t) => {
     }), [
         { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'name' }, type: 'Feature' },
         { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'loc_name' }, type: 'Feature' },
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'alt_name' }, type: 'Feature' }], 'AltNames');
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'alt_name' }, type: 'Feature' },
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'ref' }, type: 'Feature' }], 'AltNames');
 
     t.deepEquals(map({
         type: 'Feature',
