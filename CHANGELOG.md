@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v12.5.0
+
+- :rocket: `NOT MATCHED TO NETWORK` Errors are now treated as a single error per cluster instead of an individual error per address
+
 ### v12.4.0
 
 - :rocket: Move testing ephemeral points behind a flag to avoid horrible passrates
