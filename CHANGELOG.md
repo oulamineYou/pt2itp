@@ -14,6 +14,10 @@
 
 - :rocket: Add Synonym comparison support to `test` mode to cut down on false positives
 
+### v12.2.1
+
+- :bug: Fix `test` mode which was broken with the new `Units` format
+
 ### v12.2.0
 
 - :tada: Add support for ephemeral points - points which are used to calculate the ITP segment but not output in the final result
