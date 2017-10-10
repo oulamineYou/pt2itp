@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v12.4.0
+
+- :rocket: Move testing ephemeral points behind a flag to avoid horrible passrates
+
 ### v12.3.0
 
 - :rocket: Add Synonym comparison support to `test` mode to cut down on false positives
