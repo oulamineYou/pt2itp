@@ -16,25 +16,22 @@ jobs:
             - run:
                 name: "Update APT Cache & Install latest yarn"
                 command: "sudo apt-get -y update && sudo apt-get install -y yarn"
-            - run:
-                name: "Locked NPM Version"
-                command: "source ~/.bashrc && nvm install 6.10.2 && nvm use 6.10.2 && nvm alias default 6.10.2"
 
             - checkout
 
             - run:
                 name: "yarn install"
-                command: "source ~/.bashrc && yarn install"
+                command: "yarn install"
             - run:
                 name: "yarn lint"
-                command: "source ~/.bashrc && yarn run lint"
+                command: "yarn run lint"
             - run:
                 name: "yarn doc"
-                command: "source ~/.bashrc && yarn run doc"
+                command: "yarn run doc"
             - run:
                 name: "yarn pretest"
-                command: "source ~/.bashrc && yarn run pretest"
+                command: "yarn run pretest"
             - run:
                 name: "yarn run coverage"
-                command: "source ~/.bashrc && yarn run coverage"
+                command: "yarn run coverage"
                 no_output_timeout: 12000
