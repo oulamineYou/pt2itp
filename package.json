@@ -11,7 +11,7 @@
     "coverage": "istanbul cover tape test/*.js && coveralls < ./coverage/lcov.info",
     "doc": "./node_modules/documentation/bin/documentation.js lint ./lib/**",
     "test": "tape test/*.test.js",
-    "pretest": "echo 'DROP DATABASE pt_test; CREATE DATABASE pt_test;' | psql postgres://postgres:@localhost:5432 && echo 'CREATE EXTENSION postgis' | psql postgres://postgres:@localhost:5432 pt_test"
+    "pretest": "echo 'DROP DATABASE pt_test; CREATE DATABASE pt_test;' | psql postgres://postgres:@localhost:5432 && echo 'CREATE EXTENSION postgis;' | psql postgres://postgres:@localhost:5432/pt_test"
   },
   "author": "Nicholas Ingalls <nicholas.ingalls@gmail.com>",
   "license": "BSD-2-Clause ",
