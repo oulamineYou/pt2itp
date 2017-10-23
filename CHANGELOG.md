@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v12.6.1
+
+- :bug: Skip test result if it returns `undefined`
+
 ### v12.6.0
 
 - :tada: Introduce `testcsv` mode for testing 3rd party data against a built index
