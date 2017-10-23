@@ -18,6 +18,19 @@
 - :rocket: Use node-native copy streams to avoid issues with server/client copies for remote databases (unblocks use of circle2.0)
 - :white_check_mark: Migrate to CircleCI 2.0
 
+### v 12.5.3
+
+- :bug: remove "record separator" control character during `convert`
+
+### 12.5.2
+
+- :rocket: Fix double quote escaping in `test` mode output
+
+### 12.5.1
+
+- :rocket: Make use of `ref` property from network data to increase match potential
+- :rocket: Changing network text values for US federal highways (eg "US 13") and US state highways (eg "PA 6") to "ROUTE###" to match typical address-writing practice.
+
 ### v12.5.0
 
 - :rocket: `NOT MATCHED TO NETWORK` Errors are now treated as a single error per cluster instead of an individual error per address
