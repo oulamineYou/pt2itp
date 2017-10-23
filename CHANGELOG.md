@@ -10,6 +10,14 @@
 
 ## Version History
 
+### v12.6.0
+
+- :tada: Introduce `testcsv` mode for testing 3rd party data against a built index
+- :white_check_mark: Add tests related to postgres COPYing
+- :arrow_up: Update to `coveralls@3.x.x` and `csv-stringify@2.x.x` as well as misc package bumps
+- :rocket: Use node-native copy streams to avoid issues with server/client copies for remote databases (unblocks use of circle2.0)
+- :white_check_mark: Migrate to CircleCI 2.0
+
 ### v12.5.0
 
 - :rocket: `NOT MATCHED TO NETWORK` Errors are now treated as a single error per cluster instead of an individual error per address
