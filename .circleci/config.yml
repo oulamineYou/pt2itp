@@ -2,7 +2,14 @@ version: 2
 
 jobs:
     build:
-        machine: true
+        docker:
+            image:
+                - circleci/node:6.10.3
+                - mdillon/postgis:9.6
+                    environment:
+                        POSTGRES_USER: postgres
+                        POSTGRES_DB: pt_test
+
 
         steps:
             - run:
@@ -10,7 +17,7 @@ jobs:
                 command: "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && echo 'deb https://dl.yarnpkg.com/debian/ stable main' | sudo tee /etc/apt/sources.list.d/yarn.list"
             - run:
                 name: "Update APT Cache & Install latest yarn"
-                command: "sudo apt-get -y update && sudo apt-get install -y yarn postgres postgis"
+                command: "sudo apt-get -y update && sudo apt-get install -y yarn && service postgresql start"
             - run:
                 name: "Locked NPM Version"
                 command: "source ~/.bashrc && nvm install 6.10.2 && nvm use 6.10.2 && nvm alias default 6.10.2"
