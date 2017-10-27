@@ -43,8 +43,6 @@ test('map - db error', (t) => {
     });
 });
 
-// new test
-// runs map.js
 test('map - cardinal clustering', (t) => {
     worker({
         'in-address': './test/fixtures/cardinal-address.geojson',
@@ -64,7 +62,18 @@ test('map - cardinal clustering', (t) => {
 
             feat = JSON.parse(line);
 
-            // things to check
+            //TODO PT2ITP is not deterministic and subsequent runs can change the output value based on unordered operations.
+            //      For these tests to function properly a full deterministic quest will have to be pursued. We should do this
+            //if (feat.properties['carmen:text'] === 'Muscat Street') checkFixture(feat, 'muscat-st');
+            //if (feat.properties['carmen:text'] === 'Park Road,Parsi Road') checkFixture(feat, 'park-rd');
+            //if (feat.properties['carmen:text'] === 'Teck Lim Road') checkFixture(feat, 'teck-lim');
+            //if (feat.properties['carmen:text'] === 'Jalan Kelempong') checkFixture(feat, 'jalam-kelempong');
+            //if (feat.properties['carmen:text'] === 'Tomlinson Road,Tomlison Road') checkFixture(feat, 'tomlinson');
+            //if (feat.properties['carmen:text'] === 'Jalan Sejarah') checkFixture(feat, 'jalan-sejrah');
+            //if (feat.properties['carmen:text'] === 'Changi South Street 3') checkFixture(feat, 'changi');
+            //if (feat.properties['carmen:text'] === 'Lorong 21a Geylang') checkFixture(feat, 'lorong');
+            //if (feat.properties['carmen:text'] === 'Ang Mo Kio Industrial Park 3') checkFixture(feat, 'ang-mo');
+            //if (feat.properties['carmen:text'] === 'De Souza Avenue') checkFixture(feat, 'de-souza');
         });
 
         rl.on('error', t.error);
@@ -73,28 +82,8 @@ test('map - cardinal clustering', (t) => {
             fs.unlinkSync('/tmp/itp.geojson');
             t.end();
         });
-
-        /**
-         * Standard Fixture compare/update
-         * @param {Object} res returned result
-         * @param {string} fixture Path to expected result file
-         */
-        function checkFixture(res, fixture) {
-            t.ok(res.id);
-            delete res.id;
-
-            let known = JSON.parse(fs.readFileSync(path.resolve(__dirname, `./fixtures/cardinal-${fixture}`)));
-
-            t.deepEquals(res, known);
-
-            if (process.env.UPDATE) {
-                t.fail();
-                fs.writeFileSync(path.resolve(__dirname, `./fixtures/cardinal-${fixture}`), JSON.stringify(res, null, 4));
-            }
-        }
     });
 });
-
 
 test('drop cardinal database', (t) => {
     let pool = new pg.Pool({
@@ -136,8 +125,6 @@ test.skip('map - good run', (t) => {
             if (!line) return;
 
             feat = JSON.parse(line);
-
-            console.log('test feat:', feat.properties);
 
             //TODO PT2ITP is not deterministic and subsequent runs can change the output value based on unordered operations.
             //      For these tests to function properly a full deterministic quest will have to be pursued. We should do this
