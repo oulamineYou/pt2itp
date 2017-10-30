@@ -94,7 +94,29 @@ test('map - cardinal clustering', (t) => {
     });
 });
 
-test.skip('map - good run', (t) => {
+test('drop cardinal database', (t) => {
+    let pool = new pg.Pool({
+        max: 10,
+        user: 'postgres',
+        database: 'pt_test',
+        idleTimeoutMillis: 30000
+    });
+
+    pool.query(`
+        BEGIN;
+        DROP TABLE address;
+        DROP TABLE address_cluster;
+        DROP TABLE network;
+        DROP TABLE network_cluster;
+        COMMIT;
+    `, (err) => {
+        t.error(err);
+        pool.end();
+        t.end();
+    });
+});
+
+test('map - good run', (t) => {
     worker({
         'in-address': './test/fixtures/sg-address.geojson',
         'in-network': './test/fixtures/sg-network.geojson',
@@ -152,28 +174,6 @@ test.skip('map - good run', (t) => {
                 fs.writeFileSync(path.resolve(__dirname, `./fixtures/sg-${fixture}`), JSON.stringify(res, null, 4));
             }
         }
-    });
-});
-
-test.skip('drop cardinal database', (t) => {
-    let pool = new pg.Pool({
-        max: 10,
-        user: 'postgres',
-        database: 'pt_test',
-        idleTimeoutMillis: 30000
-    });
-
-    pool.query(`
-        BEGIN;
-        DROP TABLE address;
-        DROP TABLE address_cluster;
-        DROP TABLE network;
-        DROP TABLE network_cluster;
-        COMMIT;
-    `, (err) => {
-        t.error(err);
-        pool.end();
-        t.end();
     });
 });
 
