@@ -59,21 +59,7 @@ test('map - cardinal clustering', (t) => {
 
         rl.on('line', (line) => {
             if (!line) return;
-
-            feat = JSON.parse(line);
-
-            //TODO PT2ITP is not deterministic and subsequent runs can change the output value based on unordered operations.
-            //      For these tests to function properly a full deterministic quest will have to be pursued. We should do this
-            //if (feat.properties['carmen:text'] === 'Muscat Street') checkFixture(feat, 'muscat-st');
-            //if (feat.properties['carmen:text'] === 'Park Road,Parsi Road') checkFixture(feat, 'park-rd');
-            //if (feat.properties['carmen:text'] === 'Teck Lim Road') checkFixture(feat, 'teck-lim');
-            //if (feat.properties['carmen:text'] === 'Jalan Kelempong') checkFixture(feat, 'jalam-kelempong');
-            //if (feat.properties['carmen:text'] === 'Tomlinson Road,Tomlison Road') checkFixture(feat, 'tomlinson');
-            //if (feat.properties['carmen:text'] === 'Jalan Sejarah') checkFixture(feat, 'jalan-sejrah');
-            //if (feat.properties['carmen:text'] === 'Changi South Street 3') checkFixture(feat, 'changi');
-            //if (feat.properties['carmen:text'] === 'Lorong 21a Geylang') checkFixture(feat, 'lorong');
-            //if (feat.properties['carmen:text'] === 'Ang Mo Kio Industrial Park 3') checkFixture(feat, 'ang-mo');
-            //if (feat.properties['carmen:text'] === 'De Souza Avenue') checkFixture(feat, 'de-souza');
+            console.log('ok - line:', line);
         });
 
         rl.on('error', t.error);
