@@ -53,43 +53,44 @@ test('map - cardinal clustering', (t) => {
     }, (err, res) => {
         t.error(err);
 
+        let containsClusterAddresses = false;
+        let containsFreeRadicalAddresses = false;
+
         rl = ReadLine.createInterface({
             input: fs.createReadStream('/tmp/itp.geojson')
         });
 
         rl.on('line', (line) => {
             if (!line) return;
-            console.log('ok - cp line:', line);
+
+            feat = JSON.parse(line);
+
+            // TODO: fix names once the tests+freeRadicals code work
+            const clusterAddresses = [ 1, 5, 9, 11, 15 ];
+            const freeRadicalAddresses = [ 3, 7, 13 ];
+
+            if (feat.properties['carmen:addressnumber'] && feat.properties['carmen:addressnumber'][1]) {
+
+                let addresses = feat.properties['carmen:addressnumber'][1];
+
+                for (numCluster in clusterAddresses) {
+                    if (addresses.indexOf(numCluster) != -1) containsClusterAddresses = true;
+                }
+
+                for (numFree in freeRadicalAddresses) {
+                    if (addresses.indexOf(numFree) != -1) containsClusterAddresses = true;
+                }
+            }
         });
 
         rl.on('error', t.error);
 
         rl.on('close', () => {
+            t.equals(containsClusterAddresses, true, 'ok - contains at least one cluster address');
+            t.equals(containsFreeRadicalAddresses, true, 'ok - contains at least one free radical address');
             fs.unlinkSync('/tmp/itp.geojson');
             t.end();
         });
-    });
-});
-
-test('drop cardinal database', (t) => {
-    let pool = new pg.Pool({
-        max: 10,
-        user: 'postgres',
-        database: 'pt_test',
-        idleTimeoutMillis: 30000
-    });
-
-    pool.query(`
-        BEGIN;
-        DROP TABLE address;
-        DROP TABLE address_cluster;
-        DROP TABLE network;
-        DROP TABLE network_cluster;
-        COMMIT;
-    `, (err) => {
-        t.error(err);
-        pool.end();
-        t.end();
     });
 });
 
@@ -154,7 +155,29 @@ test.skip('map - good run', (t) => {
     });
 });
 
-test.skip('drop good-run database', (t) => {
+test.skip('drop cardinal database', (t) => {
+    let pool = new pg.Pool({
+        max: 10,
+        user: 'postgres',
+        database: 'pt_test',
+        idleTimeoutMillis: 30000
+    });
+
+    pool.query(`
+        BEGIN;
+        DROP TABLE address;
+        DROP TABLE address_cluster;
+        DROP TABLE network;
+        DROP TABLE network_cluster;
+        COMMIT;
+    `, (err) => {
+        t.error(err);
+        pool.end();
+        t.end();
+    });
+});
+
+test('drop good-run database', (t) => {
     let pool = new pg.Pool({
         max: 10,
         user: 'postgres',
