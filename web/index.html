@@ -40,6 +40,10 @@
             background: #f8f8f8;
             padding: 1%;
         }
+
+        #alertBox {
+          visibility: hidden;
+        }
     </style>
 </head>
 <body class='relative'>
@@ -50,7 +54,16 @@
             <div class='action-search-clear cursor-pointer absolute top right flex-parent flex-parent--center-cross flex-parent--center-main w36 h36'><svg class='icon'><use xlink:href='#icon-close'></use></svg></div>
         </div>
 
-        <div class='col col--4 col--8-mm'>
+      <div class='col col--2 col--4-mm'>
+        <div id='alertBox' class='inline-block bg-orange-faint color-orange-dark px6 py6 txt-sm txt-bold round-full'>
+          <span id='alertMsg'> Heads up! Long error message incoming </span>
+          <button>
+            <svg class='align-middle icon w15 h15 inline-block ml3'><use xlink:href='#icon-close'></use></svg>
+          </button>
+        </div>
+      </div>
+
+        <div class='col col--2 col--4-mm'>
             <button id='jsonButton' class='fr btn h36 round bg-purple transition bg-purple-dark-on-hover'><svg class='icon'><use xlink:href='#icon-code'/></svg></button>
         </div>
     </div>
@@ -197,25 +210,25 @@
             $.get('/api/coords/'+coords[0]+','+coords[1], (res) => {
                 if (!res) {
                     $search.val('');
-                    return alert('No feature found!');
+                    return showAlert('No feature found!');
                 }
                 set(res, opts);
             }).fail(() => {
                 $search.val('');
-                return alert('Error fetching clicked feature!');
+                return showAlert('Error fetching clicked feature!');
             });
         }
 
         function getID(val) {
             if (isNaN(Number(val))) {
                 $search.val('');
-                return alert('ID must be numeric');
+                return showAlert('ID must be numeric!');
             }
 
             $.get('/api/id/'+val, (res) => {
                 if (!res) {
                     $search.val('');
-                    return alert('Error fetching id!');
+                    return showAlert('Error fetching id!');
                 }
 
                 set(res, {
@@ -223,7 +236,7 @@
                 });
             }).fail(() => {
                 $search.val('');
-                return alert('Error fetching id!');
+                return showAlert('Error fetching id!');
             });
         }
 
@@ -325,6 +338,20 @@
             $('#json-result').html('');
             $('#json-default').removeClass('none');
         }
+
+        //Alert Dialogue
+        function showAlert(alert) {
+          $('#alertMsg').html(alert);
+          if ($('#alertBox').css('visibility') === 'hidden') {
+            $('#alertBox').css('visibility', 'visible');
+          } else {
+            $('#alertBox').fadeOut(50).fadeIn(50);
+          }
+        }
+
+        $('#alertBox').on('click', function() {
+          $('#alertBox').css('visibility', 'hidden');
+        })
 
         //JSON Dialogue
         $('#jsonButton').on('click', function(event) {
