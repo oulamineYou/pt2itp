@@ -59,7 +59,7 @@ test('map - cardinal clustering', (t) => {
 
         rl.on('line', (line) => {
             if (!line) return;
-            console.log('ok - line:', line);
+            console.log('ok - cp line:', line);
         });
 
         rl.on('error', t.error);
