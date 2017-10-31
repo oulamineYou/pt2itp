@@ -15,7 +15,7 @@ const pool = new pg.Pool({
 test('Drop tables if exist', (t) => {
     pool.query(`
         BEGIN;
-        DROP TABLE IF EXISTS address_cluster;
+        DROP TABLE IF EXISTS address_orphan_cluster;
         DROP TABLE IF EXISTS address;
         COMMIT;
     `, (err, res) => {
@@ -51,7 +51,7 @@ test('orphan.init with valid options', (t) => {
 // run them through orphan
 // should output all orphan addresses
 test('orphan.address', (t) => {
-    const orphan = new Orphan(pool, {});
+    const orphan = new Orphan(pool, {}, './fixtures/orphan-output.geojson');
     const popQ = Queue(1);
 
     //CREATE pt2itp TABLES
@@ -59,7 +59,7 @@ test('orphan.address', (t) => {
         pool.query(`
             BEGIN;
             CREATE TABLE address (id SERIAL, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, number INT, geom GEOMETRY(POINTZ, 4326), netid BIGINT);
-            CREATE TABLE address_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, number TEXT, geom GEOMETRY(GEOMETRYZ, 4326));
+            CREATE TABLE address_orphan_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, number TEXT, geom GEOMETRY(GEOMETRYZ, 4326));
             COMMIT;
         `, (err, res) => {
             t.error(err, 'ok - created tables');
@@ -96,7 +96,7 @@ test('orphan.address', (t) => {
     // TODO: fixup test once orphan.js approximately working
     popQ.defer((done) => {
         pool.query(`
-            SELECT id, _text FROM address_cluster ORDER BY id;
+            SELECT id, _text FROM address_orphan_cluster ORDER BY id;
         `, (err, res) => {
             t.error(err);
 
