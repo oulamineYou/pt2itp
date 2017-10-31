@@ -1,9 +1,13 @@
 const Orphan = require('../lib/orphan');
+const Post = require('../lib/post');
 
 const test = require('tape');
 const fs = require('fs');
+const path = require('path');
 const pg = require('pg');
 const Queue = require('d3-queue').queue;
+const readline = require('readline');
+const output = fs.createWriteStream(path.resolve(__dirname, '../test/fixtures/orphan-output.geojson'));
 
 const pool = new pg.Pool({
     max: 10,
@@ -45,16 +49,12 @@ test('orphan.init with valid options', (t) => {
     t.end();
 });
 
-
-// start up a new default orphan
-// initialize some adopted addresses, some orphan addresses
-// run them through orphan
-// should output all orphan addresses
 test('orphan.address', (t) => {
-    const orphan = new Orphan(pool, {}, './fixtures/orphan-output.geojson');
+    const post = new Post();
+    const orphan = new Orphan(pool, {}, output, post);
     const popQ = Queue(1);
 
-    //CREATE pt2itp TABLES
+    // create pt2itp tables
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
@@ -67,7 +67,7 @@ test('orphan.address', (t) => {
         });
     });
 
-    //POPULATE ADDRESS
+    // populate address
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
@@ -92,17 +92,16 @@ test('orphan.address', (t) => {
         });
     });
 
-    // check output
-    // TODO: fixup test once orphan.js approximately working
+    // check address_orphan_cluster
     popQ.defer((done) => {
         pool.query(`
-            SELECT id, _text FROM address_orphan_cluster ORDER BY id;
+            SELECT _text FROM address_orphan_cluster ORDER BY _text;
         `, (err, res) => {
             t.error(err);
 
             t.equals(res.rows.length, 2, 'ok - correct number of orphans');
-            t.deepEquals(res.rows[1], { id: '4', _text: 'Main Street'});
-            t.deepEquals(res.rows[2], { id: '5', _text: 'Fake Avenue'});
+            t.deepEquals(res.rows[0], {_text: 'Fake Avenue'}, 'ok - Fake Ave orphaned');
+            t.deepEquals(res.rows[1], {_text: 'Main Street'}, 'ok - Main St orphaned');
             return done();
         });
     });
@@ -113,12 +112,36 @@ test('orphan.address', (t) => {
         pool.query(`
             BEGIN;
             DROP TABLE address;
-            DROP TABLE address_cluster;
+            DROP TABLE address_orphan_cluster;
             COMMIT;
         `, (err, res) => {
             t.error(err, 'ok - cleaned up test tables');
+            output.end();
             t.end();
         });
+    });
+});
+
+test('orphan output', (t) => {
+    let counter = 0;
+    const orphans = {
+        'Main Street': [['3','4']],
+        'Fake Avenue': [['5']]
+    };
+
+    const rl = readline.createInterface({
+        input : fs.createReadStream(path.resolve(__dirname, '../test/fixtures/orphan-output.geojson')),
+    })
+    rl.on('line', (line) => {
+        if (!line) return;
+        counter++;
+        let feat = JSON.parse(line);
+        t.deepEquals(feat.properties["carmen:addressnumber"], orphans[feat.properties["carmen:text"]], 'ok - orphan has correct addresses');
+    })
+
+    rl.on('close', () => {
+        t.equals(counter, 2, 'ok - output had correct number of orphan clusters');
+        t.end();
     });
 });
 
