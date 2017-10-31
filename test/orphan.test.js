@@ -62,7 +62,7 @@ test('orphan.address', (t) => {
             CREATE TABLE address_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, number TEXT, geom GEOMETRY(GEOMETRYZ, 4326));
             COMMIT;
         `, (err, res) => {
-            t.error(err);
+            t.error(err, 'ok - created tables');
             return done();
         });
     });
@@ -79,28 +79,30 @@ test('orphan.address', (t) => {
             INSERT INTO address (id, segment, text, text_tokenless, _text, number, geom, netid) VALUES (5, 1, 'fake av', 'fake', 'Fake Avenue', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-85.25390625,52.908902047770255, 5] }'), 4326), NULL);
             COMMIT;
         `, (err, res) => {
-            t.error(err);
+            t.error(err, 'ok - added addresses to table');
             return done();
         });
     });
 
+    // call orphan.address
     popQ.defer((done) => {
-        orphan.address(1, (err) => {
+        orphan.address((err) => {
             t.error(err);
             return done();
         });
     });
 
+    // check output
+    // TODO: fixup test once orphan.js approximately working
     popQ.defer((done) => {
         pool.query(`
-            SELECT text, text_tokenless, ST_AsGeoJSON(geom)::JSON AS geom FROM address_cluster ORDER BY ST_NumGeometries(geom);
+            SELECT id, _text FROM address_cluster ORDER BY id;
         `, (err, res) => {
             t.error(err);
 
-            t.equals(res.rows.length, 3);
-            t.deepEquals(res.rows[0], { geom: {"type":"MultiPoint","coordinates":[[-85.25390625,52.9089020477703,5]]}, text: 'fake av', text_tokenless: 'fake' }, 'fake av');
-            t.deepEquals(res.rows[1], { geom: {"type":"MultiPoint","coordinates":[[-105.46875,56.3652501368561,3],[-105.46875,56.3652501368561,4]]}, text: 'main st', text_tokenless: 'main' });
-            t.deepEquals(res.rows[2], { geom: { coordinates: [ [ -66.97265625, 43.9611906389202, 1 ], [ -66.97265625, 43.9611906389202, 2 ], [ -66.97265625, 43.9611906389202, 6 ] ], type: 'MultiPoint' }, text: 'main st', text_tokenless: 'main' });
+            t.equals(res.rows.length, 2, 'ok - correct number of orphans');
+            t.deepEquals(res.rows[1], { id: '4', _text: 'Main Street'});
+            t.deepEquals(res.rows[2], { id: '5', _text: 'Fake Avenue'});
             return done();
         });
     });
@@ -114,7 +116,7 @@ test('orphan.address', (t) => {
             DROP TABLE address_cluster;
             COMMIT;
         `, (err, res) => {
-            t.error(err);
+            t.error(err, 'ok - cleaned up test tables');
             t.end();
         });
     });
