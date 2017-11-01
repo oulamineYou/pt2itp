@@ -1,5 +1,6 @@
 const Orphan = require('../lib/orphan');
 const Post = require('../lib/post');
+const Index = require('../lib/index');
 
 const test = require('tape');
 const fs = require('fs');
@@ -16,20 +17,15 @@ const pool = new pg.Pool({
     idleTimeoutMillis: 30000
 });
 
-test('Drop tables if exist', (t) => {
-    pool.query(`
-        BEGIN;
-        DROP TABLE IF EXISTS address_orphan_cluster;
-        DROP TABLE IF EXISTS address;
-        COMMIT;
-    `, (err, res) => {
+const index = new Index(pool);
+
+test('Drop/Init Database', (t) => {
+    index.init((err, res) => {
         t.error(err);
         t.end();
     });
 });
 
-// test orphan construction
-// start up an orphan with some arguments, check for the correct error messsages
 test.skip('orphan.init with invalid options', (t) => {
     // can't 'catch' this because it's a console.error :(
     try {
@@ -54,29 +50,16 @@ test('orphan.address', (t) => {
     const orphan = new Orphan(pool, {}, output, post);
     const popQ = new Queue(1);
 
-    // create pt2itp tables
-    popQ.defer((done) => {
-        pool.query(`
-            BEGIN;
-            CREATE TABLE address (id SERIAL, segment BIGINT, text TEXT, text_tokenless TEXT, _text TEXT, number INT, geom GEOMETRY(POINTZ, 4326), netid BIGINT);
-            CREATE TABLE address_orphan_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, number TEXT, geom GEOMETRY(GEOMETRYZ, 4326));
-            COMMIT;
-        `, (err, res) => {
-            t.error(err, 'ok - created tables');
-            return done();
-        });
-    });
-
     // populate address
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO address (id, segment, text, text_tokenless, _text, number, geom, netid) VALUES (1, 1, 'main st se', 'main', 'Main Street SE', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 1] }'), 4326), 1);
-            INSERT INTO address (id, segment, text, text_tokenless, _text, number, geom, netid) VALUES (2, 1, 'main st se', 'main', 'Main Street SE', 12, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 2] }'), 4326), 1);
-            INSERT INTO address (id, segment, text, text_tokenless, _text, number, geom, netid) VALUES (6, 1, 'main st se', 'main', 'Main Street SE', 14, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 6] }'), 4326), 1);
-            INSERT INTO address (id, segment, text, text_tokenless, _text, number, geom, netid) VALUES (3, 1, 'main st', 'main', 'Main Street', 13, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 3] }'), 4326), NULL);
-            INSERT INTO address (id, segment, text, text_tokenless, _text, number, geom, netid) VALUES (4, 1, 'main st', 'main', 'Main Street', 15, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 4] }'), 4326), NULL);
-            INSERT INTO address (id, segment, text, text_tokenless, _text, number, geom, netid) VALUES (5, 1, 'fake av', 'fake', 'Fake Avenue', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-85.25390625,52.908902047770255, 5] }'), 4326), NULL);
+            INSERT INTO address (id, text, text_tokenless, _text, number, geom, netid) VALUES (1, 'main st se', 'main', 'Main Street SE', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 1] }'), 4326), 1);
+            INSERT INTO address (id, text, text_tokenless, _text, number, geom, netid) VALUES (2, 'main st se', 'main', 'Main Street SE', 12, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 2] }'), 4326), 1);
+            INSERT INTO address (id, text, text_tokenless, _text, number, geom, netid) VALUES (6, 'main st se', 'main', 'Main Street SE', 14, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 6] }'), 4326), 1);
+            INSERT INTO address (id, text, text_tokenless, _text, number, geom, netid) VALUES (3, 'main st', 'main', 'Main Street', 13, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 3] }'), 4326), NULL);
+            INSERT INTO address (id, text, text_tokenless, _text, number, geom, netid) VALUES (4, 'main st', 'main', 'Main Street', 15, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 4] }'), 4326), NULL);
+            INSERT INTO address (id, text, text_tokenless, _text, number, geom, netid) VALUES (5, 'fake av', 'fake', 'Fake Avenue', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-85.25390625,52.908902047770255, 5] }'), 4326), NULL);
             COMMIT;
         `, (err, res) => {
             t.error(err, 'ok - added addresses to table');
@@ -108,17 +91,15 @@ test('orphan.address', (t) => {
 
     popQ.await((err) => {
         t.error(err);
+        output.end();
+        t.end();
+    });
+});
 
-        pool.query(`
-            BEGIN;
-            DROP TABLE address;
-            DROP TABLE address_orphan_cluster;
-            COMMIT;
-        `, (err, res) => {
-            t.error(err, 'ok - cleaned up test tables');
-            output.end();
-            t.end();
-        });
+test('Drop/Init Database', (t) => {
+    index.init((err, res) => {
+        t.error(err);
+        t.end();
     });
 });
 
@@ -141,6 +122,13 @@ test('orphan output', (t) => {
 
     rl.on('close', () => {
         t.equals(counter, 2, 'ok - output had correct number of orphan clusters');
+        t.end();
+    });
+});
+
+test('Drop/Init Database', (t) => {
+    index.init((err, res) => {
+        t.error(err);
         t.end();
     });
 });
