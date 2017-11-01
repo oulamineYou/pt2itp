@@ -262,24 +262,24 @@ test('cluster.collapse - identical segments', (t) => {
             '{"main st"}',
             '{"main"}',
             '{"Main Street"}',
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2],[2,3],[3,4]]}'), 4326)
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2,1],[2,3,2],[3,4,3]]}'), 4326)
         );
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             2,
             '{"independence ave"}',
             '{"independence"}',
             '{"Independence Avenue"}',
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6],[6,7]]}'), 4326)
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6,1],[6,7,2]]}'), 4326)
         );
 
         INSERT INTO network (id, geom, network_length) VALUES (
             5,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1],[1,2]]}'), 4326),
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1,5],[1,2,5]]}'), 4326),
             1.0
         );
         INSERT INTO network (id, geom, network_length) VALUES (
             6,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2],[2,2]]}'), 4326),
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,6],[2,2,6]]}'), 4326),
             1.0
         );
 
@@ -339,24 +339,24 @@ test('cluster.collapse - identical segments (biggest address count takes priorit
             '{"main st"}',
             '{"main"}',
             '{"Main Street"}',
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2],[2,3],[3,4]]}'), 4326)
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2,1],[2,3,2],[3,4,3]]}'), 4326)
         );
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             2,
             '{"independence ave"}',
             '{"independence"}',
             '{"Independence Avenue"}',
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6],[6,7]]}'), 4326)
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6,1],[6,7,2]]}'), 4326)
         );
 
         INSERT INTO network (id, geom, network_length) VALUES (
             5,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1],[1,2]]}'), 4326),
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1,5],[1,2,5]]}'), 4326),
             1.0
         );
         INSERT INTO network (id, geom, network_length) VALUES (
             6,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2],[2,2]]}'), 4326),
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,6],[2,2,6]]}'), 4326),
             1.0
         );
 
@@ -415,29 +415,29 @@ test('cluster.collapse - substantial overlap (fail on length)', (t) => {
             '{"main st"}',
             '{"main"}',
             '{"Main Street"}',
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2],[2,3],[3,4]]}'), 4326)
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2,1],[2,3,2],[3,4,3]]}'), 4326)
         );
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             2,
             '{"main st"}',
             '{"main"}',
             '{"Main Street"}',
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6],[6,7]]}'), 4326)
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6,1],[6,7,2]]}'), 4326)
         );
 
         INSERT INTO network (id, geom, network_length) VALUES (
             5,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1],[1,2]]}'), 4326),
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1,5],[1,2,5]]}'), 4326),
             1.0
         );
         INSERT INTO network (id, geom, network_length) VALUES (
             6,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2],[2,2]]}'), 4326),
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,6],[2,2,6]]}'), 4326),
             1.0
         );
         INSERT INTO network (id, geom, network_length) VALUES (
             7,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[2,2],[4,2]]}'), 4326),
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[2,2,7],[4,2,7]]}'), 4326),
             2.0
         );
 
@@ -505,29 +505,29 @@ test('cluster.collapse - substantial overlap (fail on text)', (t) => {
             '{"main st"}',
             '{"main"}',
             '{"Main Street"}',
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2],[2,3],[3,4]]}'), 4326)
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2,1],[2,3,2],[3,4,3]]}'), 4326)
         );
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             2,
             '{"independence ave"}',
             '{"independence"}',
             '{"Independence Ave"}',
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6],[6,7]]}'), 4326)
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6,1],[6,7,2]]}'), 4326)
         );
 
         INSERT INTO network (id, geom, network_length) VALUES (
             5,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1],[1,2]]}'), 4326),
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1,5],[1,2,5]]}'), 4326),
             1.0
         );
         INSERT INTO network (id, geom, network_length) VALUES (
             6,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2],[2,2]]}'), 4326),
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,6],[2,2,6]]}'), 4326),
             1.0
         );
         INSERT INTO network (id, geom, network_length) VALUES (
             7,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[2,2],[2.01,2]]}'), 4326),
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[2,2,7],[2.01,2,7]]}'), 4326),
             0.01
         );
 
@@ -595,75 +595,96 @@ test('cluster.collapse - substantial overlap (successful merge)', (t) => {
             '{"main st"}',
             '{"main"}',
             '{"Main Street"}',
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2],[2,3],[3,4]]}'), 4326)
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2,1],[2,3,2],[3,4,3]]}'), 4326)
         );
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             2,
             '{"main ave"}',
             '{"main"}',
             '{"Main Avenue"}',
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6],[6,7]]}'), 4326)
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6,1],[6,7,2]]}'), 4326)
         );
 
-        INSERT INTO network (id, geom, network_length) VALUES (
+        INSERT INTO network (id, _text, text, text_tokenless, geom, network_length) VALUES (
             5,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1],[1,2]]}'), 4326),
-            1.0
-        );
-        INSERT INTO network (id, geom, network_length) VALUES (
-            6,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2],[2,2]]}'), 4326),
-            1.0
-        );
-        INSERT INTO network (id, geom, network_length) VALUES (
-            7,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[2,2],[2.001,2]]}'), 4326),
-            0.001
-        );
-        INSERT INTO network (id, geom, network_length) VALUES (
-            8,
-            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[0.999,1],[1,1]]}'), 4326),
-            0.001
-        );
-
-        INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
-            3,
-            1,
-            'Main Street',
-            'main st',
-            'main',
-            '{5,6,7}'
-        );
-        INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
-            4,
-            2,
             'Main Avenue',
             'main ave',
             'main',
-            '{5,6,8}'
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1,5],[1,2,5]]}'), 4326),
+            1.0
+        );
+        INSERT INTO network (id, _text, text, text_tokenless, geom, network_length) VALUES (
+            6,
+            'Main Avenue',
+            'main ave',
+            'main',
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,6],[2,2,6]]}'), 4326),
+            1.0
+        );
+        INSERT INTO network (id, _text, text, text_tokenless, geom, network_length) VALUES (
+            8,
+            'Main Avenue',
+            'main ave',
+            'main',
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[0.999,1,8],[1,1,8]]}'), 4326),
+            0.001
+        );
+        INSERT INTO network (id, _text, text, text_tokenless, geom, network_length) VALUES (
+            5,
+            'Main Street',
+            'main st',
+            'main',
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1,5],[1,2,5]]}'), 4326),
+            1.0
+        );
+        INSERT INTO network (id, _text, text, text_tokenless, geom, network_length) VALUES (
+            6,
+            'Main Street',
+            'main st',
+            'main',
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,6],[2,2,6]]}'), 4326),
+            1.0
+        );
+        INSERT INTO network (id, _text, text, text_tokenless, geom, network_length) VALUES (
+            7,
+            'Main Street',
+            'main st',
+            'main',
+            ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[2,2,7],[2.001,2,7]]}'), 4326),
+            0.002
         );
     `, (err, res) => {
         t.error(err, 'created & populated tables without error');
-        cluster.collapse((err) => {
-            t.error(err, 'cluster.collapse returned without error');
-            pool.query(`
-                SELECT id, address, _text, "text", text_tokenless, source_ids, st_length(geom) AS lngth FROM network_cluster ORDER BY id ASC;
-            `, (err, res) => {
-                t.equals(res.rows.length, 1, 'one row remains');
-                t.equals(parseInt(res.rows[0].id), 3, 'main st feature still exists');
-                t.equals(res.rows[0]._text, 'Main Street,Main Avenue', '_text');
-                t.equals(res.rows[0].text, 'main st,main ave', 'text');
-                t.equals(res.rows[0].text_tokenless, 'main,main', 'text_tokenless');
-                t.deepEquals(res.rows[0].source_ids, ['5', '6', '7', '8'], 'source_ids');
-                t.equals(res.rows[0].lngth, 2.002, 'length is expected');
-                t.equals(parseInt(res.rows[0].address), 1, 'address cluster id is 1');
 
-                pool.query(`
-                    SELECT id, ST_Dump(geom) FROM address_cluster ORDER BY id ASC;
-                `, (err, res) => {
-                    t.equals(res.rows.filter((row) => { return parseInt(row.id) === 1; }).length, 5, '5 address points in cluster ID 1');
-                    t.equals(res.rows.filter((row) => { return parseInt(row.id) === 2; }).length, 0, '0 address points in cluster ID 2');
-                    t.end();
+        cluster.network((err) => {
+            t.error(err);
+
+            pool.query(`
+                UPDATE network_cluster SET address = 1 WHERE text = 'main st';
+                UPDATE network_cluster SET address = 2 WHERE text = 'main ave';
+            `, (err, res) => {
+                cluster.collapse((err) => {
+                    t.error(err, 'cluster.collapse returned without error');
+                    pool.query(`
+                        SELECT id, address, _text, text, text_tokenless, source_ids, st_length(geom) AS lngth FROM network_cluster ORDER BY id ASC;
+                    `, (err, res) => {
+                        t.equals(res.rows.length, 1, 'one row remains');
+                        t.equals(parseInt(res.rows[0].id), 2, 'main st feature still exists');
+                        t.equals(res.rows[0]._text, 'Main Street,Main Avenue', '_text');
+                        t.equals(res.rows[0].text, 'main st,main ave', 'text');
+                        t.equals(res.rows[0].text_tokenless, 'main,main', 'text_tokenless');
+                        t.deepEquals(res.rows[0].source_ids, ['5', '6', '7', '8'], 'source_ids');
+                        t.equals(res.rows[0].lngth, 2.002, 'length is expected');
+                        t.equals(parseInt(res.rows[0].address), 1, 'address cluster id is 1');
+
+                        pool.query(`
+                            SELECT id, ST_Dump(geom) FROM address_cluster ORDER BY id ASC;
+                        `, (err, res) => {
+                            t.equals(res.rows.filter((row) => { return parseInt(row.id) === 1; }).length, 5, '5 address points in cluster ID 1');
+                            t.equals(res.rows.filter((row) => { return parseInt(row.id) === 2; }).length, 0, '0 address points in cluster ID 2');
+                            t.end();
+                        });
+                    });
                 });
             });
         });
