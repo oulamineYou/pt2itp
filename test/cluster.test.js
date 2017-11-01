@@ -30,7 +30,7 @@ test('Drop tables if exist', (t) => {
 });
 
 test('cluster.name', (t) => {
-    const popQ = Queue(1);
+    const popQ = new Queue(1);
 
     //CREATE pt2itp TABLES
     popQ.defer((done) => {
@@ -99,7 +99,7 @@ test('cluster.name', (t) => {
             return done();
         });
     });
-    
+
     //RE-POPULATE NETWORK
     popQ.defer((done) => {
         pool.query(`
@@ -113,7 +113,7 @@ test('cluster.name', (t) => {
         });
     });
 
-    
+
     //POPULATE ADDRESSES THAT ARE NOT NEARBY
     popQ.defer((done) => {
         pool.query(`
@@ -174,7 +174,7 @@ test('cluster.name', (t) => {
 });
 
 test('cluster.address', (t) => {
-    const popQ = Queue(1);
+    const popQ = new Queue(1);
 
     //CREATE pt2itp TABLES
     popQ.defer((done) => {
@@ -243,7 +243,7 @@ test('cluster.address', (t) => {
 });
 
 test('cluster.network', (t) => {
-    const popQ = Queue(1);
+    const popQ = new Queue(1);
 
     //CREATE pt2itp TABLES
     popQ.defer((done) => {
@@ -288,7 +288,7 @@ test('cluster.network', (t) => {
 
             t.equals(res.rows.length, 2);
             t.deepEquals(res.rows[0], { geom: '{"type":"MultiLineString","coordinates":[[[-66.0539031028748,45.269616328423],[-66.0544180870056,45.2710358327684]],[[-66.0543537139893,45.2710056309179],[-66.0549330711365,45.2724553016121]]]}', id: 1, text: 'main st', text_tokenless: 'main', source_ids: [ '1', '2' ] });
-            t.deepEquals(res.rows[1], { geom: '{"type":"MultiLineString","coordinates":[[[-113.501172065735,53.5513741378592],[-113.501129150391,53.5483654932333]],[[-113.501000404358,53.5483654932333],[-113.501043319702,53.5461471182574]]]}', id: 2, text: 'main st',  text_tokenless: 'main', source_ids: [ '3', '4' ] });
+            t.deepEquals(res.rows[1], { geom: '{"type":"MultiLineString","coordinates":[[[-113.501172065735,53.5513741378592],[-113.501129150391,53.5483654932333]],[[-113.501000404358,53.5483654932333],[-113.501043319702,53.5461471182574]]]}', id: 2, text: 'main st', text_tokenless: 'main', source_ids: [ '3', '4' ] });
             return done();
         });
     });
@@ -308,7 +308,7 @@ test('cluster.network', (t) => {
 });
 
 test('cluster.adoption', (t) => {
-    const popQ = Queue(1);
+    const popQ = new Queue(1);
 
     //CREATE pt2itp TABLES
     popQ.defer((done) => {
@@ -377,7 +377,7 @@ test('cluster.adoption', (t) => {
 });
 
 test('cluster.prune', (t) => {
-    const popQ = Queue(1);
+    const popQ = new Queue(1);
 
     //CREATE pt2itp TABLES
     popQ.defer((done) => {
@@ -530,6 +530,7 @@ test('cluster.collapse - identical segments', (t) => {
                 `, (err, res) => {
                     t.equals(res.rows.filter((row) => { return parseInt(row.id) === 1; }).length, 5, '5 address points in cluster ID 1');
                     t.equals(res.rows.filter((row) => { return parseInt(row.id) === 2; }).length, 0, 'cluster ID 2 no longer exists');
+
                     pool.query(`
                         DROP TABLE network;
                         DROP TABLE network_cluster;

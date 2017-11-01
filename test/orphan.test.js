@@ -52,7 +52,7 @@ test('orphan.init with valid options', (t) => {
 test('orphan.address', (t) => {
     const post = new Post();
     const orphan = new Orphan(pool, {}, output, post);
-    const popQ = Queue(1);
+    const popQ = new Queue(1);
 
     // create pt2itp tables
     popQ.defer((done) => {

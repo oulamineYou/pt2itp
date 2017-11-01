@@ -12,7 +12,7 @@ const pool = new pg.Pool({
 });
 
 test('Match', (t) => {
-    const popQ = Queue(1);
+    const popQ = new Queue(1);
 
     //CREATE pt2itp TABLES
     popQ.defer((done) => {

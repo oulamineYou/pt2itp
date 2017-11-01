@@ -14,7 +14,7 @@ const pool = new pg.Pool({
 const cluster = new Cluster(pool);
 
 test('Points far away shouldn\'t be clustered', (t) => {
-    const popQ = Queue(1);
+    const popQ = new Queue(1);
 
     //CREATE pt2itp TABLES
     popQ.defer((done) => {
@@ -71,7 +71,7 @@ test('Points far away shouldn\'t be clustered', (t) => {
 });
 
 test('Points nearby should be clustered', (t) => {
-    const popQ = Queue(1);
+    const popQ = new Queue(1);
 
     //CREATE pt2itp TABLES
     popQ.defer((done) => {
@@ -127,7 +127,7 @@ test('Points nearby should be clustered', (t) => {
 
 
 test('LinesStrings far away should not be clustered', (t) => {
-    const popQ = Queue(1);
+    const popQ = new Queue(1);
 
     //CREATE pt2itp TABLES
     popQ.defer((done) => {
@@ -179,7 +179,7 @@ test('LinesStrings far away should not be clustered', (t) => {
 });
 
 test('LinesStrings should be clustered', (t) => {
-    const popQ = Queue(1);
+    const popQ = new Queue(1);
 
     //CREATE pt2itp TABLES
     popQ.defer((done) => {
