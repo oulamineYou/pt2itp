@@ -182,16 +182,11 @@ test('drop good-run database', (t) => {
         idleTimeoutMillis: 30000
     });
 
-    pool.query(`
-        BEGIN;
-        DROP TABLE address;
-        DROP TABLE address_cluster;
-        DROP TABLE network;
-        DROP TABLE network_cluster;
-        COMMIT;
-    `, (err) => {
+    const index = new Index(pool);
+    index.init((err, res) => {
         t.error(err);
         pool.end();
         t.end();
     });
+
 });
