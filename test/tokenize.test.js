@@ -31,9 +31,6 @@ test('tokenizes basic strings', (t) => {
     t.deepEqual(tokenize.main('Москва'), ['москва']);
     t.deepEqual(tokenize.main('京都市'), ['京都市']);
     t.deepEqual(tokenize.main('ஜொஹோர் பாரு'), [ 'ஜொஹோர்', 'பாரு' ]);
-    // The below japanese tests are not working as intended, but are here for when we inevitably import.
-    t.deepEqual(tokenize.main('中津川市馬籠4571-1'), [ '中津川市馬籠4571-1' ], 'dashed number at end');
-    t.deepEqual(tokenize.main('中津川市4571馬籠123'), [ '中津川市4571馬籠123' ], 'numbers in middle and at end');
     t.end();
 });
 
