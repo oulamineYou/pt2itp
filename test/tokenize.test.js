@@ -19,12 +19,15 @@ test('tokenizes basic strings', (t) => {
     t.deepEqual(tokenize.main('foo)bar'), ['foo', 'bar'], 'splits on )');
     t.deepEqual(tokenize.main('foo b.a.r'), ['foo', 'bar'], 'collapses .');
     t.deepEqual(tokenize.main('foo\'s bar'), ['foos', 'bar'], 'collapses apostraphe');
-    t.deepEqual(tokenize.main('69-150'), ['69-150']);
+    t.deepEqual(tokenize.main('69-150'), ['69-150'], 'does not drop number hyphen');
     t.deepEqual(tokenize.main('4-10'), ['4-10']);
     t.deepEqual(tokenize.main('5-02A'), ['5-02a']);
     t.deepEqual(tokenize.main('23-'), ['23']);
-    t.deepEqual(tokenize.main('San José'), ['san', 'josé']);
-    t.deepEqual(tokenize.main('Chamonix-Mont-Blanc'), ['chamonix','mont','blanc']);
+    t.deepEqual(tokenize.main('San José'), ['san', 'josé'], 'does not drop accent');
+    t.deepEqual(tokenize.main('A Coruña'), [ 'a', 'coruña' ], 'does not drop ñ');
+    t.deepEqual(tokenize.main('Chamonix-Mont-Blanc'), ['chamonix','mont','blanc'], 'drops hyphen between words');
+    t.deepEqual(tokenize.main('Rue d\'Argout'), [ 'rue', 'dargout' ], 'drops apostraphe');
+    t.deepEqual(tokenize.main('Hale’iwa Road'), [ 'haleiwa', 'road' ]);
     t.deepEqual(tokenize.main('Москва'), ['москва']);
     t.deepEqual(tokenize.main('京都市'), ['京都市']);
     t.end();
