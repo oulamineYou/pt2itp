@@ -207,7 +207,7 @@ test('cluster.address', (t) => {
     });
 
     popQ.defer((done) => {
-        cluster.address(1, (err) => {
+        cluster.address((err) => {
             t.error(err);
             return done();
         });
@@ -274,7 +274,7 @@ test('cluster.network', (t) => {
     });
 
     popQ.defer((done) => {
-        cluster.network(1, (err) => {
+        cluster.network((err) => {
             t.error(err);
             return done();
         });
