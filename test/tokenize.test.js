@@ -22,7 +22,7 @@ test('tokenizes basic strings', (t) => {
     t.deepEqual(tokenize.main('69-150'), ['69-150'], 'does not drop number hyphen');
     t.deepEqual(tokenize.main('4-10'), ['4-10']);
     t.deepEqual(tokenize.main('5-02A'), ['5-02a']);
-    t.deepEqual(tokenize.main('23-'), ['23']);
+    t.deepEqual(tokenize.main('23-'), ['23'], 'drops dash at end of number');
     t.deepEqual(tokenize.main('San José'), ['san', 'josé'], 'does not drop accent');
     t.deepEqual(tokenize.main('A Coruña'), [ 'a', 'coruña' ], 'does not drop ñ');
     t.deepEqual(tokenize.main('Chamonix-Mont-Blanc'), ['chamonix','mont','blanc'], 'drops hyphen between words');
@@ -30,6 +30,9 @@ test('tokenizes basic strings', (t) => {
     t.deepEqual(tokenize.main('Hale’iwa Road'), [ 'haleiwa', 'road' ]);
     t.deepEqual(tokenize.main('Москва'), ['москва']);
     t.deepEqual(tokenize.main('京都市'), ['京都市']);
+    // The below japanese tests are not working as intended, but are here for when we inevitably import.
+    t.deepEqual(tokenize.main('中津川市馬籠4571-1'), [ '中津川市馬籠4571-1' ], 'dashed number at end');
+    t.deepEqual(tokenize.main('中津川市4571馬籠123'), [ '中津川市4571馬籠123' ], 'numbers in middle and at end');
     t.end();
 });
 
