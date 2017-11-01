@@ -53,7 +53,9 @@ test('Points are clustered on netid', (t) => {
             SELECT ST_AsGeoJSON(geom) FROM address_cluster;
         `, (err, res) => {
             t.error(err);
-            t.deepEquals(JSON.parse(res[1].rows[1].st_asgeojson), {"type":"MultiPoint","coordinates":[[9.52342987060547,47.1307974609776, 2]]}, 'ok not clustered');
+
+            t.deepEquals(res.rows[0].st_asgeojson, '{"type":"MultiPoint","coordinates":[[9.50523376464844,47.1301843316134,1],[9.52342987060547,47.1307974609776,2]]}');
+
             t.end();
         });
     });
@@ -83,7 +85,7 @@ test('LinesStrings far away should not be clustered', (t) => {
     });
 
     popQ.defer((done) => {
-        cluster.network(1, (err) => {
+        cluster.network((err) => {
             t.error(err);
             return done();
         });
@@ -118,8 +120,8 @@ test('LinesStrings should be clustered', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO network (id, segment, text, text_tokenless, _text, geom) VALUES (1, 1, 'main st', 'main', 'Main Street', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "LineString","coordinates": [[9.516735076904297,47.13276818606133,1],[9.519824981689451,47.132870369814995,1]]}'), 4326));
-            INSERT INTO network (id, segment, text, text_tokenless,_text, geom) VALUES (2, 1, 'main st', 'main', 'Main Street', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "LineString", "coordinates": [[9.513999223709106,47.132695197545665,2],[9.512518644332886,47.132695197545665,2]]},'), 4326));
+            INSERT INTO network (id, text, text_tokenless, _text, geom) VALUES (1, 'main st', 'main', 'Main Street', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "LineString","coordinates": [[9.516735076904297,47.13276818606133,1],[9.519824981689451,47.132870369814995,1]]}'), 4326));
+            INSERT INTO network (id, text, text_tokenless,_text, geom) VALUES (2, 'main st', 'main', 'Main Street', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "LineString", "coordinates": [[9.513999223709106,47.132695197545665,2],[9.512518644332886,47.132695197545665,2]]},'), 4326));
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -128,7 +130,7 @@ test('LinesStrings should be clustered', (t) => {
     });
 
     popQ.defer((done) => {
-        cluster.network(1, (err) => {
+        cluster.network((err) => {
             t.error(err);
             return done();
         });
@@ -141,7 +143,8 @@ test('LinesStrings should be clustered', (t) => {
             SELECT ST_AsGeoJSON(geom) FROM network_cluster;
         `, (err, res) => {
             t.error(err);
-            t.equals(res[1].rows[0].st_asgeojson.toString(), '{"type":"MultiLineString","coordinates":[[[9.5167350769043,47.1327681860613],[9.51982498168945,47.132870369815]],[[9.51399922370911,47.1326951975457],[9.51251864433289,47.1326951975457]]]}', 'ok network is clustered');
+
+            t.equals(res.rows[0].st_asgeojson.toString(), '{"type":"MultiLineString","coordinates":[[[9.5167350769043,47.1327681860613],[9.51982498168945,47.132870369815]],[[9.51399922370911,47.1326951975457],[9.51251864433289,47.1326951975457]]]}', 'ok network is clustered');
             t.end();
         });
     });
