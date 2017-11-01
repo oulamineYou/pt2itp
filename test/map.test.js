@@ -1,5 +1,7 @@
 const ReadLine = require('readline');
+const Index = require('../lib/index');
 const worker = require('../lib/map');
+
 const test = require('tape');
 const path = require('path');
 const fs = require('fs');
@@ -43,7 +45,7 @@ test('map - db error', (t) => {
     });
 });
 
-test('map - cardinal clustering', (t) => {
+test.skip('map - cardinal clustering', (t) => {
     worker({
         'in-address': './test/fixtures/cardinal-address.geojson',
         'in-network': './test/fixtures/cardinal-network.geojson',
@@ -102,18 +104,13 @@ test('drop cardinal database', (t) => {
         idleTimeoutMillis: 30000
     });
 
-    pool.query(`
-        BEGIN;
-        DROP TABLE address;
-        DROP TABLE address_cluster;
-        DROP TABLE network;
-        DROP TABLE network_cluster;
-        COMMIT;
-    `, (err) => {
+    const index = new Index(pool);
+    index.init((err, res) => {
         t.error(err);
         pool.end();
         t.end();
     });
+
 });
 
 test('map - good run', (t) => {
