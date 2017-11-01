@@ -255,94 +255,20 @@ test('Drop/Init Database', (t) => {
     });
 });
 
-test('cluster.prune', (t) => {
-    const popQ = new Queue(1);
-
-    //POPULATE NETWORK
-    popQ.defer((done) => {
-        pool.query(`
-            BEGIN;
-            INSERT INTO address_cluster (id, text, text_tokenless) VALUES (1, '{"Main St"}', '{"Main"}');
-            INSERT INTO network_cluster (id, address, text, text_tokenless) VALUES (1, 1, 'Main St', 'Main');
-            INSERT INTO network_cluster (id, address, text, text_tokenless) VALUES (2, 1, 'Moin St', 'Main');
-
-            INSERT INTO address_cluster (id, text, text_tokenless) VALUES (2, '{"Pollard Rd"}', '{"Pollard"}');
-            INSERT INTO network_cluster (id, address, text, text_tokenless) VALUES (3, 2, 'Pollard St', 'Pollard');
-
-            INSERT INTO address_cluster (id, text, text_tokenless) VALUES (3, '{"First St"}', '{"First"}');
-            INSERT INTO network_cluster (id, address, text, text_tokenless) VALUES (4, 3, 'First St', 'First');
-            INSERT INTO network_cluster (id, address, text, text_tokenless) VALUES (5, 3, 'Second St', 'Second');
-            COMMIT;
-        `, (err, res) => {
-            t.error(err, 'no errors');
-            return done();
-        });
-    });
-
-    popQ.defer((done) => {
-        cluster.prune((err) => {
-            t.error(err, 'no errors');
-            return done();
-        });
-    });
-
-    popQ.defer((done) => {
-        pool.query(`
-            SELECT * FROM address_cluster ORDER BY id ASC;
-        `, (err, res) => {
-            t.error(err, 'no errors');
-            if (process.env.UPDATE) {
-                fs.writeFileSync(__dirname + '/fixtures/cluster.prune-address.expected.json', JSON.stringify(res.rows, null, 2))
-                t.fail();
-            } else {
-                t.deepEquals(res.rows, require(__dirname + '/fixtures/cluster.prune-address.expected.json'));
-            }
-            return done();
-        });
-    });
-
-    popQ.defer((done) => {
-        pool.query(`
-            SELECT id, address, text, text_tokenless FROM network_cluster ORDER BY id ASC;
-        `, (err, res) => {
-            t.error(err, 'no errors');
-            if (process.env.UPDATE) {
-                fs.writeFileSync(__dirname + '/fixtures/cluster.prune-network.expected.json', JSON.stringify(res.rows, null, 2))
-                t.fail();
-            } else {
-                t.deepEquals(res.rows, require(__dirname + '/fixtures/cluster.prune-network.expected.json'));
-            }
-            return done();
-        });
-    });
-
-    popQ.await((err) => {
-        t.error(err, 'no errors');
-        t.end();
-    });
-});
-
-test('Drop/Init Database', (t) => {
-    index.init((err, res) => {
-        t.error(err, 'no errors');
-        t.end();
-    });
-});
-
 test('cluster.collapse - identical segments', (t) => {
     pool.query(`
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             1,
-            'main st',
-            'main',
-            'Main Street',
+            '{"main st"}',
+            '{"main"}',
+            '{"Main Street"}',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2],[2,3],[3,4]]}'), 4326)
         );
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             2,
-            'independence ave',
-            'independence',
-            'Independence Avenue',
+            '{"independence ave"}',
+            '{"independence"}',
+            '{"Independence Avenue"}',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6],[6,7]]}'), 4326)
         );
 
@@ -410,16 +336,16 @@ test('cluster.collapse - identical segments (biggest address count takes priorit
     pool.query(`
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             1,
-            'main st',
-            'main',
-            'Main Street',
+            '{"main st"}',
+            '{"main"}',
+            '{"Main Street"}',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2],[2,3],[3,4]]}'), 4326)
         );
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             2,
-            'independence ave',
-            'independence',
-            'Independence Avenue',
+            '{"independence ave"}',
+            '{"independence"}',
+            '{"Independence Avenue"}',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6],[6,7]]}'), 4326)
         );
 
@@ -486,16 +412,16 @@ test('cluster.collapse - substantial overlap (fail on length)', (t) => {
     pool.query(`
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             1,
-            'main st',
-            'main',
-            'Main Street',
+            '{"main st"}',
+            '{"main"}',
+            '{"Main Street"}',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2],[2,3],[3,4]]}'), 4326)
         );
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             2,
-            'main st',
-            'main',
-            'Main Street',
+            '{"main st"}',
+            '{"main"}',
+            '{"Main Street"}',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6],[6,7]]}'), 4326)
         );
 
@@ -576,16 +502,16 @@ test('cluster.collapse - substantial overlap (fail on text)', (t) => {
     pool.query(`
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             1,
-            'main st',
-            'main',
-            'Main Street',
+            '{"main st"}',
+            '{"main"}',
+            '{"Main Street"}',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2],[2,3],[3,4]]}'), 4326)
         );
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             2,
-            'independence ave',
-            'independence',
-            'Independence Ave',
+            '{"independence ave"}',
+            '{"independence"}',
+            '{"Independence Ave"}',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6],[6,7]]}'), 4326)
         );
 
@@ -666,16 +592,16 @@ test('cluster.collapse - substantial overlap (successful merge)', (t) => {
     pool.query(`
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             1,
-            'main st',
-            'main',
-            'Main Street',
+            '{"main st"}',
+            '{"main"}',
+            '{"Main Street"}',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2],[2,3],[3,4]]}'), 4326)
         );
         INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
             2,
-            'main ave',
-            'main',
-            'Main Avenue',
+            '{"main ave"}',
+            '{"main"}',
+            '{"Main Avenue"}',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6],[6,7]]}'), 4326)
         );
 
