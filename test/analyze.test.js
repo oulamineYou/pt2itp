@@ -20,6 +20,7 @@ test('FrequencyDistribution init', (t) => {
 
     t.deepEqual(freqDistFromArray, freqDistFromMap, 'constructing FrequencyDistribution from array or map should not differ');
     t.deepEqual(freqDistFromArray.N(), freqDistFromMap.N(), 'N should be the same for array or map');
+    t.deepEqual(freqDistFromArray.binCount(), freqDistFromMap.binCount(), 'bin count should be the same for array or map');
 
     t.end();
 
