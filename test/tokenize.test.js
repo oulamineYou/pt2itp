@@ -43,6 +43,17 @@ test('Uses replacement tokens', (t) => {
     t.end();
 });
 
+test('removeDiacritics', (t) => {
+    t.equal(tokenize.main("Hérê àrë søme wöřdš, including diacritics and puncatuation!").join(' '), 'hérê àrë søme wöřdš including diacritics and puncatuation', "diacritics are removed from latin text");
+    t.equal(tokenize.main("Cranberries are low, creeping shrubs or vines up to 2 metres (7 ft)").join(' '), 'cranberries are low creeping shrubs or vines up to 2 metres 7 ft', "nothing happens to latin text with no diacritic marks");
+    t.equal(tokenize.main("堪《たま》らん！」と片息《かたいき》になつて、喚《わめ》").join(' '), "堪《たま》らん！」と片息《かたいき》になつて、喚《わめ》", "nothing happens to Japanese text");
+    t.equal(tokenize.main("किसी वर्ण के मूल चिह्न के ऊपर, नीचे, अलग-बगल लगने").join(' '), 'किसी वर्ण के मूल चिह्न के ऊपर नीचे अलग बगल लगने', "nothing happens to Hindi text");
+    t.equal(tokenize.main("άΆέΈήΉίΊόΌύΎ αΑεΕηΗιΙοΟυΥ").join(' '), 'άάέέήήίίόόύύ ααεεηηιιοουυ', "greek diacritics are removed and other characters stay the same");
+    t.equal(tokenize.main("ўЎёЁѐЀґҐйЙ уУеЕеЕгГиИ").join(' '), 'ўўёёѐѐґґйй ууееееггии', "cyrillic diacritics are removed and other characters stay the same");
+
+    t.end();
+});
+
 test('edge cases - empty string', (t) => {
     t.deepEqual(tokenize.main(''), []);
     t.end();
