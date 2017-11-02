@@ -42,7 +42,7 @@
         }
 
         #alertBox {
-          visibility: hidden;
+            visibility: hidden;
         }
     </style>
 </head>
@@ -54,14 +54,14 @@
             <div class='action-search-clear cursor-pointer absolute top right flex-parent flex-parent--center-cross flex-parent--center-main w36 h36'><svg class='icon'><use xlink:href='#icon-close'></use></svg></div>
         </div>
 
-      <div class='col col--2 col--4-mm'>
-        <div id='alertBox' class='inline-block bg-orange-faint color-orange-dark px6 py6 txt-sm txt-bold round-full'>
-          <span id='alertMsg'> Heads up! Long error message incoming </span>
-          <button>
-            <svg class='align-middle icon w15 h15 inline-block ml3'><use xlink:href='#icon-close'></use></svg>
-          </button>
+        <div class='col col--2 col--4-mm'>
+            <div id='alertBox' class='inline-block bg-orange-faint color-orange-dark px6 py6 txt-sm txt-bold round-full'>
+                <span id='alertMsg'></span>
+                <button>
+                    <svg class='align-middle icon w15 h15 inline-block ml3'><use xlink:href='#icon-close'></use></svg>
+                </button>
+            </div>
         </div>
-      </div>
 
         <div class='col col--2 col--4-mm'>
             <button id='jsonButton' class='fr btn h36 round bg-purple transition bg-purple-dark-on-hover'><svg class='icon'><use xlink:href='#icon-code'/></svg></button>
@@ -341,16 +341,16 @@
 
         //Alert Dialogue
         function showAlert(alert) {
-          $('#alertMsg').html(alert);
-          if ($('#alertBox').css('visibility') === 'hidden') {
-            $('#alertBox').css('visibility', 'visible');
-          } else {
-            $('#alertBox').fadeOut(50).fadeIn(50);
-          }
+            $('#alertMsg').html(alert);
+            if ($('#alertBox').css('visibility') === 'hidden') {
+                $('#alertBox').css('visibility', 'visible');
+            } else {
+                $('#alertBox').fadeOut(50).fadeIn(50);
+            }
         }
 
         $('#alertBox').on('click', function() {
-          $('#alertBox').css('visibility', 'hidden');
+            $('#alertBox').css('visibility', 'hidden');
         })
 
         //JSON Dialogue
