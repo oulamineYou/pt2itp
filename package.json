@@ -8,7 +8,8 @@
   },
   "scripts": {
     "lint": "eslint index.js test/* lib/*",
-    "coverage": "istanbul cover tape test/*.js && coveralls < ./coverage/lcov.info",
+    "coverage": "nyc tape test/*.js && nyc report --reporter=text-lcov > coverage.lcov",
+    "coverage-upload": "coveralls < ./coverage.lcov",
     "doc": "./node_modules/documentation/bin/documentation.js lint ./lib/**",
     "test": "tape test/*.test.js",
     "pretest": "echo 'DROP DATABASE pt_test; CREATE DATABASE pt_test;' | psql postgres://postgres:@localhost:5432 && echo 'CREATE EXTENSION postgis;' | psql postgres://postgres:@localhost:5432/pt_test"
