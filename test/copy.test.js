@@ -24,8 +24,7 @@ tape('copy.js output - address', (t) => {
             t.fail('updated fixture');
         }
         else
-            var thing = fs.readFileSync(tempFile).toString()
-            t.equal(thing, fs.readFileSync(__dirname + '/fixtures/copy.sample-output-address.psv').toString(), 'output is as expected');
+            t.equal(fs.readFileSync(tempFile).toString(), fs.readFileSync(__dirname + '/fixtures/copy.sample-output-address.psv').toString(), 'output is as expected');
         t.end();
     });
 });
