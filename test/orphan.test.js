@@ -116,19 +116,13 @@ test('orphan output', (t) => {
     rl.on('line', (line) => {
         if (!line) return;
         counter++;
+        console.log('incrementing');
         let feat = JSON.parse(line);
         t.deepEquals(feat.properties["carmen:addressnumber"], orphans[feat.properties["carmen:text"]], 'ok - orphan has correct addresses');
     })
 
     rl.on('close', () => {
         t.equals(counter, 2, 'ok - output had correct number of orphan clusters');
-        t.end();
-    });
-});
-
-test('Drop/Init Database', (t) => {
-    index.init((err, res) => {
-        t.error(err);
         t.end();
     });
 });
