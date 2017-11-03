@@ -1,4 +1,9 @@
 const analyze = require('../lib/analyze');
+const NGram = analyze.NGram;
+const splitToNGrams = analyze.splitToNGrams;
+const FrequencyDistribution = analyze.FrequencyDistribution;
+const BiGramCollocationTable = analyze.BiGramCollocationTable;
+const TriGramCollocationTable = analyze.TriGramCollocationTable;
 const test = require('tape');
 const fs = require('fs');
 
@@ -8,7 +13,7 @@ var testMap = new Map([["the", 2], ["cat", 1], ["chased", 1], ["mouse", 1]]);
 
 test('FrequencyDistribution.arrayToCounts', (t) => {
     t.deepEqual(
-        analyze.FrequencyDistribution.arrayToCounts(testArray),
+        FrequencyDistribution.arrayToCounts(testArray),
         testMap
     );
 
@@ -16,14 +21,14 @@ test('FrequencyDistribution.arrayToCounts', (t) => {
 });
 
 test('FrequencyDistribution init', (t) => {
-    var freqDistFromArray = new analyze.FrequencyDistribution(testArray);
-    var freqDistFromMap = new analyze.FrequencyDistribution(testMap);
+    var freqDistFromArray = new FrequencyDistribution(testArray);
+    var freqDistFromMap = new FrequencyDistribution(testMap);
 
     t.deepEqual(freqDistFromArray, freqDistFromMap, 'constructing FrequencyDistribution from array or map should not differ');
     t.deepEqual(freqDistFromArray.N(), freqDistFromMap.N(), 'N should be the same for array or map');
     t.deepEqual(freqDistFromArray.binCount(), freqDistFromMap.binCount(), 'bin count should be the same for array or map');
 
-    t.ok(new analyze.FrequencyDistribution(), 'ok to init FrequencyDistribution without data');
+    t.ok(new FrequencyDistribution(), 'ok to init FrequencyDistribution without data');
 
     t.end();
 
@@ -130,7 +135,7 @@ test('FrequencyDistribution methods', (t) => {
 
 test('BiGramCollocationTable', (t) => {
 
-    bigrams = new analyze.BiGramCollocationTable();
+    bigrams = new BiGramCollocationTable();
 
     bigrams.update(testTokens);
 
@@ -150,7 +155,7 @@ test('BiGramCollocationTable', (t) => {
 
 test('TriGramCollocationTable', (t) => {
 
-    trigrams = new analyze.TriGramCollocationTable();
+    trigrams = new TriGramCollocationTable();
 
     trigrams.update(testTokens);
 
@@ -179,10 +184,10 @@ test('Collocation Merges', (t) => {
     var testTokens_a = testTokens.slice(0,5);
     var testTokens_b = testTokens.slice(5);
     
-    bigram_a = new analyze.BiGramCollocationTable();
+    bigram_a = new BiGramCollocationTable();
     bigram_a.update(testTokens_a);
     
-    bigram_b = new analyze.BiGramCollocationTable();
+    bigram_b = new BiGramCollocationTable();
     bigram_b.update(testTokens_b);
 
     bigram_a.merge(bigram_b);
@@ -200,10 +205,10 @@ test('Collocation Merges', (t) => {
         'after merging two bigram tables, expected bigram frequencies'
     );
     
-    trigram_a = new analyze.TriGramCollocationTable();
+    trigram_a = new TriGramCollocationTable();
     trigram_a.update(testTokens_a);
     
-    trigram_b = new analyze.TriGramCollocationTable();
+    trigram_b = new TriGramCollocationTable();
     trigram_b.update(testTokens_b);
 
     trigram_a.merge(trigram_b);
@@ -230,7 +235,7 @@ test('Collocation Merges', (t) => {
 });
 
 test('BiGramCollocationTable Metrics', (t) => {
-    var bigrams = new analyze.BiGramCollocationTable();
+    var bigrams = new BiGramCollocationTable();
     bigrams.update(testTokens);
 
     var expectedContingency = [
@@ -257,7 +262,7 @@ test('BiGramCollocationTable Metrics', (t) => {
 
 
 test('Short Sequences', (t) => {
-    var bigrams = new analyze.BiGramCollocationTable();
+    var bigrams = new BiGramCollocationTable();
     bigrams.update(testTokens);
     t.end();
 });
