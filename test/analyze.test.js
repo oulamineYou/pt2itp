@@ -145,23 +145,23 @@ test('TriGramCollocationTable', (t) => {
         expectedBiGramCounts,
         'expected bigram frequencies'
     );
-    
+
     t.deepEqual(
         trigrams.trigram_fd.frequencies,
         expectedTriGramCounts,
         'expected trigram frequencies'
     );
-    
+
     t.end();
 });
 
 test('Collocation Merges', (t) => {
     var testTokens_a = testTokens.slice(0,5);
     var testTokens_b = testTokens.slice(5);
-    
+
     bigram_a = new BiGramCollocationTable();
     bigram_a.update(testTokens_a);
-    
+
     bigram_b = new BiGramCollocationTable();
     bigram_b.update(testTokens_b);
 
@@ -179,15 +179,15 @@ test('Collocation Merges', (t) => {
         expectedBiGramCounts,
         'after merging two bigram tables, expected bigram frequencies'
     );
-    
+
     trigram_a = new TriGramCollocationTable();
     trigram_a.update(testTokens_a);
-    
+
     trigram_b = new TriGramCollocationTable();
     trigram_b.update(testTokens_b);
 
     trigram_a.merge(trigram_b);
-    
+
     t.deepEqual(
         trigram_a.unigram_fd.frequencies,
         expectedUniGramCounts,
@@ -199,15 +199,16 @@ test('Collocation Merges', (t) => {
         expectedBiGramCounts,
         'after merging two trigram tables, expected bigram frequencies'
     );
-    
+
     t.deepEqual(
         trigram_a.trigram_fd.frequencies,
         expectedTriGramCounts,
         'after merging two trigram tables, expected trigram frequencies'
     );
-    
+
     t.end();
 });
+
 
 test('BiGramCollocationTable Metrics', (t) => {
     var bigrams = new BiGramCollocationTable();
@@ -238,7 +239,7 @@ test('BiGramCollocationTable Metrics', (t) => {
         'BiGramCollocationTable.likelihoodRatio'
     );
 
-    var expectedScores = [ 
+    var expectedScores = [
         { w1: 'the', w2: 'cat', frequency: 2, likelihood: 6.994384003022435 },
         { w1: 'cat', w2: 'chased', frequency: 1, likelihood: 1.539220822722564 },
         { w1: 'chased', w2: 'the', frequency: 2, likelihood: 6.994384003022435 },
@@ -256,7 +257,7 @@ test('BiGramCollocationTable Metrics', (t) => {
         'BiGramCollocationTable.score_ngrams'
     );
 
-    
+
     t.end();
 });
 
@@ -304,7 +305,7 @@ test('TriGramCollocationTable Metrics', (t) => {
         22.55289644036095,
         'TriGramCollocationTable.likelihoodRatio'
     );
-    
+
     t.end();
 });
 
