@@ -358,23 +358,16 @@
             $('#alertBox').css('visibility', 'hidden');
         })
 
-        //Copy Dialogue
+        //Copy
         new Clipboard('.copyButton');
-        function copy(text) {
-            console.log(text);
-        }
 
         $('#copyLocationButton').on('click', function(event) {
-            let center = map.getCenter();
-            center.string = center.lng + ', ' + center.lat;
-            copy(JSON.stringify(center));
-            showAlert('Mapview LatLon copied to clipboard');
+            let center = map.getCenter().lng + ', ' + map.getCenter().lat;
+            $('#copyLocationButton').attr('data-clipboard-text', center);
+            showAlert('Map LatLon copied to clipboard');
         });
 
         $('#copyJsonButton').on('click', function(event) {
-            let featJson = $('#feat-json').html();
-            console.log(featJson);
-            copy(featJson);
             showAlert('Feature copied to clipboard');
         });
 
