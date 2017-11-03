@@ -264,6 +264,54 @@ test('BiGramCollocationTable Metrics', (t) => {
 });
 
 
+test('TriGramCollocationTable Metrics', (t) => {
+    var trigrams = new TriGramCollocationTable();
+    trigrams.update(testTokens);
+
+    var expectedContingency = [
+        1, // n_iii, or freq of ["chased",      "the",      "cat"      ]
+        1, // n_oii, or freq of [not("chased"), "the",      "cat"      ]
+        0, // n_ioi, or freq of ["chased",      not("the"), "cat"      ]
+        0, // n_ooi, or freq of [not("chased"), not("the"), "cat"      ]
+        1, // n_iio, or freq of ["chased",      "the",      not("cat") ]
+        0, // n_oio, or freq of [not("chased"), "the",      not("cat") ]
+        0, // n_ioo, or freq of ["chased",      not("the"), not("cat") ]
+        9  // n_ooo, or freq of [not("chased"), not("the"), not("cat") ]
+    ]
+
+    t.deepEqual(
+        trigrams.getContingency(['chased', 'the', 'cat']),
+        expectedContingency,
+        'TriGramCollocationTable.getContingency'
+    );
+
+    var expectedExpectedValues = [
+        0.08333333333333333,
+        0.4166666666666667,
+        0.25,
+        1.25,
+        0.4166666666666667,
+        2.0833333333333335,
+        1.25,
+        6.25
+    ]
+
+    t.deepEqual(
+        trigrams.getExpectedValues(expectedContingency),
+        expectedExpectedValues,
+        'TriGramCollocationTable.getExpectedValues'
+    );
+
+    t.deepEqual(
+        trigrams.likelihoodRatio(['chased', 'the', 'cat']),
+        22.55289644036095,
+        'TriGramCollocationTable.likelihoodRatio'
+    );
+    
+    t.end();
+});
+
+
 test('Short Sequences', (t) => {
     var bigrams = new BiGramCollocationTable();
     bigrams.update(testTokens);
