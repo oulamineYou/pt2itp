@@ -253,6 +253,12 @@ test('BiGramCollocationTable Metrics', (t) => {
         [ 0.5, 1.5, 2.5, 7.5],
         'BiGramCollocationTable.getExpectedValues'
     );
+
+    t.deepEqual(
+        bigrams.likelihoodRatio(['the', 'cat']),
+        6.994384003022435,
+        'BiGramCollocationTable.likelihoodRatio'
+    );
     
     t.end();
 });
