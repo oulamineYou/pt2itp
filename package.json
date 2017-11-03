@@ -43,7 +43,6 @@
     "wellknown": "^0.5.0"
   },
   "devDependencies": {
-    "clipboard": "^1.7.1",
     "coveralls": "^3.0.0",
     "documentation": "^5.3.1",
     "eslint": "^4.6.1",
@@ -53,25 +52,9 @@
   },
   "eslintConfig": {
     "rules": {
-      "require-jsdoc": [
-        "error",
-        {
-          "require": {
-            "FunctionDeclaration": true,
-            "MethodDefinition": false,
-            "ClassDeclaration": false,
-            "ArrowFunctionExpression": false
-          }
-        }
-      ],
-      "no-use-before-define": [
-        2,
-        "nofunc"
-      ],
-      "space-before-function-paren": [
-        2,
-        "never"
-      ],
+      "require-jsdoc": [ "error", { "require": { "FunctionDeclaration": true, "MethodDefinition": false, "ClassDeclaration": false, "ArrowFunctionExpression": false } } ],
+      "no-use-before-define": [ 2, "nofunc" ],
+      "space-before-function-paren": [ 2, "never" ],
       "no-tabs": 2,
       "space-in-parens": 2,
       "space-before-blocks": 2,
