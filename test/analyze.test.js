@@ -12,8 +12,9 @@ var testMap = new Map([["the", 2], ["cat", 1], ["chased", 1], ["mouse", 1]]);
 
 
 test('FrequencyDistribution.arrayToCounts', (t) => {
+    freqDist = new FrequencyDistribution();
     t.deepEqual(
-        FrequencyDistribution.arrayToCounts(testArray),
+        freqDist.arrayToCounts(testArray),
         testMap
     );
 
@@ -42,39 +43,39 @@ var testTokens = [
 
 // TODO rewrite as NGrams
 var expectedUniGramCounts = new Map([
-    [ ['the'], 3 ],
-    [ ['cat'], 2 ],
-    [ ['chased'], 2 ],
-    [ ['mouse'], 1 ],
-    [ ['and'], 1 ],
-    [ ['then'], 1 ],
-    [ ['a'], 1 ],
-    [ ['dog'], 1 ]
+    [ 'the',    3 ],
+    [ 'cat',    2 ],
+    [ 'chased', 2 ],
+    [ 'mouse',  1 ],
+    [ 'and',    1 ],
+    [ 'then',   1 ],
+    [ 'a',      1 ],
+    [ 'dog',    1 ]
 ]);
 
 var expectedBiGramCounts = new Map([
-    [ [ 'the', 'cat' ], 2 ],
-    [ [ 'cat', 'chased' ], 1 ],
-    [ [ 'chased', 'the' ], 2 ],
-    [ [ 'the', 'mouse' ], 1 ],
-    [ [ 'mouse', 'and' ], 1 ],
-    [ [ 'and', 'then' ], 1 ],
-    [ [ 'then', 'a' ], 1 ],
-    [ [ 'a', 'dog' ], 1 ],
-    [ [ 'dog', 'chased' ], 1 ],
+    [ 'the|cat',    2 ],
+    [ 'cat|chased', 1 ],
+    [ 'chased|the', 2 ],
+    [ 'the|mouse',  1 ],
+    [ 'mouse|and',  1 ],
+    [ 'and|then',   1 ],
+    [ 'then|a',     1 ],
+    [ 'a|dog',      1 ],
+    [ 'dog|chased', 1 ]
 ]);
 
 var expectedTriGramCounts = new Map([
-    [ [ 'the', 'cat', 'chased' ], 1 ],
-    [ [ 'cat', 'chased', 'the' ], 1 ],
-    [ [ 'chased', 'the', 'mouse' ], 1 ],
-    [ [ 'the', 'mouse', 'and' ], 1 ],
-    [ [ 'mouse', 'and', 'then' ], 1 ],
-    [ [ 'and', 'then', 'a' ], 1 ],
-    [ [ 'then', 'a', 'dog' ], 1 ],
-    [ [ 'a', 'dog', 'chased' ], 1 ],
-    [ [ 'dog', 'chased', 'the' ], 1 ],
-    [ [ 'chased', 'the', 'cat' ], 1 ],
+    [ 'the|cat|chased',   1 ],
+    [ 'cat|chased|the',   1 ],
+    [ 'chased|the|mouse', 1 ],
+    [ 'the|mouse|and',    1 ],
+    [ 'mouse|and|then',   1 ],
+    [ 'and|then|a',       1 ],
+    [ 'then|a|dog',       1 ],
+    [ 'a|dog|chased',     1 ],
+    [ 'dog|chased|the',   1 ],
+    [ 'chased|the|cat',   1 ],
 ]);
 
 test('NGram', (t) => {
@@ -95,10 +96,6 @@ test('NGram', (t) => {
     t.end();
 });
 
-// TODO splitToNGrams
-
-
-// TODO adjust expecteds to NGrams
 test('FrequencyDistribution methods', (t) => {
     var freqDist = new analyze.FrequencyDistribution(testArray);
 
@@ -256,8 +253,8 @@ test('BiGramCollocationTable Metrics', (t) => {
         [ 0.5, 1.5, 2.5, 7.5],
         'BiGramCollocationTable.getExpectedValues'
     );
-
     
+    t.end();
 });
 
 
