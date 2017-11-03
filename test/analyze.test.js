@@ -118,7 +118,7 @@ test('BiGramCollocationTable', (t) => {
         bigrams.unigram_fd.frequencies,
         expectedUniGramCounts,
         'expected unigram frequencies'
-    )
+    );
 
     t.deepEqual(
         bigrams.bigram_fd.frequencies,
@@ -138,7 +138,7 @@ test('TriGramCollocationTable', (t) => {
         trigrams.unigram_fd.frequencies,
         expectedUniGramCounts,
         'expected unigram frequencies'
-    )
+    );
 
     t.deepEqual(
         trigrams.bigram_fd.frequencies,
@@ -172,7 +172,7 @@ test('Collocation Merges', (t) => {
         bigram_a.unigram_fd.frequencies,
         expectedUniGramCounts,
         'after merging two bigram tables, expected unigram frequencies'
-    )
+    );
 
     t.deepEqual(
         bigram_a.bigram_fd.frequencies,
@@ -192,7 +192,7 @@ test('Collocation Merges', (t) => {
         trigram_a.unigram_fd.frequencies,
         expectedUniGramCounts,
         'after merging two trigram tables, expected unigram frequencies'
-    )
+    );
 
     t.deepEqual(
         trigram_a.bigram_fd.frequencies,
@@ -219,7 +219,7 @@ test('BiGramCollocationTable Metrics', (t) => {
         0, // n_oi, or freq of [not("the"), "cat"     ]
         1, // n_io, or freq of ["the",      not("cat")]
         9  // n_oo, of freq of [not("the"), not("cat")]
-    ]
+    ];
 
     t.deepEqual(
         bigrams.getContingency(['the', 'cat']),
@@ -275,7 +275,7 @@ test('TriGramCollocationTable Metrics', (t) => {
         0, // n_oio, or freq of [not("chased"), "the",      not("cat") ]
         0, // n_ioo, or freq of ["chased",      not("the"), not("cat") ]
         9  // n_ooo, or freq of [not("chased"), not("the"), not("cat") ]
-    ]
+    ];
 
     t.deepEqual(
         trigrams.getContingency(['chased', 'the', 'cat']),
@@ -292,7 +292,7 @@ test('TriGramCollocationTable Metrics', (t) => {
         2.0833333333333335,
         1.25,
         6.25
-    ]
+    ];
 
     t.deepEqual(
         trigrams.getExpectedValues(expectedContingency),
