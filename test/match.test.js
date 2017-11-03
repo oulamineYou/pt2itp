@@ -62,14 +62,7 @@ test('Match', (t) => {
     });
 
     popQ.defer((done) => {
-        match.main(1, (err) => {
-            t.error(err);
-            return done();
-        });
-    });
-
-    popQ.defer((done) => {
-        match.main(2, (err) => {
+        match.main(1, 2, (err) => {
             t.error(err);
             return done();
         });
