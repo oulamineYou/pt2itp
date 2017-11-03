@@ -1,6 +1,4 @@
 const analyze = require('../lib/analyze');
-const NGram = analyze.NGram;
-const splitToNGrams = analyze.splitToNGrams;
 const FrequencyDistribution = analyze.FrequencyDistribution;
 const BiGramCollocationTable = analyze.BiGramCollocationTable;
 const TriGramCollocationTable = analyze.TriGramCollocationTable;
@@ -40,8 +38,6 @@ var testTokens = [
     "and", "then", "a", "dog", "chased", "the", "cat"
 ];
 
-
-// TODO rewrite as NGrams
 var expectedUniGramCounts = new Map([
     [ 'the',    3 ],
     [ 'cat',    2 ],
@@ -77,24 +73,6 @@ var expectedTriGramCounts = new Map([
     [ 'dog|chased|the',   1 ],
     [ 'chased|the|cat',   1 ],
 ]);
-
-test('NGram', (t) => {
-    var unigram = new analyze.NGram(['the']);
-    t.deepEqual(unigram.tokens[0], 'the');
-    t.deepEqual(unigram.toString(), '(the)');
-
-    var bigram = new analyze.NGram(['the', 'cat']);
-    t.deepEqual(bigram.tokens[0], 'the');
-    t.deepEqual(bigram.tokens[1], 'cat');
-    t.deepEqual(bigram.toString(), '(the,cat)');
-
-    var trigram = new analyze.NGram(['the', 'cat', 'chased']);
-    t.deepEqual(trigram.tokens[0], 'the');
-    t.deepEqual(trigram.tokens[1], 'cat');
-    t.deepEqual(trigram.tokens[2], 'chased');
-    t.deepEqual(trigram.toString(), '(the,cat,chased)');
-    t.end();
-});
 
 test('FrequencyDistribution methods', (t) => {
     var freqDist = new analyze.FrequencyDistribution(testArray);
