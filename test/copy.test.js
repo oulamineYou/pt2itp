@@ -50,4 +50,3 @@ tape('copy.js output - network', (t) => {
         t.end();
     });
 });
-

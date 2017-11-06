@@ -126,13 +126,6 @@ test('orphan output', (t) => {
     });
 });
 
-test('Drop/Init Database', (t) => {
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
-
 test('end connection', (t) => {
     pool.end();
     t.end();

@@ -10,6 +10,14 @@
 
 ## Version History
 
+### v12.6.4
+
+- :white_check_mark: Add broader language tests to tokenize
+
+### v12.6.3
+
+- :rocket: Improve error notifications in web debug
+
 ### v12.6.2
 
 - :rocket: Strip the `#` from street names like `HWY #35`
