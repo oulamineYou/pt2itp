@@ -33,6 +33,46 @@ test('FrequencyDistribution init', (t) => {
 
 });
 
+test('FrequencyDistribution methods', (t) => {
+    var freqDist = new FrequencyDistribution(testArray);
+
+    t.deepEqual(freqDist.makeKey('two'), 'two', 'makeKey for string');
+    t.deepEqual(freqDist.unmakeKey('two'), 'two', 'unmakeKey for string');
+
+    t.deepEqual(freqDist.makeKey(2), '2',  'makeKey for number');
+    t.deepEqual(freqDist.unmakeKey('2'), 2, 'unmakeKey for number');
+
+    t.deepEqual(
+        freqDist.makeKey(['first', 'second', 'third']),
+        'first|second|third',
+        'makeKey(Array)'
+    );
+
+    t.deepEqual(
+        freqDist.unmakeKey('first|second|third'),
+        ['first', 'second', 'third'],
+        'makeKey(Array)'
+    );
+
+    var testObject = {a:2, b: ['a','b',3], c: { c1: 2, c2: "two", c3: ['x', 'y', 26.5] }, d: 'dee'};
+    var stringifiedTestObject = '{"a":2,"b":["a","b",3],"c":{"c1":2,"c2":"two","c3":["x","y",26.5]},"d":"dee"}';
+
+    t.deepEqual(
+        freqDist.makeKey(testObject),
+        stringifiedTestObject,
+        'makeKey(string)'
+    );
+
+    t.deepEqual(
+        freqDist.unmakeKey(stringifiedTestObject),
+        testObject,
+        'makeKey(string)'
+    );
+
+    t.end();
+});
+
+
 var testTokens = [
     "the", "cat", "chased", "the", "mouse",
     "and", "then", "a", "dog", "chased", "the", "cat"
@@ -74,8 +114,8 @@ var expectedTriGramCounts = new Map([
     [ 'chased|the|cat',   1 ],
 ]);
 
-test('FrequencyDistribution methods', (t) => {
-    var freqDist = new analyze.FrequencyDistribution(testArray);
+test('FrequencyDistribution stats', (t) => {
+    var freqDist = new FrequencyDistribution(testArray);
 
     t.deepEqual(freqDist.N(), 5, 'N should be 5');
     t.deepEqual(freqDist.binCount(), 4, 'bin count should be 4');
