@@ -228,9 +228,9 @@ test('BiGramCollocationTable Metrics', (t) => {
     );
 
     t.deepEqual(
-        bigrams.getExpectedValues([2, 0, 1, 9]),
+        bigrams.getExpectedFrequencies([2, 0, 1, 9]),
         [ 0.5, 1.5, 2.5, 7.5],
-        'BiGramCollocationTable.getExpectedValues'
+        'BiGramCollocationTable.getExpectedFrequencies'
     );
 
     t.deepEqual(
@@ -283,7 +283,7 @@ test('TriGramCollocationTable Metrics', (t) => {
         'TriGramCollocationTable.getContingency'
     );
 
-    var expectedExpectedValues = [
+    var expectedExpectedFrequencies = [
         0.08333333333333333,
         0.4166666666666667,
         0.25,
@@ -295,9 +295,9 @@ test('TriGramCollocationTable Metrics', (t) => {
     ];
 
     t.deepEqual(
-        trigrams.getExpectedValues(expectedContingency),
-        expectedExpectedValues,
-        'TriGramCollocationTable.getExpectedValues'
+        trigrams.getExpectedFrequencies(expectedContingency),
+        expectedExpectedFrequencies,
+        'TriGramCollocationTable.getExpectedFrequencies'
     );
 
     t.deepEqual(
