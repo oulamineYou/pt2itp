@@ -18,6 +18,8 @@
 
     <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
     <style>
         html, body {
             height: 100%;
@@ -55,7 +57,8 @@
         </div>
 
         <div class='col col--2 col--4-mm'>
-            <div id='alertBox' class='inline-block bg-orange-faint color-orange-dark px6 py6 txt-sm txt-bold round-full'>
+            <div id='alertBox' class='inline-block bg-purple-light color-gray-dark px6 py6 txt-sm txt-bold round-full'>
+
                 <span id='alertMsg'></span>
                 <button>
                     <svg class='align-middle icon w15 h15 inline-block ml3'><use xlink:href='#icon-close'></use></svg>
@@ -65,12 +68,14 @@
 
         <div class='col col--2 col--4-mm'>
             <button id='jsonButton' class='fr btn h36 round bg-purple transition bg-purple-dark-on-hover'><svg class='icon'><use xlink:href='#icon-code'/></svg></button>
+            <button id='copyLocationButton' class='copyButton fr btn h36 round bg-purple transition bg-purple-dark-on-hover'><svg class='icon'><use xlink:href='#icon-clipboard'/></svg></button>
         </div>
     </div>
 
     <!-- JSON Response -->
     <div id='json' class='left-pane w-full w480-mm none'>
         <div class='fill-light pad4'>
+            <button id='copyJsonButton' data-clipboard-target='#feat-json' class='copyButton fr btn h36 round bg-gray-light transition bg-gray-dark-on-hover'><svg class='icon'><use xlink:href='#icon-clipboard'/></svg></button>
             <div id='json-default' class='pad4'>
                 Select a feature on the map search or search for a feature ID to see the geoJSON
             </div>
@@ -170,7 +175,8 @@
                         "type": "categorical",
                         "stops": commonColour
                     },
-                    "line-width": 12
+                    "line-width": 12,
+                    "line-opacity": 0.5
                 }
             });
 
@@ -353,6 +359,19 @@
             $('#alertBox').css('visibility', 'hidden');
         })
 
+        //Copy
+        new Clipboard('.copyButton');
+
+        $('#copyLocationButton').on('click', function(event) {
+            let center = map.getCenter().lng.toPrecision(7) + ', ' + map.getCenter().lat.toPrecision(7);
+            $('#copyLocationButton').attr('data-clipboard-text', center);
+            showAlert('Map LatLon copied to clipboard');
+        });
+
+        $('#copyJsonButton').on('click', function(event) {
+            showAlert('Feature copied to clipboard');
+        });
+
         //JSON Dialogue
         $('#jsonButton').on('click', function(event) {
             if ($(this).hasClass('bg-purple')) {
@@ -368,7 +387,7 @@
 
         function showJson(result) {
             let prettyResult = JSON.stringify(result, null, 2);
-            $('#json-result').html('<pre>' + prettyResult + '</pre>');
+            $('#json-result').html('<pre id=feat-json>' + prettyResult + '</pre>');
             $('#json-default').addClass('none');
         }
 
