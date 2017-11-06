@@ -306,6 +306,25 @@ test('TriGramCollocationTable Metrics', (t) => {
         'TriGramCollocationTable.likelihoodRatio'
     );
 
+    var expectedScores = [
+	{ w1: 'the', w2: 'cat', w3: 'chased', frequency: 1, likelihoodRatio: 13.134429852599089 },
+	{ w1: 'cat', w2: 'chased', w3: 'the', frequency: 1, likelihoodRatio: 13.134429852599089 },
+	{ w1: 'chased', w2: 'the', w3: 'mouse', frequency: 1, likelihoodRatio: 16.658788311195764 },
+	{ w1: 'the', w2: 'mouse', w3: 'and', frequency: 1, likelihoodRatio: 14.923563265390252 },
+	{ w1: 'mouse', w2: 'and', w3: 'then', frequency: 1, likelihoodRatio: 20.65219078004357 },
+	{ w1: 'and', w2: 'then', w3: 'a', frequency: 1, likelihoodRatio: 20.65219078004357 },
+	{ w1: 'then', w2: 'a', w3: 'dog', frequency: 1, likelihoodRatio: 20.65219078004357 },
+	{ w1: 'a', w2: 'dog', w3: 'chased', frequency: 1, likelihoodRatio: 16.49330769668389 },
+	{ w1: 'dog', w2: 'chased', w3: 'the', frequency: 1, likelihoodRatio: 16.658788311195764 },
+	{ w1: 'chased', w2: 'the', w3: 'cat', frequency: 1, likelihoodRatio: 22.55289644036095 }
+    ];
+
+    t.deepEqual(
+        trigrams.score_ngrams('likelihoodRatio'),
+        expectedScores,
+        'TriGramCollocationTable.score_ngrams'
+    );
+
     t.end();
 });
 
