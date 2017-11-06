@@ -6,7 +6,8 @@ const test = require('tape');
 const fs = require('fs');
 
 var testArray = ["the", "cat", "chased", "the", "mouse"];
-var testMap = new Map([["the", 2], ["cat", 1], ["chased", 1], ["mouse", 1]]);
+var testEntries = [["the", 2], ["cat", 1], ["chased", 1], ["mouse", 1]];
+var testMap = new Map(testEntries);
 
 
 test('FrequencyDistribution.arrayToCounts', (t) => {
@@ -72,6 +73,14 @@ test('FrequencyDistribution key functions', (t) => {
     t.end();
 });
 
+test('FrequencyDistribution API', (t) => {
+    var freqDist = new FrequencyDistribution(testArray);
+
+    t.deepEqual([...freqDist.keys()], ['the', 'cat', 'chased', 'mouse'], 'keys()');
+    t.deepEqual([...freqDist.entries()], testEntries, 'entries()');
+    t.end();
+});
+
 
 var testTokens = [
     "the", "cat", "chased", "the", "mouse",
@@ -113,6 +122,7 @@ var expectedTriGramCounts = new Map([
     [ 'dog|chased|the',   1 ],
     [ 'chased|the|cat',   1 ],
 ]);
+
 
 test('FrequencyDistribution stats', (t) => {
     var freqDist = new FrequencyDistribution(testArray);
@@ -292,7 +302,7 @@ test('BiGramCollocationTable Metrics', (t) => {
     ];
 
     t.deepEqual(
-        bigrams.score_ngrams('likelihoodRatio'),
+        [...bigrams.score_ngrams('likelihoodRatio')],
         expectedScores,
         'BiGramCollocationTable.score_ngrams'
     );
@@ -360,7 +370,7 @@ test('TriGramCollocationTable Metrics', (t) => {
     ];
 
     t.deepEqual(
-        trigrams.score_ngrams('likelihoodRatio'),
+        [...trigrams.score_ngrams('likelihoodRatio')],
         expectedScores,
         'TriGramCollocationTable.score_ngrams'
     );
