@@ -362,7 +362,7 @@
         new Clipboard('.copyButton');
 
         $('#copyLocationButton').on('click', function(event) {
-            let center = map.getCenter().lng + ', ' + map.getCenter().lat;
+            let center = map.getCenter().lng.toPrecision(7) + ', ' + map.getCenter().lat.toPrecision(7);
             $('#copyLocationButton').attr('data-clipboard-text', center);
             showAlert('Map LatLon copied to clipboard');
         });
