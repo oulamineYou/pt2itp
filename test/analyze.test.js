@@ -33,7 +33,7 @@ test('FrequencyDistribution init', (t) => {
 
 });
 
-test('FrequencyDistribution methods', (t) => {
+test('FrequencyDistribution key functions', (t) => {
     var freqDist = new FrequencyDistribution(testArray);
 
     t.deepEqual(freqDist.makeKey('two'), 'two', 'makeKey for string');
