@@ -76,12 +76,11 @@ test('analyze.js output - address', (t) => {
     }, (err) => {
         if (err) throw err;
         if (process.env.UPDATE) {
-            fs.createReadStream(tempFile).pipe(fs.createWriteStream(path.resolve(__dirname, '/fixtures/analyze.results.csv')));
+            fs.createReadStream(tempFile).pipe(fs.createWriteStream(path.resolve(__dirname, './fixtures/analyze.results.csv')));
             t.fail('updated fixture');
         } else {
             var expected = fs.readFileSync(__dirname + '/fixtures/analyze.results.csv').toString();
             var actual = fs.readFileSync(tempFile).toString();
-            console.log(actual);
             t.equal(actual, expected, 'output is as expected');
         }
     });
