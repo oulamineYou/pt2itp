@@ -62,7 +62,7 @@ test('format data from text extraction', (t) => {
 test('frequencyDistribution check', (t) => {
     var fixtures = [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ];
     analyser.frequencyDistributionMunger(fixtures, (err, data) => {
-        t.deepEquals(data, freqDistResult, 'expected frequency distribution');
+        t.deepEquals([...data], freqDistResult, 'expected frequency distribution');
         t.end();
     });
 });
