@@ -78,6 +78,19 @@ test('FrequencyDistribution API', (t) => {
 
     t.deepEqual([...freqDist.keys()], ['the', 'cat', 'chased', 'mouse'], 'keys()');
     t.deepEqual([...freqDist.entries()], testEntries, 'entries()');
+
+    t.deepEqual(freqDist.has('cat'), true, 'has()');
+    t.deepEqual(freqDist.has('dog'), false, 'has()');
+
+    t.deepEqual(freqDist.get('cat'), 1, 'get()');
+    t.deepEqual(freqDist.get('the'), 2, 'get()');
+
+    freqDist.set(['the', 'cat'], 999);
+    t.deepEqual(freqDist.get(['the', 'cat']), 999, 'set()');
+
+    freqDist.increment(['the', 'cat'], 1);
+    t.deepEqual(freqDist.get(['the', 'cat']), 1000, 'increment()');
+
     t.end();
 });
 
