@@ -213,6 +213,7 @@
         });
 
         function getCoords(coords, opts) {
+            clear();
             $.get('/api/coords/'+coords[0]+','+coords[1], (res) => {
                 if (!res) {
                     $search.val('');
@@ -336,6 +337,7 @@
             }
         }
 
+        // clear all data from map and json viewer
         function clear() {
             map.getSource('itp').setData(empty);
             map.getSource('addr').setData(empty);
