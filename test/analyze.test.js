@@ -9,7 +9,7 @@ var Queue = require('d3-queue').queue;
 var pool = new pg.Pool({
     max: 3,
     user: 'postgres',
-    database: 'mbpl_fake_address_both',
+    database: 'pt_test',
     idleTimeoutMillis: 3
 });
 
@@ -42,7 +42,7 @@ test('Results from extractTextField', (t) => {
 
     popQ.await((err) => {
         t.error(err);
-        analyser.extractTextField('fake', 'address', (err, data) => {
+        analyser.extractTextField('test', 'address', (err, data) => {
             console.log('?', err);
             t.error(err);
             t.deepEquals(data, [ 'Main Street', 'Fake Avenue' ], 'extracted text is correct');
