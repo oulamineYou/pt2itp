@@ -75,7 +75,28 @@ test('analyze.js output - address', (t) => {
         output: tempFile,
     }, (err) => {
         if (err) throw err;
-        var fixturePath = path.resolve(__dirname, './fixtures/analyze.results.csv')
+        var fixturePath = path.resolve(__dirname, './fixtures/analyze.address-results.csv')
+        if (process.env.UPDATE) {
+            fs.createReadStream(tempFile).pipe(fs.createWriteStream(fixturePath));
+            t.fail('updated fixture');
+        } else {
+            var expected = fs.readFileSync(fixturePath).toString();
+            var actual = fs.readFileSync(tempFile).toString();
+            t.equal(actual, expected, 'output is as expected');
+        }
+    });
+    t.end();
+});
+
+test('analyze.js output - network', (t) => {
+    let tempFile = tmp.tmpNameSync();
+    analyser({
+        cc: 'test',
+        type: 'network',
+        output: tempFile,
+    }, (err) => {
+        if (err) throw err;
+        var fixturePath = path.resolve(__dirname, './fixtures/analyze.network-results.csv')
         if (process.env.UPDATE) {
             fs.createReadStream(tempFile).pipe(fs.createWriteStream(fixturePath));
             t.fail('updated fixture');
