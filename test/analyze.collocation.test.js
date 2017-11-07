@@ -1,7 +1,7 @@
-const analyze = require('../lib/analyze');
-const FrequencyDistribution = analyze.FrequencyDistribution;
-const BiGramCollocationTable = analyze.BiGramCollocationTable;
-const TriGramCollocationTable = analyze.TriGramCollocationTable;
+const collocations = require('../lib/analyze/collocations');
+const FrequencyDistribution = collocations.FrequencyDistribution;
+const BiGramCollocationTable = collocations.BiGramCollocationTable;
+const TriGramCollocationTable = collocations.TriGramCollocationTable;
 const test = require('tape');
 const fs = require('fs');
 
