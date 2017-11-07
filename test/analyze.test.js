@@ -62,10 +62,30 @@ test('format data from text extraction', (t) => {
 test('frequencyDistribution check', (t) => {
     var fixtures = [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ];
     analyser.frequencyDistributionMunger(fixtures, (err, data) => {
-
         t.deepEquals(data, freqDistResult, 'expected frequency distribution');
         t.end();
     });
+});
+
+test('analyze.js output - address', (t) => {
+    let tempFile = tmp.tmpNameSync();
+    analyser({
+        cc: 'test',
+        type: 'address',
+        output: tempFile,
+    }, (err) => {
+        if (err) throw err;
+        if (process.env.UPDATE) {
+            fs.createReadStream(tempFile).pipe(fs.createWriteStream(path.resolve(__dirname, '/fixtures/analyze.results.csv')));
+            t.fail('updated fixture');
+        } else {
+            var expected = fs.readFileSync(__dirname + '/fixtures/analyze.results.csv').toString();
+            var actual = fs.readFileSync(tempFile).toString();
+            console.log(actual);
+            t.equal(actual, expected, 'output is as expected');
+        }
+    });
+    t.end();
 });
 
 test('end connection', (t) => {
