@@ -1,15 +1,16 @@
-var analyser = require('../lib/analyze');
-var freqDistResult = require('./fixtures/freqDist.js').freqDist;
-var path = require('path');
-var pg = require('pg');
-var fs = require('fs');
-var test = require('tape');
-var Queue = require('d3-queue').queue;
+const analyser = require('../lib/analyze');
+const freqDistResult = require('./fixtures/freqDist.js').freqDist;
+const path = require('path');
+const pg = require('pg');
+const fs = require('fs');
+const tmp = require('tmp');
+const test = require('tape');
+const Queue = require('d3-queue').queue;
 
 var pool = new pg.Pool({
     max: 3,
     user: 'postgres',
-    database: 'mbpl_fake_address_both',
+    database: 'pt_test',
     idleTimeoutMillis: 3
 });
 
@@ -42,7 +43,7 @@ test('Results from extractTextField', (t) => {
 
     popQ.await((err) => {
         t.error(err);
-        analyser.extractTextField('fake', 'address', (err, data) => {
+        analyser.extractTextField('test', 'address', (err, data) => {
             console.log('?', err);
             t.error(err);
             t.deepEquals(data, [ 'Main Street', 'Fake Avenue' ], 'extracted text is correct');
@@ -61,10 +62,51 @@ test('format data from text extraction', (t) => {
 test('frequencyDistribution check', (t) => {
     var fixtures = [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ];
     analyser.frequencyDistributionMunger(fixtures, (err, data) => {
-
-        t.deepEquals(data, freqDistResult, 'expected frequency distribution');
+        t.deepEquals([...data], freqDistResult, 'expected frequency distribution');
         t.end();
-    })
+    });
+});
+
+test('analyze.js output - address', (t) => {
+    let tempFile = tmp.tmpNameSync();
+    analyser({
+        cc: 'test',
+        type: 'address',
+        output: tempFile,
+    }, (err) => {
+        if (err) throw err;
+        var fixturePath = path.resolve(__dirname, './fixtures/analyze.address-results.csv')
+        if (process.env.UPDATE) {
+            fs.createReadStream(tempFile).pipe(fs.createWriteStream(fixturePath));
+            t.fail('updated fixture');
+        } else {
+            var expected = fs.readFileSync(fixturePath).toString();
+            var actual = fs.readFileSync(tempFile).toString();
+            t.equal(actual, expected, 'output is as expected');
+        }
+    });
+    t.end();
+});
+
+test('analyze.js output - network', (t) => {
+    let tempFile = tmp.tmpNameSync();
+    analyser({
+        cc: 'test',
+        type: 'network',
+        output: tempFile,
+    }, (err) => {
+        if (err) throw err;
+        var fixturePath = path.resolve(__dirname, './fixtures/analyze.network-results.csv')
+        if (process.env.UPDATE) {
+            fs.createReadStream(tempFile).pipe(fs.createWriteStream(fixturePath));
+            t.fail('updated fixture');
+        } else {
+            var expected = fs.readFileSync(fixturePath).toString();
+            var actual = fs.readFileSync(tempFile).toString();
+            t.equal(actual, expected, 'output is as expected');
+        }
+    });
+    t.end();
 });
 
 test('end connection', (t) => {
