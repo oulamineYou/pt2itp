@@ -64,7 +64,7 @@ test('frequencyDistribution check', (t) => {
 
         t.deepEquals(data, freqDistResult, 'expected frequency distribution');
         t.end();
-    })
+    });
 });
 
 test('end connection', (t) => {
