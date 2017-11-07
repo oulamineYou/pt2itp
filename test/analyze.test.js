@@ -1,10 +1,11 @@
-var analyser = require('../lib/analyze');
-var freqDistResult = require('./fixtures/freqDist.js').freqDist;
-var path = require('path');
-var pg = require('pg');
-var fs = require('fs');
-var test = require('tape');
-var Queue = require('d3-queue').queue;
+const analyser = require('../lib/analyze');
+const freqDistResult = require('./fixtures/freqDist.js').freqDist;
+const path = require('path');
+const pg = require('pg');
+const fs = require('fs');
+const tmp = require('tmp');
+const test = require('tape');
+const Queue = require('d3-queue').queue;
 
 var pool = new pg.Pool({
     max: 3,
