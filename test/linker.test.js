@@ -103,7 +103,7 @@ test('Passing Linker Matches', (t) => {
             { id: 863, text: 's st nw', _text: 'S STREET NW', text_tokenless: '' },
             { id: 1365, text: 'rhode is av nw', _text: 'RHODE ISLAND AVENUE NW', text_tokenless: 'rhode' },
             { id: 2366, text: 'r st nw', _text: 'R STREET NW', text_tokenless: '' },
-            { id: 189, text: 'randolph pl ne', _text: 'Randolph Place Northeast',text_tokenless: 'randolph' }, 
+            { id: 189, text: 'randolph pl ne', _text: 'Randolph Place Northeast',text_tokenless: 'randolph' },
             { id: 296, text: 'rt 1', _text: 'ROUTE 1', text_tokenless: '1' },
             { id: 629, text: 'lincoln rd ne', _text: 'Lincoln Road Northeast', text_tokenless: 'lincoln' },
             { id: 1662, text: 'quincy pl ne', _text: 'Quincy Place Northeast', text_tokenless: 'quincy' },
