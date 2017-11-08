@@ -43,8 +43,7 @@ test('Results from extractTextField', (t) => {
 
     popQ.await((err) => {
         t.error(err);
-        analyser.extractTextField('test', 'address', (err, data) => {
-            console.log('?', err);
+        analyser.extractTextField('test', 'address', 5, (err, data) => {
             t.error(err);
             t.deepEquals(data, [ 'Main Street', 'Fake Avenue' ], 'extracted text is correct');
             t.end();
@@ -72,7 +71,7 @@ test('analyze.js output - address', (t) => {
     analyser({
         cc: 'test',
         type: 'address',
-        output: tempFile,
+        output: tempFile
     }, (err) => {
         if (err) throw err;
         var fixturePath = path.resolve(__dirname, './fixtures/analyze.address-results.csv')
