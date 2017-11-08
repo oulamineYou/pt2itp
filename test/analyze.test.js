@@ -126,7 +126,7 @@ test('analyze.js output - network', (t) => {
     analyser({
         cc: 'test',
         type: 'network',
-        limit 5,
+        limit: 5,
         output: tempFile,
     }, (err) => {
         if (err) throw err;
