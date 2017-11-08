@@ -7,7 +7,7 @@ const tmp = require('tmp');
 const test = require('tape');
 const Queue = require('d3-queue').queue;
 
-var pool = new pg.Pool({
+const pool = new pg.Pool({
     max: 3,
     user: 'postgres',
     database: 'pt_test',
@@ -85,14 +85,14 @@ test('Results from extractTextField', (t) => {
 });
 
 test('format data from text extraction', (t) => {
-    var fixture = [ { _text: 'Akoko Street' }, { _text: 'Akala Lane' }, { _text: 'Dreier Street' }];
-    var expected = analyser.formatData(fixture);
+    let fixture = [ { _text: 'Akoko Street' }, { _text: 'Akala Lane' }, { _text: 'Dreier Street' }];
+    let expected = analyser.formatData(fixture);
     t.deepEquals(expected, [ 'Akoko Street', 'Akala Lane', 'Dreier Street' ], 'Data formatted correctly');
     t.end();
 });
 
 test('frequencyDistribution check', (t) => {
-    var fixtures = [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ];
+    let fixtures = [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ];
     analyser.frequencyDistributionMunger(fixtures, (err, data) => {
         t.deepEquals([...data], freqDistResult, 'expected frequency distribution');
         t.end();
