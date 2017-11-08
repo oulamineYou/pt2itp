@@ -14,14 +14,27 @@ var pool = new pg.Pool({
     idleTimeoutMillis: 3
 });
 
-test('Results from extractTextField', (t) => {
+test('Drop tables if exist', (t) => {
+    pool.query(`
+        BEGIN;
+        DROP TABLE IF EXISTS network_cluster;
+        DROP TABLE IF EXISTS address_cluster;
+        COMMIT;
+    `, (err, res) => {
+        t.error(err);
+        t.end();
+    });
+});
+
+test('Init db', (t) => {
     var popQ = Queue(1);
 
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
             DROP TABLE IF EXISTS address_cluster;
-            CREATE TABLE IF NOT EXISTS address_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, number TEXT, geom GEOMETRY(MULTIPOINT, 4326));
+            CREATE TABLE address_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, number TEXT, geom GEOMETRY(MULTIPOINT, 4326));
+            CREATE TABLE network_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, address INT, geom GEOMETRY(MULTILINESTRING, 4326), buffer GEOMETRY(POLYGON, 4326), source_ids BIGINT[]);
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -41,14 +54,34 @@ test('Results from extractTextField', (t) => {
         });
     });
 
+    popQ.defer((done) => {
+        pool.query(`
+            BEGIN;
+            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (1, 1, 'Akoko Street', 'Akoko');
+            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (2, 1, 'Wong Ho Lane', 'Wong Ho');
+            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (3, 2, 'Pier 1',       'Pier 1');
+            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (4, 3, 'Main St',      'First');
+            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (5, 3, 'Fake St',      'Fake');
+            COMMIT;
+        `, (err, res) => {
+            t.error(err);
+            return done();
+        });
+    });
+
     popQ.await((err) => {
         t.error(err);
-        analyser.extractTextField('test', 'address', (err, data) => {
-            console.log('?', err);
-            t.error(err);
-            t.deepEquals(data, [ 'Main Street', 'Fake Avenue' ], 'extracted text is correct');
-            t.end();
-        });
+        t.end();
+    });
+
+});
+
+test('Results from extractTextField', (t) => {
+    analyser.extractTextField('test', 'address', (err, data) => {
+        console.log('?', err);
+        t.error(err);
+        t.deepEquals(data, [ 'Main Street', 'Fake Avenue' ], 'extracted text is correct');
+        t.end();
     });
 });
 
