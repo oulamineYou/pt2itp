@@ -204,12 +204,12 @@ test('cluster.address - order synonyms by address count', (t) => {
         pool.query(`
             BEGIN;
 
-            INSERT INTO address (id, text, text_tokenless, _text, number, netid, geom) VALUES (21, 'roe st nw', 'roe', 'Roe Street NW', 12, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41056871414183, 41.8005111239637, 10 ] }'), 4326));
-            INSERT INTO address (id, text, text_tokenless, _text, number, netid, geom) VALUES (22, 'roe st nw', 'roe', 'Roe Street NW', 12, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41054725646971, 41.801102975153974, 11 ] }'), 4326));
+            INSERT INTO address (id, text, text_tokenless, _text, number, netid, geom) VALUES (21, 'mill st nw', 'mill', 'Mill Street NW', 12, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41056871414183, 41.8005111239637, 5 ] }'), 4326));
+            INSERT INTO address (id, text, text_tokenless, _text, number, netid, geom) VALUES (22, 'mill st nw', 'mill', 'Mill Street NW', 13, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41054725646971, 41.801102975153974, 6 ] }'), 4326));
 
-            INSERT INTO address (id, text, text_tokenless, _text, number, netid, geom) VALUES (23, 'r st nw', 'r', 'R Street NW', 10, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41816473007202, 41.80102299558284, 5 ] }'), 4326));
-            INSERT INTO address (id, text, text_tokenless, _text, number, netid, geom) VALUES (24, 'r st nw', 'r', 'R Street NW', 10, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.4172420501709, 41.80103899150505, 6 ] }'), 4326));
-            INSERT INTO address (id, text, text_tokenless, _text, number, netid, geom) VALUES (25, 'r st nw', 'r', 'R Street NW', 10, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41599750518799, 41.801166958738996, 7 ] }'), 4326));
+            INSERT INTO address (id, text, text_tokenless, _text, number, netid, geom) VALUES (23, 'r st nw', 'r', 'R Street NW', 10, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41816473007202, 41.80102299558284, 7 ] }'), 4326));
+            INSERT INTO address (id, text, text_tokenless, _text, number, netid, geom) VALUES (24, 'r st nw', 'r', 'R Street NW', 11, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.4172420501709, 41.80103899150505, 8 ] }'), 4326));
+            INSERT INTO address (id, text, text_tokenless, _text, number, netid, geom) VALUES (25, 'r st nw', 'r', 'R Street NW', 12, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41599750518799, 41.801166958738996, 9 ] }'), 4326));
 
 
             COMMIT;
@@ -233,8 +233,8 @@ test('cluster.address - order synonyms by address count', (t) => {
         `, (err, res) => {
             t.error(err, 'no errors');
 
-            t.equals(res.rows.length, 1, 'one address cluster from R streets');
-            t.deepEquals(res.rows[0].text, [ 'r st nw', 'roe st nw' ]);
+            t.equals(res.rows.length, 1, 'one address cluster');
+            t.deepEquals(res.rows[0].text[0], 'r st nw', 'address cluster text ordered by number of addresses');
             return done();
         });
     });
