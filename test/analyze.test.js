@@ -77,8 +77,7 @@ test('Init db', (t) => {
 });
 
 test('Results from extractTextField', (t) => {
-    analyser.extractTextField('test', 'address', (err, data) => {
-        console.log('?', err);
+    analyser.extractTextField('test', 'address', 5, (err, data) => {
         t.error(err);
         t.deepEquals(data, [ 'Main Street', 'Fake Avenue' ], 'extracted text is correct');
         t.end();
@@ -105,7 +104,8 @@ test('analyze.js output - address', (t) => {
     analyser({
         cc: 'test',
         type: 'address',
-        output: tempFile,
+        limit: 5,
+        output: tempFile
     }, (err) => {
         if (err) throw err;
         var fixturePath = path.resolve(__dirname, './fixtures/analyze.address-results.csv')
@@ -126,6 +126,7 @@ test('analyze.js output - network', (t) => {
     analyser({
         cc: 'test',
         type: 'network',
+        limit: 5,
         output: tempFile,
     }, (err) => {
         if (err) throw err;
