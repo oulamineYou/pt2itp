@@ -10,6 +10,9 @@
 
 ## Version History
 
+### v12.6.5
+- :tada: `analyze` verb added to CLI: performs ngram collocation analysis on loaded address and network text data
+
 ### v12.6.4
 
 - :white_check_mark: Add broader language tests to tokenize
