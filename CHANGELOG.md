@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v13.0.1
+
+- :rocket: Update locked deps
+
 ### v13.0.0
 
 - :white_check_mark: Add tests for `test` mode
