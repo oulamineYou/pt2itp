@@ -1,11 +1,13 @@
 const analyser = require('../lib/analyze');
-const freqDistResult = require('./fixtures/freqDist.js').freqDist;
+const freqDistResult = require('./fixtures/freqDist').freqDist;
 const path = require('path');
 const pg = require('pg');
 const fs = require('fs');
 const tmp = require('tmp');
 const test = require('tape');
 const Queue = require('d3-queue').queue;
+const Cluster = require('../lib/cluster');
+const Index = require('../lib/index');
 
 const pool = new pg.Pool({
     max: 3,
@@ -14,13 +16,11 @@ const pool = new pg.Pool({
     idleTimeoutMillis: 3
 });
 
-test('Drop tables if exist', (t) => {
-    pool.query(`
-        BEGIN;
-        DROP TABLE IF EXISTS network_cluster;
-        DROP TABLE IF EXISTS address_cluster;
-        COMMIT;
-    `, (err, res) => {
+const cluster = new Cluster({ pool: pool });
+const index = new Index(pool);
+
+test('Drop/Init Database', (t) => {
+    index.init((err, res) => {
         t.error(err);
         t.end();
     });
@@ -32,21 +32,8 @@ test('Init db', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            DROP TABLE IF EXISTS address_cluster;
-            CREATE TABLE address_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, number TEXT, geom GEOMETRY(MULTIPOINT, 4326));
-            CREATE TABLE network_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, address INT, geom GEOMETRY(MULTILINESTRING, 4326), buffer GEOMETRY(POLYGON, 4326), source_ids BIGINT[]);
-            COMMIT;
-        `, (err, res) => {
-            t.error(err);
-            return done();
-        });
-    });
-
-    popQ.defer((done) => {
-        pool.query(`
-            BEGIN;
-            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (1, 'main st', 'main', 'Main Street', 10, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
-            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (2, 'fake av', 'fake', 'Fake Avenue', 12, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
+            INSERT INTO address_cluster (id, text, text_tokenless, _text, geom) VALUES (1, '{"main st"}', '{"main"}', '{"Main Street"}', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249, 10 ] }'), 4326)));
+            INSERT INTO address_cluster (id, text, text_tokenless, _text, geom) VALUES (2, '{"fake av"}', '{"fake"}', '{"Fake Avenue"}', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249, 12 ] }'), 4326)));
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -100,7 +87,7 @@ test('frequencyDistribution check', (t) => {
 });
 
 test('analyze.js output - address', (t) => {
-    let tempFile = tmp.tmpNameSync();
+    const tempFile = tmp.tmpNameSync();
     analyser({
         cc: 'test',
         type: 'address',
@@ -122,7 +109,7 @@ test('analyze.js output - address', (t) => {
 });
 
 test('analyze.js output - network', (t) => {
-    let tempFile = tmp.tmpNameSync();
+    const tempFile = tmp.tmpNameSync();
     analyser({
         cc: 'test',
         type: 'network',
