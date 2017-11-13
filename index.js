@@ -26,6 +26,7 @@ switch (argv._[2]) {
     case ('debug'):
         require('./lib/debug')(process.argv, (err) => {
             if (err) {
+                console.error('ERROR:');
                 console.error(err.stack);
                 process.exit(1);
             }
@@ -34,6 +35,7 @@ switch (argv._[2]) {
     case ('map'):
         require('./lib/map')(process.argv, (err) => {
             if (err) {
+                console.error('ERROR:');
                 console.error(err);
                 console.error(err.stack);
                 process.exit(1);
@@ -45,6 +47,7 @@ switch (argv._[2]) {
     case ('stat'):
         require('./lib/stat')(process.argv, (err) => {
             if (err) {
+                console.error('ERROR:');
                 console.error(err.stack);
                 process.exit(1);
             }
@@ -54,6 +57,7 @@ switch (argv._[2]) {
     case ('test'):
         require('./lib/test')(process.argv, (err) => {
             if (err) {
+                console.error('ERROR:');
                 console.error(err.toString());
                 process.exit(1);
             }
@@ -62,6 +66,7 @@ switch (argv._[2]) {
     case ('testcsv'):
         require('./lib/testcsv')(process.argv, (err) => {
             if (err) {
+                console.error('ERROR:');
                 console.error(err.toString());
                 process.exit(1);
             }
@@ -70,6 +75,7 @@ switch (argv._[2]) {
     case ('strip'):
         require('./lib/strip')(process.argv, (err) => {
             if (err) {
+                console.error('ERROR:');
                 console.error(err.toString());
                 process.exit(1);
             }
@@ -87,6 +93,7 @@ switch (argv._[2]) {
     case ('convert'):
         require('./lib/convert')(process.argv, (err) => {
             if (err) {
+                console.error('ERROR:');
                 console.error(err.toString());
                 process.exit(1);
             }
@@ -95,5 +102,4 @@ switch (argv._[2]) {
     default:
         help(argv);
         break;
-
 }
