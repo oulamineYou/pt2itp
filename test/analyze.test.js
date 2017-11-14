@@ -1,5 +1,5 @@
 const analyser = require('../lib/analyze');
-const freqDistResult = require('./fixtures/freqDist.js').freqDist;
+const freqDist = require('./fixtures/analyze.freqDist.js');
 const path = require('path');
 const pg = require('pg');
 const fs = require('fs');
@@ -13,6 +13,8 @@ const pool = new pg.Pool({
     database: 'pt_test',
     idleTimeoutMillis: 3
 });
+
+pool.on("end", () => { throw Error; });
 
 test('Drop tables if exist', (t) => {
     pool.query(`
@@ -94,7 +96,7 @@ test('format data from text extraction', (t) => {
 test('frequencyDistribution check', (t) => {
     let fixtures = [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ];
     analyser.frequencyDistributionMunger(fixtures, (err, data) => {
-        t.deepEquals([...data], freqDistResult, 'expected frequency distribution');
+        t.deepEquals([...data.score_ngrams('likelihoodRatio')], freqDist.bigram, 'expected frequency distribution');
         t.end();
     });
 });
@@ -123,6 +125,18 @@ test('analyze.js output - address', (t) => {
                 var actual = fs.readFileSync(tmpOutput).toString();
                 t.equal(actual, expected, `address ${order} output is as expected`);
             }
+            var results = pool.query(`SELECT * FROM address_${order}s;`, (err,res) => {
+                if (err) {
+                    throw err;
+                }
+                return res.rows;
+            });
+
+            if (results.length <= 0){
+                t.fail(`no results returned from address_${order}s`);
+            }
+
+            t.equal(results, freqDist[order], `SQL table address_${order}s has expected values`);
         }
     });
     t.end();
