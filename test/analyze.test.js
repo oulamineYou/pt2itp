@@ -77,7 +77,7 @@ test('Init db', (t) => {
 });
 
 test('Results from extractTextField', (t) => {
-    analyser.extractTextField('test', 'address', 5, (err, data) => {
+    analyser.extractTextField('address', 5, pool, (err, data) => {
         t.error(err);
         t.deepEquals(data, [ 'Main Street', 'Fake Avenue' ], 'extracted text is correct');
         t.end();
@@ -100,44 +100,58 @@ test('frequencyDistribution check', (t) => {
 });
 
 test('analyze.js output - address', (t) => {
-    let tempFile = tmp.tmpNameSync();
+    let tempFileNamePrefix = tmp.tmpNameSync();
     analyser({
         cc: 'test',
         type: 'address',
         limit: 5,
-        output: tempFile
+        output: tempFileNamePrefix
     }, (err) => {
         if (err) throw err;
-        var fixturePath = path.resolve(__dirname, './fixtures/analyze.address-results.csv')
-        if (process.env.UPDATE) {
-            fs.createReadStream(tempFile).pipe(fs.createWriteStream(fixturePath));
-            t.fail('updated fixture');
-        } else {
-            var expected = fs.readFileSync(fixturePath).toString();
-            var actual = fs.readFileSync(tempFile).toString();
-            t.equal(actual, expected, 'output is as expected');
+        var orders = ['bigram']; //TODO 'unigram'];
+        for (var i=0;i<orders.length;i++) {
+            var order = orders[i];
+            var tmpOutput = `${tempFileNamePrefix}-${order}.csv`;
+
+            var fixturePath = path.resolve(__dirname, `./fixtures/analyze.address-${order}.csv`);
+            if (process.env.UPDATE) {
+                fs.createReadStream(tmpOutput)
+                  .pipe(fs.createWriteStream(fixturePath));
+                t.fail(`updated address ${order} fixture`);
+            } else {
+                var expected = fs.readFileSync(fixturePath).toString();
+                var actual = fs.readFileSync(tmpOutput).toString();
+                t.equal(actual, expected, `address ${order} output is as expected`);
+            }
         }
     });
     t.end();
 });
 
 test('analyze.js output - network', (t) => {
-    let tempFile = tmp.tmpNameSync();
+    let tempFileNamePrefix = tmp.tmpNameSync();
     analyser({
         cc: 'test',
         type: 'network',
         limit: 5,
-        output: tempFile,
+        output: tempFileNamePrefix,
     }, (err) => {
         if (err) throw err;
-        var fixturePath = path.resolve(__dirname, './fixtures/analyze.network-results.csv')
-        if (process.env.UPDATE) {
-            fs.createReadStream(tempFile).pipe(fs.createWriteStream(fixturePath));
-            t.fail('updated fixture');
-        } else {
-            var expected = fs.readFileSync(fixturePath).toString();
-            var actual = fs.readFileSync(tempFile).toString();
-            t.equal(actual, expected, 'output is as expected');
+        var orders = ['bigram'];// TODO'unigram'];
+        for (var i=0;i<orders.length;i++) {
+            var order = orders[i];
+            var tmpOutput = `${tempFileNamePrefix}-${order}.csv`;
+
+            var fixturePath = path.resolve(__dirname, `./fixtures/analyze.network-${order}.csv`);
+            if (process.env.UPDATE) {
+                fs.createReadStream(tmpOutput)
+                  .pipe(fs.createWriteStream(fixturePath));
+                t.fail(`updated network ${order} fixture`);
+            } else {
+                var expected = fs.readFileSync(fixturePath).toString();
+                var actual = fs.readFileSync(tmpOutput).toString();
+                t.equal(actual, expected, `network ${order} output is as expected`);
+            }
         }
     });
     t.end();
