@@ -32,11 +32,11 @@ test('Init db', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (1, 'akoko st', 'akoko', 'Akoko Street', 10, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
-            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (2, 'wong ho ln', 'wong ho', 'Wong Ho Lane', 12, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
-            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (2, 'pier 1', 'pier 1', 'Pier 1', 14, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
-            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (2, 'main st', 'main', 'Main St', 14, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
-            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (3, 'fake st', 'fake', 'Fake St', 12, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
+            INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES (1, '{"akoko st"}', '{"akoko"}', '{"Akoko Street"}');
+            INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES (2, '{"wong ho ln"}', '{"wong ho"}', '{"Wong Ho Lane"}');
+            INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES (2, '{"pier 1"}', '{"pier 1"}', '{"Pier 1"}');
+            INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES (2, '{"main st"}', '{"main"}', '{"Main St"}');
+            INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES (3, '{"fake st"}', '{"fake"}', '{"Fake St"}');
             COMMIT;
         `, (err, res) => {
             t.error(err);
