@@ -107,6 +107,7 @@ test('frequencyDistribution check', (t) => {
 });
 
 test('analyze.js output - address', (t) => {
+    var popQ = Queue(1);
     let tempFileNamePrefix = tmp.tmpNameSync();
     analyser({
         cc: 'test',
@@ -130,23 +131,26 @@ test('analyze.js output - address', (t) => {
                 var actual = fs.readFileSync(tmpOutput).toString();
                 t.equal(actual, expected, `address ${order} output is as expected`);
             }
-            pool.query(`SELECT * FROM address_${order}s;`, (query_err, res) => {
-                if (query_err) {
-                    throw query_err;
-                }
-                var results = [];
+            popQ.defer((done) => {
+                pool.query(`SELECT * FROM address_${order}s;`, (err, res) => {
+                    t.error(err);
+                    var results = [];
 
-                for (j=0;j<res.rows.length;j++) {
-                    results.push(res.rows[j]);
-                }
-                if (results.length <= 0) {
-                    t.fail(`no results returned from address_${order}s`);
-                }
-                t.deepEqual(results, freqDist[`${order}_sql`], `SQL table address_${order}s has expected values`);
+                    for (j=0;j<res.rows.length;j++) {
+                        results.push(res.rows[j]);
+                    }
+                    if (results.length <= 0) {
+                        t.fail(`no results returned from address_${order}s`);
+                    }
+                    t.deepEqual(results, freqDist[`${order}_sql`], `SQL table address_${order}s has expected values`);
+                    return done();
+                });
             });
         }
-        t.end();
-
+        popQ.await((err) => {
+            t.error(err);
+            t.end();
+        });
     });
 });
 
