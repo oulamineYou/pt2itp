@@ -1,3 +1,11 @@
-w1,w2,frequency,likelihoodRatio
-main,street,1,4.498681156950466
-fake,avenue,1,4.498681156950466
+word,frequency
+akoko,1
+street,1
+wong,1
+ho,1
+lane,1
+pier,1
+1,1
+main,1
+st,2
+fake,1

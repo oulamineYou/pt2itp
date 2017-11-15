@@ -115,7 +115,7 @@ test('analyze.js output - address', (t) => {
         output: tempFileNamePrefix
     }, (err) => {
         if (err) throw err;
-        var orders = ['bigram']; //TODO 'unigram'];
+        var orders = ['bigram', 'unigram'];
         for (var i=0;i<orders.length;i++) {
             var order = orders[i];
             var tmpOutput = `${tempFileNamePrefix}-${order}.csv`;
