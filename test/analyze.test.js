@@ -63,7 +63,7 @@ test('Init db', (t) => {
             INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (1, 1, 'Akoko Street', 'Akoko');
             INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (2, 1, 'Wong Ho Lane', 'Wong Ho');
             INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (3, 2, 'Pier 1',       'Pier 1');
-            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (4, 3, 'Main St',      'First');
+            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (4, 3, 'Main St',      'Main');
             INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (5, 3, 'Fake St',      'Fake');
             COMMIT;
         `, (err, res) => {
@@ -130,27 +130,20 @@ test('analyze.js output - address', (t) => {
                 var actual = fs.readFileSync(tmpOutput).toString();
                 t.equal(actual, expected, `address ${order} output is as expected`);
             }
-            pool.query(`SELECT * FROM address_${order}s;`, (err,res) => {
-                if (err) {
-                    throw err;
+            pool.query(`SELECT * FROM address_${order}s;`, (query_err, res) => {
+                if (query_err) {
+                    throw query_err;
                 }
                 var results = [];
 
                 for (j=0;j<res.rows.length;j++) {
-                    d = res.rows[j];
-                    results.push({
-                        "w1": d.w1,
-                        "w2": d.w2,
-                        "frequency": d.frequency,
-                        "likelihoodRatio": d.likelihood_ratio
-                    });
+                    results.push(res.rows[j]);
                 }
                 if (results.length <= 0) {
                     t.fail(`no results returned from address_${order}s`);
                 }
                 t.deepEqual(results, freqDist[`${order}_sql`], `SQL table address_${order}s has expected values`);
             });
-
         }
         t.end();
 
@@ -181,9 +174,23 @@ test('analyze.js output - network', (t) => {
                 var actual = fs.readFileSync(tmpOutput).toString();
                 t.equal(actual, expected, `network ${order} output is as expected`);
             }
+            pool.query(`SELECT * FROM network_${order}s;`, (err,res) => {
+                if (err) {
+                    throw err;
+                }
+                var results = [];
+
+                for (j=0;j<res.rows.length;j++) {
+                    results.push(res.rows[j]);
+                }
+                if (results.length <= 0) {
+                    t.fail(`no results returned from network_${order}s`);
+                }
+                t.deepEqual(results, freqDist[`${order}_sql`], `SQL table network_${order}s has expected values`);
+            });
         }
+        t.end();
     });
-    t.end();
 });
 
 test('end connection', (t) => {
