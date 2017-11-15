@@ -6,6 +6,8 @@ const fs = require('fs');
 const tmp = require('tmp');
 const test = require('tape');
 const Queue = require('d3-queue').queue;
+const Cluster = require('../lib/cluster');
+const Index = require('../lib/index');
 
 const pool = new pg.Pool({
     max: 3,
@@ -14,33 +16,18 @@ const pool = new pg.Pool({
     idleTimeoutMillis: 3000
 });
 
-test('Drop tables if exist', (t) => {
-    pool.query(`
-        BEGIN;
-        DROP TABLE IF EXISTS network_cluster;
-        DROP TABLE IF EXISTS address_cluster;
-        COMMIT;
-    `, (err, res) => {
+const cluster = new Cluster({ pool: pool });
+const index = new Index(pool);
+
+test('Drop/Init Database', (t) => {
+    index.init((err, res) => {
         t.error(err);
         t.end();
     });
 });
 
 test('Init db', (t) => {
-    var popQ = Queue(1);
-
-    popQ.defer((done) => {
-        pool.query(`
-            BEGIN;
-            DROP TABLE IF EXISTS address_cluster;
-            CREATE TABLE address_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, number TEXT, geom GEOMETRY(MULTIPOINT, 4326));
-            CREATE TABLE network_cluster (id SERIAL, text TEXT, text_tokenless TEXT, _text TEXT, address INT, geom GEOMETRY(MULTILINESTRING, 4326), buffer GEOMETRY(POLYGON, 4326), source_ids BIGINT[]);
-            COMMIT;
-        `, (err, res) => {
-            t.error(err);
-            return done();
-        });
-    });
+    const popQ = new Queue(1);
 
     popQ.defer((done) => {
         pool.query(`
