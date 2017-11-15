@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v13.1.0
+
+- :rocket: Separate `DIST` errors in `test` and `testcsv` into `DIST` and `DIST (STREET` for easier visual classification
+
 ### v13.0.1
 
 - :rocket: Update locked deps
