@@ -11,10 +11,8 @@ const pool = new pg.Pool({
     max: 3,
     user: 'postgres',
     database: 'pt_test',
-    idleTimeoutMillis: 3
+    idleTimeoutMillis: 3000
 });
-
-pool.on("end", () => { throw Error; });
 
 test('Drop tables if exist', (t) => {
     pool.query(`
@@ -47,8 +45,11 @@ test('Init db', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (1, 'main st', 'main', 'Main Street', 10, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
-            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (2, 'fake av', 'fake', 'Fake Avenue', 12, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
+            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (1, 'akoko st', 'akoko', 'Akoko Street', 10, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
+            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (2, 'wong ho ln', 'wong ho', 'Wong Ho Lane', 12, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
+            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (2, 'pier 1', 'pier 1', 'Pier 1', 14, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
+            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (2, 'main st', 'main', 'Main St', 14, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
+            INSERT INTO address_cluster (id, text, text_tokenless, _text, number, geom) VALUES (3, 'fake st', 'fake', 'Fake St', 12, ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249 ] }'), 4326)));
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -81,7 +82,11 @@ test('Init db', (t) => {
 test('Results from extractTextField', (t) => {
     analyser.extractTextField('address', 5, pool, (err, data) => {
         t.error(err);
-        t.deepEquals(data, [ 'Main Street', 'Fake Avenue' ], 'extracted text is correct');
+        t.deepEquals(
+            data,
+            [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ],
+            'extracted text is correct'
+        );
         t.end();
     });
 });
@@ -125,21 +130,31 @@ test('analyze.js output - address', (t) => {
                 var actual = fs.readFileSync(tmpOutput).toString();
                 t.equal(actual, expected, `address ${order} output is as expected`);
             }
-            var results = pool.query(`SELECT * FROM address_${order}s;`, (err,res) => {
+            pool.query(`SELECT * FROM address_${order}s;`, (err,res) => {
                 if (err) {
                     throw err;
                 }
-                return res.rows;
+                var results = [];
+
+                for (j=0;j<res.rows.length;j++) {
+                    d = res.rows[j];
+                    results.push({
+                        "w1": d.w1,
+                        "w2": d.w2,
+                        "frequency": d.frequency,
+                        "likelihoodRatio": d.likelihood_ratio
+                    });
+                }
+                if (results.length <= 0) {
+                    t.fail(`no results returned from address_${order}s`);
+                }
+                t.deepEqual(results, freqDist[`${order}_sql`], `SQL table address_${order}s has expected values`);
             });
 
-            if (results.length <= 0){
-                t.fail(`no results returned from address_${order}s`);
-            }
-
-            t.equal(results, freqDist[order], `SQL table address_${order}s has expected values`);
         }
+        t.end();
+
     });
-    t.end();
 });
 
 test('analyze.js output - network', (t) => {
