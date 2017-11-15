@@ -94,7 +94,7 @@ test('frequencyDistribution check', (t) => {
 });
 
 test('analyze.js output - address', (t) => {
-    var popQ = Queue(1);
+    var popQ = new Queue(1);
     let tempFileNamePrefix = tmp.tmpNameSync();
     analyser({
         cc: 'test',
@@ -144,7 +144,7 @@ test('analyze.js output - address', (t) => {
 });
 
 test('analyze.js output - network', (t) => {
-    var popQ = Queue(1);
+    var popQ = new Queue(1);
     let tempFileNamePrefix = tmp.tmpNameSync();
     analyser({
         cc: 'test',

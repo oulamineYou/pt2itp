@@ -18,13 +18,13 @@ module.exports.bigram_sql = [
 
 module.exports.unigram = module.exports.unigram_sql = [
   { word: 'akoko', frequency: 1 },
-  { word: 'street',   frequency: 1 },
-  { word: 'wong',       frequency: 1 },
-  { word: 'ho',   frequency: 1 },
-  { word: 'lane',   frequency: 1 },
-  { word: 'pier',   frequency: 1 },
-  { word: '1',   frequency: 1 },
-  { word: 'main',   frequency: 1 },
-  { word: 'st',   frequency: 2 },
-  { word: 'fake',   frequency: 1  }
+  { word: 'street', frequency: 1 },
+  { word: 'wong', frequency: 1 },
+  { word: 'ho', frequency: 1 },
+  { word: 'lane', frequency: 1 },
+  { word: 'pier', frequency: 1 },
+  { word: '1', frequency: 1 },
+  { word: 'main', frequency: 1 },
+  { word: 'st', frequency: 2 },
+  { word: 'fake', frequency: 1 }
 ];
