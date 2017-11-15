@@ -132,17 +132,19 @@ test('analyze.js output - address', (t) => {
                 t.equal(actual, expected, `address ${order} output is as expected`);
             }
             popQ.defer((done) => {
-                pool.query(`SELECT * FROM address_${order}s;`, (err, res) => {
+                var o = order;
+                pool.query(`SELECT * FROM address_${o}s;`, (err, res) => {
                     t.error(err);
                     var results = [];
 
-                    for (j=0;j<res.rows.length;j++) {
+                    for (var j=0;j<res.rows.length;j++) {
+                        //d = res.rows[j]
                         results.push(res.rows[j]);
                     }
                     if (results.length <= 0) {
-                        t.fail(`no results returned from address_${order}s`);
+                        t.fail(`no results returned from address_${o}s`);
                     }
-                    t.deepEqual(results, freqDist[`${order}_sql`], `SQL table address_${order}s has expected values`);
+                    t.deepEqual(results, freqDist[`${o}_sql`], `SQL table address_${o}s has expected values`);
                     return done();
                 });
             });
@@ -155,6 +157,7 @@ test('analyze.js output - address', (t) => {
 });
 
 test('analyze.js output - network', (t) => {
+    var popQ = Queue(1);
     let tempFileNamePrefix = tmp.tmpNameSync();
     analyser({
         cc: 'test',
@@ -163,7 +166,7 @@ test('analyze.js output - network', (t) => {
         output: tempFileNamePrefix,
     }, (err) => {
         if (err) throw err;
-        var orders = ['bigram'];// TODO'unigram'];
+        var orders = ['bigram', 'unigram'];
         for (var i=0;i<orders.length;i++) {
             var order = orders[i];
             var tmpOutput = `${tempFileNamePrefix}-${order}.csv`;
@@ -178,22 +181,27 @@ test('analyze.js output - network', (t) => {
                 var actual = fs.readFileSync(tmpOutput).toString();
                 t.equal(actual, expected, `network ${order} output is as expected`);
             }
-            pool.query(`SELECT * FROM network_${order}s;`, (err,res) => {
-                if (err) {
-                    throw err;
-                }
-                var results = [];
+            popQ.defer((done) => {
+                var o = order;
+                pool.query(`SELECT * FROM network_${o}s;`, (err, res) => {
+                    t.error(err);
+                    var results = [];
 
-                for (j=0;j<res.rows.length;j++) {
-                    results.push(res.rows[j]);
-                }
-                if (results.length <= 0) {
-                    t.fail(`no results returned from network_${order}s`);
-                }
-                t.deepEqual(results, freqDist[`${order}_sql`], `SQL table network_${order}s has expected values`);
+                    for (var j=0;j<res.rows.length;j++) {
+                        results.push(res.rows[j]);
+                    }
+                    if (results.length <= 0) {
+                        t.fail(`no results returned from network_${o}s`);
+                    }
+                    t.deepEqual(results, freqDist[`${o}_sql`], `SQL table network_${o}s has expected values`);
+                    return done();
+                });
             });
         }
-        t.end();
+        popQ.await((err) => {
+            t.error(err);
+            t.end();
+        });
     });
 });
 
