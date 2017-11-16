@@ -29,6 +29,8 @@ test('Drop/Init Database', (t) => {
 test('Init db', (t) => {
     const popQ = new Queue(1);
 
+    // TODO: new values that will have differences
+
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
@@ -156,6 +158,26 @@ test('analyze.js output - address', (t) => {
 
 test('analyze.js output - network', (t) => {
     testOutputs('network', t);
+});
+
+test('analyze.js comparison', (t) => {
+    let tempFileName = tmp.tmpNameSync();
+    analyser(
+        {cc: 'test', compare: true, output: tempFileName},
+        (err) => {
+            if (err) throw err;
+            let popQ = new Queue(1);
+
+            popQ.defer((done) => {
+                done();
+            });
+            // TODO tests
+            popQ.await((err) => {
+                if (err) t.error(err);
+                t.end();
+            });
+        }
+    );
 });
 
 test('end connection', (t) => {
