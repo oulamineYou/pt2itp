@@ -10,6 +10,12 @@
 
 ## Version History
 
+### v13.1.1
+
+- :arrow_up: Update Assembly Frontend Dep
+- :arrow_up: Update Mapbox-GL-Js
+- :rocket: Misc UI Fixes
+
 ### v13.1.0
 
 - :rocket: Separate `DIST` errors in `test` and `testcsv` into `DIST` and `DIST (STREET` for easier visual classification
