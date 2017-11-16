@@ -94,102 +94,65 @@ test('frequencyDistribution check', (t) => {
 });
 
 test('analyze.js output - address', (t) => {
-    var popQ = new Queue(1);
-    let tempFileNamePrefix = tmp.tmpNameSync();
-    analyser({
-        cc: 'test',
-        type: 'address',
-        limit: 5,
-        output: tempFileNamePrefix
-    }, (err) => {
-        if (err) throw err;
-        var orders = ['bigram', 'unigram'];
-        for (var i=0;i<orders.length;i++) {
-            var order = orders[i];
-            var tmpOutput = `${tempFileNamePrefix}-${order}.csv`;
+    let popQ = new Queue(1);
 
-            var fixturePath = path.resolve(__dirname, `./fixtures/analyze.address-${order}.csv`);
-            if (process.env.UPDATE) {
-                fs.createReadStream(tmpOutput)
-                  .pipe(fs.createWriteStream(fixturePath));
-                t.fail(`updated address ${order} fixture`);
-            } else {
-                var expected = fs.readFileSync(fixturePath).toString();
-                var actual = fs.readFileSync(tmpOutput).toString();
-                t.equal(actual, expected, `address ${order} output is as expected`);
+    function checkOutput(order, type, tempFileNamePrefix, cb) {
+        let tmpOutput = `${tempFileNamePrefix}-${order}.csv`;
+
+        let fixturePath = path.resolve(__dirname, `./fixtures/analyze.address-${order}.csv`);
+        if (process.env.UPDATE) {
+            fs.createReadStream(tmpOutput)
+              .pipe(fs.createWriteStream(fixturePath));
+            t.fail(`updated address ${order} fixture`);
+        } else {
+            let expected = fs.readFileSync(fixturePath).toString();
+            let actual = fs.readFileSync(tmpOutput).toString();
+            t.deepEqual(actual, expected, `address ${order} output is as expected`);
+        }
+        return cb();
+    }
+
+    function checkTable(order, type, cb) {
+        let q=`SELECT * FROM ${type}_${order}s;`;
+        pool.query(q, (err, res) => {
+            t.error(err);
+            let results = [];
+
+            for (let j=0;j<res.rows.length;j++) {
+                //d = res.rows[j]
+                results.push(res.rows[j]);
             }
-            popQ.defer((done) => {
-                var o = order;
-                pool.query(`SELECT * FROM address_${o}s;`, (err, res) => {
-                    t.error(err);
-                    var results = [];
+            if (results.length <= 0) {
+                t.fail(`no results returned from ${type}_${order}s. query was "${q}"`);
+            }
+            t.deepEqual(results, freqDist[`${order}_sql`], `SQL table ${type}_${order}s has expected values`);
+            return cb();
+        });
+    }
 
-                    for (var j=0;j<res.rows.length;j++) {
-                        //d = res.rows[j]
-                        results.push(res.rows[j]);
-                    }
-                    if (results.length <= 0) {
-                        t.fail(`no results returned from address_${o}s`);
-                    }
-                    t.deepEqual(results, freqDist[`${o}_sql`], `SQL table address_${o}s has expected values`);
-                    return done();
-                });
+    function doChecks(type, tempFileNamePrefix) {
+        let orders = ['bigram', 'unigram'];
+        for (let j=0;j<orders.length;j++) {
+            let order = orders[j];
+            popQ.defer(checkOutput, order, type, tempFileNamePrefix);
+            popQ.defer(checkTable, order, type);
+        }
+    }
+
+
+    let tempFileNamePrefix = tmp.tmpNameSync();
+    let type = 'address';
+    analyser(
+        {cc: 'test', type: 'address', limit: 5, output: tempFileNamePrefix},
+        (err) => {
+            if (err) throw err;
+            doChecks(type, tempFileNamePrefix);
+            popQ.await((err) => {
+                t.error(err);
+                t.end();
             });
         }
-        popQ.await((err) => {
-            t.error(err);
-            t.end();
-        });
-    });
-});
-
-test('analyze.js output - network', (t) => {
-    var popQ = new Queue(1);
-    let tempFileNamePrefix = tmp.tmpNameSync();
-    analyser({
-        cc: 'test',
-        type: 'network',
-        limit: 5,
-        output: tempFileNamePrefix,
-    }, (err) => {
-        if (err) throw err;
-        var orders = ['bigram', 'unigram'];
-        for (var i=0;i<orders.length;i++) {
-            var order = orders[i];
-            var tmpOutput = `${tempFileNamePrefix}-${order}.csv`;
-
-            var fixturePath = path.resolve(__dirname, `./fixtures/analyze.network-${order}.csv`);
-            if (process.env.UPDATE) {
-                fs.createReadStream(tmpOutput)
-                  .pipe(fs.createWriteStream(fixturePath));
-                t.fail(`updated network ${order} fixture`);
-            } else {
-                var expected = fs.readFileSync(fixturePath).toString();
-                var actual = fs.readFileSync(tmpOutput).toString();
-                t.equal(actual, expected, `network ${order} output is as expected`);
-            }
-            popQ.defer((done) => {
-                var o = order;
-                pool.query(`SELECT * FROM network_${o}s;`, (err, res) => {
-                    t.error(err);
-                    var results = [];
-
-                    for (var j=0;j<res.rows.length;j++) {
-                        results.push(res.rows[j]);
-                    }
-                    if (results.length <= 0) {
-                        t.fail(`no results returned from network_${o}s`);
-                    }
-                    t.deepEqual(results, freqDist[`${o}_sql`], `SQL table network_${o}s has expected values`);
-                    return done();
-                });
-            });
-        }
-        popQ.await((err) => {
-            t.error(err);
-            t.end();
-        });
-    });
+    );
 });
 
 test('end connection', (t) => {
