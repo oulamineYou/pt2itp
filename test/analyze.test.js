@@ -93,26 +93,25 @@ test('frequencyDistribution check', (t) => {
     });
 });
 
-test('analyze.js output - address', (t) => {
-    let popQ = new Queue(1);
 
-    function checkOutput(order, type, tempFileNamePrefix, cb) {
+function testOutputs(type, t) {
+    function checkCSV(order, type, tempFileNamePrefix, t, cb) {
         let tmpOutput = `${tempFileNamePrefix}-${order}.csv`;
 
         let fixturePath = path.resolve(__dirname, `./fixtures/analyze.address-${order}.csv`);
         if (process.env.UPDATE) {
             fs.createReadStream(tmpOutput)
               .pipe(fs.createWriteStream(fixturePath));
-            t.fail(`updated address ${order} fixture`);
+            t.fail(`updated ${type} ${order} fixture`);
         } else {
             let expected = fs.readFileSync(fixturePath).toString();
             let actual = fs.readFileSync(tmpOutput).toString();
-            t.deepEqual(actual, expected, `address ${order} output is as expected`);
+            t.deepEqual(actual, expected, `${type} ${order} output is as expected`);
         }
         return cb();
     }
 
-    function checkTable(order, type, cb) {
+    function checkTable(order, type, t, cb) {
         let q=`SELECT * FROM ${type}_${order}s;`;
         pool.query(q, (err, res) => {
             t.error(err);
@@ -130,29 +129,33 @@ test('analyze.js output - address', (t) => {
         });
     }
 
-    function doChecks(type, tempFileNamePrefix) {
-        let orders = ['bigram', 'unigram'];
-        for (let j=0;j<orders.length;j++) {
-            let order = orders[j];
-            popQ.defer(checkOutput, order, type, tempFileNamePrefix);
-            popQ.defer(checkTable, order, type);
-        }
-    }
-
+    let popQ = new Queue(1);
 
     let tempFileNamePrefix = tmp.tmpNameSync();
-    let type = 'address';
     analyser(
-        {cc: 'test', type: 'address', limit: 5, output: tempFileNamePrefix},
+        {cc: 'test', type: type, limit: 5, output: tempFileNamePrefix},
         (err) => {
             if (err) throw err;
-            doChecks(type, tempFileNamePrefix);
+            let orders = ['bigram', 'unigram'];
+            for (let j=0;j<orders.length;j++) {
+                let order = orders[j];
+                popQ.defer(checkCSV, order, type, tempFileNamePrefix, t);
+                popQ.defer(checkTable, order, type, t);
+            }
             popQ.await((err) => {
                 t.error(err);
                 t.end();
             });
         }
     );
+}
+
+test('analyze.js output - address', (t) => {
+    testOutputs('address', t);
+});
+
+test('analyze.js output - network', (t) => {
+    testOutputs('network', t);
 });
 
 test('end connection', (t) => {
