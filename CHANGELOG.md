@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v13.1.2
+
+- :pencil2: Add `analyze` command to `--help` menu
+
 ### v13.1.1
 
 - :arrow_up: Update Assembly Frontend Dep
