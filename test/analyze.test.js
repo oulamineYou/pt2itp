@@ -21,7 +21,7 @@ const index = new Index(pool);
 
 test('Drop/Init Database', (t) => {
     index.init((err, res) => {
-        t.error(err);
+        if (err) t.error(err);
         t.end();
     });
 });
@@ -39,7 +39,7 @@ test('Init db', (t) => {
             INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES (3, '{"fake st"}', '{"fake"}', '{"Fake St"}');
             COMMIT;
         `, (err, res) => {
-            t.error(err);
+            if (err) t.error(err);
             return done();
         });
     });
@@ -54,13 +54,13 @@ test('Init db', (t) => {
             INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (5, 3, 'Fake St',      'Fake');
             COMMIT;
         `, (err, res) => {
-            t.error(err);
+            if (err) t.error(err);
             return done();
         });
     });
 
     popQ.await((err) => {
-        t.error(err);
+        if (err) t.error(err);
         t.end();
     });
 
@@ -68,7 +68,7 @@ test('Init db', (t) => {
 
 test('Results from extractTextField', (t) => {
     analyser.extractTextField('address', 5, pool, (err, data) => {
-        t.error(err);
+        if (err) t.error(err);
         t.deepEquals(
             data,
             [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ],
@@ -114,7 +114,7 @@ function testOutputs(type, t) {
     function checkTable(order, type, t, cb) {
         let q=`SELECT * FROM ${type}_${order}s;`;
         pool.query(q, (err, res) => {
-            t.error(err);
+            if (err) t.error(err);
             let results = [];
 
             for (let j=0;j<res.rows.length;j++) {
@@ -143,7 +143,7 @@ function testOutputs(type, t) {
                 popQ.defer(checkTable, order, type, t);
             }
             popQ.await((err) => {
-                t.error(err);
+                if (err) t.error(err);
                 t.end();
             });
         }
