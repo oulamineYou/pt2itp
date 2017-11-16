@@ -73,7 +73,7 @@
     </div>
 
     <!-- JSON Response -->
-    <div id='json' class='left-pane w-full w480-mm none'>
+    <div id='json' class='left-pane w-full w600-mm none'>
         <div class='fill-light pad4'>
             <button id='copyJsonButton' data-clipboard-target='#feat-json' class='copyButton fr btn h36 round bg-gray-light transition bg-gray-dark-on-hover'><svg class='icon'><use xlink:href='#icon-clipboard'/></svg></button>
             <div id='json-default' class='pad4'>
@@ -98,11 +98,10 @@
             container: 'map', // container id
             style: 'mapbox://styles/mapbox/streets-v9' //stylesheet location
         });
-        map.addControl(new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken
-        }));
 
-        map.on('style.load', function () {
+        map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken }));
+
+        map.on('load', function() {
             ['addr', 'itp', 'addr-debug', 'itp-debug'].forEach((layer) =>  {
                 map.addSource(layer, {
                     "type": "geojson",
