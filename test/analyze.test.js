@@ -34,11 +34,14 @@ test('Init db', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES (1, '{"akoko st"}', '{"akoko"}', '{"Akoko Street"}');
-            INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES (2, '{"wong ho ln"}', '{"wong ho"}', '{"Wong Ho Lane"}');
-            INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES (2, '{"pier 1"}', '{"pier 1"}', '{"Pier 1"}');
-            INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES (2, '{"main st"}', '{"main"}', '{"Main St"}');
-            INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES (3, '{"fake st"}', '{"fake"}', '{"Fake St"}');
+            INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES
+                (1, '{"akoko st"}', '{"akoko"}', '{"Akoko Street", "Akoko Rd"}'),
+                (2, '{"wong ho ln"}', '{"wong ho"}', '{"Wong Ho Lane"}'),
+                (3, '{"pier 1"}', '{"pier 1"}', '{"Pier 1"}'),
+                (4, '{"main st"}', '{"main"}', '{"Main St"}'),
+                (5, '{"fake st"}', '{"fake"}', '{"Fake St"}'),
+                (6, '{"elm way"}', '{"elm"}', '{"Elm Way"}'),
+                (7, '{"evergreen tr"}', '{"evergreen"}', '{"Evergreen Terrace"}');
             COMMIT;
         `, (err, res) => {
             if (err) t.error(err);
@@ -49,11 +52,12 @@ test('Init db', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (1, 1, 'Akoko Street', 'Akoko');
-            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (2, 1, 'Wong Ho Lane', 'Wong Ho');
-            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (3, 2, 'Pier 1',       'Pier 1');
-            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (4, 3, 'Main St',      'Main');
-            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES (5, 3, 'Fake St',      'Fake');
+            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES
+                (1, 1, 'Akoko Street', 'Akoko'),
+                (2, 1, 'Wong Ho Lane', 'Wong Ho'),
+                (3, 2, 'Pier 1',       'Pier 1'),
+                (4, 3, 'Main St',      'Main'),
+                (5, 3, 'Fake St',      'Fake');
             COMMIT;
         `, (err, res) => {
             if (err) t.error(err);
@@ -73,7 +77,7 @@ test('Results from extractTextField', (t) => {
         if (err) t.error(err);
         t.deepEquals(
             data,
-            [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ],
+            ['Akoko Street', 'Akoko Rd', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ],
             'extracted text is correct'
         );
         t.end();
@@ -90,7 +94,7 @@ test('format data from text extraction', (t) => {
 test('frequencyDistribution check', (t) => {
     let fixtures = [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ];
     analyser.frequencyDistributionMunger(fixtures, (err, data) => {
-        t.deepEquals([...data.score_ngrams('likelihoodRatio')], freqDist.bigram, 'expected frequency distribution');
+        t.deepEquals([...data.score_ngrams('likelihoodRatio')], freqDist.network_bigram, 'expected frequency distribution');
         t.end();
     });
 });
@@ -126,7 +130,7 @@ function testOutputs(type, t) {
             if (results.length <= 0) {
                 t.fail(`no results returned from ${type}_${order}s. query was "${q}"`);
             }
-            t.deepEqual(results, freqDist[`${order}_sql`], `SQL table ${type}_${order}s has expected values`);
+            t.deepEqual(results, freqDist[`${type}_${order}_sql`], `SQL table ${type}_${order}s has expected values`);
             return cb();
         });
     }
