@@ -29,8 +29,6 @@ test('Drop/Init Database', (t) => {
 test('Init db', (t) => {
     const popQ = new Queue(1);
 
-    // TODO: new values that will have differences
-
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
@@ -104,11 +102,10 @@ function testOutputs(type, t) {
     function checkCSV(order, type, tempFileNamePrefix, t, cb) {
         let tmpOutput = `${tempFileNamePrefix}-${order}.csv`;
 
-        let fixturePath = path.resolve(__dirname, `./fixtures/analyze.address-${order}.csv`);
+        let fixturePath = path.resolve(__dirname, `./fixtures/analyze.${type}-${order}.csv`);
         if (process.env.UPDATE) {
-            fs.createReadStream(tmpOutput)
-              .pipe(fs.createWriteStream(fixturePath));
-            t.fail(`updated ${type} ${order} fixture`);
+            fs.createReadStream(tmpOutput).pipe(fs.createWriteStream(fixturePath));
+            t.fail(`updated ${type} ${order} fixture ${fixturePath}`);
         } else {
             let expected = fs.readFileSync(fixturePath).toString();
             let actual = fs.readFileSync(tmpOutput).toString();
