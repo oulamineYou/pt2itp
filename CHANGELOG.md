@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v13.1.3
+
+- :white_check_mark: Add additional `misc#sign` tests
+
 ### v13.1.2
 
 - :pencil2: Add `analyze` command to `--help` menu
