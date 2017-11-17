@@ -32,6 +32,7 @@ test('Init db', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
+            DELETE FROM address_cluster;
             INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES
                 (1, '{"akoko st"}', '{"akoko"}', '{"Akoko Street", "Akoko Rd"}'),
                 (2, '{"wong ho ln"}', '{"wong ho"}', '{"Wong Ho Lane"}'),
@@ -50,12 +51,15 @@ test('Init db', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
+            DELETE FROM network_cluster;
             INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES
                 (1, 1, 'Akoko Street', 'Akoko'),
-                (2, 1, 'Wong Ho Lane', 'Wong Ho'),
-                (3, 2, 'Pier 1',       'Pier 1'),
-                (4, 3, 'Main St',      'Main'),
-                (5, 3, 'Fake St',      'Fake');
+                (2, 2, 'Wong Ho Lane', 'Wong Ho'),
+                (3, 3, 'Pier 1',       'Pier 1'),
+                (4, 4, 'Main St',      'Main'),
+                (5, 5, 'Fake St',      'Fake'),
+                (6, 6, 'Canal St',      'Canal'),
+                (5, 7, 'Lonely Street', 'Lonely');
             COMMIT;
         `, (err, res) => {
             if (err) t.error(err);
@@ -90,7 +94,7 @@ test('format data from text extraction', (t) => {
 });
 
 test('frequencyDistribution check', (t) => {
-    let fixtures = [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ];
+    let fixtures = [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St', 'Canal St', 'Lonely Street'];
     analyser.frequencyDistributionMunger(fixtures, (err, data) => {
         t.deepEquals([...data.score_ngrams('likelihoodRatio')], freqDist.network_bigram, 'expected frequency distribution');
         t.end();
@@ -104,7 +108,8 @@ function testOutputs(type, t) {
 
         let fixturePath = path.resolve(__dirname, `./fixtures/analyze.${type}-${order}.csv`);
         if (process.env.UPDATE) {
-            fs.createReadStream(tmpOutput).pipe(fs.createWriteStream(fixturePath));
+            fs.createReadStream(tmpOutput)
+                .pipe(fs.createWriteStream(fixturePath));
             t.fail(`updated ${type} ${order} fixture ${fixturePath}`);
         } else {
             let expected = fs.readFileSync(fixturePath).toString();
@@ -136,7 +141,7 @@ function testOutputs(type, t) {
 
     let tempFileNamePrefix = tmp.tmpNameSync();
     analyser(
-        {cc: 'test', type: type, limit: 5, output: tempFileNamePrefix},
+        {cc: 'test', type: type, limit: 100, output: tempFileNamePrefix},
         (err) => {
             if (err) throw err;
             let orders = ['bigram', 'unigram'];
