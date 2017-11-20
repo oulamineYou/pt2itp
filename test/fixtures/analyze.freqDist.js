@@ -44,34 +44,35 @@ module.exports = {
 };
 
 module.exports.network_unigram = module.exports.network_unigram_sql = [
-        { word: 'akoko', frequency: 1 },
-        { word: 'street', frequency: 2 },
-        { word: 'wong', frequency: 1 },
-        { word: 'ho', frequency: 1 },
-        { word: 'lane', frequency: 1 },
-        { word: 'pier', frequency: 1 },
-        { word: '1', frequency: 1 },
-        { word: 'main', frequency: 1 },
-        { word: 'st', frequency: 3 },
-        { word: 'fake', frequency: 1 },
-        { word: 'canal', frequency: 1 },
-        { word: 'lonely', frequency: 1 }
-    ];
+    { word: 'akoko', frequency: 1, relative_frequency: 0.0666666666666667 },
+    { word: 'street', frequency: 2, relative_frequency: 0.133333333333333 },
+    { word: 'wong', frequency: 1, relative_frequency: 0.0666666666666667 },
+    { word: 'ho', frequency: 1, relative_frequency: 0.0666666666666667 },
+    { word: 'lane', frequency: 1, relative_frequency: 0.0666666666666667 },
+    { word: 'pier', frequency: 1, relative_frequency: 0.0666666666666667 },
+    { word: '1', frequency: 1, relative_frequency: 0.0666666666666667 },
+    { word: 'main', frequency: 1, relative_frequency: 0.0666666666666667 },
+    { word: 'st', frequency: 3, relative_frequency: 0.2 },
+    { word: 'fake', frequency: 1, relative_frequency: 0.0666666666666667 },
+    { word: 'canal', frequency: 1, relative_frequency: 0.0666666666666667 },
+    { word: 'lonely', frequency: 1, relative_frequency: 0.0666666666666667 }
+];
+
 
 module.exports.address_unigram = module.exports.address_unigram_sql = [
-        { word: 'akoko', frequency: 2 },
-        { word: 'street', frequency: 1 },
-        { word: 'rd', frequency: 1 },
-        { word: 'wong', frequency: 1 },
-        { word: 'ho', frequency: 1 },
-        { word: 'lane', frequency: 1 },
-        { word: 'pier', frequency: 1 },
-        { word: '1', frequency: 1 },
-        { word: 'main', frequency: 1 },
-        { word: 'st', frequency: 2 },
-        { word: 'fake', frequency: 1 },
-        { word: 'elm', frequency: 1 },
-        { word: 'way', frequency: 1 },
-        { word: 'evergreen', frequency: 1 },
-        { word: 'terrace', frequency: 1 }
-    ];
+    { word: 'akoko', frequency: 2, relative_frequency: 0.117647058823529 },
+    { word: 'street', frequency: 1, relative_frequency: 0.0588235294117647 },
+    { word: 'rd', frequency: 1, relative_frequency: 0.0588235294117647 },
+    { word: 'wong', frequency: 1, relative_frequency: 0.0588235294117647 },
+    { word: 'ho', frequency: 1, relative_frequency: 0.0588235294117647 },
+    { word: 'lane', frequency: 1, relative_frequency: 0.0588235294117647 },
+    { word: 'pier', frequency: 1, relative_frequency: 0.0588235294117647 },
+    { word: '1', frequency: 1, relative_frequency: 0.0588235294117647 },
+    { word: 'main', frequency: 1, relative_frequency: 0.0588235294117647 },
+    { word: 'st', frequency: 2, relative_frequency: 0.117647058823529 },
+    { word: 'fake', frequency: 1, relative_frequency: 0.0588235294117647 },
+    { word: 'elm', frequency: 1, relative_frequency: 0.0588235294117647 },
+    { word: 'way', frequency: 1, relative_frequency: 0.0588235294117647 },
+    { word: 'evergreen', frequency: 1, relative_frequency: 0.0588235294117647 },
+    { word: 'terrace', frequency: 1, relative_frequency: 0.0588235294117647 }
+];

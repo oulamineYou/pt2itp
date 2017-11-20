@@ -13,21 +13,21 @@ module.exports.bigram_comparison = [
 ];
 
 module.exports.unigram_comparison = [
-  { word: 'terrace', network_frequency: null, address_frequency: 1, frequency_diff: -1, zscore: '-1.12946491724678318057' },
-  { word: 'akoko', network_frequency: 1, address_frequency: 2, frequency_diff: -1, zscore: '-1.12946491724678318057' },
-  { word: 'evergreen', network_frequency: null, address_frequency: 1, frequency_diff: -1, zscore: '-1.12946491724678318057' },
-  { word: 'rd', network_frequency: null, address_frequency: 1, frequency_diff: -1, zscore: '-1.12946491724678318057' },
-  { word: 'elm', network_frequency: null, address_frequency: 1, frequency_diff: -1, zscore: '-1.12946491724678318057' },
-  { word: 'way', network_frequency: null, address_frequency: 1, frequency_diff: -1, zscore: '-1.12946491724678318057' },
-  { word: 'fake', network_frequency: 1, address_frequency: 1, frequency_diff: 0, zscore: '0.15059532229957109074' },
-  { word: 'main', network_frequency: 1, address_frequency: 1, frequency_diff: 0, zscore: '0.15059532229957109074' },
-  { word: 'wong', network_frequency: 1, address_frequency: 1, frequency_diff: 0, zscore: '0.15059532229957109074' },
-  { word: 'ho', network_frequency: 1, address_frequency: 1, frequency_diff: 0, zscore: '0.15059532229957109074' },
-  { word: 'lane', network_frequency: 1, address_frequency: 1, frequency_diff: 0, zscore: '0.15059532229957109074' },
-  { word: 'pier', network_frequency: 1, address_frequency: 1, frequency_diff: 0, zscore: '0.15059532229957109074' },
-  { word: '1', network_frequency: 1, address_frequency: 1, frequency_diff: 0, zscore: '0.15059532229957109074' },
-  { word: 'st', network_frequency: 3, address_frequency: 2, frequency_diff: 1, zscore: '1.43065556184592536204' },
-  { word: 'street', network_frequency: 2, address_frequency: 1, frequency_diff: 1, zscore: '1.43065556184592536204' },
-  { word: 'canal', network_frequency: 1, address_frequency: null, frequency_diff: 1, zscore: '1.43065556184592536204' },
-  { word: 'lonely', network_frequency: 1, address_frequency: null, frequency_diff: 1, zscore: '1.43065556184592536204' }
+{ word: 'terrace', network_frequency: null, address_frequency: 1, network_relative_frequency: null, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: -0.0588235294117647, zscore: -1.15427310895932 },
+ { word: 'evergreen', network_frequency: null, address_frequency: 1, network_relative_frequency: null, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: -0.0588235294117647, zscore: -1.15427310895932 },
+ { word: 'rd', network_frequency: null, address_frequency: 1, network_relative_frequency: null, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: -0.0588235294117647, zscore: -1.15427310895932 },
+ { word: 'elm', network_frequency: null, address_frequency: 1, network_relative_frequency: null, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: -0.0588235294117647, zscore: -1.15427310895932 },
+ { word: 'way', network_frequency: null, address_frequency: 1, network_relative_frequency: null, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: -0.0588235294117647, zscore: -1.15427310895932 },
+ { word: 'akoko', network_frequency: 1, address_frequency: 2, network_relative_frequency: 0.0666666666666667, address_relative_frequency: 0.117647058823529, relative_frequency_diff: -0.0509803921568627, zscore: -1.00037002776475 },
+ { word: 'fake', network_frequency: 1, address_frequency: 1, network_relative_frequency: 0.0666666666666667, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: 0.00784313725490196, zscore: 0.153903081194576 },
+ { word: 'main', network_frequency: 1, address_frequency: 1, network_relative_frequency: 0.0666666666666667, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: 0.00784313725490196, zscore: 0.153903081194576 },
+ { word: 'wong', network_frequency: 1, address_frequency: 1, network_relative_frequency: 0.0666666666666667, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: 0.00784313725490196, zscore: 0.153903081194576 },
+ { word: 'ho', network_frequency: 1, address_frequency: 1, network_relative_frequency: 0.0666666666666667, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: 0.00784313725490196, zscore: 0.153903081194576 },
+ { word: 'lane', network_frequency: 1, address_frequency: 1, network_relative_frequency: 0.0666666666666667, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: 0.00784313725490196, zscore: 0.153903081194576 },
+ { word: 'pier', network_frequency: 1, address_frequency: 1, network_relative_frequency: 0.0666666666666667, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: 0.00784313725490196, zscore: 0.153903081194576 },
+ { word: '1', network_frequency: 1, address_frequency: 1, network_relative_frequency: 0.0666666666666667, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: 0.00784313725490196, zscore: 0.153903081194576 },
+ { word: 'canal', network_frequency: 1, address_frequency: null, network_relative_frequency: 0.0666666666666667, address_relative_frequency: null, relative_frequency_diff: 0.0666666666666667, zscore: 1.3081761901539 },
+ { word: 'lonely', network_frequency: 1, address_frequency: null, network_relative_frequency: 0.0666666666666667, address_relative_frequency: null, relative_frequency_diff: 0.0666666666666667, zscore: 1.3081761901539 },
+ { word: 'street', network_frequency: 2, address_frequency: 1, network_relative_frequency: 0.133333333333333, address_relative_frequency: 0.0588235294117647, relative_frequency_diff: 0.0745098039215686, zscore: 1.46207927134847 },
+ { word: 'st', network_frequency: 3, address_frequency: 2, network_relative_frequency: 0.2, address_relative_frequency: 0.117647058823529, relative_frequency_diff: 0.0823529411764706, zscore: 1.61598235254305 }
 ];
