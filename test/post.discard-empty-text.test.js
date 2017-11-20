@@ -1,4 +1,4 @@
-const post = require('../lib/post/dedupe-empty-text').post;
+const post = require('../lib/post/discard-empty-text').post;
 const test = require('tape');
 
 test('Post: Dedupe', (t) => {
@@ -31,7 +31,7 @@ test('Post: Dedupe', (t) => {
         properties: {
             'carmen:text': ' '
         }
-    }, false, 'false on empty trimmed string');
+    }), false, 'false on empty trimmed string');
 
     t.end();
 });
