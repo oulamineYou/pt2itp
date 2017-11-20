@@ -20,7 +20,7 @@ module.exports = {
         { w1: 'lonely', w2: 'street', frequency: 1, likelihood_ratio: 4.57531208159928 }
     ],
     address_bigram: [
-	{ w1: 'akoko', w2: 'street', frequency: 1, likelihoodRatio: 4.83382586399857 },
+        { w1: 'akoko', w2: 'street', frequency: 1, likelihoodRatio: 4.83382586399857 },
         { w1: 'akoko', w2: 'rd', frequency: 1, likelihoodRatio: 4.83382586399857 },
         { w1: 'wong', w2: 'ho', frequency: 1, likelihoodRatio: 7.60641458623835 },
         { w1: 'ho', w2: 'lane', frequency: 1, likelihoodRatio: 7.60641458623835 },
@@ -31,7 +31,7 @@ module.exports = {
         { w1: 'evergreen', w2: 'terrace', frequency: 1, likelihoodRatio: 7.60641458623835 }
     ],
     address_bigram_sql: [
-	{ w1: 'akoko', w2: 'street', frequency: 1, likelihood_ratio: 4.83382586399857 },
+        { w1: 'akoko', w2: 'street', frequency: 1, likelihood_ratio: 4.83382586399857 },
         { w1: 'akoko', w2: 'rd', frequency: 1, likelihood_ratio: 4.83382586399857 },
         { w1: 'wong', w2: 'ho', frequency: 1, likelihood_ratio: 7.60641458623835 },
         { w1: 'ho', w2: 'lane', frequency: 1, likelihood_ratio: 7.60641458623835 },

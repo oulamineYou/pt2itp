@@ -103,7 +103,22 @@ test('frequencyDistribution check', (t) => {
 });
 
 
+/**
+ * Tests the outputs of the analyze command where --type is set
+ *
+ * @param {string} type - The type of data to be analyzed. Must be either "network" or "address"
+ * @param {Test} t - a tape.js Test
+ */
 function testOutputs(type, t) {
+    /**
+     * Check that the CSV output is as expected
+     *
+     * @param {string} order - the order of the analysis. Must be one of "bigram" or "unigram"
+     * @param {string} type - The type of data to be analyzed. Must be either "network" or "address"
+     * @param {string} tempFileNamePrefix - The file path prefix for the outputs of analyze
+     * @param {Test} t - a tape.js Test
+     * @param {function} cb - callback
+     */
     function checkCSV(order, type, tempFileNamePrefix, t, cb) {
         let tmpOutput = `${tempFileNamePrefix}-${order}.csv`;
 
@@ -120,6 +135,14 @@ function testOutputs(type, t) {
         return cb();
     }
 
+    /**
+     * Check that the SQL tables populated by analyze are as expected
+     *
+     * @param {string} order - The order of the analysis. Must be one of "bigram" or "unigram"
+     * @param {string} type - The type of data to be analyzed. Must be either "network" or "address"
+     * @param {Test} t - a tape.js Test
+     * @param {function} cb - callback
+     */
     function checkTable(order, type, t, cb) {
         let q=`SELECT * FROM ${type}_${order}s;`;
         pool.query(q, (err, res) => {
@@ -168,6 +191,15 @@ test('analyze.js output - network', (t) => {
 });
 
 test('analyze.js comparison', (t) => {
+    /**
+     * Check that the comparison's CSV output is as expected
+     *
+     * @param {string} order - the order of the analysis. Must be one of "bigram" or "unigram"
+     * @param {string} type - The type of data to be analyzed. Must be either "network" or "address"
+     * @param {string} tempFileNamePrefix - The file path prefix for the outputs of analyze
+     * @param {Test} t - a tape.js Test
+     * @param {function} cb - callback
+     */
     function checkCSV(order, type, tempFileNamePrefix, t, cb) {
         let tmpOutput = `${tempFileNamePrefix}-${type}-${order}.csv`;
 
@@ -184,6 +216,13 @@ test('analyze.js comparison', (t) => {
         return cb();
     }
 
+    /**
+     * Check that the SQL tables populated by analyze are as expected
+     *
+     * @param {string} order - The order of the analysis. Must be one of "bigram" or "unigram"
+     * @param {Test} t - a tape.js Test
+     * @param {function} cb - callback
+     */
     function checkComparison(order, t, cb) {
         let q=`SELECT * FROM ${order}_comparison;`;
         pool.query(q, (err, res) => {
