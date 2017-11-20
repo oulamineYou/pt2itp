@@ -1,5 +1,6 @@
 const analyser = require('../lib/analyze');
 const freqDist = require('./fixtures/analyze.freqDist.js');
+const comparison = require('./fixtures/analyze.comparison.js');
 const path = require('path');
 const pg = require('pg');
 const fs = require('fs');
@@ -167,23 +168,42 @@ test('analyze.js output - network', (t) => {
 });
 
 test('analyze.js comparison', (t) => {
-    let tempFileName = tmp.tmpNameSync();
+    function checkComparison(order, t, cb) {
+        let q=`SELECT * FROM ${order}_comparison;`;
+        pool.query(q, (err, res) => {
+            if (err) t.error(err);
+            let results = [];
+
+            for (let j=0;j<res.rows.length;j++) {
+                //d = res.rows[j]
+                results.push(res.rows[j]);
+            }
+            if (results.length <= 0) {
+                t.fail(`no results returned from ${type}_${order}s. query was "${q}"`);
+            }
+            t.deepEqual(results, comparison[`${order}_comparison`], `SQL table ${order}_comparison has expected values`);
+            return cb();
+        });
+    }
+
+    let popQ = new Queue(1);
+    let tempFileNamePrefix = tmp.tmpNameSync();
     analyser(
-        {cc: 'test', compare: true, output: tempFileName},
+        {cc: 'test', compare: true, output: tempFileNamePrefix},
         (err) => {
             if (err) throw err;
-            let popQ = new Queue(1);
-
-            popQ.defer((done) => {
-                done();
-            });
-            // TODO tests
+            let orders = ['bigram', 'unigram'];
+            for (let j=0;j<orders.length;j++) {
+                let order = orders[j];
+                popQ.defer(checkComparison, order, t);
+            }
             popQ.await((err) => {
                 if (err) t.error(err);
                 t.end();
             });
         }
     );
+
 });
 
 test('end connection', (t) => {
