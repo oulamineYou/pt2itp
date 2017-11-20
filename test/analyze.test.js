@@ -168,6 +168,22 @@ test('analyze.js output - network', (t) => {
 });
 
 test('analyze.js comparison', (t) => {
+    function checkCSV(order, type, tempFileNamePrefix, t, cb) {
+        let tmpOutput = `${tempFileNamePrefix}-${type}-${order}.csv`;
+
+        let fixturePath = path.resolve(__dirname, `./fixtures/analyze.significant-${type}-${order}s.csv`);
+        if (process.env.UPDATE) {
+            fs.createReadStream(tmpOutput)
+                .pipe(fs.createWriteStream(fixturePath));
+            t.fail(`updated ${type} ${order} fixture ${fixturePath}`);
+        } else {
+            let expected = fs.readFileSync(fixturePath).toString();
+            let actual = fs.readFileSync(tmpOutput).toString();
+            t.deepEqual(actual, expected, `${type} ${order} output is as expected`);
+        }
+        return cb();
+    }
+
     function checkComparison(order, t, cb) {
         let q=`SELECT * FROM ${order}_comparison;`;
         pool.query(q, (err, res) => {
@@ -179,7 +195,7 @@ test('analyze.js comparison', (t) => {
                 results.push(res.rows[j]);
             }
             if (results.length <= 0) {
-                t.fail(`no results returned from ${type}_${order}s. query was "${q}"`);
+                t.fail(`no results returned from ${order}_comparison. query was "${q}"`);
             }
             t.deepEqual(results, comparison[`${order}_comparison`], `SQL table ${order}_comparison has expected values`);
             return cb();
@@ -196,6 +212,11 @@ test('analyze.js comparison', (t) => {
             for (let j=0;j<orders.length;j++) {
                 let order = orders[j];
                 popQ.defer(checkComparison, order, t);
+                let types = ['network', 'address'];
+                for (let k=0; k<types.length; k++) {
+                    let type = types[k];
+                    popQ.defer(checkCSV, order, type, tempFileNamePrefix, t);
+                }
             }
             popQ.await((err) => {
                 if (err) t.error(err);
