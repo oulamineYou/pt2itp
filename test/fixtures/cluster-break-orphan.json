@@ -29,22 +29,20 @@
                     }
                 },
                 {
-                    "network": {
-                        "type": "Feature",
-                        "properties": {},
-                        "geometry": {
-                            "type": "LineString",
-                            "coordinates": [
-                                [
-                                    -71.99861168861389,
-                                    41.321855515623234
-                                ],
-                                [
-                                    -71.99479222297668,
-                                    41.32324138883455
-                                ]
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": [
+                            [
+                                -71.99861168861389,
+                                41.321855515623234
+                            ],
+                            [
+                                -71.99479222297668,
+                                41.32324138883455
                             ]
-                        }
+                        ]
                     }
                 }
             ]
