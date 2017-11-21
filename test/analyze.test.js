@@ -167,7 +167,7 @@ function testOutputs(type, t) {
     analyser(
         {cc: 'test', type: type, limit: 100, output: tempFileNamePrefix},
         (err) => {
-            if (err) throw err;
+            if (err) t.error(err);
             let orders = ['bigram', 'unigram'];
             for (let j=0;j<orders.length;j++) {
                 let order = orders[j];
