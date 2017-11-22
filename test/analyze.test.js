@@ -22,7 +22,7 @@ const index = new Index(pool);
 
 test('Drop/Init Database', (t) => {
     index.init((err, res) => {
-        if (err) t.error(err);
+        t.error(err);
         t.end();
     });
 });
@@ -44,7 +44,7 @@ test('Init db', (t) => {
                 (7, '{"evergreen tr"}', '{"evergreen"}', '{"Evergreen Terrace"}');
             COMMIT;
         `, (err, res) => {
-            if (err) t.error(err);
+            t.error(err);
             return done();
         });
     });
@@ -63,13 +63,13 @@ test('Init db', (t) => {
                 (5, 7, 'Lonely Street', 'Lonely');
             COMMIT;
         `, (err, res) => {
-            if (err) t.error(err);
+            t.error(err);
             return done();
         });
     });
 
     popQ.await((err) => {
-        if (err) t.error(err);
+        t.error(err);
         t.end();
     });
 
@@ -77,7 +77,7 @@ test('Init db', (t) => {
 
 test('Results from extractTextField', (t) => {
     analyser.extractTextField('address', 5, pool, (err, data) => {
-        if (err) t.error(err);
+        t.error(err);
         t.deepEquals(
             data,
             ['Akoko Street', 'Akoko Rd', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ],
@@ -146,7 +146,7 @@ function testOutputs(type, t) {
     function checkTable(order, type, t, cb) {
         let q=`SELECT * FROM ${type}_${order}s;`;
         pool.query(q, (err, res) => {
-            if (err) t.error(err);
+            t.error(err);
             let results = [];
 
             for (let j=0;j<res.rows.length;j++) {
@@ -167,7 +167,7 @@ function testOutputs(type, t) {
     analyser(
         {cc: 'test', type: type, limit: 100, output: tempFileNamePrefix},
         (err) => {
-            if (err) t.error(err);
+            t.error(err);
             let orders = ['bigram', 'unigram'];
             for (let j=0;j<orders.length;j++) {
                 let order = orders[j];
@@ -175,7 +175,7 @@ function testOutputs(type, t) {
                 popQ.defer(checkTable, order, type, t);
             }
             popQ.await((err) => {
-                if (err) t.error(err);
+                t.error(err);
                 t.end();
             });
         }
@@ -226,7 +226,7 @@ test('analyze.js comparison', (t) => {
     function checkComparison(order, t, cb) {
         let q=`SELECT * FROM ${order}_comparison;`;
         pool.query(q, (err, res) => {
-            if (err) t.error(err);
+            t.error(err);
             let results = [];
 
             for (let j=0;j<res.rows.length;j++) {
@@ -258,7 +258,7 @@ test('analyze.js comparison', (t) => {
                 }
             }
             popQ.await((err) => {
-                if (err) t.error(err);
+                t.error(err);
                 t.end();
             });
         }
