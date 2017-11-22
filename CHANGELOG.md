@@ -10,6 +10,29 @@
 
 ## Version History
 
+### v13.2.0
+
+- :bug: Ensure all lines are segmented into max seg length
+- :bug: Ensure no features have null/empty text fields
+
+### v13.1.3
+
+- :white_check_mark: Add additional `misc#sign` tests
+
+### v13.1.2
+
+- :pencil2: Add `analyze` command to `--help` menu
+
+### v13.1.1
+
+- :arrow_up: Update Assembly Frontend Dep
+- :arrow_up: Update Mapbox-GL-Js
+- :rocket: Misc UI Fixes
+
+### v13.1.0
+
+- :rocket: Separate `DIST` errors in `test` and `testcsv` into `DIST` and `DIST (STREET` for easier visual classification
+
 ### v13.0.1
 
 - :rocket: Update locked deps
