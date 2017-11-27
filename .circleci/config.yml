@@ -27,20 +27,20 @@ jobs:
 
             - run:
                 name: "yarn install"
-                command: "source ~/.bashrc && yarn install"
+                command: "export NVM_DIR=\"$HOME/.nvm\" && [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\" && yarn install"
             - run:
                 name: "yarn lint"
-                command: "source ~/.bashrc && yarn run lint"
+                command: "export NVM_DIR=\"$HOME/.nvm\" && [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\" && yarn run lint"
             - run:
                 name: "yarn doc"
-                command: "source ~/.bashrc && yarn run doc"
+                command: "export NVM_DIR=\"$HOME/.nvm\" && [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\" && yarn run doc"
             - run:
                 name: "yarn pretest"
-                command: "source ~/.bashrc && yarn run pretest"
+                command: "export NVM_DIR=\"$HOME/.nvm\" && [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\" && yarn run pretest"
             - run:
                 name: "yarn run coverage"
-                command: "source ~/.bashrc && yarn run coverage"
+                command: "export NVM_DIR=\"$HOME/.nvm\" && [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\" && yarn run coverage"
                 no_output_timeout: 12000
             - run:
                 name: "yarn run coverage-upload"
-                command: "source ~/.bashrc && yarn run coverage-upload"
+                command: "export NVM_DIR=\"$HOME/.nvm\" && [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\" && yarn run coverage-upload"
