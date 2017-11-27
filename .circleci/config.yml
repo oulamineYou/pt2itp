@@ -3,13 +3,16 @@ version: 2
 jobs:
     build:
         docker:
-            - image: circleci/node:6.10.3
+            - image: ubuntu/16.04
             - image: mdillon/postgis:9.6
               environment:
                 - POSTGRES_USER=postgres
                 - POSTGRES_DB=pt_test
 
         steps:
+            - run:
+                name: "Install node with nvm"
+                command: "curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash && nvm install 6.10.3"
             - run:
                 name: "Install Yarn & Ubuntu Toolchain PPAs"
                 command: "sudo apt-get install software-properties-common && sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test && curl -sS http://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && echo 'deb http://dl.yarnpkg.com/debian/ stable main' | sudo tee /etc/apt/sources.list.d/yarn.list"
