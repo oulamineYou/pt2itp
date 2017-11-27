@@ -18,7 +18,7 @@ jobs:
                 command: "sudo apt-get -y update && sudo apt-get install -y yarn postgresql-client"
             - run:
                 name: "Add Ubuntu Toolchain PPA, update APT cache, & install libstdc++ v5"
-                command: "sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test && sudo apt-get -y update && sudo apt-get -y install libstdc++-5-dev"
+                command: "sudo apt-get install software-properties-common && sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test && sudo apt-get -y update && sudo apt-get -y install libstdc++-5-dev"
 
             - checkout
 
