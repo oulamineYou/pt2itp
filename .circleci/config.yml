@@ -27,20 +27,20 @@ jobs:
 
             - run:
                 name: "yarn install"
-                command: "yarn install"
+                command: "source ~/.bashrc && yarn install"
             - run:
                 name: "yarn lint"
-                command: "yarn run lint"
+                command: "source ~/.bashrc && yarn run lint"
             - run:
                 name: "yarn doc"
-                command: "yarn run doc"
+                command: "source ~/.bashrc && yarn run doc"
             - run:
                 name: "yarn pretest"
-                command: "yarn run pretest"
+                command: "source ~/.bashrc && yarn run pretest"
             - run:
                 name: "yarn run coverage"
-                command: "yarn run coverage"
+                command: "source ~/.bashrc && yarn run coverage"
                 no_output_timeout: 12000
             - run:
                 name: "yarn run coverage-upload"
-                command: "yarn run coverage-upload"
+                command: "source ~/.bashrc && yarn run coverage-upload"
