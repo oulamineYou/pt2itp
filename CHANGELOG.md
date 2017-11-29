@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v13.2.2
+
+- :bug: Fix Max Callstack Exceeded by switching to pg-copy streams
+
 ### v13.2.1
 
 - :tada: text analysis reporting added. The `analyze` command now produces lists of significant 1-word and 2-word sequences. Both SQL and CSV output.
