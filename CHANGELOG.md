@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v13.3.0
+
+- :tada: Convert all centroid calculations into a post script so they are all run exactly the same
+
 ### v13.2.2
 
 - :bug: Fix Max Callstack Exceeded by switching to pg-copy streams
