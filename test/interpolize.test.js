@@ -173,7 +173,6 @@ test('Interpolize', (t) => {
         type: 'Feature',
         properties: {
             'carmen:text': 'Battleridge Place',
-            'carmen:center':[-77.2106346487999,39.17712917725643],
             'carmen:rangetype':'tiger',
             'carmen:parityl':[ ['O'], null],
             'carmen:lfromhn':[ [1] , null],
