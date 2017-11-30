@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v13.4.0
+
+- :bug: Ensure synonym length does not exceed 10
+
 ### v13.3.0
 
 - :tada: Convert all centroid calculations into a post script so they are all run exactly the same
