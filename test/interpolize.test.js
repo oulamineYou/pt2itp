@@ -641,3 +641,30 @@ test('Interpolize - Hooked Road', (t) => {
     t.end();
 });
 
+test('Interpolize - No address cluster', (t) => {
+    let segs = [{
+        network: {
+            type: "Feature",
+            properties: { },
+            geometry: {
+                type: "LineString",
+                coordinates: [
+                    [ -77.19249486923218, 39.090421398604306 ],
+                    [ -77.19209790229797, 39.09155388949448 ],
+                    [ -77.19150245189667, 39.091428983303274 ]
+                ]
+            }
+        }
+    }];
+
+    let res = interpolize('Tommy Bell Pl', segs);
+    delete res.id;
+
+    if (process.env.UPDATE) {
+        fs.writeFileSync(__dirname + '/fixtures/left-hook-network.json', JSON.stringify(res, null, 4));
+        t.fail('had to update fixture');
+    }
+
+    t.deepEquals(res, require('./fixtures/left-hook-network.json'));
+    t.end();
+});
