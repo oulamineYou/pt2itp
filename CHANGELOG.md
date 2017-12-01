@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v13.5.0
+
+- :tada: Ensure numbered addresses (`1st`, `2nd`, `24th`, ...) are never matched with a textually similiar but non-identical street (`24th st` != `34th st`)
+
 ### v13.4.0
 
 - :bug: Ensure synonym length does not exceed 10
