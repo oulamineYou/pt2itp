@@ -37,7 +37,7 @@ test('Passing Linker Matches', (t) => {
         ]),
         false,
     'no match numeric simple (2nd)');
-    
+
     t.deepEquals(
         linker({ text: '1st st west' }, [
             { id: 1, text: '3rd st west' },
