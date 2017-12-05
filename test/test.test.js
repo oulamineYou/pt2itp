@@ -8,9 +8,9 @@ const path = require('path');
 const pg = require('pg');
 
 const database = 'pt_test';
-const carmenIndex = path.resolve(__dirname, './fixtures/index-ri-single/us_ri-address-both-0d603c2a171017011038-0d603c2a39.mbtiles');
-const output = path.resolve(__dirname, './fixtures/index-ri-single/test-mode-ri-errors.csv');
-const config = path.resolve(__dirname, './fixtures/index-ri-single/index-ri-carmen-config.json');
+const carmenIndex = path.resolve(__dirname, './fixtures/test-ri/index/us_ri-address-both-0d603c2a171017011038-0d603c2a39.mbtiles');
+const output = path.resolve(__dirname, '/tmp/test-ri.err');
+const config = path.resolve(__dirname, './fixtures/test-ri/carmen-config.json');
 
 const pool = new pg.Pool({
     max: 10,
@@ -31,8 +31,8 @@ test('Drop/init database', (t) => {
 // loads address and network data into postgres
 test('load address and network files', (t) => {
     worker({
-        'in-address': './test/fixtures/index-ri-single/address.geojson',
-        'in-network': './test/fixtures/index-ri-single/network.geojson',
+        'in-address': './test/fixtures/test-ri/address.geojson',
+        'in-network': './test/fixtures/test-ri/network.geojson',
         output: '/tmp/itp.geojson',
         debug: true,
         db: database,
