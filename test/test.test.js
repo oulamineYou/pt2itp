@@ -41,6 +41,7 @@ test('load address and network files', (t) => {
         t.error(err);
         t.end();
     });
+    t.end();
 });
 
 test('Run test mode', (t) => {
@@ -68,6 +69,7 @@ test('Run test mode', (t) => {
         });
         st.end();
     });
+    t.end();
 });
 
 test('Drop/init database', (t) => {
