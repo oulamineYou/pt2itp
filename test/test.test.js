@@ -39,7 +39,6 @@ test('load address and network files', (t) => {
         tokens: 'en'
     }, (err, res) => {
         t.error(err);
-        t.end();
     });
     t.end();
 });
@@ -65,7 +64,6 @@ test('Run test mode', (t) => {
             t.equal(csvErr.length, 2);
             t.notEqual(csvErr.map((ele) => ele.error).indexOf('NO RESULTS'), -1);
             t.notEqual(csvErr.map((ele) => ele.error).indexOf('NAME MISMATCH (SOFT)'), -1);
-            t.end();
         });
         st.end();
     });
