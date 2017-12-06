@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v13.6.4
+
+- :white_check_mark: Add integration tests for `testcsv` mode
+
 ### v13.6.3
 
 - :rocket: Don't cluster empty network geometries
