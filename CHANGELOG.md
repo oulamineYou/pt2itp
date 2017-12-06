@@ -10,6 +10,26 @@
 
 ## Version History
 
+### v13.6.3
+
+- :rocket: Don't cluster empty network geometries
+
+### v13.6.2
+
+- :white_check_mark: Add integrations tests for `test` mode
+
+### v13.6.1
+
+- :rocket: fix version clash
+
+### v13.6.0
+
+- :tada: Drops address cluster geometries and properties from combined ITP + address feature when the interpolated line network doesn't match any address clusters
+
+### v13.5.1
+
+- :bug: fix fr token issue
+
 ### v13.5.0
 
 - :tada: Ensure numbered addresses (`1st`, `2nd`, `24th`, ...) are never matched with a textually similiar but non-identical street (`24th st` != `34th st`)
