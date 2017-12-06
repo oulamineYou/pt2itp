@@ -10,6 +10,14 @@
 
 ## Version History
 
+### v13.6.3
+
+- :rocket: Don't cluster empty network geometries
+
+### v13.6.2
+
+- :white_check_mark: Add integrations tests for `test` mode
+
 ### v13.6.1
 
 - :rocket: fix version clash
