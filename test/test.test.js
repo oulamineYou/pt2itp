@@ -9,7 +9,7 @@ const pg = require('pg');
 
 const database = 'pt_test';
 const carmenIndex = path.resolve(__dirname, './fixtures/test-ri/index/us_ri-address-both-0d603c2a171017011038-0d603c2a39.mbtiles');
-const output = path.resolve(__dirname, '/tmp/test-ri.err');
+const output = '/tmp/test-ri.err';
 const config = path.resolve(__dirname, './fixtures/test-ri/carmen-config.json');
 
 const pool = new pg.Pool({
@@ -54,16 +54,16 @@ test('Run test mode', (t) => {
     });
 
     t.test('Return correct error messages in csv', (t) => {
-        let csvErr = [];
+        let csvErrs = [];
 
         csv.fromPath(output, {headers: true})
         .on('data', (data) => {
-            csvErr.push(data);
+            csvErrs.push(data);
         })
-        .on('end', function() {
-            t.equal(csvErr.length, 2);
-            t.notEqual(csvErr.map((ele) => ele.error).indexOf('NO RESULTS'), -1);
-            t.notEqual(csvErr.map((ele) => ele.error).indexOf('NAME MISMATCH (SOFT)'), -1);
+        .on('end', () => {
+            t.equal(csvErrs.length, 2);
+            t.equal(csvErrs.filter(ele => ele.query === '5,greeeeeenview,rd')[0].error, 'NO RESULTS');
+            t.equal(csvErrs.filter(ele => ele['addr text'] === 'Greeeeeenview Rd')[0].error, 'NAME MISMATCH (SOFT)');
             t.end();
         });
     });
