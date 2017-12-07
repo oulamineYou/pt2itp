@@ -146,16 +146,17 @@ test('Osmium', (t) => {
         properties: {
             highway: 'motorway',
             "@id": 3,
-            name: 'name',
-            ref: 'US 66'
+            name: 'State Highway 33'
         },
         geometry: {
             type: 'LineString',
             coordinates: [[0,0],[1,1]]
         }
     },{country: "us", region: "pa"}), [
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'name' }, type: 'Feature' },
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'ROUTE 66' }, type: 'Feature' }], 'US Federal Route');
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'State Highway 33' }, type: 'Feature' },
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'PA 33' }, type: 'Feature' },
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'Pennsylvania Highway 33' }, type: 'Feature' }
+    ], 'NC State Route');
 
     t.deepEquals(map({
         type: 'Feature',
@@ -171,7 +172,9 @@ test('Osmium', (t) => {
         }
     },{country: "us", region: "pa"}), [
         { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'name' }, type: 'Feature' },
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'ROUTE 66' }, type: 'Feature' }], 'US State Route');
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'PA 66' }, type: 'Feature' },
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'Pennsylvania Highway 66' }, type: 'Feature' }
+    ], 'US State Route');
 
     // remove octothorpes from highway names
     t.deepEquals(map({
@@ -188,7 +191,8 @@ test('Osmium', (t) => {
         }
     },{country: "us"}), [
         { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'name' }, type: 'Feature' },
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'HWY 35' }, type: 'Feature' }], 'HWY # replaced');
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'HWY 35' }, type: 'Feature' }
+    ], 'HWY # replaced');
 
     t.end();
 });
