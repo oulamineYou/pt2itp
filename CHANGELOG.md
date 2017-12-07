@@ -8,6 +8,10 @@
 - :arrow_up: when upgrading dependencies
 - :tada: when adding new features
 
+## Pending Publication (next version)
+
+- :bug: `NO RESULT` test output no longer displays query components as comma-separated
+
 ## Version History
 
 ### v13.6.4
