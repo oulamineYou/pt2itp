@@ -49,6 +49,12 @@
   dependencies:
     tape "^4.6.3"
 
+"@mapbox/geojson-area@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@mapbox/geojson-area/-/geojson-area-0.2.2.tgz#18d7814aa36bf23fbbcc379f8e26a22927debf10"
+  dependencies:
+    wgs84 "0.0.0"
+
 "@mapbox/geojsonhint@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@mapbox/geojsonhint/-/geojsonhint-2.0.1.tgz#32dac7300f04b3ebaec74b5ba9853dfb42532354"
@@ -439,7 +445,7 @@
     "@turf/helpers" "^5.0.4"
     "@turf/invariant" "^5.0.4"
 
-"@turf/envelope@*", "@turf/envelope@^5.0.4":
+"@turf/envelope@^5.0.4":
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/@turf/envelope/-/envelope-5.0.4.tgz#d7fe7e2de90f180e97aa5cde33a6ba52935c03d2"
   dependencies:
@@ -477,8 +483,8 @@
     "@turf/meta" "^5.0.4"
 
 "@turf/great-circle@^5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@turf/great-circle/-/great-circle-5.0.4.tgz#fbd4bc2a49e33bb0c646feb5d273e7529609454e"
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/@turf/great-circle/-/great-circle-5.0.6.tgz#d216b2fba4860e6ddaefdaa760392654215da49e"
   dependencies:
     "@turf/helpers" "^5.0.4"
     "@turf/invariant" "^5.0.4"
@@ -499,12 +505,6 @@
     "@turf/helpers" "^5.0.4"
     "@turf/intersect" "*"
     "@turf/invariant" "^5.0.4"
-
-"@turf/inside@*":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@turf/inside/-/inside-5.0.0.tgz#31193c7f1429469bfaa16c6685f54234e59131a0"
-  dependencies:
-    "@turf/invariant" "^5.0.0"
 
 "@turf/inside@^4.7.3":
   version "4.7.3"
@@ -538,15 +538,15 @@
     "@turf/truncate" "^5.0.4"
     turf-jsts "*"
 
-"@turf/invariant@*", "@turf/invariant@^5.0.0", "@turf/invariant@^5.0.4":
+"@turf/invariant@^4.7.3":
+  version "4.7.3"
+  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-4.7.3.tgz#538f367d23c113fc849d70c9a524b8563874601d"
+
+"@turf/invariant@^5.0.4":
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-5.0.4.tgz#1cc305f4de7c0f1bfd9d7c420aac282051262b41"
   dependencies:
     "@turf/helpers" "^5.0.4"
-
-"@turf/invariant@^4.7.3":
-  version "4.7.3"
-  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-4.7.3.tgz#538f367d23c113fc849d70c9a524b8563874601d"
 
 "@turf/isobands@^5.0.4":
   version "5.0.4"
@@ -811,10 +811,10 @@
     "@turf/invariant" "^5.0.4"
 
 "@turf/polygonize@^5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@turf/polygonize/-/polygonize-5.0.4.tgz#ecf6e47bb3a0add8a54505a2d42ebec0e1128ce2"
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/@turf/polygonize/-/polygonize-5.0.6.tgz#982afdb65703de97d57ac78936b3b874c8bd7a36"
   dependencies:
-    polygonize "^1.1.0"
+    "@turf/helpers" "^5.0.4"
 
 "@turf/projection@^5.0.4":
   version "5.0.4"
@@ -5323,16 +5323,6 @@ point-in-polygon@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/point-in-polygon/-/point-in-polygon-1.0.1.tgz#d59b64e8fee41c49458aac82b56718c5957b2af7"
 
-polygonize@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/polygonize/-/polygonize-1.1.0.tgz#a342e18f57351307c6c46f8c58997664333cc2da"
-  dependencies:
-    "@turf/envelope" "*"
-    "@turf/helpers" "*"
-    "@turf/inside" "*"
-    "@turf/invariant" "*"
-    "@turf/meta" "*"
-
 posix-character-classes@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
@@ -6619,8 +6609,8 @@ turf-featurecollection@^1.0.1:
   resolved "https://registry.yarnpkg.com/turf-featurecollection/-/turf-featurecollection-1.0.1.tgz#eccd1cf9124176bfc6db197cbb45d6de55f724c5"
 
 turf-jsts@*:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/turf-jsts/-/turf-jsts-1.1.0.tgz#bb6a5377481c8d3c2bca60abc7710a40728aa7c6"
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/turf-jsts/-/turf-jsts-1.1.2.tgz#e2056ce6072c47ca62f639c5ebc3a66b62952aac"
 
 turf-line-slice-at-intersection@^1.0.1:
   version "1.0.1"
