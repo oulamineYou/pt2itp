@@ -59,7 +59,7 @@ test('Osmium', (t) => {
                 type: 'LineString',
                 coordinates: [[0,0],[1,1]]
             }
-        },{}), [{ geometry: { type: 'LineString', coordinates: [[0,0], [1,1]] }, properties: { id: 1, street: '' }, type: 'Feature' }], `${type} is accepted`);
+        },{}), [{ geometry: { type: 'LineString', coordinates: [[0,0], [1,1]] }, properties: { id: 1, street: '', priority: 0 }, type: 'Feature' }], `${type} is accepted`);
     }
 
     //Streets required to have names as they are lower quality tags
@@ -88,7 +88,7 @@ test('Osmium', (t) => {
                 type: 'LineString',
                 coordinates: [[0,0],[1,1]]
             }
-        },{}), [{ geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 2, street: 'Test' }, type: 'Feature' }], `${type} is accepted w/ name`);
+        },{}), [{ geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 2, street: 'Test', priority: 0 }, type: 'Feature' }], `${type} is accepted w/ name`);
     }
 
     t.deepEquals(map({
@@ -106,10 +106,10 @@ test('Osmium', (t) => {
             coordinates: [[0,0],[1,1]]
         }
     },{}), [
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'name' }, type: 'Feature' },
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'loc_name' }, type: 'Feature' },
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'alt_name' }, type: 'Feature' },
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'ref' }, type: 'Feature' }], 'AltNames');
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'name', priority: 0 }, type: 'Feature' },
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'loc_name', priority: 0 }, type: 'Feature' },
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'alt_name', priority: 0 }, type: 'Feature' },
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'ref', priority: 0 }, type: 'Feature' }], 'AltNames');
 
     t.deepEquals(map({
         type: 'Feature',
@@ -123,9 +123,9 @@ test('Osmium', (t) => {
             coordinates: [[0,0],[1,1]]
         }
     },{}), [
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 4, street: '1 Name' }, type: 'Feature'},
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 4, street: '2 Name' }, type: 'Feature'},
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 4, street: '3 Name' }, type: 'Feature'}
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 4, street: '1 Name', priority: 0 }, type: 'Feature'},
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 4, street: '2 Name', priority: 0 }, type: 'Feature'},
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 4, street: '3 Name', priority: 0 }, type: 'Feature'}
     ], 'OSM ; AltNames');
 
     t.deepEquals(map({
@@ -139,42 +139,7 @@ test('Osmium', (t) => {
             type: 'LineString',
             coordinates: [[0,0],[1,1]]
         }
-    },{}), [{ geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 5, street: '1 Name' }, type: 'Feature' }], 'OSM ; AltNames null');
-
-    t.deepEquals(map({
-        type: 'Feature',
-        properties: {
-            highway: 'motorway',
-            "@id": 3,
-            name: 'State Highway 33'
-        },
-        geometry: {
-            type: 'LineString',
-            coordinates: [[0,0],[1,1]]
-        }
-    },{country: "us", region: "pa"}), [
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'State Highway 33' }, type: 'Feature' },
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'PA 33' }, type: 'Feature' },
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'Pennsylvania Highway 33' }, type: 'Feature' }
-    ], 'NC State Route');
-
-    t.deepEquals(map({
-        type: 'Feature',
-        properties: {
-            highway: 'motorway',
-            "@id": 3,
-            name: 'name',
-            ref: 'PA 66'
-        },
-        geometry: {
-            type: 'LineString',
-            coordinates: [[0,0],[1,1]]
-        }
-    },{country: "us", region: "pa"}), [
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'name' }, type: 'Feature' },
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'PA 66' }, type: 'Feature' },
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'Pennsylvania Highway 66' }, type: 'Feature' }
-    ], 'US State Route');
+    },{}), [{ geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 5, street: '1 Name', priority: 0 }, type: 'Feature' }], 'OSM ; AltNames null');
 
     // remove octothorpes from highway names
     t.deepEquals(map({
@@ -190,10 +155,9 @@ test('Osmium', (t) => {
             coordinates: [[0,0],[1,1]]
         }
     },{country: "us"}), [
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'name' }, type: 'Feature' },
-        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'HWY 35' }, type: 'Feature' }
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'name', priority: 0 }, type: 'Feature' },
+        { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'HWY 35', priority: 0 }, type: 'Feature' }
     ], 'HWY # replaced');
-
 
     // handle suffixless numeric streets
     let streets = [
@@ -225,7 +189,7 @@ test('Osmium', (t) => {
                 coordinates: [[0,0],[1,1]]
             }
         }, { country: 'us' });
-        t.equals(res.length, 2, '2 featyres returned');
+        t.equals(res.length, 2, '2 feats returned');
         let desired = x[0].split(' ')[0] + x[1] + ' ' + x[0].split(' ')[1];
         let modified = res.filter((y) => { return y.properties.street === desired; });
         let original = res.filter((y) => { return y.properties.street === x[0]; });
@@ -235,6 +199,7 @@ test('Osmium', (t) => {
         original = original[0];
         t.ok((original.properties.priority || 0) > (modified.properties.priority || 0), 'original feature has higher priority');
     });
+
     streets.forEach((x) => {
         let res = map({
             type: 'Feature',
@@ -250,6 +215,35 @@ test('Osmium', (t) => {
         }, { country: 'de' });
         t.equals(res.length, 1, x[0] + ' unmodified when country=de');
     });
+
+    for (let name of [
+        'State Highway 123',
+        'Highway 123',
+        'Hwy 123',
+        '123 hwy',
+        '123 Highway',
+        'Pennsylvania Hwy 123',
+        'Pennsylvania highway 123',
+        'PA 123'
+    ]) {
+        t.deepEquals(map({
+            type: 'Feature',
+            properties: {
+                highway: 'motorway',
+                "@id": 3,
+                name: name
+            },
+            geometry: {
+                type: 'LineString',
+                coordinates: [[0,0],[1,1]]
+            }
+        }, { country: "us", region: "pa"}), [
+            { type: 'Feature', properties: { id: 3, street: name, priority: 0 }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
+            { type: 'Feature', properties: { id: 3, street: 'PA 123', priority: -1 }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
+            { type: 'Feature', properties: { id: 3, street: 'Pennsylvania Highway 123', priority: 1 }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
+            { type: 'Feature', properties: { id: 3, street: 'State Highway 123', priority: -1 }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }
+        ], name);
+    }
 
     t.end();
 });
