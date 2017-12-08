@@ -10,6 +10,12 @@
 
 ## Version History
 
+## v13.7.0
+
+- :rocket: Allow priority text value to be set on network segments
+- :rocket: Add `st/nd/rd/th` synonyms for streets that don't have them and add as synonym
+- :bug: `NO RESULT` test output no longer displays query components as comma-separated
+
 ### v13.6.4
 
 - :white_check_mark: Add integration tests for `testcsv` mode
