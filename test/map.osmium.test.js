@@ -194,6 +194,63 @@ test('Osmium', (t) => {
         { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: 'HWY 35' }, type: 'Feature' }
     ], 'HWY # replaced');
 
+
+    // handle suffixless numeric streets
+    let streets = [
+        ['1 Ave', 'st'],
+        ['2 St', 'nd'],
+        ['3 Lane', 'rd'],
+        ['4 St', 'th'],
+        ['10 Ave', 'th'],
+        ['11 Ave', 'th'],
+        ['12 Ave', 'th'],
+        ['13 Ave', 'th'],
+        ['14 Ave', 'th'],
+        ['21 Ave', 'st'],
+        ['22 Ave', 'nd'],
+        ['23 Ave', 'rd'],
+        ['34 Ave', 'th'],
+        ['101 St', 'st']
+    ];
+    streets.forEach((x) => {
+        let res = map({
+            type: 'Feature',
+            properties: {
+                highway: 'motorway',
+                "@id": 3,
+                name: x[0]
+            },
+            geometry: {
+                type: 'LineString',
+                coordinates: [[0,0],[1,1]]
+            }
+        }, { country: 'us' });
+        t.equals(res.length, 2, '2 featyres returned');
+        let desired = x[0].split(' ')[0] + x[1] + ' ' + x[0].split(' ')[1];
+        let modified = res.filter((y) => { return y.properties.street === desired; });
+        let original = res.filter((y) => { return y.properties.street === x[0]; });
+        t.equals(original.length, 1, x[0] + ' still present');
+        t.equals(modified.length, 1, desired + ' is present');
+        modified = modified[0];
+        original = original[0];
+        t.ok((original.properties.priority || 0) > (modified.properties.priority || 0), 'original feature has higher priority');
+    });
+    streets.forEach((x) => {
+        let res = map({
+            type: 'Feature',
+            properties: {
+                highway: 'motorway',
+                "@id": 3,
+                name: x[0]
+            },
+            geometry: {
+                type: 'LineString',
+                coordinates: [[0,0],[1,1]]
+            }
+        }, { country: 'de' });
+        t.equals(res.length, 1, x[0] + ' unmodified when country=de');
+    });
+
     t.end();
 });
 
