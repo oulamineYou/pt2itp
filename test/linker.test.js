@@ -70,6 +70,20 @@ test('Passing Linker Matches', (t) => {
     'no match numeric simple (21st)');
 
     t.deepEquals(
+        linker({ text: 'US Route 50 East' }, [
+            { id: 1, text: 'US Route 50 West' },
+        ]),
+        [{ id: 1, text: 'US Route 50 West', score: 87.5 }],
+    'Numbers match - cardinals don\'t');
+
+    t.deepEquals(
+        linker({ text: 'US Route 50 East' }, [
+            { id: 1, text: 'US Route 51 West' },
+        ]),
+        false,
+    'Number mismatch fail');
+
+    t.deepEquals(
         linker({ text: '11th st west' }, [
             { id: 1, text: '11th av west' },
         ]),
