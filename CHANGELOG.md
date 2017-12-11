@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v13.8.1
+
+- :bug: testcsv mode no longer errs on csvStream.resume
+
 ## v13.8.0
 
 - :rocket: Much improved matching of streets containing numeric values
