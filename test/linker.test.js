@@ -2,7 +2,6 @@ const linker = require('../lib/linker');
 const test = require('tape');
 
 test('linker#isNumbered', (t) => {
-
     t.equals(linker.isNumbered('main st'), false, 'main st => false');
     t.equals(linker.isNumbered('1st st'), '1st', '1st st => 1st');
     t.equals(linker.isNumbered('2nd st'), '2nd', '2nd st => 2nd');
@@ -13,6 +12,17 @@ test('linker#isNumbered', (t) => {
     t.equals(linker.isNumbered('32nd av'), '32nd', '32nd av => 32nd');
     t.equals(linker.isNumbered('45th av'), '45th', '45th av => 45th');
     t.equals(linker.isNumbered('351235th av'), '351235th', '351235th av => 351235th');
+    t.end();
+});
+
+test('linker#isRoutish', (t) => {
+    t.equals(linker.isRoutish('main st'), false, 'main st => false');
+    t.equals(linker.isRoutish('1st st'), false, '1st st => false');
+    t.equals(linker.isRoutish('351235th av'), false, '351235th av => false');
+    t.equals(linker.isRoutish('NC 124'), '124', 'NC 124 => 124');
+    t.equals(linker.isRoutish('US Route 50 East'), '50', 'US Route 50 East => 50');
+    t.equals(linker.isRoutish('321'), '321', '321 => 321');
+    t.equals(linker.isRoutish('124 NC'), '124', '124 NC => 124');
     t.end();
 });
 
@@ -58,6 +68,20 @@ test('Passing Linker Matches', (t) => {
         ]),
         false,
     'no match numeric simple (21st)');
+
+    t.deepEquals(
+        linker({ text: 'US Route 50 East' }, [
+            { id: 1, text: 'US Route 50 West' },
+        ]),
+        [{ id: 1, text: 'US Route 50 West', score: 87.5 }],
+    'Numbers match - cardinals don\'t');
+
+    t.deepEquals(
+        linker({ text: 'US Route 50 East' }, [
+            { id: 1, text: 'US Route 51 West' },
+        ]),
+        false,
+    'Number mismatch fail');
 
     t.deepEquals(
         linker({ text: '11th st west' }, [
