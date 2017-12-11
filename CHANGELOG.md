@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v13.8.2
+
+- :white_check_mark: Add lib/geocode tests
+
 ## v13.8.1
 
 - :bug: testcsv mode no longer errs on csvStream.resume
@@ -20,7 +24,7 @@
 
 ## v13.7.2
 
-- :white_check_mark: Update carmen
+- :arrow_up: Update carmen
 
 ## v13.7.1
 
