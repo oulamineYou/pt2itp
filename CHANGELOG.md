@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v13.8.0
+
+- :rocket: Much improved matching of streets containing numeric values
+
 ## v13.7.2
 
 - :white_check_mark: Update carmen
