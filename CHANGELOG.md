@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v13.7.2
+
+- :white_check_mark: Update carmen
+
 ## v13.7.1
 
 - :white_check_mark: Update to turf@5.1.0
