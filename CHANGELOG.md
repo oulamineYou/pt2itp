@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v13.8.4
+
+- :rocket: faster querying for N during diff name test
+
 ## v13.8.3
 
 - :bug: Token would ignore address matches, resulting in a max match of <100%
