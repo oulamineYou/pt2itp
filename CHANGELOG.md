@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v13.8.3
+
+- :bug: Token would ignore address matches, resulting in a max match of <100%
+
 ## v13.8.2
 
 - :white_check_mark: Add lib/geocode tests
