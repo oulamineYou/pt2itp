@@ -23,15 +23,11 @@ test('geocode#isPass', (t) => {
         },
         function(err, res) {
             t.error(err)
-
-            console.error(res);
-
-            t.equals(res);
+            t.notok(res);
 
             t.end();
         }
     ]
 
     geocode.isPass(...query);
-
 });
