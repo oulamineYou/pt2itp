@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v13.8.6
+
+- :bug: fix testcsv linestring interaction
+
 ## v13.8.5
 
 - :rocket: improve handling of numeric-with-suffix streets in testcsv mode
