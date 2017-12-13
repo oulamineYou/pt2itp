@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v13.8.7
+
+- :rocket: Add a few more highway synonyms
+
 ## v13.8.6
 
 - :bug: fix testcsv linestring interaction
