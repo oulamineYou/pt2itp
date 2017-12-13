@@ -10,6 +10,11 @@
 
 ## Version History
 
+## v13.8.5
+
+- :rocket: improve handling of numeric-with-suffix streets in testcsv mode
+- :bug: pass through returned coordinates for `TEXT` failures in test modes
+
 ## v13.8.4
 
 - :rocket: faster querying for N during diff name test
