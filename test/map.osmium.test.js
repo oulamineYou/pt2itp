@@ -240,6 +240,7 @@ test('Osmium', (t) => {
         }, { country: "us", region: "pa"}), [
             { type: 'Feature', properties: { id: 3, street: name, priority: 0 }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
             { type: 'Feature', properties: { id: 3, street: 'PA 123', priority: -1 }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
+            { type: 'Feature', properties: { id: 3, street: 'PA 123 Highway', priority: -1 }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
             { type: 'Feature', properties: { id: 3, street: 'Pennsylvania Highway 123', priority: 1 }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
             { type: 'Feature', properties: { id: 3, street: 'Highway 123', priority: -1 }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
             { type: 'Feature', properties: { id: 3, street: 'State Highway 123', priority: -1 }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }
