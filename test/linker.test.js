@@ -91,13 +91,13 @@ test('Passing Linker Matches', (t) => {
     'match numeric simple (type mismatch)');
 
     t.deepEquals(
-        linker({ tokenized: 'main st' }, [
-            { id: 1, tokenized: 'main st' },
-            { id: 2, tokenized: 'main av' },
-            { id: 3, tokenized: 'main rd' },
-            { id: 4, tokenized: 'main dr' }
+        linker({ display: 'Main Street', tokenized: 'main st' }, [
+            { id: 1, name: { display: 'Main Street', tokenized: 'main st' },
+            { id: 2, name: { display: 'Main Avenue', tokenized: 'main av' },
+            { id: 3, name: { display: 'Main Road', tokenized: 'main rd' },
+            { id: 4, name: { display: 'Main Drive', tokenized: 'main dr' }
         ]),
-        [{ id: 1, tokenized: 'main st' }],
+        [{ id: 1, name: { display: 'Main Street', tokenized: 'main st' } }],
     'diff suff');
 
     t.deepEquals(
