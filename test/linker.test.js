@@ -177,6 +177,20 @@ test('Passing Linker Matches', (t) => {
     'single winner w/ null tokenless');
 
     t.deepEquals(
+        linker([{ tokenized: 'w main st', display: 'West Main Street', tokenless: 'main' }], [
+            { id: 388, name: { tokenized: 'w st st', display: 'West Saint Street', tokenless: '' } }
+        ]),
+        false,
+    'close tokenized');
+
+    t.deepEquals(
+        linker([{ tokenized: 'w st st', display: 'West Saint Street', tokenless: '' }], [
+            { id: 388, name: { tokenized: 'w main st', display: 'West Main Street', tokenless: 'main' } }
+        ]),
+        false,
+    'close tokenized reverse');
+
+    t.deepEquals(
         linker([{ tokenized: 's st nw', display: 'S STREET NW', tokenless: null }], [
             { id: 2421, name: { tokenized: 'n capitol st', display: 'North Capitol Street', tokenless: 'capitol' } },
             { id: 669, name: { tokenized: 't st ne', display: 'T Street Northeast', tokenless: 't' } },
