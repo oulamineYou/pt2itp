@@ -478,13 +478,13 @@ test('cluster.collapse - identical segments', (t) => {
     pool.query(`
         INSERT INTO address_cluster (id, name, geom) VALUES (
             1,
-            '{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }',
+            '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2,1],[2,3,2],[3,4,3]]}'), 4326)
         );
 
         INSERT INTO address_cluster (id, name, geom) VALUES (
             2,
-            '{ "tokenized": "independence ave", "tokenless": "independence", "display": "Independence Avenue" }',
+            '[{ "tokenized": "independence ave", "tokenless": "independence", "display": "Independence Avenue" }]',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6,1],[6,7,2]]}'), 4326)
         );
 
@@ -520,9 +520,11 @@ test('cluster.collapse - identical segments', (t) => {
             `, (err, res) => {
                 t.equals(res.rows.length, 1, 'only one row remains');
                 t.equals(parseInt(res.rows[0].id), 3, 'main st feature still exists');
-                t.equals(res.rows[0]._text, 'Main Street,Independence Avenue', '_text');
-                t.equals(res.rows[0].text, 'main st,independence ave', 'text');
-                t.equals(res.rows[0].text_tokenless, 'main,independence', 'text_tokenless');
+
+                t.deepEquals(res.rows[0].name, [
+                    { display: 'Main Street', tokenized: 'main st', tokenless: 'main' },
+                    { display: 'Independence Avenue', tokenized: 'independence ave', tokenless: 'independence' }
+                ]);
                 t.equals(parseInt(res.rows[0].address), 1, 'address cluster id is 1');
                 pool.query(`
                     SELECT id, ST_Dump(geom) FROM address_cluster ORDER BY id ASC;
@@ -546,18 +548,14 @@ test('Drop/Init Database', (t) => {
 
 test('cluster.collapse - identical segments (biggest address count takes priority)', (t) => {
     pool.query(`
-        INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
+        INSERT INTO address_cluster (id, name, geom) VALUES (
             1,
-            '{"main st"}',
-            '{"main"}',
-            '{"Main Street"}',
+            '[{ "display": "Main Street", "tokenized": "main st", "tokenless": "main" }]',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2,1],[2,3,2],[3,4,3]]}'), 4326)
         );
-        INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
+        INSERT INTO address_cluster (id, name, geom) VALUES (
             2,
-            '{"independence ave"}',
-            '{"independence"}',
-            '{"Independence Avenue"}',
+            '[{ "display": "Independence Avenue", "tokenized": "independence ave", "tokenless": "independence" }]',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6,1],[6,7,2]]}'), 4326)
         );
 
@@ -572,20 +570,16 @@ test('cluster.collapse - identical segments (biggest address count takes priorit
             1.0
         );
 
-        INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
+        INSERT INTO network_cluster (id, address, name, source_ids) VALUES (
             3,
             2,
-            'Main Street',
-            'main st',
-            'main',
+            '{ "display": "Main Street", "tokenized": "main st", "tokenless": "main" }',
             '{5,6}'
         );
-        INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
+        INSERT INTO network_cluster (id, address, name, source_ids) VALUES (
             4,
             1,
-            'Independence Avenue',
-            'independence ave',
-            'independence',
+            '{ "display": "Independence Avenue", "tokenized": "independence ave", "tokenless": "independence" }',
             '{5,6}'
         );
     `, (err, res) => {
@@ -593,13 +587,17 @@ test('cluster.collapse - identical segments (biggest address count takes priorit
         cluster.collapse((err) => {
             t.error(err, 'cluster.collapse returned without error');
             pool.query(`
-                SELECT id, address, _text, "text", text_tokenless FROM network_cluster;
+                SELECT id, address, name FROM network_cluster;
             `, (err, res) => {
+                t.error(err, 'no errors');
                 t.equals(res.rows.length, 1, 'only one row remains');
                 t.equals(parseInt(res.rows[0].id), 4, 'main st feature still exists');
-                t.equals(res.rows[0]._text, 'Independence Avenue,Main Street', '_text');
-                t.equals(res.rows[0].text, 'independence ave,main st', 'text');
-                t.equals(res.rows[0].text_tokenless, 'independence,main', 'text_tokenless');
+
+                t.deepEquals(res.rows[0].name, [
+                    { display: 'Independence Avenue', tokenized: 'independence ave', tokenless: 'independence' },
+                    { display: 'Main Street', tokenized: 'main st', tokenless: 'main' }
+                ], 'name');
+
                 t.equals(parseInt(res.rows[0].address), 1, 'address cluster id is 1');
                 pool.query(`
                     SELECT id, ST_Dump(geom) FROM address_cluster ORDER BY id ASC;
@@ -622,18 +620,14 @@ test('Drop/Init Database', (t) => {
 
 test('cluster.collapse - substantial overlap (fail on length)', (t) => {
     pool.query(`
-        INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
+        INSERT INTO address_cluster (id, name, geom) VALUES (
             1,
-            '{"main st"}',
-            '{"main"}',
-            '{"Main Street"}',
+            '[{ "display": "Main Street", "tokenized": "main st", "tokenless": "main" }]',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2,1],[2,3,2],[3,4,3]]}'), 4326)
         );
-        INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
+        INSERT INTO address_cluster (id, name, geom) VALUES (
             2,
-            '{"main st"}',
-            '{"main"}',
-            '{"Main Street"}',
+            '[{ "display": "Main Street", "tokenized": "main st", "tokenless": "main" }]',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6,1],[6,7,2]]}'), 4326)
         );
 
@@ -653,20 +647,16 @@ test('cluster.collapse - substantial overlap (fail on length)', (t) => {
             2.0
         );
 
-        INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
+        INSERT INTO network_cluster (id, address, name, source_ids) VALUES (
             3,
             1,
-            'Main Street',
-            'main st',
-            'main',
+            '{ "display": "Main Street", "tokenized": "main st", "tokenless": "main" }',
             '{5,6}'
         );
-        INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
+        INSERT INTO network_cluster (id, address, name, source_ids) VALUES (
             4,
             2,
-            'Main Street',
-            'main st',
-            'main',
+            '{ "display": "Main Street", "tokenized": "main st", "tokenless": "main" }',
             '{5,6,7}'
         );
     `, (err, res) => {
@@ -674,20 +664,18 @@ test('cluster.collapse - substantial overlap (fail on length)', (t) => {
         cluster.collapse((err) => {
             t.error(err, 'cluster.collapse returned without error');
             pool.query(`
-                SELECT id, address, _text, "text", text_tokenless, source_ids FROM network_cluster ORDER BY id ASC;
+                SELECT id, address, name, source_ids FROM network_cluster ORDER BY id ASC;
             `, (err, res) => {
                 t.equals(res.rows.length, 2, 'two rows remain (did not collapse)');
                 t.equals(parseInt(res.rows[0].id), 3, 'main st feature #1 still exists');
-                t.equals(res.rows[0]._text, 'Main Street', '_text');
-                t.equals(res.rows[0].text, 'main st', 'text');
-                t.equals(res.rows[0].text_tokenless, 'main', 'text_tokenless');
+
+                t.deepEquals(res.rows[0].name, [ { display: 'Main Street', tokenized: 'main st', tokenless: 'main' } ], 'name');
+
                 t.deepEquals(res.rows[0].source_ids, ['5', '6'], 'source_ids');
                 t.equals(parseInt(res.rows[0].address), 1, 'address cluster id');
 
                 t.equals(parseInt(res.rows[1].id), 4, 'main st feature #2 still exists');
-                t.equals(res.rows[1]._text, 'Main Street', '_text');
-                t.equals(res.rows[1].text, 'main st', 'text');
-                t.equals(res.rows[1].text_tokenless, 'main', 'text_tokenless');
+                t.deepEquals(res.rows[1].name, [ { display: 'Main Street', tokenized: 'main st', tokenless: 'main' } ], 'name');
                 t.deepEquals(res.rows[1].source_ids, ['5', '6', '7'], 'source_ids');
                 t.deepEquals(parseInt(res.rows[1].address), 2, 'address cluster id');
 
@@ -712,18 +700,14 @@ test('Drop/Init Database', (t) => {
 
 test('cluster.collapse - substantial overlap (fail on text)', (t) => {
     pool.query(`
-        INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
+        INSERT INTO address_cluster (id, name, geom) VALUES (
             1,
-            '{"main st"}',
-            '{"main"}',
-            '{"Main Street"}',
+            '[{ "display": "Main Street", "tokenized": "main st", "tokenless": "main" }]',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2,1],[2,3,2],[3,4,3]]}'), 4326)
         );
-        INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
+        INSERT INTO address_cluster (id, name, geom) VALUES (
             2,
-            '{"independence ave"}',
-            '{"independence"}',
-            '{"Independence Ave"}',
+            '[{ "display": "Independence Avenue", "tokenized": "independence ave", "tokenless": "independence" }]',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6,1],[6,7,2]]}'), 4326)
         );
 
@@ -743,20 +727,16 @@ test('cluster.collapse - substantial overlap (fail on text)', (t) => {
             0.01
         );
 
-        INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
+        INSERT INTO network_cluster (id, address, name, source_ids) VALUES (
             3,
             1,
-            'Main Street',
-            'main st',
-            'main',
+            '{ "display": "Main Street", "tokenized": "main st", "tokenless": "main" }',
             '{5,6}'
         );
-        INSERT INTO network_cluster (id, address, _text, "text", text_tokenless, source_ids) VALUES (
+        INSERT INTO network_cluster (id, address, name, source_ids) VALUES (
             4,
             2,
-            'Independence Avenue',
-            'independence ave',
-            'independence',
+            '{ "display": "Independence Avenue", "tokenized": "independence ave", "tokenless": "independence" }',
             '{5,6,7}'
         );
     `, (err, res) => {
@@ -764,19 +744,19 @@ test('cluster.collapse - substantial overlap (fail on text)', (t) => {
         cluster.collapse((err) => {
             t.error(err, 'cluster.collapse returned without error');
             pool.query(`
-                SELECT id, address, _text, "text", text_tokenless, source_ids FROM network_cluster ORDER BY id ASC;
+                SELECT id, address, name, source_ids FROM network_cluster ORDER BY id ASC;
             `, (err, res) => {
                 t.equals(res.rows.length, 2, 'two rows remain (did not collapse)');
                 t.equals(parseInt(res.rows[0].id), 3, 'main st feature still exists');
-                t.equals(res.rows[0]._text, 'Main Street', '_text');
-                t.equals(res.rows[0].text, 'main st', 'text');
-                t.equals(res.rows[0].text_tokenless, 'main', 'text_tokenless');
+
+                t.deepEquals(res.rows[0].name, [ { display: 'Main Street', tokenized: 'main st', tokenless: 'main' } ], 'name');
+
                 t.deepEquals(res.rows[0].source_ids, ['5', '6'], 'source_ids');
                 t.equals(parseInt(res.rows[0].address), 1, 'address cluster id');
                 t.equals(parseInt(res.rows[1].id), 4, 'independence ave feature still exists');
-                t.equals(res.rows[1]._text, 'Independence Avenue', '_text');
-                t.equals(res.rows[1].text, 'independence ave', 'text');
-                t.equals(res.rows[1].text_tokenless, 'independence', 'text_tokenless');
+                
+                t.deepEquals(res.rows[1].name, [ { display: 'Independence Avenue', tokenized: 'independence ave', tokenless: 'independence' } ], 'name');
+
                 t.deepEquals(res.rows[1].source_ids, ['5', '6', '7'], 'source_ids');
                 t.deepEquals(parseInt(res.rows[1].address), 2, 'address cluster id');
 
@@ -802,66 +782,50 @@ test('Drop/Init Database', (t) => {
 
 test('cluster.collapse - substantial overlap (successful merge)', (t) => {
     pool.query(`
-        INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
+        INSERT INTO address_cluster (id, name, geom) VALUES (
             1,
-            '{"main st"}',
-            '{"main"}',
-            '{"Main Street"}',
+            '[{ "display": "Main Street", "tokenized": "main st", "tokenless": "main" }]',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[1,2,1],[2,3,2],[3,4,3]]}'), 4326)
         );
-        INSERT INTO address_cluster (id, "text", text_tokenless, _text, geom) VALUES (
+        INSERT INTO address_cluster (id, name, geom) VALUES (
             2,
-            '{"main ave"}',
-            '{"main"}',
-            '{"Main Avenue"}',
+            '[{ "display": "Main Avenue", "tokenized": "main ave", "tokenless": "main" }]',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[5,6,1],[6,7,2]]}'), 4326)
         );
 
-        INSERT INTO network (id, _text, text, text_tokenless, geom, network_length) VALUES (
+        INSERT INTO network (id, name, geom, network_length) VALUES (
             5,
-            'Main Avenue',
-            'main ave',
-            'main',
+            '{ "display": "Main Avenue", "tokenized": "main ave", "tokenless": "main" }',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1,5],[1,2,5]]}'), 4326),
             1.0
         );
-        INSERT INTO network (id, _text, text, text_tokenless, geom, network_length) VALUES (
+        INSERT INTO network (id, name, geom, network_length) VALUES (
             6,
-            'Main Avenue',
-            'main ave',
-            'main',
+            '{ "display": "Main Avenue", "tokenized": "main ave", "tokenless": "main" }',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,6],[2,2,6]]}'), 4326),
             1.0
         );
-        INSERT INTO network (id, _text, text, text_tokenless, geom, network_length) VALUES (
+        INSERT INTO network (id, name, geom, network_length) VALUES (
             8,
-            'Main Avenue',
-            'main ave',
-            'main',
+            '{ "display": "Main Avenue", "tokenized": "main ave", "tokenless": "main" }',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[0.999,1,8],[1,1,8]]}'), 4326),
             0.001
         );
-        INSERT INTO network (id, _text, text, text_tokenless, geom, network_length) VALUES (
+        INSERT INTO network (id, name, geom, network_length) VALUES (
             5,
-            'Main Street',
-            'main st',
-            'main',
+            '{ "display": "Main Street", "tokenized": "main st", "tokenless": "main" }',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,1,5],[1,2,5]]}'), 4326),
             1.0
         );
-        INSERT INTO network (id, _text, text, text_tokenless, geom, network_length) VALUES (
+        INSERT INTO network (id, name, geom, network_length) VALUES (
             6,
-            'Main Street',
-            'main st',
-            'main',
+            '{ "display": "Main Street", "tokenized": "main st", "tokenless": "main" }',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,6],[2,2,6]]}'), 4326),
             1.0
         );
-        INSERT INTO network (id, _text, text, text_tokenless, geom, network_length) VALUES (
+        INSERT INTO network (id, name, geom, network_length) VALUES (
             7,
-            'Main Street',
-            'main st',
-            'main',
+            '{ "display": "Main Street", "tokenized": "main st", "tokenless": "main" }',
             ST_SetSRID(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[2,2,7],[2.001,2,7]]}'), 4326),
             0.002
         );
@@ -872,19 +836,25 @@ test('cluster.collapse - substantial overlap (successful merge)', (t) => {
             t.error(err);
 
             pool.query(`
-                UPDATE network_cluster SET address = 1 WHERE text = 'main st';
-                UPDATE network_cluster SET address = 2 WHERE text = 'main ave';
+                UPDATE network_cluster SET address = 1 WHERE name ->> 'tokenized' = 'main st';
+                UPDATE network_cluster SET address = 2 WHERE name ->> 'tokenized' = 'main ave';
             `, (err, res) => {
+                t.error(err);
+
                 cluster.collapse((err) => {
                     t.error(err, 'cluster.collapse returned without error');
                     pool.query(`
-                        SELECT id, address, _text, text, text_tokenless, source_ids, st_length(geom) AS lngth FROM network_cluster ORDER BY id ASC;
+                        SELECT id, address, name, source_ids, st_length(geom) AS lngth FROM network_cluster ORDER BY id ASC;
                     `, (err, res) => {
                         t.equals(res.rows.length, 1, 'one row remains');
                         t.equals(parseInt(res.rows[0].id), 2, 'main st feature still exists');
-                        t.equals(res.rows[0]._text, 'Main Street,Main Avenue', '_text');
-                        t.equals(res.rows[0].text, 'main st,main ave', 'text');
-                        t.equals(res.rows[0].text_tokenless, 'main,main', 'text_tokenless');
+
+                        //WRONG!!!!
+                        t.deepEquals(res.rows[0].name, [
+                            { display: 'Main Street', tokenized: 'main st', tokenless: 'main' },
+                            [ { display: 'Main Avenue', tokenized: 'main ave', tokenless: 'main' } ]
+                        ], 'name');
+
                         t.deepEquals(res.rows[0].source_ids, ['5', '6', '7', '8'], 'source_ids');
                         t.equals(res.rows[0].lngth, 2.002, 'length is expected');
                         t.equals(parseInt(res.rows[0].address), 1, 'address cluster id is 1');
