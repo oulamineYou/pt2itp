@@ -27,8 +27,6 @@ test('Split: Dulaney Valley Rd, MD', (t) => {
             BEGIN;
 
             INSERT INTO network_cluster (
-                text,
-                _text,
                 address,
                 geom
             ) VALUES (
