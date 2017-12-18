@@ -116,7 +116,7 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '124', street: 'Main St' },
+        properties: { number: '124', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Working Numeric Address');
 
@@ -132,7 +132,7 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '124', street: 'Main St' },
+        properties: { number: '124', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Working String Address');
 
@@ -148,7 +148,7 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '123a', street: 'Main St' },
+        properties: { number: '123a', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Working 123a Address');
 
@@ -164,7 +164,7 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '123', street: 'Main St' },
+        properties: { number: '123', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Stripped 123 1/2 Address');
 
@@ -180,7 +180,7 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '123-45', street: 'Main St' },
+        properties: { number: '123-45', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Working 123-45 Address');
 
@@ -196,7 +196,7 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '123n45', street: 'Main St' },
+        properties: { number: '123n45', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Working 123n45 Address');
 
@@ -212,7 +212,7 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '123b', street: 'Main St' },
+        properties: { number: '123b', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Working 123 B => 123B Address');
 
