@@ -1,4 +1,4 @@
-const post = require('../lib/post/dedupe-text').post;
+const post = require('../lib/post/text').post;
 const test = require('tape');
 
 test('Post: Dedupe', (t) => {
@@ -12,8 +12,8 @@ test('Post: Dedupe', (t) => {
 
     t.deepEquals(post({
         properties: {
-            'carmen:text': 'Main Street',
-            'carmen:text_xx': 'Spring Rd'
+            'carmen:text': [{ display: 'Main Street', tokenized: 'main st' }],
+            'carmen:text_xx': [{ display: 'Spring Rd', tokenized: 'spring rd' }]
         }
     }), {
         properties: {
