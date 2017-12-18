@@ -25,8 +25,9 @@ tape('title case xformation', (t) => {
         ['nE. Main St', 'Ne. Main St']
     ];
 
-    for (let test of tests)
+    for (let test of tests) {
         t.equal(titlecase(test[0], minors), test[1], `${test[0]} => ${test[1]}`);
+    }
 
     t.end();
 });
