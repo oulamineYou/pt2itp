@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v13.8.9
+
+- :white_check_mark: change testcsv test fixtures to a csv with > 25 rows
+
 ## v13.8.8
 
 - :rocket: omit querying for N during diff name test
