@@ -22,9 +22,8 @@ test('testcsv', (t) => {
 
             DIST statistical breakdown
             -----------------------------------------------------------------------------------
-            DIST - mean: 7355.03 / median: 7355.03 / skew: 0.00 / standard dev: 6882.01
-            `.replace(/^ +/mg, ''));
-
+            DIST - mean: 7352.73 / median: 7352.73 / skew: 0.00 / standard dev: 6879.86
+        `.replace(/^ +/mg, ''));
         st.end();
     });
 
