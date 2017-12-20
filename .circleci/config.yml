@@ -12,7 +12,7 @@ jobs:
         steps:
             - run:
                 name: "Add ubuntu-toolchain"
-                command: "apt-get update -y && apt-get install -y python software-properties-common && add-apt-repository --yes ppa:ubuntu-toolchain-r/test"
+                command: "apt-get update -y && apt-get install -y build-essential python software-properties-common && add-apt-repository --yes ppa:ubuntu-toolchain-r/test"
             - run:
                 name: "Install cURL"
                 command: "apt-get update -y && apt-get install -y curl"
