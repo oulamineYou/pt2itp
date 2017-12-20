@@ -1,13 +1,18 @@
-# Pts => Interpolation
+<h1 align="center">PT2ITP</h1>
 
-[![Coverage Status](https://coveralls.io/repos/github/ingalls/pt2itp/badge.svg?branch=master)](https://coveralls.io/github/ingalls/pt2itp?branch=master)
-[![Circle CI](https://circleci.com/gh/ingalls/pt2itp/tree/master.svg?style=shield)](https://circleci.com/gh/ingalls/pt2itp/tree/master)
-[![David DM](https://david-dm.org/ingalls/pt2itp.svg)](https://david-dm.org/ingalls/pt2itp)
-[![David DM Dev](https://david-dm.org/ingalls/pt2itp/dev-status.svg)](https://david-dm.org/ingalls/pt2itp?type=dev)
-[![Greenkeeper badge](https://badges.greenkeeper.io/ingalls/pt2itp.svg)](https://greenkeeper.io/)
+<p align="center">
+  <a href="https://coveralls.io/github/ingalls/pt2itp?branch=master"><img src="https://coveralls.io/repos/github/ingalls/pt2itp/badge.svg?branch=master"/></a>
+  <a href="https://circleci.com/gh/ingalls/pt2itp/tree/master"><img src="https://circleci.com/gh/ingalls/pt2itp/tree/master.svg?style=shield"/></a>
+  <a href="https://david-dm.org/ingalls/pt2itp"><img src="https://david-dm.org/ingalls/pt2itp.svg"/></a>
+  <a href="https://david-dm.org/ingalls/pt2itp?type=dev"><img src="https://david-dm.org/ingalls/pt2itp/dev-status.svg"/></a>
+  <a href="https://greenkeeper.io/"><img src="https://badges.greenkeeper.io/ingalls/pt2itp.svg"/></a>
+</p>
 
-[![NPM](https://nodei.co/npm/pt2itp.png?downloads=true&downloadRank=true)](https://www.npmjs.com/package/pt2itp)
+<p align="center">
+  <a href="https://www.npmjs.com/package/pt2itp"><img src="https://nodei.co/npm/pt2itp.png?downloads=true&downloadRank=true"/></a>
+</p>
 
+## Brief
 
 Given a road network and a set of address points as line delimited geojson; output an interpolation network.
 
