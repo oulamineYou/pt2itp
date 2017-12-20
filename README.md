@@ -1,7 +1,7 @@
 <h1 align="center">PT2ITP</h1>
 
 <p align="center">
-[![Coverage Status](https://coveralls.io/repos/github/ingalls/pt2itp/badge.svg?branch=master)](https://coveralls.io/github/ingalls/pt2itp?branch=master)
+  <a href="https://coveralls.io/github/ingalls/pt2itp?branch=master"><img src="https://coveralls.io/repos/github/ingalls/pt2itp/badge.svg?branch=master"/></a>
 [![Circle CI](https://circleci.com/gh/ingalls/pt2itp/tree/master.svg?style=shield)](https://circleci.com/gh/ingalls/pt2itp/tree/master)
 [![David DM](https://david-dm.org/ingalls/pt2itp.svg)](https://david-dm.org/ingalls/pt2itp)
 [![David DM Dev](https://david-dm.org/ingalls/pt2itp/dev-status.svg)](https://david-dm.org/ingalls/pt2itp?type=dev)
