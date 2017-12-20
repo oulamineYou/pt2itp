@@ -12,6 +12,8 @@
   <a href="https://www.npmjs.com/package/pt2itp"><img src="https://nodei.co/npm/pt2itp.png?downloads=true&downloadRank=true"/></a>
 </p>
 
+## Brief
+
 Given a road network and a set of address points as line delimited geojson; output an interpolation network.
 
 ## Input Data
