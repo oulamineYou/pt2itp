@@ -69,7 +69,7 @@ test('Strip-Unit', (t) => {
             type: 'Point',
             coordinates: [0, 0]
         }
-    }).toString(), 'Error: Every synonym object in street array must contain only display and priority properties', 'Every synonym object in street array must contain only display and priority properties');
+    }).toString(), 'Error: Synonym objects in street array must contain only display and priority properties', 'Synonym objects in street array must contain only display and priority properties');
 
     t.equals(map({
         type: 'Feature',
@@ -106,7 +106,7 @@ test('Strip-Unit', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [1000, 0]
+            coordinates: [1000, 1000]
         }
     }).toString(), 'Error: Feat exceeds +/-180deg coord bounds', 'Feat exceeds +/-180deg coord bounds');
 
