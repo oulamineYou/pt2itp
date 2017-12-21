@@ -45,15 +45,15 @@ and `number` containing the street address.
 | Property | Function |
 | :------: | -------- |
 | `number` | `String` The Housenumber for a given pt including any unit information. ie: `10a` |
-| `street` | `String` The name of the street - preferably non-abbreviated |
+| `street` | `String` or `Array` The name of the street - preferably non-abbreviated. If it's an array, it must contain an object for each street name synonym with the properties `display` for the street name and `priority` for the numeric ranking. |
 | `source` | `String` The source name of the data so a single input file can have a combination of multiple sources |
-| `output` | `Boolean` A boolean allowing pts to be used to calculate the ITP segement but not output in the final cluster |
+| `output` | `Boolean` A boolean allowing pts to be used to calculate the ITP segment but not output in the final cluster |
 
 ##### Example
 
 ```
 { "type": "Feature", "geometry": { "type": "Point", ... }, "properties": { "street": "Main Street", "number": 10 } }
-{ "type": "Feature", "geometry": { "type": "Point", ... }, "properties": { "street": "Main Street", "number": 11 } }
+{ "type": "Feature", "geometry": { "type": "Point", ... }, "properties": { "street": [ { "Main Street", "number": 11 } ] } }
 ...
 ```
 
