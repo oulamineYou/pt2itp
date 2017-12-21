@@ -16,14 +16,31 @@
 
 Given a road network and a set of address points as line delimited geojson; output an interpolation network.
 
-## Input Data
+## `map` Mode
 
-### Address Input
+### Basic Usage
+
+`map` mode is the core mode that PT2ITP exposes. It is responsible for taking the input street network and address points
+and generating the interpolation network.
+
+Basic Usage:
+```
+./index.js map --in-network=<FILE.geojson> --in-address=<File.geojson> --output=<File.geojson> --tokens=./lib/tokens/en.json"
+```
+
+Full Options:
+```
+./index.js map --help
+```
+
+### Input Data
+
+#### Address Input
 
 Input line-delimited geojson features of points. Each point should have a property called `street` containing the street name
 and `number` containing the street address.
 
-### Properties
+#### Properties
 
 | Property | Function |
 | :------: | -------- |
@@ -32,7 +49,7 @@ and `number` containing the street address.
 | `source` | `String` The source name of the data so a single input file can have a combination of multiple sources |
 | `output` | `Boolean` A boolean allowing pts to be used to calculate the ITP segement but not output in the final cluster |
 
-#### Example
+##### Example
 
 ```
 { "type": "Feature", "geometry": { "type": "Point", ... }, "properties": { "street": "Main Street", "number": 10 } }
@@ -40,11 +57,11 @@ and `number` containing the street address.
 ...
 ```
 
-### Street Network Input
+#### Street Network Input
 
 Input line-delimited geojson features of lines. Each line should have a property called `street` containing the street name.
 
-#### Example
+##### Example
 
 ```
 { "type": "Feature", "geometry": { "type": "LineString", ... }, "properties": { "street": "Main Street" } }
@@ -52,10 +69,33 @@ Input line-delimited geojson features of lines. Each line should have a property
 ...
 ```
 
-## Generating Interpolation Network
+## Version Numbers
 
+PT2ITP follows the [Semver](http://semver.org/) spec for it's **CLI interface**.
+
+This means that breaking changes to the CLI tools will result in a `MAJOR` release.
+New features will result in a `MINOR` release and bug fixes a `PATCH`.
+
+Internal functions may change in breaking ways with a `MINOR` release so long as they
+don't change/break the CLI interface.
+
+## `convert` Mode
+
+### Basic Usage
+
+Converts the PT2ITP standard of line delimited geojson features into the more widely
+supported GeoJSON FeatureCollections. Note that since GeoJSON is a text based format
+this should not be used for huge numbers of features as most parsing software will
+run out of memory.
+
+Basic Usage:
 ```
-./index.js map --in-network=<FILE.geojson> --in-address=<File.geojson> --output=<File.geojson> --tokens=./lib/tokens/en.json"
+./index.js convert --input linedelimited.geojson --output featurecollection.geojson
+```
+
+Full Options:
+```
+./index.js convert --help
 ```
 
 ## Version Numbers
