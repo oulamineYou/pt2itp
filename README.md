@@ -53,7 +53,7 @@ and `number` containing the street address.
 
 ```
 { "type": "Feature", "geometry": { "type": "Point", ... }, "properties": { "street": "Main Street", "number": 10 } }
-{ "type": "Feature", "geometry": { "type": "Point", ... }, "properties": { "street": [ { "Main Street", "number": 11 } ] } }
+{ "type": "Feature", "geometry": { "type": "Point", ... }, "properties": { "street": [ { display: "Main Street", priority: 0  } ], "number": 11 } }
 ...
 ```
 
