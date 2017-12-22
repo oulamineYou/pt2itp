@@ -61,6 +61,18 @@ test('Strip-Unit', (t) => {
         type: 'Feature',
         properties: {
             number: 1,
+            street: 123
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Feat must have a string or array street property', 'Feat must have a string or array street property');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: 1,
             street: [{
                 name: 'Main St'
             }]
