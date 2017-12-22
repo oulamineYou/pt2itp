@@ -49,6 +49,48 @@ test('Strip-Unit', (t) => {
         type: 'Feature',
         properties: {
             number: 1,
+            street: []
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Feat must have non-empty street property', 'Feat must have non-empty street property');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: 1,
+            street: [{
+                name: 'Main St'
+            }]
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Synonym objects in street array must contain only display and priority properties', 'Synonym objects in street array must contain only display and priority properties');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: 1,
+            street: [{
+                display: 'Main St',
+                priority: 'first'
+            }]
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Display property must be a string and priority property must be a number', 'Display property must be a string and priority property must be a number');
+
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: 1,
             street: 'Main St'
         },
         geometry: {
@@ -95,7 +137,7 @@ test('Strip-Unit', (t) => {
     t.equals(map({
         type: 'Feature',
         properties: {
-            number: '423524268974602783406982734',
+            number: '42352426897',
             street: 'Main St'
         },
         geometry: {
@@ -203,8 +245,11 @@ test('Strip-Unit', (t) => {
     t.deepEquals(map({
         type: 'Feature',
         properties: {
-            number: '123 B',
-            street: 'Main St'
+            number: 1,
+            street: [{
+                display: 'Main St',
+                priority: 0
+            }]
         },
         geometry: {
             type: 'Point',
@@ -212,9 +257,32 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '123b', street: [{ display: 'Main St', priority: 0 }] },
+        properties: { number: '1', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
-    }, 'Working 123 B => 123B Address');
+    }, 'Working street array address with one synonym');
+
+    t.deepEquals(map({
+        type: 'Feature',
+        properties: {
+            number: 1,
+            street: [{
+                display: 'Main St',
+                priority: 0
+            },
+            {
+                display: 'Hwy 101',
+                priority: 1
+            }]
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }), {
+        geometry: { coordinates: [ 0, 0 ], type: 'Point' },
+        properties: { number: '1', street: [{ display: 'Main St', priority: 0 },{ display: 'Hwy 101', priority: 1 }] },
+        type: 'Feature'
+    }, 'Working street array address with two synonyms');
 
     t.end();
 });
