@@ -55,7 +55,7 @@ tape('label logic, default behavior', (t) => {
     ];
 
     for (let test of tests) {
-        t.equal(label(test[0], true), test[1], `${test[0].address_text}/${test[0].network_text} => ${test[1]}`);
+        t.equal(label(test[0], true), test[1], `${test[0][0].display}/${test[0][1].display} => ${test[1]}`);
     }
 
     t.end();
@@ -71,7 +71,7 @@ tape('label logic, favor network', (t) => {
     ];
 
     for (let test of tests) {
-        t.equal(label(test[0], true), test[1], `${test[0].address_text}/${test[0].network_text} => ${test[1]}`);
+        t.equal(label(test[0], true), test[1], `${test[0][1].display}/${test[0][1].display} => ${test[1]}`);
     }
 
     t.end();
