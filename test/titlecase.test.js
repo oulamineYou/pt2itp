@@ -36,8 +36,8 @@ tape('label logic, default behavior', (t) => {
     const label = require('../lib/label/titlecase')();
     let tests = [
         [[
-            { display: 'our lady of whatever', tokenized: 'our lady of whatever', source: 'address' },
-            { display: 'our lady', tokenized: 'our lady', source: 'network' }
+            { freq: 12, display: 'our lady of whatever', tokenized: 'our lady of whatever', source: 'address' },
+            { freq: 2, display: 'our lady', tokenized: 'our lady', source: 'network' }
         ], 'Our Lady of Whatever,Our Lady'],
         [[
             { display: 'our lady of whatever', tokenized: 'our lady of whatever', source: 'address' },
@@ -61,22 +61,6 @@ tape('label logic, default behavior', (t) => {
 
     for (let test of tests) {
         t.equal(label(test[0], true), test[1], `${test[0][0].display}/${test[0][1].display} => ${test[1]}`);
-    }
-
-    t.end();
-});
-
-tape('label logic, favor network', (t) => {
-    const label = require('../lib/label/titlecase')({ favor: 'network' });
-    let tests = [
-        [[
-            { display: 'our lady of whatever', tokenized: 'our lady of whatever', source: 'address' },
-            { display: 'our lady ', tokenized: 'our lady', source: 'network' }
-        ], 'Our Lady,Our Lady of Whatever']
-    ];
-
-    for (let test of tests) {
-        t.equal(label(test[0], true), test[1], `${test[0][1].display}/${test[0][1].display} => ${test[1]}`);
     }
 
     t.end();
