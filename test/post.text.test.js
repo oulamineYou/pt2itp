@@ -5,7 +5,7 @@ const args = {
     label: require('../lib/label/titlecase')()
 }
 
-test('Post: Dedupe', (t) => {
+test('Post: Text', (t) => {
     t.deepEquals(post(), undefined, 'return unprocessable 1');
 
     t.deepEquals(post({
@@ -29,8 +29,8 @@ test('Post: Dedupe', (t) => {
     t.deepEquals(post({
         properties: {
             'carmen:text': [
-                { display: 'Main Street', tokenized: 'main st' },
-                { display: 'Some Other St', tokenized: 'some other st' },
+                { freq: 12, display: 'Main Street', tokenized: 'main st' },
+                { freq: 2, display: 'Some Other St', tokenized: 'some other st' },
                 { display: 'Main Street', tokenized: 'main st' },
             ],
             'carmen:text_xx': [
@@ -48,18 +48,18 @@ test('Post: Dedupe', (t) => {
     t.deepEquals(post({
         properties: {
             'carmen:text': [
-                { display: 'Main St', tokenized: 'main st' },
+                { freq: 12, display: 'Main St', tokenized: 'main st' },
                 { display: 'Some Other St', tokenized: 'some other st' },
-                { display: 'Main Street', tokenized: 'main st' }
+                { freq: 12, display: 'Main Street', tokenized: 'main st' }
             ],
             'carmen:text_xx': [
                 { display: 'Spring Road', tokenized: 'spring rd' },
                 { display: 'Spring Rd', tokenized: 'spring rd' }
             ],
             'carmen:text_es': [
-                { display: 'Pta Something', tokenized: 'pta something' },
-                { display: 'Spring Road', tokenized: 'spring rd' },
-                { display: 'Puerta Something', tokenized: 'puerta something' }
+                { priority: 1, display: 'Pta Something', tokenized: 'pta something' },
+                { freq: 2,display: 'Spring Road', tokenized: 'spring rd' },
+                { freq: 12, display: 'Puerta Something', tokenized: 'puerta something' }
             ]
         }
     }, args), {
@@ -93,7 +93,7 @@ test('Post: Dedupe', (t) => {
         }
     }, args), {
         properties: {
-            'carmen:text': '201 Haywood Rd,204 Haywood Rd,212 Haywood Rd,213 Haywood Rd,210 Haywood Rd,215 Haywood Rd,216 Haywood Rd,203 Haywood Rd,217 Haywood Rd,202 Haywood Rd',
+            'carmen:text': '201 Haywood Rd,202 Haywood Rd,203 Haywood Rd,204 Haywood Rd,208 Haywood Rd,209 Haywood Rd,210 Haywood Rd,211 Haywood Rd,212 Haywood Rd,213 Haywood Rd'
         }
     }, 'dedupe tokens, excessive synonyms');
 
