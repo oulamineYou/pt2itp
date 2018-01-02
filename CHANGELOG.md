@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v14.0.1
+
+- :bug: Fix failing test
+
 ## v14.0.0
 
 - :tada: Autonaming is now off by default as it lead to significant false positive matches
