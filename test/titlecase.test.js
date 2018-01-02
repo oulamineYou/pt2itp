@@ -48,6 +48,11 @@ tape('label logic, default behavior', (t) => {
             { display: 'OUR LÄDY OF WHATEVER', tokenized: 'our lady of whatever', source: 'network' }
         ], 'Our Lady of Whatever'],
         [[
+            { display: 'York Branch Road', tokenized: 'york br rd', source: 'address' },
+            { display: 'York Road', tokenized: 'york rd', source: 'address' },
+            { display: 'York Road', tokenized: 'york rd', source: 'network' }
+        ], 'York Road,York Branch Road'],
+        [[
             { display: 'State Highway 123', tokenized: 'state hwy 123', source: 'address', priority: 1 },
             { display: 'State Highway 123 ABC', tokenized: 'state hwy 123', source: 'address' }, //Should be deduped on tokenized
             { display: 'NC 123', tokenized: 'nc 123', source: 'network', priority: 5 }
