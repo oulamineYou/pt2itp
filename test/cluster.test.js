@@ -312,9 +312,9 @@ test('cluster.address', (t) => {
             t.error(err, 'no errors');
 
             t.equals(res.rows.length, 3);
-            t.deepEquals(res.rows[0], { geom: { type: "MultiPoint","coordinates":[[-85.25390625,52.9089020477703,5]]}, name: [{ tokenized: 'fake av', tokenless: 'fake', display: 'Fake Avenue' }] });
-            t.deepEquals(res.rows[1], { geom: {"type":"MultiPoint","coordinates":[[-105.46875,56.3652501368561,3],[-105.46875,56.3652501368561,4]]}, name: [{ tokenized: 'main st', tokenless: 'main', display: 'Main Street' }] });
-            t.deepEquals(res.rows[2], { geom: { coordinates: [ [ -66.97265625, 43.9611906389202, 1 ], [ -66.97265625, 43.9611906389202, 2 ], [ -66.97265625, 43.9611906389202, 6 ] ], type: 'MultiPoint' }, name: [{ tokenized: 'main st', tokenless: 'main', display: 'Main Street' }] });
+            t.deepEquals(res.rows[0], { geom: { type: "MultiPoint","coordinates":[[-85.25390625,52.9089020477703,5]]}, name: [{ freq: 1, tokenized: 'fake av', tokenless: 'fake', display: 'Fake Avenue' }] });
+            t.deepEquals(res.rows[1], { geom: {"type":"MultiPoint","coordinates":[[-105.46875,56.3652501368561,3],[-105.46875,56.3652501368561,4]]}, name: [{ freq: 2, tokenized: 'main st', tokenless: 'main', display: 'Main Street' }] });
+            t.deepEquals(res.rows[2], { geom: { coordinates: [ [ -66.97265625, 43.9611906389202, 1 ], [ -66.97265625, 43.9611906389202, 2 ], [ -66.97265625, 43.9611906389202, 6 ] ], type: 'MultiPoint' }, name: [{ freq: 3, tokenized: 'main st', tokenless: 'main', display: 'Main Street' }] });
 
             return done();
         });
@@ -374,11 +374,13 @@ test('cluster.address - order synonyms by address count', (t) => {
             t.deepEquals(res.rows[0].name, [{
                 display: 'R Street NW',
                 tokenized: 'r st nw',
-                tokenless: 'r'
+                tokenless: 'r',
+                freq: 3
             },{
                 display: 'Mill Street NW',
                 tokenized: 'mill st nw',
-                tokenless: 'mill'
+                tokenless: 'mill',
+                freq: 2
             }], 'address cluster text ordered by number of addresses');
 
             return done();
@@ -437,6 +439,7 @@ test('cluster.network', (t) => {
                 },
                 id: 1,
                 name: {
+                    freq: 1,
                     tokenized: 'main st',
                     tokenless: 'main',
                     display: 'Main Street'
@@ -451,6 +454,7 @@ test('cluster.network', (t) => {
                     coordinates: [[[-113.501172065735,53.5513741378592],[-113.501129150391,53.5483654932333]],[[-113.501000404358,53.5483654932333],[-113.501043319702,53.5461471182574]]]
                 },
                 name: {
+                    freq: 1,
                     display: 'Main Street',
                     tokenized: 'main st',
                     tokenless: 'main'
@@ -850,8 +854,8 @@ test('cluster.collapse - substantial overlap (successful merge)', (t) => {
                         t.equals(parseInt(res.rows[0].id), 2, 'main st feature still exists');
 
                         t.deepEquals(res.rows[0].name, [
-                            { display: 'Main Street', tokenized: 'main st', tokenless: 'main' },
-                            { display: 'Main Avenue', tokenized: 'main ave', tokenless: 'main' }
+                            { freq: 1, display: 'Main Street', tokenized: 'main st', tokenless: 'main' },
+                            { freq: 1, display: 'Main Avenue', tokenized: 'main ave', tokenless: 'main' }
                         ], 'name');
 
                         t.deepEquals(res.rows[0].source_ids, ['5', '6', '7', '8'], 'source_ids');

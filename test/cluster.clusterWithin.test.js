@@ -54,8 +54,8 @@ test('Points are clustered on netid', (t) => {
         `, (err, res) => {
             t.error(err);
 
-            //t.deepEquals(res.rows[0].st_asgeojson, { type: 'MultiPoint', coordinates: [[9.50523376464844,47.1301843316134,1],[9.52342987060547,47.1307974609776,2]]});
-            //t.deepEquals(res.rows[0].name, [ { display: 'Main Street', tokenized: 'main st', tokenless: 'main' } ]);
+            t.deepEquals(res.rows[0].st_asgeojson, { type: 'MultiPoint', coordinates: [[9.50523376464844,47.1301843316134,1],[9.52342987060547,47.1307974609776,2]]});
+            t.deepEquals(res.rows[0].name, [ { freq: 2, display: 'Main Street', tokenized: 'main st', tokenless: 'main' } ]);
 
             t.end();
         });
@@ -102,7 +102,7 @@ test('LineStrings far away should not be clustered', (t) => {
         `, (err, res) => {
             t.error(err);
             t.deepEquals(res[1].rows[0].st_asgeojson, { type: "MultiLineString", coordinates: [[[9.50514793395996,47.1302719219553],[9.50094223022461,47.1302719219553]]]}, 'ok network is not clustered');
-            t.deepEquals(res[1].rows[0].name, { display: 'Main Street', tokenized: 'main st', tokeneless: 'main' });
+            t.deepEquals(res[1].rows[0].name, { freq: 1, display: 'Main Street', tokenized: 'main st', tokeneless: 'main' });
             t.end();
         });
     });
@@ -147,7 +147,7 @@ test('LinesStrings should be clustered', (t) => {
             t.error(err);
 
             t.deepEquals(res.rows[0].st_asgeojson, { type: "MultiLineString", coordinates: [[[9.5167350769043,47.1327681860613],[9.51982498168945,47.132870369815]],[[9.51399922370911,47.1326951975457],[9.51251864433289,47.1326951975457]]]}, 'ok network is clustered');
-            t.deepEquals(res.rows[0].name, { display: 'Main Street', tokenized: 'main st', tokeneless: 'main' });
+            t.deepEquals(res.rows[0].name, { freq: 1, display: 'Main Street', tokenized: 'main st', tokeneless: 'main' });
             t.end();
         });
     });

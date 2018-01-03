@@ -36,8 +36,8 @@ tape('label logic, default behavior', (t) => {
     const label = require('../lib/label/titlecase')();
     let tests = [
         [[
-            { display: 'our lady of whatever', tokenized: 'our lady of whatever', source: 'address' },
-            { display: 'our lady', tokenized: 'our lady', source: 'network' }
+            { freq: 12, display: 'our lady of whatever', tokenized: 'our lady of whatever', source: 'address' },
+            { freq: 2, display: 'our lady', tokenized: 'our lady', source: 'network' }
         ], 'Our Lady of Whatever,Our Lady'],
         [[
             { display: 'our lady of whatever', tokenized: 'our lady of whatever', source: 'address' },
@@ -48,6 +48,17 @@ tape('label logic, default behavior', (t) => {
             { display: 'OUR LÄDY OF WHATEVER', tokenized: 'our lady of whatever', source: 'network' }
         ], 'Our Lady of Whatever'],
         [[
+            { display: 'York Branch Road', tokenized: 'york br rd', source: 'address' },
+            { display: 'York Road', tokenized: 'york rd', source: 'address' },
+            { display: 'York Road', tokenized: 'york rd', source: 'network' }
+        ], 'York Road,York Branch Road'],
+        [[
+            {"freq": 603, "source": "address", "display": "GRAND AVE", "priority": 0, "tokenized": "grand av", "tokenless": "grand"},
+            {"freq": 17, "source": "address", "display": "GRAND VALLEY DR", "priority": 0, "tokenized": "grand vly dr", "tokenless": "grand"},
+            {"freq": 3, "source": "address", "display": "Grand Ave", "priority": 0, "tokenized": "grand av", "tokenless": "grand"},
+            {"freq": 1, "source": "network", "display": "Grand Avenue", "priority": 0, "tokenized": "grand av", "tokenless": "grand"}
+        ], 'Grand Avenue,Grand Valley Dr'],
+        [[
             { display: 'State Highway 123', tokenized: 'state hwy 123', source: 'address', priority: 1 },
             { display: 'State Highway 123 ABC', tokenized: 'state hwy 123', source: 'address' }, //Should be deduped on tokenized
             { display: 'NC 123', tokenized: 'nc 123', source: 'network', priority: 5 }
@@ -56,22 +67,6 @@ tape('label logic, default behavior', (t) => {
 
     for (let test of tests) {
         t.equal(label(test[0], true), test[1], `${test[0][0].display}/${test[0][1].display} => ${test[1]}`);
-    }
-
-    t.end();
-});
-
-tape('label logic, favor network', (t) => {
-    const label = require('../lib/label/titlecase')({ favor: 'network' });
-    let tests = [
-        [[
-            { display: 'our lady of whatever', tokenized: 'our lady of whatever', source: 'address' },
-            { display: 'our lady ', tokenized: 'our lady', source: 'network' }
-        ], 'Our Lady,Our Lady of Whatever']
-    ];
-
-    for (let test of tests) {
-        t.equal(label(test[0], true), test[1], `${test[0][1].display}/${test[0][1].display} => ${test[1]}`);
     }
 
     t.end();
