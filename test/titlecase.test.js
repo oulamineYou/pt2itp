@@ -55,8 +55,9 @@ tape('label logic, default behavior', (t) => {
         [[
             {"freq": 603, "source": "address", "display": "GRAND AVE", "priority": 0, "tokenized": "grand av", "tokenless": "grand"},
             {"freq": 17, "source": "address", "display": "GRAND VALLEY DR", "priority": 0, "tokenized": "grand vly dr", "tokenless": "grand"},
-            {"freq": 3, "source": "address", "display": "Grand Ave", "priority": 0, "tokenized": "grand av", "tokenless": "grand"}
-        ], 'Grand Ave,Grand Valley Dr'],
+            {"freq": 3, "source": "address", "display": "Grand Ave", "priority": 0, "tokenized": "grand av", "tokenless": "grand"},
+            {"freq": 1, "source": "network", "display": "Grand Avenue", "priority": 0, "tokenized": "grand av", "tokenless": "grand"}
+        ], 'Grand Avenue,Grand Valley Dr'],
         [[
             { display: 'State Highway 123', tokenized: 'state hwy 123', source: 'address', priority: 1 },
             { display: 'State Highway 123 ABC', tokenized: 'state hwy 123', source: 'address' }, //Should be deduped on tokenized
