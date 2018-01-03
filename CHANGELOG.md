@@ -10,6 +10,11 @@
 
 ## Version History
 
+## v14.1.0
+
+- :tada: add :non-preferred street tokens: IE: 'ext', 'unit', 'exit' etc which suggest an incorrect name.
+- :tata: track `freq` value that is used to determine the best match based on the frequency of a given name.
+
 ## v14.0.1
 
 - :bug: Fix failing test
