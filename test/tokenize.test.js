@@ -77,31 +77,3 @@ test('test for global tokens', (t) => {
     t.deepEqual('Po 25', replace, 'handles global tokens - Post Office');
     t.end();
 });
-
-// test('test global tokens - talstrasse', (t) => {
-//     let tokens = {
-//         '\\b(.+)(strasse|str|straße)\\b': "$1 str"
-//     };
-//     test('talstrasse', (q) => {
-//         let query = 'talstrasse';
-//         let tokensRegex = tokenize.createGlobalReplacer(tokens)
-//         let replace = tokenize.replaceToken(tokensRegex, query);
-//         q.deepEquals('tal str', replace, 'okay, talstrasse')
-//         q.end();
-//     });
-//     test('talstraße', (q) => {
-//         let query = 'talstraße';
-//         let tokensRegex = tokenize.createGlobalReplacer(tokens)
-//         let replace = tokenize.replaceToken(tokensRegex, query);
-//         q.deepEquals('tal str', replace, 'okay, talstraße')
-//         q.end();
-//     });
-//     test('talstr', (q) => {
-//         let query = 'talstr';
-//         let tokensRegex = tokenize.createGlobalReplacer(tokens)
-//         let replace = tokenize.replaceToken(tokensRegex, query);
-//         q.deepEquals('tal str', replace, 'okay, talstr')
-//         q.end();
-//     });
-//     t.end();
-// });
