@@ -10,6 +10,21 @@
 
 ## Version History
 
+## v14.1.0
+
+- :tada: add :non-preferred street tokens: IE: 'ext', 'unit', 'exit' etc which suggest an incorrect name.
+- :tata: track `freq` value that is used to determine the best match based on the frequency of a given name.
+
+## v14.0.1
+
+- :bug: Fix failing test
+
+## v14.0.0
+
+- :tada: Autonaming is now off by default as it lead to significant false positive matches
+- :rocket: Use JSON format for all names to allow better prioritization & deduplication
+- :bug: Fix LOG file tracking to avoid logs being commited every time tests are run
+
 ## v13.8.9
 
 - :white_check_mark: change testcsv test fixtures to a csv with > 25 rows
