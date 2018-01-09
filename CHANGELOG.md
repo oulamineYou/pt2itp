@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v14.2.1
+
+- :bug: Fix longstanding bug in previously unused post opts
+
 ## v14.2.0
 
 - :arrow_up: Update deps to the latest and greatest
