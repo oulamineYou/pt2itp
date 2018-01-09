@@ -44,7 +44,7 @@ test('Strip-Unit', (t) => {
             type: 'Point',
             coordinates: [0, 0]
         }
-    }).toString(), 'Error: Feat must have a string or number number property', 'Feat must have a string or number number property');
+    }).toString(), 'Error: Feat must have a string or numeric number property', 'Feat must have a string or number number property');
 
     t.equals(map({
         type: 'Feature',
@@ -56,7 +56,7 @@ test('Strip-Unit', (t) => {
             type: 'Point',
             coordinates: [0, 0]
         }
-    }).toString(), 'Error: Feat number is not a supported address/unit type', 'Feat is not a supported address/unit type');
+    }).toString(), 'Error: Feat number is not a supported address/unit type', 'Feat number is not a supported address/unit type');
 
     t.equals(map({
         type: 'Feature',
