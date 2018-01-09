@@ -10,6 +10,11 @@
 
 ## Version History
 
+## v14.1.1
+
+- :bug: return an error if an input GeoJSON feature's `number` property is nonempty whitespace or not a string or number
+- :white_check_mark: test above behavior
+
 ## v14.1.0
 
 - :tada: add :non-preferred street tokens: IE: 'ext', 'unit', 'exit' etc which suggest an incorrect name.
