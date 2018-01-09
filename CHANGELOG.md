@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v14.2.3
+
+- :rocket: Add diagonal cardinals
+
 ### v14.2.2
 
 - :rocket: Fix readme formatting
