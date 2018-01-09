@@ -10,6 +10,12 @@
 
 ## Version History
 
+## v14.2.0
+
+- :arrow_up: Update deps to the latest and greatest
+- :rocket: Add support for a wide range of US Route synonyms
+- :rocket: Add support for `five => 5` matches in network names
+
 ## v14.1.1
 
 - :bug: return an error if an input GeoJSON feature's `number` property is nonempty whitespace or not a string or number
