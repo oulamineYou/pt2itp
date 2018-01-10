@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v14.2.4
+
+- :rocket: Add more `US Route` synonyms
+
 ### v14.2.3
 
 - :rocket: Add diagonal cardinals
