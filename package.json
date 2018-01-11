@@ -18,7 +18,7 @@
   "license": "BSD-2-Clause ",
   "dependencies": {
     "@mapbox/carmen": "24.1.9",
-    "@mapbox/geocoder-abbreviations": "https://github.com/mapbox/geocoder-abbreviations/tarball/f4227b3d31e918a0986d30d7200ee45772a919a8",
+    "@mapbox/geocoder-abbreviations": "https://github.com/mapbox/geocoder-abbreviations/tarball/d07705c7a46094879389fc93927486eb76e1a5bc",
     "@mapbox/geojson-area": "^0.2.2",
     "@mapbox/mbtiles": "^0.9.0",
     "@mapbox/tile-cover": "^3.0.2",
