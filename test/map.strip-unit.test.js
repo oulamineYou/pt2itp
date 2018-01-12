@@ -27,6 +27,52 @@ test('Strip-Unit', (t) => {
     t.equals(map({
         type: 'Feature',
         properties: {
+            number: ' \t '
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Feat must have non-empty number property', 'Feat must have non-empty number property');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: []
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Feat must have a string or numeric number property', 'Feat must have a string or numeric number property');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: 'xyz',
+            street: 'Main St'
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Feat number is not a supported address/unit type', 'Feat number is not a supported address/unit type');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: '42352426897',
+            street: 'Main St'
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Number should not exceed 10 chars', 'Number should not exceed 10 chars');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
             number: 1
         },
         geometry: {
@@ -133,30 +179,6 @@ test('Strip-Unit', (t) => {
             coordinates: [0, 1000]
         }
     }).toString(), 'Error: Feat exceeds +/-85deg coord bounds', 'Feat exceeds +/-85deg coord bounds');
-
-    t.equals(map({
-        type: 'Feature',
-        properties: {
-            number: 'xyz',
-            street: 'Main St'
-        },
-        geometry: {
-            type: 'Point',
-            coordinates: [0, 0]
-        }
-    }).toString(), 'Error: Feat is not a supported address/unit type', 'Feat is not a supported address/unit type');
-
-    t.equals(map({
-        type: 'Feature',
-        properties: {
-            number: '42352426897',
-            street: 'Main St'
-        },
-        geometry: {
-            type: 'Point',
-            coordinates: [0, 0]
-        }
-    }).toString(), 'Error: Number should not exceed 10 chars', 'Number should not exceed 10 chars');
 
     t.deepEquals(map({
         type: 'Feature',
@@ -298,4 +320,3 @@ test('Strip-Unit', (t) => {
 
     t.end();
 });
-
