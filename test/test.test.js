@@ -1,5 +1,6 @@
 const Index = require('../lib/index');
 const worker = require('../lib/map');
+const exec = require('child_process').exec;
 
 const spawn = require('tape-spawn');
 const csv = require('fast-csv');
@@ -44,9 +45,13 @@ test('load address and network files', (t) => {
 });
 
 test('Run test mode', (t) => {
-    let st = spawn(t, `${__dirname}/../index.js test --index ${carmenIndex} --database ${database} --output ${output} --config ${config}`);
-
+    // let st = spawn(t, `${__dirname}/../index.js test --index ${carmenIndex} --database ${database} --output ${output} --config ${config}`);
+    exec(`${__dirname}/../index.js test --index ${carmenIndex} --database ${database} --output ${output} --config ${config}`, (err, stdout, stderr) => {
+        console.log(stdout);
+        console.log(stderr);
+    });
     t.test('Return correct std.err message', (t) => {
+
         st.stderr.match(/NAME MISMATCH \(SOFT\)\s+1 \( 50\.0% of errors \|  9\.1% of total addresses\)/, 'NAME MISMATCH (SOFT) error');
         st.stderr.match(/NO RESULTS\s+1 \( 50\.0% of errors \|  9\.1% of total addresses\)/, 'NO RESULTS error');
         st.stderr.match(/1\/11 \(9\.1%\) failed to geocode/, 'failed to geocode error')
