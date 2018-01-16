@@ -49,6 +49,21 @@ test('Run test mode', (t) => {
     exec(`${__dirname}/../index.js test --index ${carmenIndex} --database ${database} --output ${output} --config ${config}`, (err, stdout, stderr) => {
         console.log(stdout);
         console.log(stderr);
+        t.test('Return correct error messages in csv', (t) => {
+            let csvErrs = [];
+
+            csv.fromPath(output, {headers: true})
+            .on('data', (data) => {
+                csvErrs.push(data);
+            })
+            .on('end', () => {
+                t.equal(csvErrs.length, 2);
+                console.log(csvErrs);
+                t.equal(csvErrs.filter(ele => ele.query === '5 greeeeeenview rd')[0].error, 'NO RESULTS');
+                t.equal(csvErrs.filter(ele => ele['addr text'] === 'greeeeeenview')[0].error, 'NAME MISMATCH (SOFT)');
+                t.end();
+            });
+        });
     });
     // t.test('Return correct std.err message', (t) => {
     //
@@ -58,21 +73,7 @@ test('Run test mode', (t) => {
     //     // st.end();
     // });
 
-    t.test('Return correct error messages in csv', (t) => {
-        let csvErrs = [];
 
-        csv.fromPath(output, {headers: true})
-        .on('data', (data) => {
-            csvErrs.push(data);
-        })
-        .on('end', () => {
-            t.equal(csvErrs.length, 2);
-            console.log(csvErrs);
-            t.equal(csvErrs.filter(ele => ele.query === '5 greeeeeenview rd')[0].error, 'NO RESULTS');
-            t.equal(csvErrs.filter(ele => ele['addr text'] === 'greeeeeenview')[0].error, 'NAME MISMATCH (SOFT)');
-            t.end();
-        });
-    });
 });
 
 test('Drop/init database', (t) => {
