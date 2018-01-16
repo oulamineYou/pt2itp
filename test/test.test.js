@@ -1,6 +1,5 @@
 const Index = require('../lib/index');
 const worker = require('../lib/map');
-const exec = require('child_process').exec;
 
 const spawn = require('tape-spawn');
 const csv = require('fast-csv');
@@ -45,35 +44,29 @@ test('load address and network files', (t) => {
 });
 
 test('Run test mode', (t) => {
-    // let st = spawn(t, `${__dirname}/../index.js test --index ${carmenIndex} --database ${database} --output ${output} --config ${config}`);
-    exec(`${__dirname}/../index.js test --index ${carmenIndex} --database ${database} --output ${output} --config ${config}`, (err, stdout, stderr) => {
-        console.log(stdout);
-        console.log(stderr);
-        t.test('Return correct error messages in csv', (t) => {
-            let csvErrs = [];
+    let st = spawn(t, `${__dirname}/../index.js test --index ${carmenIndex} --database ${database} --output ${output} --config ${config}`);
 
-            csv.fromPath(output, {headers: true})
-            .on('data', (data) => {
-                csvErrs.push(data);
-            })
-            .on('end', () => {
-                t.equal(csvErrs.length, 2);
-                console.log(csvErrs);
-                t.equal(csvErrs.filter(ele => ele.query === '5 greeeeeenview rd')[0].error, 'NO RESULTS');
-                t.equal(csvErrs.filter(ele => ele['addr text'] === 'greeeeeenview')[0].error, 'NAME MISMATCH (SOFT)');
-                t.end();
-            });
+    t.test('Return correct std.err message', (t) => {
+        st.stderr.match(/NAME MISMATCH \(SOFT\)\s+1 \( 50\.0% of errors \|  9\.1% of total addresses\)/, 'NAME MISMATCH (SOFT) error');
+        st.stderr.match(/NO RESULTS\s+1 \( 50\.0% of errors \|  9\.1% of total addresses\)/, 'NO RESULTS error');
+        st.stderr.match(/1\/11 \(9\.1%\) failed to geocode/, 'failed to geocode error')
+        st.end();
+    });
+
+    t.test('Return correct error messages in csv', (t) => {
+        let csvErrs = [];
+
+        csv.fromPath(output, {headers: true})
+        .on('data', (data) => {
+            csvErrs.push(data);
+        })
+        .on('end', () => {
+            t.equal(csvErrs.length, 2);
+            t.equal(csvErrs.filter(ele => ele.query === '5 greeeeeenview rd')[0].error, 'NO RESULTS');
+            t.equal(csvErrs.filter(ele => ele['addr text'] === 'greeeeeenview')[0].error, 'NAME MISMATCH (SOFT)');
+            t.end();
         });
     });
-    // t.test('Return correct std.err message', (t) => {
-    //
-    //     // st.stderr.match(/NAME MISMATCH \(SOFT\)\s+1 \( 50\.0% of errors \|  9\.1% of total addresses\)/, 'NAME MISMATCH (SOFT) error');
-    //     // st.stderr.match(/NO RESULTS\s+1 \( 50\.0% of errors \|  9\.1% of total addresses\)/, 'NO RESULTS error');
-    //     // st.stderr.match(/1\/11 \(9\.1%\) failed to geocode/, 'failed to geocode error')
-    //     // st.end();
-    // });
-
-
 });
 
 test('Drop/init database', (t) => {
