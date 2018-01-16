@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v14.2.5
+
+- :arrow_up: Update to latest carmen dep
+
 ### v14.2.4
 
 - :rocket: Add more `US Route` synonyms
