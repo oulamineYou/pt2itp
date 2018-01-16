@@ -101,7 +101,7 @@
     }
   },
   "engines": {
-    "node": "6.x.x"
+    "node": ">= 6.x.x"
   },
   "repository": {
     "type": "git"
