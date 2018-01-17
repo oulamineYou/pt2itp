@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v14.2.7
+
+- :arrow_up: Swedish address tokens
+
 ### v14.2.6
 
 - :arrow_up: Update to latest deps
