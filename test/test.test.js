@@ -45,6 +45,7 @@ test('load address and network files', (t) => {
 });
 
 test('Run test mode', (t) => {
+    exec(`${__dirname}/../index.js test - | carmen-index --config=${config} --index=${carmenIndex}`);
     exec(`${__dirname}/../index.js test --index ${carmenIndex} --database ${database} --output ${output} --config ${config}`, (err, stdout, stderr) => {
         t.test('Return correct error messages in csv', (t) => {
             let csvErrs = [];
