@@ -10,9 +10,10 @@ const path = require('path');
 const pg = require('pg');
 
 const database = 'pt_test';
-const carmenIndex = '/tmp/test-ri.mbtiles';
-const output = '/tmp/test-ri.err';
-const config = path.resolve(__dirname, './fixtures/test-ri/carmen-config2.json');
+const carmenIndex = '/tmp/test-de.mbtiles';
+const output = '/tmp/test-de.err';
+const config = path.resolve(__dirname, './fixtures/test-de/carmen-config2.json');
+const abbr = path.resolve(__dirname, '../node_modules/@mapbox/geocoder-abbreviations/tokens/global.js')
 
 
 const pool = new pg.Pool({
@@ -35,23 +36,23 @@ test('Drop/init database', (t) => {
 // loads address and network data into postgres
 test('load address and network files', (t) => {
     worker({
-        'in-address': './test/fixtures/test-ri/address.geojson',
-        'in-network': './test/fixtures/test-ri/network.geojson',
-        output: '/tmp/itp.geojson',
+        'in-address': './test/fixtures/test-de/address.geojson',
+        'in-network': './test/fixtures/test-de/network.geojson',
+        output: '/tmp/itp-de.geojson',
         debug: true,
         db: database,
-        tokens: 'en'
+        tokens: 'de'
     }, (err, res) => {
         t.error(err);
         t.end();
     });
 });
 
-// make sure to delete /tmp/test-ri.* before running indexer
+// make sure to delete /tmp/test-de.* before running indexer
 test('clean up any previous database files', (t) => {
-    exec('rm -rf /tmp/test-ri.*', (err, stdout, stderr) => {
+    exec('rm -rf /tmp/test-de.*', (err, stdout, stderr) => {
         t.ifError(err);
-        t.equal(fs.existsSync('/tmp/test-ri.mbtiles'), false, 'cleans up test-ri.mbtiles');
+        t.equal(fs.existsSync('/tmp/test-de.mbtiles'), false, 'cleans up test-de.mbtiles');
         t.end();
     });
 });
@@ -59,17 +60,17 @@ test('clean up any previous database files', (t) => {
 // step 2: create index file for test mode
 // cat <geojson> | carmen-index --config=${config} --index=${carmenIndex}
 test('create index from geojson', (t) => {
-    exec(`cat /tmp/itp.geojson | ${__dirname}/../node_modules/.bin/carmen-index --config=${config} --index=${carmenIndex}`, (err, stdout, stderr) => {
+    exec(`cat /tmp/itp-de.geojson | ${__dirname}/../node_modules/.bin/carmen-index --config=${config} --index=${carmenIndex} --tokens ${abbr}`, (err, stdout, stderr) => {
         t.ifError(err);
-        t.equal(fs.existsSync('/tmp/test-ri.mbtiles'), true, 'creates test-ri.mbtiles');
+        t.equal(fs.existsSync('/tmp/test-de.mbtiles'), true, 'creates test-de.mbtiles');
         t.end();
     });
 });
 
 test('query from new index', (t) => {
-    exec(`${__dirname}/../node_modules/.bin/carmen --query "5 Greenview Rd" ${carmenIndex} | grep "1.00 5 Greenview Rd" | tr -d '\n'`, (err, res) => {
+    exec(`${__dirname}/../node_modules/.bin/carmen --query "5 Haupt Strasse" ${carmenIndex} | grep "1.00 5 Haupt Strasse" | tr -d '\n'`, (err, res) => {
         t.ifError(err);
-        t.equal(res.split(',')[0], "- 1.00 5 Greenview Rd", 'Finds 5 Greenview Rd');
+        t.equal(res.split(',')[0], "- 1.00 5 Haupt Strasse", 'Finds 5 Haupt Strasse');
         t.end();
     });
 });
@@ -86,9 +87,11 @@ test('Run test mode', (t) => {
                 csvErrs.push(data);
             })
             .on('end', () => {
-                t.equal(csvErrs.length, 2);
-                t.equal(csvErrs.filter(ele => ele.query === '5 greeeeeenview rd')[0].error, 'TEXT');
-                t.equal(csvErrs.filter(ele => ele['addr text'] === 'greeeeeenview')[0].error, 'NAME MISMATCH (SOFT)');
+                console.log(csvErrs);
+                t.equal(csvErrs.length, 3);
+                t.equal(csvErrs.filter(ele => ele.query === '5 haupt str')[0].error, 'TEXT');
+                t.equal(csvErrs.filter(ele => ele['addr text'] === 'haupt str')[0].error, 'NAME MISMATCH (SOFT)');
+                t.equal(csvErrs.filter(ele => ele['addr text'] === 'hauptstr')[0].error, 'NAME MISMATCH (SOFT)');
                 t.end();
             });
         });
