@@ -318,5 +318,29 @@ test('Strip-Unit', (t) => {
         type: 'Feature'
     }, 'Working street array address with two synonyms');
 
+    t.deepEquals(map({
+        type: 'Feature',
+        properties: {
+            number: '123',
+            street: 'Twenty-Third Avenue'
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }, { country: 'us' }).properties.street, [ { display: 'Twenty-Third Avenue', priority: 0 }, { display: '23rd Avenue', priority: 0 } ], 'Working Twenty-Third Avenue');
+
+    t.deepEquals(map({
+        type: 'Feature',
+        properties: {
+            number: '123',
+            street: 'WEST NINETY-NINTH STREET'
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }, { country: 'us' }).properties.street, [ { display: 'WEST NINETY-NINTH STREET', priority: 0 }, { display: 'WEST 99th STREET', priority: 0 } ], 'Working NINETY-NINE');
+
     t.end();
 });
