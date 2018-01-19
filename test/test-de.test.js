@@ -87,11 +87,8 @@ test('Run test mode', (t) => {
                 csvErrs.push(data);
             })
             .on('end', () => {
-                console.log(csvErrs);
-                t.equal(csvErrs.length, 3);
-                t.equal(csvErrs.filter(ele => ele.query === '5 haupt str')[0].error, 'TEXT');
-                t.equal(csvErrs.filter(ele => ele['addr text'] === 'haupt str')[0].error, 'NAME MISMATCH (SOFT)');
-                t.equal(csvErrs.filter(ele => ele['addr text'] === 'hauptstr')[0].error, 'NAME MISMATCH (SOFT)');
+                t.equal(csvErrs.length, 1);
+                t.equal(csvErrs.filter(ele => ele.query === '')[0].error, 'NOT MATCHED TO NETWORK');
                 t.end();
             });
         });
