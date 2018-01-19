@@ -12,7 +12,7 @@ const pg = require('pg');
 const database = 'pt_test';
 const carmenIndex = '/tmp/test-de.mbtiles';
 const output = '/tmp/test-de.err';
-const config = path.resolve(__dirname, './fixtures/test-de/carmen-config2.json');
+const config = path.resolve(__dirname, './fixtures/test-de/carmen-config.json');
 const abbr = path.resolve(__dirname, '../node_modules/@mapbox/geocoder-abbreviations/tokens/global.js')
 
 
@@ -71,6 +71,10 @@ test('query from new index', (t) => {
     exec(`${__dirname}/../node_modules/.bin/carmen --query "5 Haupt Strasse" ${carmenIndex} | grep "1.00 5 Haupt Strasse" | tr -d '\n'`, (err, res) => {
         t.ifError(err);
         t.equal(res.split(',')[0], "- 1.00 5 Haupt Strasse", 'Finds 5 Haupt Strasse');
+    });
+    exec(`${__dirname}/../node_modules/.bin/carmen --query "5 Hauptstrasse" ${carmenIndex} | grep "1.00 5 Haupt Strasse" | tr -d '\n'`, (err, res) => {
+        t.ifError(err);
+        t.equal(res.split(',')[0], "- 1.00 5 Haupt Strasse", 'Finds 5 "Hauptstrasse" as "Haupt Strasse"');
         t.end();
     });
 });
@@ -80,15 +84,18 @@ test('Run test mode', (t) => {
     exec(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output}`, (err, stdout, stderr) => {
         t.test('Return correct error messages in csv', (t) => {
             let csvErrs = [];
-            let queryResults;
+            // let queryResults;
 
             csv.fromPath(output, {headers: true})
             .on('data', (data) => {
                 csvErrs.push(data);
             })
             .on('end', () => {
-                t.equal(csvErrs.length, 1);
+                t.equal(csvErrs.length, 3);
                 t.equal(csvErrs.filter(ele => ele.query === '')[0].error, 'NOT MATCHED TO NETWORK');
+                t.equal(csvErrs.filter(ele => ele.query === '31 hauptstr')[0].error, 'TEXT');
+                t.equal(csvErrs.filter(ele => ele['addr text'] === 'Haupt str')[0].error, 'NOT MATCHED TO NETWORK');
+                t.equal(csvErrs.filter(ele => ele['addr text'] === 'Haupt Strasse')[0].error, 'NOT MATCHED TO NETWORK');
                 t.end();
             });
         });

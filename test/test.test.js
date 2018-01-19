@@ -12,7 +12,7 @@ const pg = require('pg');
 const database = 'pt_test';
 const carmenIndex = '/tmp/test-ri.mbtiles';
 const output = '/tmp/test-ri.err';
-const config = path.resolve(__dirname, './fixtures/test-ri/carmen-config2.json');
+const config = path.resolve(__dirname, './fixtures/test-ri/carmen-config.json');
 
 
 const pool = new pg.Pool({

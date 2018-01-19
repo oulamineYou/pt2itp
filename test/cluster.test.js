@@ -851,7 +851,6 @@ test('cluster.collapse - substantial overlap (successful merge)', (t) => {
                         SELECT id, address, name, source_ids, st_length(geom) AS lngth FROM network_cluster ORDER BY id ASC;
                     `, (err, res) => {
                         t.equals(res.rows.length, 1, 'one row remains');
-                        console.log(res.rows[0]);
                         t.equals(parseInt(res.rows[0].id), 2, 'main st feature still exists');
 
                         t.deepEquals(res.rows[0].name, [
