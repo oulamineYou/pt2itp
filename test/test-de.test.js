@@ -44,7 +44,7 @@ test('load address and network de files', (t) => {
         db: database,
         tokens: 'de'
     }, (err, res) => {
-        t.error(err);
+        t.ifError(err);
         t.end();
     });
     console.log('*** de load address and network files ended');
