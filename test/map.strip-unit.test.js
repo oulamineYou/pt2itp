@@ -328,7 +328,7 @@ test('Strip-Unit', (t) => {
             type: 'Point',
             coordinates: [0, 0]
         }
-    }, { country: 'us' }).properties.street, [ { display: 'Twenty-Third Avenue', priority: 0 }, { display: '23rd Avenue', priority: 0 } ], 'Working Twenty-Third Avenue');
+    }, { country: 'us' }).properties.street, [ { display: 'Twenty-Third Avenue', priority: 0 }, { display: '23rd Avenue', priority: -1 } ], 'Working Twenty-Third Avenue');
 
     t.deepEquals(map({
         type: 'Feature',
@@ -340,7 +340,19 @@ test('Strip-Unit', (t) => {
             type: 'Point',
             coordinates: [0, 0]
         }
-    }, { country: 'us' }).properties.street, [ { display: 'WEST NINETY-NINTH STREET', priority: 0 }, { display: 'WEST 99th STREET', priority: 0 } ], 'Working NINETY-NINE');
+    }, { country: 'us' }).properties.street, [ { display: 'WEST NINETY-NINTH STREET', priority: 0 }, { display: 'WEST 99th STREET', priority: -1 } ], 'Working NINETY-NINE');
+
+    t.deepEquals(map({
+        type: 'Feature',
+        properties: {
+            number: '123',
+            street: '2 Avenue'
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }, { country: 'us' }).properties.street, [{ display: '2 Avenue', priority: 0 }, { display: '2nd Avenue', priority: -1 }], 'Working NINETY-NINE');
 
     t.end();
 });
