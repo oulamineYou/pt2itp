@@ -28,7 +28,7 @@ const index = new Index(pool);
 
 test('Drop/init de database', (t) => {
     index.init((err, res) => {
-        t.error(err);
+        t.ifError(err);
         t.end();
     });
     console.log('*** de Drop/init database ended');

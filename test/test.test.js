@@ -27,7 +27,7 @@ const index = new Index(pool);
 
 test('Drop/init database', (t) => {
     index.init((err, res) => {
-        t.error(err);
+        t.ifError(err);
         t.end();
     });
 });
@@ -42,7 +42,7 @@ test('load address and network files', (t) => {
         db: database,
         tokens: 'en'
     }, (err, res) => {
-        t.error(err);
+        t.ifError(err);
         t.end();
     });
     console.log('load address and network files ended');
