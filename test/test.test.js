@@ -87,9 +87,8 @@ test('Run test mode', (t) => {
                 csvErrs.push(data);
             })
             .on('end', () => {
-                console.log(csvErrs);
                 t.equal(csvErrs.length, 2);
-                t.equal(csvErrs.filter(ele => ele.query === '5 greeeeeenview rd')[0].error, 'NO RESULTS');
+                t.equal(csvErrs.filter(ele => ele.query === '5 greeeeeenview rd')[0].error, 'TEXT');
                 t.equal(csvErrs.filter(ele => ele['addr text'] === 'greeeeeenview')[0].error, 'NAME MISMATCH (SOFT)');
                 t.end();
             });
