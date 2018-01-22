@@ -71,31 +71,29 @@ test('query from new index', (t) => {
     exec(`${__dirname}/../node_modules/.bin/carmen --query "5 Haupt Strasse" ${carmenIndex} | grep "1.00 5 Haupt Strasse" | tr -d '\n'`, (err, res) => {
         t.ifError(err);
         t.equal(res.split(',')[0], "- 1.00 5 Haupt Strasse", 'Finds 5 Haupt Strasse');
+        t.end();
     });
+});
+
+test('query for new index', (t) => {
     exec(`${__dirname}/../node_modules/.bin/carmen --query "5 Hauptstrasse" ${carmenIndex} | grep "1.00 5 Haupt Strasse" | tr -d '\n'`, (err, res) => {
         t.ifError(err);
         t.equal(res.split(',')[0], "- 1.00 5 Haupt Strasse", 'Finds 5 "Hauptstrasse" as "Haupt Strasse"');
         t.end();
     });
-});
+})
 
 // step 3: run test mode against the built index
 test('Run test mode', (t) => {
     exec(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output}`, (err, stdout, stderr) => {
         t.test('Return correct error messages in csv', (t) => {
-            let csvErrs = [];
+            try {
+                fs.accessSync(output)
+            } catch(err) {
+                t.ok(err, 'no errors for strasse');
+            }
+            t.end();
 
-            csv.fromPath(output, {headers: true})
-            .on('data', (data) => {
-                csvErrs.push(data);
-            })
-            .on('end', () => {
-                console.log(csvErrs);
-                t.equal(csvErrs.length, 2);
-                t.equal(csvErrs.filter(ele => ele['addr text'] === 'Haupt str')[0].error, 'NOT MATCHED TO NETWORK');
-                t.equal(csvErrs.filter(ele => ele['addr text'] === 'Haupt Strasse')[0].error, 'NOT MATCHED TO NETWORK');
-                t.end();
-            });
         });
     });
 });
