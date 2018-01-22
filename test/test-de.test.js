@@ -107,13 +107,7 @@ test('Run test mode', (t) => {
     });
     console.log('de run test mode ended');
 });
-
-test('Drop/init database', (t) => {
-   index.init((err, res) => {
-       t.error(err);
-       t.end();
-   });
-});
+ 
 
 test('end connection', (t) => {
    pool.end();
