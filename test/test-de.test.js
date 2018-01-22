@@ -91,9 +91,8 @@ test('Run test mode', (t) => {
                 fs.accessSync(output)
             } catch (err) {
                 t.ok(err, 'no errors for strasse tokens');
+                t.end();
             }
-            t.end();
-
         });
     });
 });
