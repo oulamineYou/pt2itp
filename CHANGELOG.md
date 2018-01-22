@@ -10,6 +10,14 @@
 
 ## Version History
 
+### v14.2.9
+
+- :bug: use all 53 available bits when setting feature ID, to lower the chance of a collision
+
+### v14.2.8
+
+- :arrow_up: New `es` and `en` tokens
+
 ### v14.2.7
 
 - :arrow_up: Swedish address tokens
