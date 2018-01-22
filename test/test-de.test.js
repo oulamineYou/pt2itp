@@ -108,7 +108,6 @@ test('Run test mode', (t) => {
     console.log('de run test mode ended');
 });
 
-
 test('end connection', (t) => {
    pool.end();
    t.end();
