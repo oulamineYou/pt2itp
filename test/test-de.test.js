@@ -31,6 +31,7 @@ test('Drop/init database', (t) => {
         t.error(err);
         t.end();
     });
+    console.log('*** de Drop/init database ended');
 });
 
 // loads address and network data into postgres
@@ -46,6 +47,7 @@ test('load address and network files', (t) => {
         t.error(err);
         t.end();
     });
+    console.log('*** de load address and network files ended');
 });
 
 // make sure to delete /tmp/test-de.* before running indexer
@@ -55,6 +57,7 @@ test('clean up any previous database files', (t) => {
         t.equal(fs.existsSync('/tmp/test-de.mbtiles'), false, 'cleans up test-de.mbtiles');
         t.end();
     });
+    console.log('*** de clean up any previous database files ended');
 });
 
 // step 2: create index file for test mode
@@ -65,6 +68,7 @@ test('create index from geojson', (t) => {
         t.equal(fs.existsSync('/tmp/test-de.mbtiles'), true, 'creates test-de.mbtiles');
         t.end();
     });
+    console.log('*** de create index from geojson ended');
 });
 
 test('query from new index', (t) => {
@@ -73,6 +77,7 @@ test('query from new index', (t) => {
         t.equal(res.split(',')[0], "- 1.00 5 Haupt Strasse", 'Finds 5 Haupt Strasse');
         t.end();
     });
+    console.log('*** de query from new index ended');
 });
 
 test('query for new index', (t) => {
@@ -81,6 +86,7 @@ test('query for new index', (t) => {
         t.equal(res.split(',')[0], "- 1.00 5 Haupt Strasse", 'Finds 5 "Hauptstrasse" as "Haupt Strasse"');
         t.end();
     });
+    console.log('*** de query for new index ended');
 })
 
 // step 3: run test mode against the built index
@@ -95,6 +101,7 @@ test('Run test mode', (t) => {
             t.end();
         });
     });
+    console.log('de run test mode ended');
 });
 
 test('Drop/init database', (t) => {
