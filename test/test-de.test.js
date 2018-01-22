@@ -8,6 +8,7 @@ const csv = require('fast-csv');
 const test = require('tape');
 const path = require('path');
 const pg = require('pg');
+const Queue = require('d3-queue').queue;
 
 const database = 'pt_test';
 const carmenIndex = '/tmp/test-de.mbtiles';
@@ -36,17 +37,24 @@ test('Drop/init de database', (t) => {
 
 // loads address and network data into postgres
 test('load address and network de files', (t) => {
-    worker({
-        'in-address': './test/fixtures/test-de/address.geojson',
-        'in-network': './test/fixtures/test-de/network.geojson',
-        output: '/tmp/itp-de.geojson',
-        debug: true,
-        db: database,
-        tokens: 'de'
-    }, (err, res) => {
-        t.ifError(err);
+    const popQ = new Queue(1);
+    popQ.defer((done) => {
+        worker({
+            'in-address': './test/fixtures/test-de/address.geojson',
+            'in-network': './test/fixtures/test-de/network.geojson',
+            output: '/tmp/itp-de.geojson',
+            debug: true,
+            db: database,
+            tokens: 'de'
+        }, (err, res) => {
+            t.ifError(err);
+            return done();
+        });
+    })
+    popQ.await((err) => {
+        t.error(err);
         t.end();
-    });
+    })
     console.log('*** de load address and network files ended');
 });
 
@@ -81,7 +89,6 @@ test('query from new index', (t) => {
         t.equal(res.split(',')[0], "- 1.00 5 Haupt Strasse", 'Finds 5 Haupt Strasse');
         t.end();
     });
-    console.log('*** de query from new index ended');
 });
 
 test('query for new index', (t) => {
@@ -90,7 +97,6 @@ test('query for new index', (t) => {
         t.equal(res.split(',')[0], "- 1.00 5 Haupt Strasse", 'Finds 5 "Hauptstrasse" as "Haupt Strasse"');
         t.end();
     });
-    console.log('*** de query for new index ended');
 })
 
 // step 3: run test mode against the built index
@@ -105,7 +111,6 @@ test('Run test mode', (t) => {
             t.end();
         });
     });
-    console.log('de run test mode ended');
 });
 
 test('end connection', (t) => {
