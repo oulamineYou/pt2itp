@@ -89,8 +89,8 @@ test('Run test mode', (t) => {
         t.test('Return correct error messages in csv', (t) => {
             try {
                 fs.accessSync(output)
-            } catch(err) {
-                t.ok(err, 'no errors for strasse');
+            } catch (err) {
+                t.ok(err, 'no errors for strasse tokens');
             }
             t.end();
 

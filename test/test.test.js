@@ -76,7 +76,6 @@ test('query from new index', (t) => {
 
 // step 3: run test mode against the built index
 test('Run test mode', (t) => {
-    console.log(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output}`);
     exec(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output}`, (err, stdout, stderr) => {
         t.test('Return correct error messages in csv', (t) => {
             let csvErrs = [];
