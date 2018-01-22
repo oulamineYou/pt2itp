@@ -52,7 +52,9 @@ test('load address and network files', (t) => {
 test('clean up any previous database files', (t) => {
     exec('rm -rf /tmp/test-ri.*', (err, stdout, stderr) => {
         t.ifError(err);
-        t.equal(fs.existsSync('/tmp/test-ri.mbtiles'), false, 'cleans up test-ri.mbtiles');
+        if (fs.existsSync('/tmp/test-ri.mbtiles')) {
+            t.equal(fs.existsSync('/tmp/test-ri.mbtiles'), false, 'cleans up test-ri.mbtiles');
+        }
         t.end();
     });
     console.log('clean up any previous database files ended');

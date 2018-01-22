@@ -26,7 +26,7 @@ const pool = new pg.Pool({
 // step 1: pt2itp map
 const index = new Index(pool);
 
-test('Drop/init database', (t) => {
+test('Drop/init de database', (t) => {
     index.init((err, res) => {
         t.error(err);
         t.end();
@@ -35,7 +35,7 @@ test('Drop/init database', (t) => {
 });
 
 // loads address and network data into postgres
-test('load address and network files', (t) => {
+test('load address and network de files', (t) => {
     worker({
         'in-address': './test/fixtures/test-de/address.geojson',
         'in-network': './test/fixtures/test-de/network.geojson',
@@ -54,7 +54,9 @@ test('load address and network files', (t) => {
 test('clean up any previous database files', (t) => {
     exec('rm -rf /tmp/test-de.*', (err, stdout, stderr) => {
         t.ifError(err);
-        t.equal(fs.existsSync('/tmp/test-de.mbtiles'), false, 'cleans up test-de.mbtiles');
+        if (fs.existsSync('/tmp/test-de.mbtiles')) {
+            t.equal(fs.existsSync('/tmp/test-de.mbtiles'), false, 'cleans up test-de.mbtiles');
+        }
         t.end();
     });
     console.log('*** de clean up any previous database files ended');
