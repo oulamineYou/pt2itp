@@ -53,8 +53,10 @@ test('load address and network de files', (t) => {
 // make sure to delete /tmp/test-de.* before running indexer
 test('clean up any previous database files', (t) => {
     exec('rm -rf /tmp/test-de.*', (err, stdout, stderr) => {
+        console.log('*** this is doing the thing');
         t.ifError(err);
         if (fs.existsSync('/tmp/test-de.mbtiles')) {
+            console.log('this does more things');
             t.equal(fs.existsSync('/tmp/test-de.mbtiles'), false, 'cleans up test-de.mbtiles');
         }
         t.end();
