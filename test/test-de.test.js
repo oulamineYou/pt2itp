@@ -84,16 +84,14 @@ test('Run test mode', (t) => {
     exec(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output}`, (err, stdout, stderr) => {
         t.test('Return correct error messages in csv', (t) => {
             let csvErrs = [];
-            // let queryResults;
 
             csv.fromPath(output, {headers: true})
             .on('data', (data) => {
                 csvErrs.push(data);
             })
             .on('end', () => {
-                t.equal(csvErrs.length, 3);
-                t.equal(csvErrs.filter(ele => ele.query === '')[0].error, 'NOT MATCHED TO NETWORK');
-                t.equal(csvErrs.filter(ele => ele.query === '31 hauptstr')[0].error, 'TEXT');
+                console.log(csvErrs);
+                t.equal(csvErrs.length, 2);
                 t.equal(csvErrs.filter(ele => ele['addr text'] === 'Haupt str')[0].error, 'NOT MATCHED TO NETWORK');
                 t.equal(csvErrs.filter(ele => ele['addr text'] === 'Haupt Strasse')[0].error, 'NOT MATCHED TO NETWORK');
                 t.end();
