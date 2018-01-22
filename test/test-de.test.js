@@ -95,6 +95,7 @@ test('Run test mode', (t) => {
             }
         });
     });
+    t.end();
 });
 
 test('Drop/init database', (t) => {
