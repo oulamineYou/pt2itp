@@ -6,7 +6,7 @@ const path = require('path');
 const carmenIndex = path.resolve(__dirname, './fixtures/test-ri/index/us_ri-address-both-0d603c2a171017011038-0d603c2a39.mbtiles');
 const input = path.resolve(__dirname, './fixtures/test-ri/address.csv');
 const output = '/tmp/testcsv-ri.err';
-const config = path.resolve(__dirname, './fixtures/test-ri/carmen-config.json');
+const config = path.resolve(__dirname, './fixtures/test-ri/carmen-config2.json');
 
 test('testcsv', (t) => {
     t.test('Return correct std.err message', (t) => {
