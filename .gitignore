@@ -3,7 +3,6 @@ scores.csv
 data/
 *.mbtiles
 *.geojsonl
-*.geojson
 
 # Logs
 logs

@@ -45,7 +45,6 @@ test('load address and network files', (t) => {
         t.ifError(err);
         t.end();
     });
-    console.log('load address and network files ended');
 });
 
 // make sure to delete /tmp/test-ri.* before running indexer
@@ -57,7 +56,6 @@ test('clean up any previous database files', (t) => {
         }
         t.end();
     });
-    console.log('clean up any previous database files ended');
 });
 
 // step 2: create index file for test mode
@@ -68,7 +66,6 @@ test('create index from geojson', (t) => {
         t.equal(fs.existsSync('/tmp/test-ri.mbtiles'), true, 'creates test-ri.mbtiles');
         t.end();
     });
-    console.log('create index from geojson ended');
 });
 
 test('query from new index', (t) => {
@@ -77,7 +74,6 @@ test('query from new index', (t) => {
         t.equal(res.split(',')[0], "- 1.00 5 Greenview Rd", 'Finds 5 Greenview Rd');
         t.end();
     });
-    console.log('query from new index ended');
 });
 
 // step 3: run test mode against the built index
@@ -99,7 +95,6 @@ test('Run test mode', (t) => {
             });
         });
     });
-    console.log('test mode ended');
 });
 
 test('end connection', (t) => {

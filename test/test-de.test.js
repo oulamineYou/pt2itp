@@ -8,7 +8,6 @@ const csv = require('fast-csv');
 const test = require('tape');
 const path = require('path');
 const pg = require('pg');
-const Queue = require('d3-queue').queue;
 
 const database = 'pt_test';
 const carmenIndex = '/tmp/test-de.mbtiles';
@@ -32,13 +31,10 @@ test('Drop/init de database', (t) => {
         t.ifError(err);
         t.end();
     });
-    console.log('*** de Drop/init database ended');
 });
 
 // loads address and network data into postgres
 test('load address and network de files', (t) => {
-    const popQ = new Queue(1);
-    popQ.defer((done) => {
         worker({
             'in-address': './test/fixtures/test-de/address.geojson',
             'in-network': './test/fixtures/test-de/network.geojson',
@@ -51,25 +47,17 @@ test('load address and network de files', (t) => {
             return done();
         });
     })
-    popQ.await((err) => {
-        t.error(err);
-        t.end();
-    })
-    console.log('*** de load address and network files ended');
 });
 
 // make sure to delete /tmp/test-de.* before running indexer
 test('clean up any previous database files', (t) => {
     exec('rm -rf /tmp/test-de.*', (err, stdout, stderr) => {
-        console.log('*** this is doing the thing');
         t.ifError(err);
         if (fs.existsSync('/tmp/test-de.mbtiles')) {
-            console.log('this does more things');
             t.equal(fs.existsSync('/tmp/test-de.mbtiles'), false, 'cleans up test-de.mbtiles');
         }
         t.end();
     });
-    console.log('*** de clean up any previous database files ended');
 });
 
 // step 2: create index file for test mode
@@ -80,7 +68,6 @@ test('create index from geojson', (t) => {
         t.equal(fs.existsSync('/tmp/test-de.mbtiles'), true, 'creates test-de.mbtiles');
         t.end();
     });
-    console.log('*** de create index from geojson ended');
 });
 
 test('query from new index', (t) => {
