@@ -23,7 +23,6 @@ test('geocode#isPass', (t) => {
         },
         function(err, res) {
             t.error(err);
-            console.log(res);
             t.notok(res);
 
             t.end();
