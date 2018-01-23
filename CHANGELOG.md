@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v14.3.0
+
+- :tada: use global tokens
+
 ### v14.2.9
 
 - :bug: use all 53 available bits when setting feature ID, to lower the chance of a collision
