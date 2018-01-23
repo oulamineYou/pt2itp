@@ -35,18 +35,17 @@ test('Drop/init de database', (t) => {
 
 // loads address and network data into postgres
 test('load address and network de files', (t) => {
-        worker({
-            'in-address': './test/fixtures/test-de/address.geojson',
-            'in-network': './test/fixtures/test-de/network.geojson',
-            output: '/tmp/itp-de.geojson',
-            debug: true,
-            db: database,
-            tokens: 'de'
-        }, (err, res) => {
-            t.ifError(err);
-            return done();
-        });
-    })
+    worker({
+        'in-address': './test/fixtures/test-de/address.geojson',
+        'in-network': './test/fixtures/test-de/network.geojson',
+        output: '/tmp/itp-de.geojson',
+        debug: true,
+        db: database,
+        tokens: 'de'
+    }, (err, res) => {
+        t.ifError(err);
+        t.end();
+    });
 });
 
 // make sure to delete /tmp/test-de.* before running indexer
