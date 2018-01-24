@@ -97,10 +97,5 @@ test('Post: Text', (t) => {
         }
     }, 'dedupe tokens, excessive synonyms');
 
-    t.deepEquals(post({
-        properties: {
-            'carmen:text': 'South 10th Street West,S 10th St,West South 10th Street,South 10th Street,10th Street West South,10th Street West,10th St S,10th St,10th Street South,10th Street,West 10th Street'
-        }
-
     t.end();
 });
