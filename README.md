@@ -97,3 +97,41 @@ New features will result in a `MINOR` release and bug fixes a `PATCH`.
 
 Internal functions may change in breaking ways with a `MINOR` release so long as they
 don't change/break the CLI interface.
+
+## Terminology
+
+### Parts of an Address
+
+```
+123 1/2 West 1st Street
+^   ^   ^    ^^  ^
+|   |   |    ||  |> suffix, street type - The type of street, ie: highway, street, circle.
+|   |   |    ||  |  rules for suffixes will differ per county/municipality
+|   |   |    ||  |
+|   |   |    ||> ordinal indicator - The group of characters, following a numeral denoting that it is an ordinal number
+|   |   |    |
+|   |   |    |> ordinal - The numberic portional of a street name - must be followed by an ordinal indicator
+|   |   |
+|   |   |> precardinal, predirectional - The compass direction preceeding the street name
+|   |
+|   |> Fractional Address
+|
+|> Primary Address Number
+
+
+
+289-1 Main Street Northeast APT 4
+^                 ^         ^   ^
+|                 |         |   |> Secondary Address
+|                 |         |
+|                 |         |> Secondary Address Address Designator
+|                 |            Common types include Apartment=APT, Building=BLDG
+|                 |            Floor=FL, Suite=STE, Unit, ROOM=RM, Department=Dept
+|                 |            the # sign can be used if the specific type is not covered
+|                 |
+|                 |> postcardinal, postdirectional
+|
+|> Hypenated Primary Address Number - The hyphen is significant and should not be omitted.
+   Different hyphenated standards represent different things. wikipedia: Queens Addresses
+
+```
