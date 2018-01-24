@@ -31,6 +31,10 @@ test('Post: Cardinality', (t) => {
     t.equals(f('TANJONG KATONG ROAD SOUTH'), 'TANJONG KATONG ROAD SOUTH,SOUTH TANJONG KATONG ROAD,TANJONG KATONG ROAD');
     t.equals(f('WEST COAST VIEW'), 'WEST COAST VIEW,COAST VIEW WEST,COAST VIEW');
 
+    //Never Exceed 10 Synonyms
+    t.equals(f('1,2,3,4,5,6,7,8,W 9,10,11').split(',').length, 11); //If it already has > 10 tokens ignore it
+    t.equals(f('W 1 ST,E 1 ST,N 1 ST,S 1 ST,NE 1 ST,SE 1 ST').split(',').length, 10); //Never exceed 10 tokens
+
     t.end();
 });
 
