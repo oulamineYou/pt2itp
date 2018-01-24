@@ -10,6 +10,12 @@
 
 ## Version History
 
+### v14.4.0
+
+- :arrow_up: Carmen@24.2.2
+- :arrow_up: geocoder-abbr@2.17
+- :rocket: Better support for `West Ninety-Ninth Street` type streets
+
 ### v14.3.0
 
 - :tada: use global tokens
