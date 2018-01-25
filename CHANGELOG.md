@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v14.4.1
+
+- :arrow_up: Carmen#24.2.3 - fix tokenization bug for capture groups with diacritics
+- :arrow_ip: geocoder-abbr - Add swedish capture groups with diacritics
+
 ### v14.4.0
 
 - :arrow_up: Carmen@24.2.2
