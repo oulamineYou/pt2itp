@@ -23,8 +23,8 @@ test('tokenizes basic strings', (t) => {
     t.deepEqual(tokenize.main('4-10'), ['4-10']);
     t.deepEqual(tokenize.main('5-02A'), ['5-02a']);
     t.deepEqual(tokenize.main('23-'), ['23'], 'drops dash at end of number');
-    t.deepEqual(tokenize.main('San José'), ['san', 'josé'], 'does not drop accent');
-    t.deepEqual(tokenize.main('A Coruña'), [ 'a', 'coruña' ], 'does not drop ñ');
+    t.deepEqual(tokenize.main('San José'), ['san', 'jose'], 'drops accent');
+    t.deepEqual(tokenize.main('A Coruña'), [ 'a', 'coruna' ], 'drops accent');
     t.deepEqual(tokenize.main('Chamonix-Mont-Blanc'), ['chamonix','mont','blanc'], 'drops hyphen between words');
     t.deepEqual(tokenize.main('Rue d\'Argout'), [ 'rue', 'dargout' ], 'drops apostraphe');
     t.deepEqual(tokenize.main('Hale’iwa Road'), [ 'haleiwa', 'road' ]);
@@ -44,7 +44,7 @@ test('Uses replacement tokens', (t) => {
 });
 
 test('removeDiacritics', (t) => {
-    t.equal(tokenize.main("Hérê àrë søme wöřdš, including diacritics and puncatuation!").join(' '), 'hérê àrë søme wöřdš including diacritics and puncatuation', "diacritics are removed from latin text");
+    t.equal(tokenize.main("Hérê àrë søme wöřdš, including diacritics and puncatuation!").join(' '), 'here are some words including diacritics and puncatuation', "diacritics are removed from latin text");
     t.equal(tokenize.main("Cranberries are low, creeping shrubs or vines up to 2 metres (7 ft)").join(' '), 'cranberries are low creeping shrubs or vines up to 2 metres 7 ft', "nothing happens to latin text with no diacritic marks");
     t.equal(tokenize.main("堪《たま》らん！」と片息《かたいき》になつて、喚《わめ》").join(' '), "堪《たま》らん！」と片息《かたいき》になつて、喚《わめ》", "nothing happens to Japanese text");
     t.equal(tokenize.main("किसी वर्ण के मूल चिह्न के ऊपर, नीचे, अलग-बगल लगने").join(' '), 'किसी वर्ण के मूल चिह्न के ऊपर नीचे अलग बगल लगने', "nothing happens to Hindi text");
