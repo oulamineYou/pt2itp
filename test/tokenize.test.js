@@ -36,6 +36,7 @@ test('tokenizes basic strings', (t) => {
 
 test('Uses replacement tokens', (t) => {
     t.deepEqual(tokenize.main('foo', null), ['foo'], 'handles null token replacer');
+    t.deepEqual(tokenize.main('foo', undefined), ['foo'], 'handles null token replacer');
     t.deepEqual(tokenize.main('foo', {}), ['foo'], 'handles empty args');
     t.deepEqual(tokenize.main('foo', { tokens: [] }), ['foo'], 'handles empty tokens array');
     t.deepEqual(tokenize.main('barter', { 'barter': 'foo' }), ['foo'], 'basic single replacement');
