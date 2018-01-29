@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v14.4.2
+
+- :arrow_up: `geocoder-abbr@2.1.9`
+
 ### v14.4.1
 
 - :arrow_up: Carmen#24.2.3 - fix tokenization bug for capture groups with diacritics
