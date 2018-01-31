@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v14.4.3
+
+- :arrow_up: `carmen@24.2.4`
+
 ### v14.4.2
 
 - :arrow_up: `geocoder-abbr@2.1.9`
