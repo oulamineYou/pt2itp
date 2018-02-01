@@ -245,11 +245,13 @@ test('Osmium', (t) => {
             }
         }, { country: "us", region: "pa"}), [
             { type: 'Feature', properties: { id: 3, street: { display: name, priority: 0 } }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
+            { type: 'Feature', properties: { id: 3, street: { display: 'PA 123 Highway', priority: -2 } }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
+            { type: 'Feature', properties: { id: 3, street: { display: 'Highway 123', priority: -2 } }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
             { type: 'Feature', properties: { id: 3, street: { display: 'PA 123', priority: -1 } }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
-            { type: 'Feature', properties: { id: 3, street: { display: 'PA 123 Highway', priority: -1 } }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
+            { type: 'Feature', properties: { id: 3, street: { display: 'SR 123', priority: -1 } }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
             { type: 'Feature', properties: { id: 3, street: { display: 'Pennsylvania Highway 123', priority: 1 } }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
-            { type: 'Feature', properties: { id: 3, street: { display: 'Highway 123', priority: -1 } }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
-            { type: 'Feature', properties: { id: 3, street: { display: 'State Highway 123', priority: -1 } }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }
+            { type: 'Feature', properties: { id: 3, street: { display: 'State Highway 123', priority: -1 } }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } },
+            { type: 'Feature', properties: { id: 3, street: { display: 'State Route 123', priority: -1 } }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }
         ], `STATE HIGHWAY: ${name}`);
     }
 
