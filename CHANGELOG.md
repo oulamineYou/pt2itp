@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v14.4.4
+
+- :rocket: Add more state route abbreviations (US Only)
+
 ### v14.4.3
 
 - :arrow_up: `carmen@24.2.4`
