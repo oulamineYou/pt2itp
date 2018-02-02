@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v14.5.0
+
+- :tada: Support geocoder-abbr regex tokens
+
 ### v14.4.4
 
 - :rocket: Add more state route abbreviations (US Only)
