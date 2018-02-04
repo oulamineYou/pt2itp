@@ -28,7 +28,7 @@ test('Match', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO network_cluster (id, name, geom) VALUES (1, '{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -66.05180561542511, 45.26869136632906, 1 ], [ -66.05007290840149, 45.268982070325656, 1 ] ] }'), 4326)));
+            INSERT INTO network_cluster (id, name, geom) VALUES (1, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -66.05180561542511, 45.26869136632906, 1 ], [ -66.05007290840149, 45.268982070325656, 1 ] ] }'), 4326)));
             COMMIT;
         `, (err, res) => {
             t.error(err);
