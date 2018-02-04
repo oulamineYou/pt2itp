@@ -40,6 +40,8 @@ Full Options:
 Input line-delimited geojson features of points. Each point should have a property called `street` containing the street name
 and `number` containing the street address.
 
+Addresses can have any number of name synonyms of equal or differing priority.
+
 #### Properties
 
 | Property | Function |
@@ -60,6 +62,8 @@ and `number` containing the street address.
 #### Street Network Input
 
 Input line-delimited geojson features of lines. Each line should have a property called `street` containing the street name.
+
+**Note**: Networks can have any number of name synonyms but must have one name feature that has a priority level higher than the other synonyms.
 
 ##### Example
 
