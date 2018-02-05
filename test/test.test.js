@@ -78,18 +78,17 @@ test('query from new index', (t) => {
 
 // step 3: run test mode against the built index
 test('Run test mode', (t) => {
+    console.error(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output}`);
     exec(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output}`, (err, stdout, stderr) => {
         t.test('Return correct error messages in csv', (t) => {
             let csvErrs = [];
             let queryResults;
 
-            csv.fromPath(output, {headers: true})
+            csv.fromPath(output, { headers: true })
             .on('data', (data) => {
                 csvErrs.push(data);
-            })
-            .on('end', () => {
-                t.equal(csvErrs.length, 2);
-                t.equal(csvErrs.filter(ele => ele.query === '5 greeeeeenview rd')[0].error, 'TEXT');
+            }).on('end', () => {
+                t.equal(csvErrs.length, 1);
                 t.equal(csvErrs.filter(ele => ele['addr text'] === 'greeeeeenview')[0].error, 'NAME MISMATCH (SOFT)');
                 t.end();
             });
