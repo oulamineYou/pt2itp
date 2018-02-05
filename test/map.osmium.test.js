@@ -105,7 +105,7 @@ test('Osmium', (t) => {
             type: 'LineString',
             coordinates: [[0,0],[1,1]]
         }
-    },{}), { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: [ { display: 'name', priority: 0 }, { display: 'loc_name', priority: -1 }, { display: 'alt_name', priority: -1 }, { display: 'ref', priority: -1 } ]  }, type: 'Feature' }, 'AltNames');
+    },{}), { geometry: { type: 'LineString', coordinates: [[0,0],[1,1]] }, properties: { id: 3, street: [ { display: 'name', priority: 0 }, { display: 'loc_name', priority: -1 }, { display: 'alt_name', priority: -1 }, { display: 'ref', priority: -1 } ] }, type: 'Feature' }, 'AltNames');
 
     t.deepEquals(map({
         type: 'Feature',
@@ -223,7 +223,7 @@ test('Osmium', (t) => {
         }, { country: "us", region: "pa"}),
             { type: 'Feature', properties: { id: 3, street: [
                 { display: 'Pennsylvania Highway 123', priority: 1 },
-                { display: name, priority: 0  },
+                { display: name, priority: 0 },
                 { display: 'PA 123', priority: -1 },
                 { display: 'SR 123', priority: -1 },
                 { display: 'State Highway 123', priority: -1 },
