@@ -10,6 +10,13 @@
 
 ## Version History
 
+### v15.0.0
+
+- :rocket: Dramatically simplify and improve network Synonym code
+    - Allow multiple synoynms on network features, before these were split into multiple geometries, each with one name
+    - Ensure ouput doesn't have duplicate geom segments (unless input does)
+    - This is a breaking change as there has to be 1 primary network name (priority higher than the others) on input networks
+
 ### v14.5.1
 
 - :arrow_up: Update to carmen@24.2.5 which adds support for `matching_place_names` on address indexes
