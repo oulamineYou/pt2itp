@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v14.5.1
+
+- :arrow_up: Update to carmen@24.2.5 which adds support for `matching_place_names` on address indexes
+
 ### v14.5.0
 
 - :tada: Support geocoder-abbr regex tokens
