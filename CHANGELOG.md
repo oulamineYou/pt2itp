@@ -10,6 +10,12 @@
 
 ## Version History
 
+### v15.1.0
+
+- :bug: Fix a bug where display texts would get thrown away on network clusters if `tokenized` was identical
+    - Streets like `pk dr` (Park Drive, Pike Drive) were grouped by tokenized and then `MAX(name)`
+    - Fix this by instead grouping by `name[0]`, then exploding synyonms, grouping by geom and deduping name synonyms
+
 ### v15.0.0
 
 - :rocket: Dramatically simplify and improve network Synonym code
