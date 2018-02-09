@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v15.1.1
+
+- :arrow_up: `carmen@24.2.6` reduce index size by removing ITP on extremely large ranges
+
 ### v15.1.0
 
 - :bug: Fix a bug where display texts would get thrown away on network clusters if `tokenized` was identical
