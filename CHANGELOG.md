@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v15.2.0
+
+- :rocket: Add `CR ###` and `County Road ###` equivalency for US Networks
+
 ### v15.1.1
 
 - :arrow_up: `carmen@24.2.6` reduce index size by removing ITP on extremely large ranges
