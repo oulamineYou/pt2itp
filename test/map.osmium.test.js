@@ -200,6 +200,62 @@ test('Osmium', (t) => {
     });
 
     for (let name of [
+        'CR 123',
+        'County Road 123'
+    ]) {
+        t.deepEquals(map({
+            type: 'Feature',
+            properties: {
+                highway: 'motorway',
+                "@id": 3,
+                name: name
+            },
+            geometry: {
+                type: 'LineString',
+                coordinates: [[0,0],[1,1]]
+            }
+        }, { country: "us", region: "pa"}),
+            { type: 'Feature', properties: { id: 3, street: [
+                { display: 'County Road 123', priority: 1 },
+                { display: name, priority: 0 },
+                { display: 'CR 123', priority: -1 },
+        ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, `COUNTY ROAD: ${name}`);
+    }
+
+    for (let name of [
+        'State Highway 123',
+        'Highway 123',
+        'Hwy 123',
+        '123 hwy',
+        '123 Highway',
+        'Pennsylvania Hwy 123',
+        'Pennsylvania highway 123',
+        'PA 123'
+    ]) {
+        t.deepEquals(map({
+            type: 'Feature',
+            properties: {
+                highway: 'motorway',
+                "@id": 3,
+                name: name
+            },
+            geometry: {
+                type: 'LineString',
+                coordinates: [[0,0],[1,1]]
+            }
+        }, { country: "us", region: "pa"}),
+            { type: 'Feature', properties: { id: 3, street: [
+                { display: 'Pennsylvania Highway 123', priority: 1 },
+                { display: name, priority: 0 },
+                { display: 'PA 123', priority: -1 },
+                { display: 'SR 123', priority: -1 },
+                { display: 'State Highway 123', priority: -1 },
+                { display: 'State Route 123', priority: -1 },
+                { display: 'PA 123 Highway', priority: -2 },
+                { display: 'Highway 123', priority: -2 }
+        ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, `STATE HIGHWAY: ${name}`);
+    }
+    for (let name of [
         'State Highway 123',
         'Highway 123',
         'Hwy 123',
