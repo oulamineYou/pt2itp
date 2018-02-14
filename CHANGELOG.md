@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v15.2.1
+
+- :arrow_up: Update to `carmen@24.2.7`
+
 ### v15.2.0
 
 - :rocket: Add `CR ###` and `County Road ###` equivalency for US Networks
