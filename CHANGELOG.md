@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v15.3.0
+
+- :rocket: Differentiate between Duplicates withing individual segments & Duplicates within an entire cluster in cluster#break
+- :tada: Handle basic cluster level dups
+
 ### v15.2.2
 
 - :arrow_up: Update to `carmen@24.2.8`
