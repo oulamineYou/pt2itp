@@ -21,7 +21,7 @@ test('Init Database', (t) => {
     });
 });
 
-test.skip('Split: Dulaney Valley Rd, MD', (t) => {
+test('Split: Dulaney Valley Rd, MD', (t) => {
     t.test('Populate', (q) => {
         pool.query(`
             BEGIN;
@@ -94,7 +94,7 @@ test.skip('Split: Dulaney Valley Rd, MD', (t) => {
     t.end();
 });
 
-test.skip('Split: East Long Street', (t) => {
+test('Split: East Long Street', (t) => {
     t.test('Populate', (q) => {
         pool.query(`
             BEGIN;
@@ -161,7 +161,7 @@ test.skip('Split: East Long Street', (t) => {
     t.end();
 });
 
-test.skip('Split: (with no output) Mt Thor Way', (t) => {
+test('Split: (with no output) Mt Thor Way', (t) => {
     t.test('Populate', (q) => {
         pool.query(`
             BEGIN;
@@ -238,7 +238,7 @@ test('Init Database', (t) => {
  * Roads should be split into a max distance as defined by explode#split
  * Ensure roads that pass into cluster#break don't exceed this threshold
  */
-test.skip('Split: Ensure cluster#break roads are split', (t) => {
+test('Split: Ensure cluster#break roads are split', (t) => {
     t.test('Populate', (q) => {
         pool.query(`
             BEGIN;
