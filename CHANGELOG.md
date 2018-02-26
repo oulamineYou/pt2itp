@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v15.2.2
+
+- :arrow_up: Update to `carmen@24.2.8`
+
 ### v15.2.1
 
 - :arrow_up: Update to `carmen@24.2.7`
