@@ -51,3 +51,11 @@ test('misc.closest', (t) => {
     t.equals(misc.closest([1, 2, 3, 4, 5, 6, 7, 11, 145, 132, 146, 156, 294, 125, 574, 573], 200), 156);
     t.end();
 });
+
+test('misc.hasDupAddressWithin', (t) => {
+    t.equals(misc.hasDupAddressWithin([1, 2], [[0,0], [0,0]]), false);
+    t.equals(misc.hasDupAddressWithin([1, 1], [[0,0], [0,0]]), false);
+    t.equals(misc.hasDupAddressWithin([1, 1], [[0,0], [1,1]]), 1);
+    t.equals(misc.hasDupAddressWithin([1, 2, 1], [[0,0], [1,1], [1,1]]), false); //NOTE: Assumes ordered input!
+    t.end();
+});
