@@ -324,6 +324,38 @@ test('Osmium', (t) => {
              ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, `US ROUTE: ${name}`);
     }
 
+    for (let name of [
+        '101a',
+        'NB-101a',
+        'New Brunswick Route 101a',
+        'New Brunswick Highway 101a',
+        'New Brunswick Hwy 101a',
+        'Route 101a',
+        'Rte 101a',
+        'Highway 101a',
+        'Hwy 101a',
+    ]) {
+        t.deepEquals(map({
+            type: 'Feature',
+            properties: {
+                highway: 'motorway',
+                "@id": 3,
+                name: name
+            },
+            geometry: {
+                type: 'LineString',
+                coordinates: [[0,0],[1,1]]
+            }
+        }, { country: "ca", region: "nb"}),
+             { type: 'Feature', properties: { id: 3, street: [
+                 { display: name, priority: 0 },
+                 { display: 'Highway 101a', priority: -1 },
+                 { display: 'Route 101a', priority: -1 },
+                 { display: 'NB 101a', priority: -2 },
+                 { display: 'New Brunswick Route 101a', priority: -2 },
+             ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, `Canadian Highway: ${name}`);
+    }
+
     t.end();
 });
 

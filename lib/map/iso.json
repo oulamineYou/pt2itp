@@ -721,18 +721,18 @@
     "name": "Canada",
     "divisions": {
       "CA-AB": "Alberta",
-      "CA-BC": "British Columbia (Colombie-Britannique)",
+      "CA-BC": "British Columbia",
       "CA-MB": "Manitoba",
-      "CA-NB": "New Brunswick (Nouveau-Brunswick)",
-      "CA-NL": "Newfoundland and Labrador (Terre-Neuve)",
-      "CA-NS": "Nova Scotia (Nouvelle-Écosse)",
+      "CA-NB": "New Brunswick",
+      "CA-NL": "Newfoundland and Labrador",
+      "CA-NS": "Nova Scotia",
       "CA-ON": "Ontario",
-      "CA-PE": "Prince Edward Island (Île-du-Prince-Édouard)",
-      "CA-QC": "Quebec (Québec)",
+      "CA-PE": "Prince Edward Island",
+      "CA-QC": "Québec",
       "CA-SK": "Saskatchewan",
-      "CA-NT": "Northwest Territories (Territoires du Nord-Ouest)",
+      "CA-NT": "Northwest Territories",
       "CA-NU": "Nunavut",
-      "CA-YT": "Yukon Territory (Teritoire du Yukon)"
+      "CA-YT": "Yukon Territory"
     }
   },
   "CV": {
