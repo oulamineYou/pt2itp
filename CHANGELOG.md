@@ -10,6 +10,11 @@
 
 ## Version History
 
+## v15.4.0
+
+- :rocket: Adds support for several different variations of Canadian Highway names
+- :white_check_mark: Add Assoc. tests
+
 ### v15.3.0
 
 - :rocket: Differentiate between Duplicates withing individual segments & Duplicates within an entire cluster in cluster#break
