@@ -36,7 +36,6 @@ switch (argv._[2]) {
         require('./lib/clean')(process.argv, (err) => {
             if (err) {
                 console.error('ERROR:');
-                console.error(err);
                 console.error(err.stack);
                 process.exit(1);
             }
