@@ -32,6 +32,18 @@ switch (argv._[2]) {
             }
         });
         break;
+    case ('clean'):
+        require('./lib/clean')(process.argv, (err) => {
+            if (err) {
+                console.error('ERROR:');
+                console.error(err);
+                console.error(err.stack);
+                process.exit(1);
+            }
+            console.error('ok - processing complete');
+            process.exit(0);
+        });
+        break;
     case ('map'):
         require('./lib/map')(process.argv, (err) => {
             if (err) {
