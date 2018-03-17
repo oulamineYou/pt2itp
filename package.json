@@ -1,7 +1,7 @@
 {
   "name": "pt2itp",
   "version": "15.4.1",
-  "license": "BSD-2-Clause",
+  "license": "BSD-2-Clause ",
   "description": "Attach interpolation values given a road network and address points",
   "main": "index.js",
   "bin": {
@@ -16,9 +16,8 @@
     "pretest": "echo 'DROP DATABASE pt_test; CREATE DATABASE pt_test;' | psql postgres://postgres:@localhost:5432 && echo 'CREATE EXTENSION postgis;' | psql postgres://postgres:@localhost:5432/pt_test"
   },
   "author": "Nicholas Ingalls <nicholas.ingalls@gmail.com>",
-  "license": "BSD-2-Clause ",
   "dependencies": {
-    "@mapbox/carmen": "24.2.8",
+    "@mapbox/carmen": "24.2.9",
     "@mapbox/geocoder-abbreviations": "2.1.9",
     "@mapbox/geojson-area": "^0.2.2",
     "@mapbox/mbtiles": "^0.9.0",
