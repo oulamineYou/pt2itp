@@ -10,6 +10,11 @@
 
 ## Version History
 
+## v15.5.0
+
+- :arrow_up: Update all deps
+- :tada: Add `clean` mode to allow easier testing/standardizing of address data
+
 ## v15.4.1
 
 - :arrow_up: `documentationjs@6.x`
