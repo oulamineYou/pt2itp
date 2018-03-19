@@ -13,6 +13,7 @@
 ## v15.6.1
 
 - :arrow_up: carmen@24.2.10
+- :bug: handle non-string values in geocoder_tokens submitted to testcsv
 
 ## v15.6.0
 
