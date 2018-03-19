@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v15.6.0
+
+- :rocket: Add support for Waukesha County, WI county style addresses: `W350N5337` or `N453`
+
 ## v15.5.0
 
 - :arrow_up: Update all deps
