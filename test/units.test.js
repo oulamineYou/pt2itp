@@ -11,33 +11,37 @@ tape('Units#Encode/Decode', (t) => {
     }, /Cannot encode values > 8 chars/, 'Cannot encode values > 8 chars');
     t.throws(() => {
         units.encode('1-123459}')
-    }, /Cannot encode ASCII values above 100/, 'Cannot encode ASCII values above 100');
+    }, /Cannot encode ASCII values above 99/, 'Cannot encode ASCII values above 99');
 
     //Test output true
-    t.equals(units.encode('8000-8079'), 8000.4556485557);
-    t.deepEquals(units.decode('8000.4556485557'), {
+    t.equals(units.encode('8000-8079'), 18000.4556485557);
+    t.deepEquals(units.decode('18000.4556485557'), {
         num: '8000-8079',
         output: true
     });
 
     //Test output false
-    t.equals(units.encode('8000-8079', { output: false }), -8000.4556485557);
-    t.deepEquals(units.decode('-8000.4556485557'), {
+    t.equals(units.encode('8000-8079', { output: false }), -18000.4556485557);
+    t.deepEquals(units.decode('-18000.4556485557'), {
         num: '8000-8079',
         output: false
     });
 
     const tests = {
-        '1-1325': 1.4549515053,
-        '8000-8079': 8000.4556485557,
-        '12a': 12.65,
-        '12b': 12.66,
-        '989': 989,
-        '1-1325': 1.4549515053,
-        '1s13': 1.834951,
-        '6n486': 6.78525654,
-        '54w32': 54.87515,
-        '8e234': 8.69505152
+        '1-1325': 11.4549515053,
+        '8000-8079': 18000.4556485557,
+        '12a': 112.65,
+        '12b': 112.66,
+        '989': 1989,
+        '1-1325': 11.4549515053,
+        '1s13': 11.834951,
+        '6n486': 16.78525654,
+        '54w32': 154.87515,
+        '8e234': 18.69505152,
+        'w350n5337': 28778350.5337,
+        'n60w35415': 2788760.35415,
+        'w35295': 38735295,
+        'n35295': 37835295
     }
 
     for (let test in tests) {
