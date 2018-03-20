@@ -1,4 +1,4 @@
-const interpolize = require('../lib/interpolize');
+const interpolize = require('../lib/util/interpolize');
 const turf = require('@turf/turf');
 const test = require('tape');
 const fs = require('fs');

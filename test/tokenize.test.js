@@ -1,4 +1,4 @@
-const tokenize = require('../lib/tokenize');
+const tokenize = require('../lib/util/tokenize');
 const test = require('tape');
 const fs = require('fs');
 

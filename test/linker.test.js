@@ -1,4 +1,4 @@
-const linker = require('../lib/linker');
+const linker = require('../lib/util/linker');
 const test = require('tape');
 
 test('linker#isNumbered', (t) => {

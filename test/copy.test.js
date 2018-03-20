@@ -3,8 +3,8 @@ const tmp = require('tmp');
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
-const copy = require('../lib/copy');
-const tokenize = require('../lib/tokenize');
+const copy = require('../lib/util/copy');
+const tokenize = require('../lib/util/tokenize');
 
 tape('copy.js output - address', (t) => {
     let tempFile = tmp.tmpNameSync();

@@ -1,4 +1,4 @@
-const buffer = require('../lib/buffer');
+const buffer = require('../lib/util/buffer');
 const test = require('tape');
 const fs = require('fs');
 

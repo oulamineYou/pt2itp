@@ -1,5 +1,5 @@
 const test = require('tape');
-const Misc = require('../lib/misc');
+const Misc = require('../lib/util/misc');
 const misc = new Misc();
 
 test('misc.det2D', (t) => {
