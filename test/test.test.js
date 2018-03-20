@@ -35,8 +35,8 @@ test('Drop/init database', (t) => {
 // loads address and network data into postgres
 test('load address and network files', (t) => {
     worker({
-        'in-address': './test/fixtures/test-ri/address.geojson',
-        'in-network': './test/fixtures/test-ri/network.geojson',
+        'in-address': path.resolve(__dirname, './fixtures/test-ri/address.geojson'),
+        'in-network': path.resolve(__dirname, './fixtures/test-ri/network.geojson'),
         output: '/tmp/itp.geojson',
         debug: true,
         db: database,
@@ -78,7 +78,6 @@ test('query from new index', (t) => {
 
 // step 3: run test mode against the built index
 test('Run test mode', (t) => {
-    console.error(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output}`);
     exec(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output}`, (err, stdout, stderr) => {
         t.test('Return correct error messages in csv', (t) => {
             let csvErrs = [];
