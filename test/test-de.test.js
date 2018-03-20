@@ -1,4 +1,4 @@
-const Index = require('../lib/index');
+const Index = require('../lib/util/index');
 const worker = require('../lib/map');
 const exec = require('child_process').exec;
 const fs = require('fs');
