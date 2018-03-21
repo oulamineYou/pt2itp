@@ -10,6 +10,13 @@
 
 ## Version History
 
+## v16.0.0
+
+- :rocket: `number` property of `address` table is now the raw unencoded address number
+- :rocket: `encoded` property of `address` table stores the encoded address number used for the `Z` prop of the Point Geom.
+- :tada: Add support for `Unit` formats when encoding non-standard addresses.
+- :rocket: Re-Architect folder structure to put modes under `lib/` and all utilities in their own separate folders
+
 ## v15.6.1
 
 - :arrow_up: carmen@24.2.10
