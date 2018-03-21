@@ -1,4 +1,4 @@
-const Cluster = require('../lib/cluster');
+const Cluster = require('../lib/util/cluster');
 const test = require('tape');
 const fs = require('fs');
 

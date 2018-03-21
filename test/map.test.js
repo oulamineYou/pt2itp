@@ -1,5 +1,5 @@
 const ReadLine = require('readline');
-const Index = require('../lib/index');
+const Index = require('../lib/util/index');
 const worker = require('../lib/map');
 
 const test = require('tape');
@@ -17,7 +17,7 @@ test('map - in-address error', (t) => {
 
 test('map - in-network error', (t) => {
     worker({
-        'in-address': './test/fixtures/sg-address.geojson'
+        'in-address': path.resolve(__dirname, './fixtures/sg-address.geojson')
     }, (err, res) => {
         t.equals(err.toString(), 'Error: --in-network=<FILE.geojson> argument required');
         t.end();
@@ -26,8 +26,8 @@ test('map - in-network error', (t) => {
 
 test('map - output error', (t) => {
     worker({
-        'in-address': './test/fixtures/sg-address.geojson',
-        'in-network': './test/fixtures/sg-network.geojson'
+        'in-address': path.resolve(__dirname, './fixtures/sg-address.geojson'),
+        'in-network': path.resolve(__dirname, './fixtures/sg-network.geojson')
     }, (err, res) => {
         t.equals(err.toString(), 'Error: --output=<FILE.geojson> argument required');
         t.end();
@@ -36,8 +36,8 @@ test('map - output error', (t) => {
 
 test('map - db error', (t) => {
     worker({
-        'in-address': './test/fixtures/sg-address.geojson',
-        'in-network': './test/fixtures/sg-network.geojson',
+        'in-address': path.resolve(__dirname, './fixtures/sg-address.geojson'),
+        'in-network': path.resolve(__dirname, './fixtures/sg-network.geojson'),
         'output': '/tmp/itp.geojson'
     }, (err, res) => {
         t.equals(err.toString(), 'Error: --db=<DATABASE> argument required');
@@ -47,8 +47,8 @@ test('map - db error', (t) => {
 
 test.skip('map - cardinal clustering', (t) => {
     worker({
-        'in-address': './test/fixtures/cardinal-address.geojson',
-        'in-network': './test/fixtures/cardinal-network.geojson',
+        'in-address': path.resolve(__dirname, './fixtures/cardinal-address.geojson'),
+        'in-network': path.resolve(__dirname, './fixtures/cardinal-network.geojson'),
         output: '/tmp/itp.geojson',
         debug: true,
         db: 'pt_test'
@@ -115,8 +115,8 @@ test('drop cardinal database', (t) => {
 
 test('map - good run', (t) => {
     worker({
-        'in-address': './test/fixtures/sg-address.geojson',
-        'in-network': './test/fixtures/sg-network.geojson',
+        'in-address': path.resolve(__dirname, './fixtures/sg-address.geojson'),
+        'in-network': path.resolve(__dirname, './fixtures/sg-network.geojson'),
         output: '/tmp/itp.geojson',
         debug: true,
         db: 'pt_test'

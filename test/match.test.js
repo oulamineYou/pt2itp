@@ -1,9 +1,9 @@
-const match = require('../lib/match');
+const match = require('../lib/util/match');
 
 const test = require('tape');
 const pg = require('pg');
 const Queue = require('d3-queue').queue;
-const Index = require('../lib/index');
+const Index = require('../lib/util/index');
 
 const pool = new pg.Pool({
     max: 10,

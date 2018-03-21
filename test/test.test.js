@@ -1,4 +1,4 @@
-const Index = require('../lib/index');
+const Index = require('../lib/util/index');
 const worker = require('../lib/map');
 const exec = require('child_process').exec;
 const fs = require('fs');
@@ -35,8 +35,8 @@ test('Drop/init database', (t) => {
 // loads address and network data into postgres
 test('load address and network files', (t) => {
     worker({
-        'in-address': './test/fixtures/test-ri/address.geojson',
-        'in-network': './test/fixtures/test-ri/network.geojson',
+        'in-address': path.resolve(__dirname, './fixtures/test-ri/address.geojson'),
+        'in-network': path.resolve(__dirname, './fixtures/test-ri/network.geojson'),
         output: '/tmp/itp.geojson',
         debug: true,
         db: database,

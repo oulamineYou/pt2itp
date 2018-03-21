@@ -1,7 +1,7 @@
 const test = require('tape');
 
-const geocode = require('../lib/geocode');
-const tokens = require('../lib/tokenize');
+const geocode = require('../lib/util/geocode');
+const tokens = require('../lib/util/tokenize');
 
 test('geocode#isPass', (t) => {
     let query = [
