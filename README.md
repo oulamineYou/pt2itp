@@ -103,7 +103,7 @@ to allow a script to sit inbetween the PT2ITP ingestion script and the source da
 This script would recieve a JSON feature and have the ability to transform, clean, or reject it
 to fit PT2ITPs assumptions on input data.
 
-In `map` mode this is done as the data is being imported to the database and there was no way to 
+In `map` mode this is done as the data is being imported to the database and there was no way to
 get a GeoJSON stream of features out. `clean` mode solves this by allowing one to only
 process a given source using the map script, not performing a DB import or interpolization.
 
@@ -133,33 +133,33 @@ don't change/break the CLI interface.
 
 ```
 123 1/2 West 1st Street
-^   ^   ^    ^^  ^
-|   |   |    ||  |> suffix, street type - The type of street, ie: highway, street, circle.
-|   |   |    ||  |  rules for suffixes will differ per county/municipality
-|   |   |    ||  |
-|   |   |    ||> ordinal indicator - The group of characters, following a numeral denoting that it is an ordinal number
-|   |   |    |
-|   |   |    |> ordinal - The numberic portional of a street name - must be followed by an ordinal indicator
-|   |   |
-|   |   |> precardinal, predirectional - The compass direction preceeding the street name
-|   |
-|   |> Fractional Address
-|
-|> Primary Address Number
+┬── ┬── ┬─── ┬┬─ ┬
+│   │   │    ││  └┤ Suffix, Street Type - The type of street, ie: highway, street, circle.
+│   │   │    ││   │ rules for suffixes will differ per county/municipality
+│   │   │    ││
+│   │   │    │└┤ Ordinal Indicator - The group of characters, following a numeral denoting that it is an ordinal number
+│   │   │    │
+│   │   │    └┤ Ordinal - The numberic portional of a street name - must be followed by an ordinal indicator
+│   │   │
+│   │   └┤ Precardinal, predirectional - The compass direction preceeding the street name
+│   │
+│   └┤ Fractional Address
+│
+└┤ Primary Address Number
 
 
 
 289-1 Main Street Northeast APT 4
-^                 ^         ^   ^
-|                 |         |   |> Secondary Address
-|                 |         |
-|                 |         |> Secondary Address Address Designator
-|                 |            Common types include Apartment=APT, Building=BLDG
-|                 |            Floor=FL, Suite=STE, Unit, ROOM=RM, Department=Dept
-|                 |            the # sign can be used if the specific type is not covered
-|                 |
-|                 |> postcardinal, postdirectional
-|
-|> Hypenated Primary Address Number - The hyphen is significant and should not be omitted.
-   Different hyphenated standards represent different things. wikipedia: Queens Addresses
+┬────             ┬──────── ┬── ┬
+│                 │         │   └┤ Secondary Address
+│                 │         │
+│                 │         └┤ Secondary Address Address Designator
+│                 │          │ Common types include Apartment=APT, Building=BLDG
+│                 │          │ Floor=FL, Suite=STE, Unit, ROOM=RM, Department=Dept
+│                 │          │ the # sign can be used if the specific type is not covered
+│                 │
+│                 └┤ postcardinal, postdirectional
+│
+└┤ Hypenated Primary Address Number - The hyphen is significant and should not be omitted.
+ │ Different hyphenated standards represent different things. wikipedia: Queens Addresses
 ```
