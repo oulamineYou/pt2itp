@@ -10,6 +10,12 @@
 
 ## Version History
 
+## v16.0.1
+
+- :bug: `MultiPoint` geometries could potentially have an empty coord array leading to `post/centre` failing to calculate
+- :rocket: `interpolize` module no longer needs access to `posts` array
+- :pencil2: ASCII beautiful drawing in README
+
 ## v16.0.0
 
 - :rocket: `number` property of `address` table is now the raw unencoded address number
