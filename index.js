@@ -25,89 +25,75 @@ switch (argv._[2]) {
         break;
     case ('debug'):
         require('./lib/debug')(process.argv, (err) => {
-            if (err) {
-                console.error('ERROR:');
-                console.error(err.stack);
-                process.exit(1);
-            }
+            if (err) throw err;
+
+            process.exit(0);
         });
         break;
     case ('clean'):
         require('./lib/clean')(process.argv, (err) => {
-            if (err) {
-                console.error('ERROR:');
-                console.error(err.stack);
-                process.exit(1);
-            }
+            if (err) throw err;
+
             console.error('ok - processing complete');
             process.exit(0);
         });
         break;
     case ('map'):
         require('./lib/map')(process.argv, (err) => {
-            if (err) {
-                console.error('ERROR:');
-                console.error(err);
-                console.error(err.stack);
-                process.exit(1);
-            }
+            if (err) throw err;
+
             console.log('ok - processing complete');
+            process.exit(0);
+        });
+        break;
+    case ('conflate'):
+        require('./lib/conflate')(process.argv, (err) => {
+            if (err) throw err;
+
+            console.log('ok - conflation complete');
             process.exit(0);
         });
         break;
     case ('stat'):
         require('./lib/stat')(process.argv, (err) => {
-            if (err) {
-                console.error('ERROR:');
-                console.error(err.stack);
-                process.exit(1);
-            }
+            if (err) throw err;
+
             process.exit(0);
         });
         break;
     case ('test'):
         require('./lib/test')(process.argv, (err) => {
-            if (err) {
-                console.error('ERROR:');
-                console.error(err.toString());
-                process.exit(1);
-            }
+            if (err) throw err;
+
+            process.exit(0);
         });
         break;
     case ('testcsv'):
         require('./lib/testcsv')(process.argv, (err) => {
-            if (err) {
-                console.error('ERROR:');
-                console.error(err.toString());
-                process.exit(1);
-            }
+            if (err) throw err;
+
+            process.exit(0);
         });
         break;
     case ('strip'):
         require('./lib/strip')(process.argv, (err) => {
-            if (err) {
-                console.error('ERROR:');
-                console.error(err.toString());
-                process.exit(1);
-            }
+            if (err) throw err;
+
+            process.exit(0);
         });
         break;
     case ('analyze'):
         require('./lib/analyze')(process.argv, (err) => {
-            if (err) {
-                console.error(err.stack);
-                process.exit(1);
-            }
+            if (err) throw err;
+
             process.exit(0);
         });
         break;
     case ('convert'):
         require('./lib/convert')(process.argv, (err) => {
-            if (err) {
-                console.error('ERROR:');
-                console.error(err.toString());
-                process.exit(1);
-            }
+            if (err) throw err;
+
+            process.exit(0);
         });
         break;
     default:
