@@ -1,5 +1,7 @@
 <h1 align="center">PT2ITP</h1>
 
+<p align="center">Given a road network and a set of address points as line delimited geojson; output an interpolation network.</p>
+
 <p align="center">
   <a href="https://coveralls.io/github/ingalls/pt2itp?branch=master"><img src="https://coveralls.io/repos/github/ingalls/pt2itp/badge.svg?branch=master"/></a>
   <a href="https://circleci.com/gh/ingalls/pt2itp/tree/master"><img src="https://circleci.com/gh/ingalls/pt2itp/tree/master.svg?style=shield"/></a>
@@ -11,10 +13,6 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/pt2itp"><img src="https://nodei.co/npm/pt2itp.png?downloads=true&downloadRank=true"/></a>
 </p>
-
-## Brief
-
-Given a road network and a set of address points as line delimited geojson; output an interpolation network.
 
 ## `map` Mode
 
