@@ -23,7 +23,7 @@ and generating the interpolation network.
 
 Basic Usage:
 ```
-./index.js map --in-network=<FILE.geojson> --in-address=<File.geojson> --output=<File.geojson> --tokens=./lib/tokens/en.json"
+./index.js map --in-network=<FILE.geojson> --in-address=<File.geojson> --output=<File.geojson> --tokens=en --db <DB>
 ```
 
 Full Options:
@@ -70,6 +70,50 @@ Input line-delimited geojson features of lines. Each line should have a property
 { "type": "Feature", "geometry": { "type": "LineString", ... }, "properties": { "street": "Main Street" } }
 ...
 ```
+
+## `conflate` Mode
+
+### Basic Usage
+
+CONFLATE MODE
+
+Basic Usage:
+```
+./index.js conflate --in-address=<FILE.geojson> --in-persistent=<File.geojson> --output=<File.geojson> --tokens=en --db <DB>
+```
+
+Full Options:
+```
+./index.js conflate --help
+```
+
+### Input Data
+
+#### Persistent Address Input
+
+CONFLATE MODE PERSISTENT ADDRESS
+
+#### Properties
+
+| Property | Function |
+| :------: | -------- |
+| `` | ``
+
+##### Example
+
+```
+```
+
+#### Conflate Address Input
+
+##### Example
+
+```
+...
+```
+
+### Output Format
+
 
 ## `convert` Mode
 
