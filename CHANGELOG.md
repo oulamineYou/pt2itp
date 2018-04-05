@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v16.0.2
+
+- :arrow_up: `carmen@24.3.1` & Update other misc deps
+
 ## v16.0.1
 
 - :bug: `MultiPoint` geometries could potentially have an empty coord array leading to `post/centre` failing to calculate
