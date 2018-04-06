@@ -75,7 +75,7 @@ test('conflate/compare - compare', (t) => {
             feat: {
                 id: 1,
                 type: 'Feature',
-                properties: { 
+                properties: {
                     street: [{
                         display: '2nd Street West',
                         priority: 0
@@ -133,7 +133,7 @@ test('conflate/compare - compare', (t) => {
             feat: {
                 id: 1,
                 type: 'Feature',
-                properties: { 
+                properties: {
                     street: [{
                         display: 'Main Street North',
                         tokenized: 'main street north',
@@ -177,7 +177,7 @@ test('conflate/compare - compare', (t) => {
             feat: {
                 id: 1,
                 type: 'Feature',
-                properties: { 
+                properties: {
                     street: [{
                         display: 'Main Street North',
                         tokenized: 'main street north',
