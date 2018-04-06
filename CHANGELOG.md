@@ -10,6 +10,11 @@
 
 ## Version History
 
+## v16.1.0
+
+- :tada: Add `conflate` mode which will conflate a new dataset against an existing
+- :white_check_mark: Add a bunch of tests for `help` mode to increase test coverage
+
 ## v16.0.3
 
 - :arrow_up: `csv-stringify@3.x`
