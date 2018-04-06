@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v16.1.1
+
+- :white_check_mark: Add `modify` output test for `conflate` mode
+
 ## v16.1.0
 
 - :tada: Add `conflate` mode which will conflate a new dataset against an existing
