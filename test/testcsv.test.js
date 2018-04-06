@@ -35,7 +35,7 @@ test('testcsv', (t) => {
             csvErrs.push(data);
         })
         .on('end', () => {
-            t.equal(csvErrs.length, 12);
+            t.equal(csvErrs.length, 9);
             t.equal(csvErrs.filter(ele => ele.query === '26 Greenview Rd')[0].error, 'DIST');
             t.equal(csvErrs.filter(ele => ele.query === '31 Greenview Rd')[0].error, 'DIST');
             t.equal(csvErrs.filter(ele => ele.query === '34 grn vw rd')[0].error, 'NO RESULTS');
