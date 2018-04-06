@@ -1,7 +1,7 @@
 const fs = require('fs');
 const test = require('tape');
 const pg = require('pg');
-const split = require('../lib/util/split');
+const Split = require('../lib/util/split');
 const Index = require('../lib/util/index');
 const turf = require('@turf/turf');
 
@@ -52,7 +52,7 @@ test('Split: Dulaney Valley Rd, MD', (t) => {
     });
 
     t.test('Run', (q) => {
-        split.init({
+        const split = new Split({
             pool: {
                 max: 10,
                 user: 'postgres',
@@ -125,7 +125,7 @@ test('Split: East Long Street', (t) => {
     });
 
     t.test('Run', (q) => {
-        split.init({
+        const split = new Split({
             pool: {
                 max: 10,
                 user: 'postgres',
@@ -192,7 +192,7 @@ test('Split: (with no output) Mt Thor Way', (t) => {
     });
 
     t.test('Run', (q) => {
-        split.init({
+        const split = new Split({
             pool: {
                 max: 10,
                 user: 'postgres',
@@ -269,7 +269,7 @@ test('Split: Ensure cluster#break roads are split', (t) => {
     });
 
     t.test('Run', (q) => {
-        split.init({
+        const split = new Split({
             pool: {
                 max: 10,
                 user: 'postgres',
@@ -347,7 +347,7 @@ test('Split: Ensure cluster#break roads are split (Boston ave)', (t) => {
     });
 
     t.test('Run', (q) => {
-        split.init({
+        const split = new Split({
             pool: {
                 max: 10,
                 user: 'postgres',
