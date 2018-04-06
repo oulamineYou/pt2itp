@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v16.0.3
+
+- :arrow_up: `csv-stringify@3.x`
+
 ## v16.0.2
 
 - :arrow_up: `carmen@24.3.1` & Update other misc deps
