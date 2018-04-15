@@ -265,7 +265,7 @@ test('conflate/compare - compare', (t) => {
                     priority: 0
                 },{
                     display: 'I64',
-                    priority: -1 
+                    priority: -1
                 }]
             },
             geometry: {
