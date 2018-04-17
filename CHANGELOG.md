@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v16.1.1
+
+- :bug: Ensure empty objects aren't output on errors when using `clean` mode
+
 ## v16.1.0
 
 - :tada: Add `conflate` mode which will conflate a new dataset against an existing
