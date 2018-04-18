@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v16.1.2
+
+- :bug: `Type` property was missing from created feats in `conflate` mode
+
 ## v16.1.1
 
 - :bug: Ensure empty objects aren't output on errors when using `clean` mode
