@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v16.1.3
+
+- :bug: error output would be printed to stderr instead of specified file in `conflate` mode
+
 ## v16.1.2
 
 - :bug: `Type` property was missing from created feats in `conflate` mode
