@@ -10,6 +10,11 @@
 
 ## Version History
 
+## v16.1.4
+
+- :bug: Due to the way `readline` calls the `close` event, a small number of features would
+  fail to be processed before the callback. This fixes this bug.
+
 ## v16.1.3
 
 - :bug: error output would be printed to stderr instead of specified file in `conflate` mode
