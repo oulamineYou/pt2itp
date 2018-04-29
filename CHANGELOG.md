@@ -10,6 +10,23 @@
 
 ## Version History
 
+## v16.1.4
+
+- :bug: Due to the way `readline` calls the `close` event, a small number of features would
+  fail to be processed before the callback. This fixes this bug.
+
+## v16.1.3
+
+- :bug: error output would be printed to stderr instead of specified file in `conflate` mode
+
+## v16.1.2
+
+- :bug: `Type` property was missing from created feats in `conflate` mode
+
+## v16.1.1
+
+- :bug: Ensure empty objects aren't output on errors when using `clean` mode
+
 ## v16.1.0
 
 - :tada: Add `conflate` mode which will conflate a new dataset against an existing

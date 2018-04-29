@@ -35,6 +35,7 @@ test('conflate/compare - compare', (t) => {
 
         q.deepEquals(res, {
             action: 'create',
+            type: 'Feature',
             properties: {
                 number: 1,
                 source: 'test',
@@ -92,6 +93,7 @@ test('conflate/compare - compare', (t) => {
 
         q.deepEquals(res, {
             action: 'create',
+            type: 'Feature',
             properties: {
                 number: 1,
                 source: 'test',
@@ -195,6 +197,7 @@ test('conflate/compare - compare', (t) => {
 
         q.deepEquals(res, {
             action: 'create',
+            type: 'Feature',
             properties: {
                 number: 1,
                 source: 'test',
@@ -257,6 +260,7 @@ test('conflate/compare - compare', (t) => {
 
         q.deepEquals(res, {
             action: 'create',
+            type: 'Feature',
             properties: {
                 number: 1,
                 source: 'test',
