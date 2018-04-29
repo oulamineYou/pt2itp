@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v16.3.0
+
+- :tada: Add `version` property to known features in `conflate` mode
+
 ## v16.2.1
 
 - :bug: `conflate` modify features should push potential name
