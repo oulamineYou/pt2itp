@@ -10,6 +10,11 @@
 
 ## Version History
 
+## v16.2.0
+
+- :rocket: Switch to sync. filled, parallel queued conflate compare
+- :bug: conflate mode could crash on small or large conflate ops
+
 ## v16.1.4
 
 - :bug: Due to the way `readline` calls the `close` event, a small number of features would
