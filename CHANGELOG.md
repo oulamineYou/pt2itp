@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v16.2.1
+
+- :bug: `conflate` modify features should push potential name
+
 ## v16.2.0
 
 - :rocket: Switch to sync. filled, parallel queued conflate compare
