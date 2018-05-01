@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v16.4.0
+
+- :rocket: `conflate` mode - Buffers modifed features to the database, before iterating through them, collapsing duplicates and finally outputting.
+
 ## v16.3.0
 
 - :tada: Add `version` property to known features in `conflate` mode
