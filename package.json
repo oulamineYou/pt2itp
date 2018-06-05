@@ -49,7 +49,7 @@
     "coveralls": "^3.0.0",
     "documentation": "^6.0.0",
     "eslint": "^4.6.1",
-    "nyc": "^11.3.0",
+    "nyc": "^12.0.1",
     "tape": "^4.7.0",
     "tape-spawn": "^1.4.2",
     "tmp": "0.0.33"
