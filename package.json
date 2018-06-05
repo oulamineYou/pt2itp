@@ -1,6 +1,6 @@
 {
   "name": "pt2itp",
-  "version": "16.1.0",
+  "version": "16.4.0",
   "license": "BSD-2-Clause ",
   "description": "Attach interpolation values given a road network and address points",
   "main": "index.js",
@@ -33,6 +33,7 @@
     "fast-levenshtein": "^2.0.6",
     "lodash": "^4.17.4",
     "minimist": "^1.2.0",
+    "n-readlines": "^0.2.8",
     "pg": "^7.3.0",
     "pg-copy-streams": "^1.2.0",
     "pg-cursor": "^1.2.0",
@@ -48,7 +49,7 @@
     "coveralls": "^3.0.0",
     "documentation": "^6.0.0",
     "eslint": "^4.6.1",
-    "nyc": "^11.3.0",
+    "nyc": "^12.0.1",
     "tape": "^4.7.0",
     "tape-spawn": "^1.4.2",
     "tmp": "0.0.33"

@@ -10,6 +10,40 @@
 
 ## Version History
 
+## v16.4.0
+
+- :rocket: `conflate` mode - Buffers modifed features to the database, before iterating through them, collapsing duplicates and finally outputting.
+
+## v16.3.0
+
+- :tada: Add `version` property to known features in `conflate` mode
+
+## v16.2.1
+
+- :bug: `conflate` modify features should push potential name
+
+## v16.2.0
+
+- :rocket: Switch to sync. filled, parallel queued conflate compare
+- :bug: conflate mode could crash on small or large conflate ops
+
+## v16.1.4
+
+- :bug: Due to the way `readline` calls the `close` event, a small number of features would
+  fail to be processed before the callback. This fixes this bug.
+
+## v16.1.3
+
+- :bug: error output would be printed to stderr instead of specified file in `conflate` mode
+
+## v16.1.2
+
+- :bug: `Type` property was missing from created feats in `conflate` mode
+
+## v16.1.1
+
+- :bug: Ensure empty objects aren't output on errors when using `clean` mode
+
 ## v16.1.0
 
 - :tada: Add `conflate` mode which will conflate a new dataset against an existing
