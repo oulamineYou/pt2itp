@@ -170,7 +170,7 @@ test('Osmium', (t) => {
             }
         }, { country: "us", region: "pa"}), false, `${name} was dropped`);
     }
-    
+
     // handle suffixless numeric streets
     let streets = [
         ['1 Ave', 'st'],
