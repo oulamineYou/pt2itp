@@ -148,6 +148,26 @@ test('Osmium', (t) => {
         }
     },{country: "us"}), { type: 'Feature', properties: { id: 3, street: [ { display: 'name', priority: 0 }, { display: 'HWY 35', priority: -1 } ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, 'HWY # replaced');
 
+    // Ensure drop overrides are dropped
+    for (let name of [
+        'Burger King Drive-in',
+        'Burger King Drivein',
+        'Burger King Drive in'
+    ]) {
+        t.deepEquals(map({
+            type: 'Feature',
+            properties: {
+                highway: 'motorway',
+                "@id": 3,
+                name: name
+            },
+            geometry: {
+                type: 'LineString',
+                coordinates: [[0,0],[1,1]]
+            }
+        }, { country: "us", region: "pa"}), false, `${name} was dropped`);
+    }
+    
     // handle suffixless numeric streets
     let streets = [
         ['1 Ave', 'st'],
