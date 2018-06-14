@@ -152,7 +152,10 @@ test('Osmium', (t) => {
     for (let name of [
         'Burger King Drive-in',
         'Burger King Drivein',
-        'Burger King Drive in'
+        'Burger King Drive in',
+        'Burger King Drive-through',
+        'Burger King Drivethrough',
+        'Burger King Drive through'
     ]) {
         t.deepEquals(map({
             type: 'Feature',
