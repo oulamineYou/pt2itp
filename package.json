@@ -1,6 +1,6 @@
 {
   "name": "pt2itp",
-  "version": "16.4.2",
+  "version": "16.4.3",
   "license": "BSD-2-Clause ",
   "description": "Attach interpolation values given a road network and address points",
   "main": "index.js",
