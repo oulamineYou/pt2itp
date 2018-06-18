@@ -153,6 +153,7 @@ test('Osmium', (t) => {
         'Burger King Drive-in',
         'Burger King Drivein',
         'Burger King Drive in',
+        'Burger King Drivethru',
         'Burger King Drive-through',
         'Burger King Drivethrough',
         'Burger King Drive through'
@@ -168,7 +169,7 @@ test('Osmium', (t) => {
                 type: 'LineString',
                 coordinates: [[0,0],[1,1]]
             }
-        }, { country: "us", region: "pa"}), false, `${name} was dropped`);
+        }, { country: "gb", region: "pa"}), false, `${name} was dropped`);
     }
 
     // handle suffixless numeric streets
