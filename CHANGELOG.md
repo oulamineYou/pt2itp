@@ -10,6 +10,14 @@
 
 ## Version History
 
+## v16.4.3
+
+- :rocket: Expand scope of filtered drive throughs
+
+## v16.4.2
+
+- :rocket: Filter out Drive In roads
+
 ## v16.4.0
 
 - :rocket: `conflate` mode - Buffers modifed features to the database, before iterating through them, collapsing duplicates and finally outputting.
