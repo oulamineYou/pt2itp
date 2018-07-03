@@ -16,7 +16,10 @@ function sort(seg) {
     seg.address.geometry.coordinates = _.sortBy(seg.address.geometry.coordinates, [(coord) => {
         return coord[2];
     }]).map((coord) => {
-        seg.number.push(coord.pop());
+        seg.number.push({
+            num: coord.pop(),
+            output: true
+        });
 
         return coord;
     });
