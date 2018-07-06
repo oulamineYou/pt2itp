@@ -21,7 +21,7 @@ test('Init Database', (t) => {
     });
 });
 
-test.skip('Split: Dulaney Valley Rd, MD', (t) => {
+test('Split: Dulaney Valley Rd, MD', (t) => {
     t.test('Populate', (q) => {
         pool.query(`
             BEGIN;
@@ -385,7 +385,7 @@ test.skip('Split: Ensure cluster#break roads are split (Boston ave)', (t) => {
 /**
  * Ensure Washington St is split into 2+ streets via cluster#break (Actual Data)
  */
-test('Split: Ensure cluster#break roads are split (Washington St)', (t) => {
+test.skip('Split: Ensure cluster#break roads are split (Washington St)', (t) => {
     t.test('Populate', (q) => {
         pool.query(`
             BEGIN;
