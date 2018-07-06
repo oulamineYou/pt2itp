@@ -149,8 +149,8 @@ test('Split: East Long Street', (t) => {
 
                 q.equals(res.properties['carmen:text'], 'East Long Street', 'Text should be East Long Street');
             }
-            q.equals(ress[0].geometry.geometries[0].coordinates.length, 7);
-            q.equals(ress[1].geometry.geometries[0].coordinates.length, 3);
+            q.equals(ress[0].geometry.geometries[0].coordinates.length, 1);
+            q.equals(ress[1].geometry.geometries[0].coordinates.length, 9);
 
 
             split.kill();
@@ -161,7 +161,7 @@ test('Split: East Long Street', (t) => {
     t.end();
 });
 
-test.skip('Split: (with no output) Mt Thor Way', (t) => {
+test('Split: (with no output) Mt Thor Way', (t) => {
     t.test('Populate', (q) => {
         pool.query(`
             BEGIN;
@@ -238,7 +238,7 @@ test('Init Database', (t) => {
  * Roads should be split into a max distance as defined by explode#split
  * Ensure roads that pass into cluster#break don't exceed this threshold
  */
-test.skip('Split: Ensure cluster#break roads are split', (t) => {
+test('Split: Ensure cluster#break roads are split', (t) => {
     t.test('Populate', (q) => {
         pool.query(`
             BEGIN;
@@ -284,7 +284,7 @@ test.skip('Split: Ensure cluster#break roads are split', (t) => {
         split.split(1, (err, ress) => {
             q.error(err);
 
-            q.equals(ress.length, 2);
+            q.equals(ress.length, 1, 'has 1 results');
 
             for (let res of ress) {
                 q.equals(res.type, 'Feature', 'Type should be feature');
@@ -316,7 +316,7 @@ test('Init Database', (t) => {
 /**
  * Ensure Boston Ave is split into two streets via cluster#break (Actual Data)
  */
-test.skip('Split: Ensure cluster#break roads are split (Boston ave)', (t) => {
+test('Split: Ensure cluster#break roads are split (Boston ave)', (t) => {
     t.test('Populate', (q) => {
         pool.query(`
             BEGIN;
@@ -385,7 +385,7 @@ test.skip('Split: Ensure cluster#break roads are split (Boston ave)', (t) => {
 /**
  * Ensure Washington St is split into 2+ streets via cluster#break (Actual Data)
  */
-test.skip('Split: Ensure cluster#break roads are split (Washington St)', (t) => {
+test('Split: Ensure cluster#break roads are split (Washington St)', (t) => {
     t.test('Populate', (q) => {
         pool.query(`
             BEGIN;
