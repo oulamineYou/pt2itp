@@ -94,7 +94,7 @@ test('Split: Dulaney Valley Rd, MD', (t) => {
     t.end();
 });
 
-test.skip('Split: East Long Street', (t) => {
+test('Split: East Long Street', (t) => {
     t.test('Populate', (q) => {
         pool.query(`
             BEGIN;
