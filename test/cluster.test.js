@@ -181,23 +181,9 @@ test('cluster.network', (t) => {
             t.error(err, 'no errors');
 
             t.equals(res.rows.length, 2);
-            t.deepEquals(res.rows[0], {
-                geom: {
-                    type: "MultiLineString",
-                    coordinates: [[[-66.0539031028748,45.269616328423],[-66.0544180870056,45.2710358327684]],[[-66.0543537139893,45.2710056309179],[-66.0549330711365,45.2724553016121]]]
-                },
-                id: 1,
-                name: [{
-                    freq: 1,
-                    tokenized: 'main st',
-                    tokenless: 'main',
-                    display: 'Main Street'
-                }],
-                source_ids: [ '1', '2' ]
-            });
 
-            t.deepEquals(res.rows[1], {
-                id: 2,
+            t.deepEquals(res.rows[0], {
+                id: 1,
                 geom: {
                     type: "MultiLineString",
                     coordinates: [[[-113.501172065735,53.5513741378592],[-113.501129150391,53.5483654932333]],[[-113.501000404358,53.5483654932333],[-113.501043319702,53.5461471182574]]]
@@ -210,6 +196,22 @@ test('cluster.network', (t) => {
                 }],
                 source_ids: [ '3', '4' ]
             });
+
+            t.deepEquals(res.rows[1], {
+                geom: {
+                    type: "MultiLineString",
+                    coordinates: [[[-66.0539031028748,45.269616328423],[-66.0544180870056,45.2710358327684]],[[-66.0543537139893,45.2710056309179],[-66.0549330711365,45.2724553016121]]]
+                },
+                id: 2,
+                name: [{
+                    freq: 1,
+                    tokenized: 'main st',
+                    tokenless: 'main',
+                    display: 'Main Street'
+                }],
+                source_ids: [ '1', '2' ]
+            });
+
             return done();
         });
     });
