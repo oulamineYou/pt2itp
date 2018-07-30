@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v16.5.1
+
+- :arrow_up: pdate eslint & documentationjs
+
 ## v16.5.0
 
 - :rocket: Rewrite `cluster#break` to handle multiple address changes in a given segment
