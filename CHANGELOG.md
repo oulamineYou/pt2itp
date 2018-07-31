@@ -10,9 +10,13 @@
 
 ## Version History
 
+## v16.6.0
+
+- :rocket: Expose PT2ITP as a library
+
 ## v16.5.1
 
-- :arrow_up: pdate eslint & documentationjs
+- :arrow_up: Update eslint & documentationjs
 
 ## v16.5.0
 
