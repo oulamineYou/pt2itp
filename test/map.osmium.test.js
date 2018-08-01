@@ -379,7 +379,7 @@ test('Osmium', (t) => {
                  { display: 'New Brunswick Route 101a', priority: -2 },
              ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, `Canadian Highway: ${name}`);
     }
-    
+
     // German Drivethroughs
     t.deepEquals(map({
         type: 'Feature',
