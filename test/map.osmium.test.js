@@ -146,7 +146,7 @@ test('Osmium', (t) => {
             type: 'LineString',
             coordinates: [[0,0],[1,1]]
         }
-    },{country: "us"}), { type: 'Feature', properties: { id: 3, street: [ { display: 'name', priority: 0 }, { display: 'HWY 35', priority: -1 } ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, 'HWY # replaced');
+    },{country: 'us'}), { type: 'Feature', properties: { id: 3, street: [ { display: 'name', priority: 0 }, { display: 'HWY 35', priority: -1 } ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, 'HWY # replaced');
 
     // Ensure drop overrides are dropped
     for (let name of [
@@ -162,14 +162,14 @@ test('Osmium', (t) => {
             type: 'Feature',
             properties: {
                 highway: 'motorway',
-                "@id": 3,
+                '@id': 3,
                 name: name
             },
             geometry: {
                 type: 'LineString',
                 coordinates: [[0,0],[1,1]]
             }
-        }, { country: "gb", region: "pa"}), false, `${name} was dropped`);
+        }, { country: 'gb', region: 'pa'}), false, `${name} was dropped`);
     }
 
     // handle suffixless numeric streets
@@ -194,7 +194,7 @@ test('Osmium', (t) => {
             type: 'Feature',
             properties: {
                 highway: 'motorway',
-                "@id": 3,
+                '@id': 3,
                 name: x[0]
             },
             geometry: {
@@ -212,7 +212,7 @@ test('Osmium', (t) => {
             type: 'Feature',
             properties: {
                 highway: 'motorway',
-                "@id": 3,
+                '@id': 3,
                 name: x[0]
             },
             geometry: {
@@ -231,14 +231,14 @@ test('Osmium', (t) => {
             type: 'Feature',
             properties: {
                 highway: 'motorway',
-                "@id": 3,
+                '@id': 3,
                 name: name
             },
             geometry: {
                 type: 'LineString',
                 coordinates: [[0,0],[1,1]]
             }
-        }, { country: "us", region: "pa"}),
+        }, { country: 'us', region: 'pa'}),
             { type: 'Feature', properties: { id: 3, street: [
                 { display: 'County Road 123', priority: 1 },
                 { display: name, priority: 0 },
@@ -260,14 +260,14 @@ test('Osmium', (t) => {
             type: 'Feature',
             properties: {
                 highway: 'motorway',
-                "@id": 3,
+                '@id': 3,
                 name: name
             },
             geometry: {
                 type: 'LineString',
                 coordinates: [[0,0],[1,1]]
             }
-        }, { country: "us", region: "pa"}),
+        }, { country: 'us', region: 'pa'}),
             { type: 'Feature', properties: { id: 3, street: [
                 { display: 'Pennsylvania Highway 123', priority: 1 },
                 { display: name, priority: 0 },
@@ -293,14 +293,14 @@ test('Osmium', (t) => {
             type: 'Feature',
             properties: {
                 highway: 'motorway',
-                "@id": 3,
+                '@id': 3,
                 name: name
             },
             geometry: {
                 type: 'LineString',
                 coordinates: [[0,0],[1,1]]
             }
-        }, { country: "us", region: "pa"}),
+        }, { country: 'us', region: 'pa'}),
             { type: 'Feature', properties: { id: 3, street: [
                 { display: 'Pennsylvania Highway 123', priority: 1 },
                 { display: name, priority: 0 },
@@ -337,7 +337,7 @@ test('Osmium', (t) => {
                 type: 'LineString',
                 coordinates: [[0,0],[1,1]]
             }
-        }, { country: "us", region: "pa"}),
+        }, { country: 'us', region: 'pa'}),
              { type: 'Feature', properties: { id: 3, street: [
                  { display: 'US Route 81', priority: 1 },
                  { display: name, priority: 0 },
@@ -379,6 +379,20 @@ test('Osmium', (t) => {
                  { display: 'New Brunswick Route 101a', priority: -2 },
              ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, `Canadian Highway: ${name}`);
     }
+
+    // German Drivethroughs
+    t.deepEquals(map({
+        type: 'Feature',
+        properties: {
+            highway: 'motorway',
+            "@id": 3,
+            name: 'Burger King Einfahrt'
+        },
+        geometry: {
+            type: 'LineString',
+            coordinates: [[0,0],[1,1]]
+        }
+    },{ country: 'de' }), false, 'Einfahrt Removed');
 
     t.end();
 });
