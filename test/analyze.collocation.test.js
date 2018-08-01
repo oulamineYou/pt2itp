@@ -304,7 +304,7 @@ test('BiGramCollocationTable Metrics', (t) => {
 
     const expectedScores = [
         { w1: 'the', w2: 'cat', frequency: 2, likelihoodRatio: 6.994384003022435 },
-        { w1: 'cat', w2: 'chased', frequency: 1, likelihoodRatio: 1.539220822722564 },
+        { w1: 'cat', w2: 'chased', frequency: 1, likelihoodRatio: 1.5392208227225637 },
         { w1: 'chased', w2: 'the', frequency: 2, likelihoodRatio: 6.994384003022435 },
         { w1: 'the', w2: 'mouse', frequency: 1, likelihoodRatio: 3.064978583578977 },
         { w1: 'mouse', w2: 'and', frequency: 1, likelihoodRatio: 6.884063593347854 },
@@ -312,7 +312,7 @@ test('BiGramCollocationTable Metrics', (t) => {
         { w1: 'then', w2: 'a', frequency: 1, likelihoodRatio: 6.884063593347854 },
         { w1: 'a', w2: 'dog', frequency: 1, likelihoodRatio: 6.884063593347854 },
         { w1: 'dog', w2: 'chased', frequency: 1, likelihoodRatio: 4.1114748711080775 }
-    ];
+    ]
 
     t.deepEqual(
         [...bigrams.score_ngrams('likelihoodRatio')],
