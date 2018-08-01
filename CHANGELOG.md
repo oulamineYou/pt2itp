@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v16.6.2
+
+- :rocket: Add german language drive in filters
+
 ## v16.6.1
 
 - :rocket: Add more countries to `drive-in` filter
