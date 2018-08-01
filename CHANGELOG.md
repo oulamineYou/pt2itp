@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v16.6.1
+
+- :rocket: Add more countries to `drive-in` filter
+
 ## v16.6.0
 
 - :rocket: Expose PT2ITP as a library
