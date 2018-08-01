@@ -14,7 +14,6 @@ const carmenIndex = '/tmp/test-ri.mbtiles';
 const output = '/tmp/test-ri.err';
 const config = path.resolve(__dirname, './fixtures/test-ri/carmen-config.json');
 
-
 const pool = new pg.Pool({
     max: 10,
     user: 'postgres',
@@ -77,8 +76,7 @@ test('query from new index', (t) => {
 });
 
 // step 3: run test mode against the built index
-test('Run test mode', (t) => {
-    console.error(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output}`);
+test('test', (t) => {
     exec(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output}`, (err, stdout, stderr) => {
         t.test('Return correct error messages in csv', (t) => {
             let csvErrs = [];
@@ -92,6 +90,43 @@ test('Run test mode', (t) => {
                 t.equal(csvErrs.filter(ele => ele['addr text'] === 'greeeeeenview')[0].error, 'NAME MISMATCH (SOFT)');
                 t.end();
             });
+        });
+    });
+});
+
+test('testcsv', (t) => {
+    t.test('Return correct std.err message', (t) => {
+        let st = spawn(t, `${__dirname}/../index.js testcsv --index ${carmenIndex} --input ${path.resolve(__dirname, './fixtures/test-ri/address.csv')} --output '/tmp/testcsv-ri.err' --config ${config}`);
+        st.stderr.match(`
+            ERROR TYPE                   COUNT
+            -----------------------------------------------------------------------------------
+            DIST                             6 ( 50.0% of errors | 18.2% of total addresses)
+            NO RESULTS                       6 ( 50.0% of errors | 18.2% of total addresses)
+
+            ok - 12/33 (36.4%) failed to geocode
+            ok - 0/0 (NaN%) ITP results failed to geocode
+
+            DIST statistical breakdown
+            -----------------------------------------------------------------------------------
+            DIST - mean: 7352.73 / median: 7352.73 / skew: 0.00 / standard dev: 6879.86
+        `.replace(/^ +/mg, ''));
+        st.end();
+    });
+
+    t.test('Return correct error messages in csv', (t) => {
+        let csvErrs = [];
+
+        csv.fromPath(output, {headers: true})
+        .on('data', (data) => {
+            csvErrs.push(data);
+        })
+        .on('end', () => {
+            t.equal(csvErrs.length, 9);
+            t.equal(csvErrs.filter(ele => ele.query === '26 Greenview Rd')[0].error, 'DIST');
+            t.equal(csvErrs.filter(ele => ele.query === '31 Greenview Rd')[0].error, 'DIST');
+            t.equal(csvErrs.filter(ele => ele.query === '34 grn vw rd')[0].error, 'NO RESULTS');
+            t.equal(csvErrs.filter(ele => ele.query === '40 greeeeeenview rd')[0].error, 'NO RESULTS');
+            t.end();
         });
     });
 });
