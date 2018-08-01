@@ -100,15 +100,15 @@ test('testcsv', (t) => {
         st.stderr.match(`
             ERROR TYPE                   COUNT
             -----------------------------------------------------------------------------------
-            DIST                             6 ( 50.0% of errors | 18.2% of total addresses)
-            NO RESULTS                       6 ( 50.0% of errors | 18.2% of total addresses)
+            DIST                             9 ( 75.0% of errors | 27.3% of total addresses)
+            NO RESULTS                       3 ( 25.0% of errors |  9.1% of total addresses)
 
             ok - 12/33 (36.4%) failed to geocode
             ok - 0/0 (NaN%) ITP results failed to geocode
 
             DIST statistical breakdown
             -----------------------------------------------------------------------------------
-            DIST - mean: 7352.73 / median: 7352.73 / skew: 0.00 / standard dev: 6879.86
+            DIST - mean: 5350.28 / median: 1345.38 / skew: 0.84 / standard dev: 6290.83
         `.replace(/^ +/mg, ''));
         st.end();
     });
@@ -116,16 +116,14 @@ test('testcsv', (t) => {
     t.test('Return correct error messages in csv', (t) => {
         let csvErrs = [];
 
-        csv.fromPath(output, {headers: true})
-        .on('data', (data) => {
-            csvErrs.push(data);
-        })
+        csv.fromPath('/tmp/testcsv-ri.err', {headers: true})
+        .on('data', (data) => { csvErrs.push(data); })
         .on('end', () => {
             t.equal(csvErrs.length, 9);
             t.equal(csvErrs.filter(ele => ele.query === '26 Greenview Rd')[0].error, 'DIST');
             t.equal(csvErrs.filter(ele => ele.query === '31 Greenview Rd')[0].error, 'DIST');
             t.equal(csvErrs.filter(ele => ele.query === '34 grn vw rd')[0].error, 'NO RESULTS');
-            t.equal(csvErrs.filter(ele => ele.query === '40 greeeeeenview rd')[0].error, 'NO RESULTS');
+            t.equal(csvErrs.filter(ele => ele.query === '40 Greeeeeenview Rd')[0].error, 'DIST');
             t.end();
         });
     });
