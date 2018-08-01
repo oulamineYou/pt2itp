@@ -10,6 +10,12 @@
 
 ## Version History
 
+## 17.0.0
+
+- :arrow_up: Update base node verison to 8 - dropping support for 4 & 6
+- :arrow_up: Update to carmen@25 - fuzzy search!
+- :white_check_mark: Tie `testcsv` into `test` indexes so indexes are rebuilt with every run
+
 ## v16.6.2
 
 - :rocket: Add german language drive in filters
