@@ -10,6 +10,10 @@
 
 ## Version History
 
+## 17.0.1
+
+- :arrow_up: `carmen@25.0.1` & `eslint@5.x`
+
 ## 17.0.0
 
 - :arrow_up: Update base node verison to 8 - dropping support for 4 & 6
