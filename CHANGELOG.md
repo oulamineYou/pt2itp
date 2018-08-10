@@ -10,11 +10,15 @@
 
 ## Version History
 
-## 17.0.1
+## v17.0.2
+
+- :arrow_up: Avoid security advisory by updating to latest `lodash`
+
+## v17.0.1
 
 - :arrow_up: `carmen@25.0.1` & `eslint@5.x`
 
-## 17.0.0
+## v17.0.0
 
 - :arrow_up: Update base node verison to 8 - dropping support for 4 & 6
 - :arrow_up: Update to carmen@25 - fuzzy search!
