@@ -10,6 +10,11 @@
 
 ## Version History
 
+## v17.1.0
+
+- :bug: Improve synonym surfacing in network clustering, avoiding unrelated synonyms being
+        pulled into clusters with the same primary name
+
 ## v17.0.2
 
 - :arrow_up: Avoid security advisory by updating to latest `lodash`
