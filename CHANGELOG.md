@@ -10,10 +10,14 @@
 
 ## Version History
 
+## v17.1.1
+
+- :arrow_up: Update carmen & all deps to latest versions
+
 ## v17.1.0
 
 - :bug: Improve synonym surfacing in network clustering, avoiding unrelated synonyms being
-        pulled into clusters with the same primary name
+  pulled into clusters with the same primary name
 
 ## v17.0.2
 
