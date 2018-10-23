@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v17.1.2
+
+- :arrow_up: Update carmen & all deps to latest versions
+
 ## v17.1.1
 
 - :arrow_up: Update carmen & all deps to latest versions
