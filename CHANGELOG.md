@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v17.1.3
+
+- :arrow_up: Update to latest geocoder-abbreviations for basic polish support
+
 ## v17.1.2
 
 - :arrow_up: Update carmen & all deps to latest versions
