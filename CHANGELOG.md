@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v17.1.4
+
+- :arrow_up: `carmen@26.6.0`
+
 ## v17.1.3
 
 - :arrow_up: Update to latest geocoder-abbreviations for basic polish support
