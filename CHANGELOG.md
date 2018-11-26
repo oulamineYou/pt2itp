@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v17.1.5
+
+- :arrow_up: `csv-stringify@5`
+
 ## v17.1.4
 
 - :arrow_up: `carmen@26.6.0`
