@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v17.1.6
+
+- :arrow_up: Update to latest geocoder-abbreviations for basic russian support
+
 ## v17.1.5
 
 - :arrow_up: `csv-stringify@5`
