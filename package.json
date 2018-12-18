@@ -55,6 +55,9 @@
     "tmp": "0.0.33"
   },
   "eslintConfig": {
+    "parserOptions": {
+        "ecmaVersion": 8
+    },
     "rules": {
       "require-jsdoc": [
         "error",
