@@ -36,7 +36,7 @@ tape('copy.js output - network', (t) => {
         output: tempFile,
         type: 'network',
         total: 1,
-        map: __dirname + '/../lib/map/osmium.js',
+        map: __dirname + '/../lib/inputs/osmium.js',
         solo: true,
         error: false,
         tokens: tokenize.createReplacer(['et'])
@@ -59,7 +59,7 @@ tape('copy.js output - network (garbage)', (t) => {
         output: tempFile,
         type: 'network',
         total: 1,
-        map: __dirname + '/../lib/map/osmium.js',
+        map: __dirname + '/../lib/inputs/osmium.js',
         solo: true,
         error: false,
         tokens: tokenize.createReplacer(['et'])
