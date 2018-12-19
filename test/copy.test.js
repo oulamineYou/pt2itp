@@ -3,7 +3,7 @@ const tmp = require('tmp');
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
-const copy = require('../lib/util/copy');
+const copy = require('../lib/map/copy');
 const tokenize = require('../lib/util/tokenize');
 
 tape('copy.js output - address', (t) => {

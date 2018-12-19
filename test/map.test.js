@@ -1,5 +1,5 @@
 const ReadLine = require('readline');
-const Index = require('../lib/util/index');
+const Index = require('../lib/map/index');
 const worker = require('../lib/map');
 
 const test = require('tape');

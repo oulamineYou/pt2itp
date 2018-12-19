@@ -1,8 +1,8 @@
 const fs = require('fs');
 const test = require('tape');
 const pg = require('pg');
-const Split = require('../lib/util/split');
-const Index = require('../lib/util/index');
+const Split = require('../lib/map/split');
+const Index = require('../lib/map/index');
 const turf = require('@turf/turf');
 
 const pool = new pg.Pool({

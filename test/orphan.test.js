@@ -1,6 +1,6 @@
-const Orphan = require('../lib/util/orphan');
-const Post = require('../lib/util/post');
-const Index = require('../lib/util/index');
+const Orphan = require('../lib/map/orphan');
+const Post = require('../lib/map/post');
+const Index = require('../lib/map/index');
 
 const test = require('tape');
 const fs = require('fs');
