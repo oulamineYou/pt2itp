@@ -10,6 +10,11 @@
 
 ## Version History
 
+## 17.2.0
+
+- :tada: Add ability to store generic props from address inputs
+- :rocket: Directory structure is cleaned up, with util not being a dumping ground for `map` mode
+
 ## v17.1.6
 
 - :arrow_up: Update to latest geocoder-abbreviations for basic russian support
