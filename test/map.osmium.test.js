@@ -1,4 +1,4 @@
-const map = require('../lib/map/osmium').map;
+const map = require('../lib/inputs/osmium').map;
 const test = require('tape');
 
 test('Osmium', (t) => {

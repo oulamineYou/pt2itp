@@ -1,6 +1,6 @@
 const tape = require('tape');
 
-const Units = require('../lib/util/units');
+const Units = require('../lib/map/units');
 
 tape('Units#Encode/Decode', (t) => {
     const units = new Units();

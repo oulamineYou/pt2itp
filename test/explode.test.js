@@ -3,7 +3,7 @@ const test = require('tape');
 const fs = require('fs');
 
 // add test for feature that dedupe will collapse & should discard
-const Explode = require('../lib/util/explode');
+const Explode = require('../lib/map/explode');
 
 test('explode', (t) => {
     t.test('explode', (q) => {
