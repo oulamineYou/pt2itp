@@ -10,6 +10,10 @@
 
 ## Version History
 
+## 17.2.1
+
+- :arrow_up: Documentation & carmen to latest versions
+
 ## 17.2.0
 
 - :tada: Add ability to store generic props from address inputs
