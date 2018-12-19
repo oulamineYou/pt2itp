@@ -3,7 +3,7 @@ const tmp = require('tmp');
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
-const copy = require('../lib/util/copy');
+const copy = require('../lib/map/copy');
 const tokenize = require('../lib/util/tokenize');
 
 tape('copy.js output - address', (t) => {
@@ -36,7 +36,7 @@ tape('copy.js output - network', (t) => {
         output: tempFile,
         type: 'network',
         total: 1,
-        map: __dirname + '/../lib/map/osmium.js',
+        map: __dirname + '/../lib/inputs/osmium.js',
         solo: true,
         error: false,
         tokens: tokenize.createReplacer(['et'])
@@ -59,7 +59,7 @@ tape('copy.js output - network (garbage)', (t) => {
         output: tempFile,
         type: 'network',
         total: 1,
-        map: __dirname + '/../lib/map/osmium.js',
+        map: __dirname + '/../lib/inputs/osmium.js',
         solo: true,
         error: false,
         tokens: tokenize.createReplacer(['et'])

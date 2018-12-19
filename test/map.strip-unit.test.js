@@ -1,4 +1,4 @@
-const map = require('../lib/map/strip-unit').map;
+const map = require('../lib/inputs/strip-unit').map;
 const test = require('tape');
 
 test('Strip-Unit', (t) => {

@@ -1,5 +1,5 @@
-const Cluster = require('../lib/util/cluster');
-const Index = require('../lib/util/index');
+const Cluster = require('../lib/map/cluster');
+const Index = require('../lib/map/index');
 
 const test = require('tape');
 const fs = require('fs');

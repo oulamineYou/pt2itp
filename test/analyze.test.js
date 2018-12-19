@@ -7,8 +7,8 @@ const fs = require('fs');
 const tmp = require('tmp');
 const test = require('tape');
 const Queue = require('d3-queue').queue;
-const Cluster = require('../lib/util/cluster');
-const Index = require('../lib/util/index');
+const Cluster = require('../lib/map/cluster');
+const Index = require('../lib/map/index');
 
 const pool = new pg.Pool({
     max: 3,
