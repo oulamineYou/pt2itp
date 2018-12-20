@@ -1,6 +1,6 @@
 {
   "name": "pt2itp",
-  "version": "17.2.1",
+  "version": "17.2.0",
   "license": "BSD-2-Clause ",
   "description": "Attach interpolation values given a road network and address points",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "pt2itp": "./index.js"
   },
   "scripts": {
-    "lint": "eslint index.js test/* lib/*",
+    "lint": "eslint index.js test/ lib/",
     "coverage": "nyc tape test/*.js && nyc report --reporter=text-lcov > coverage.lcov",
     "coverage-upload": "coveralls < ./coverage.lcov",
     "doc": "./node_modules/documentation/bin/documentation.js lint ./lib/**",
@@ -55,6 +55,9 @@
     "tmp": "0.0.33"
   },
   "eslintConfig": {
+    "parserOptions": {
+        "ecmaVersion": 8
+    },
     "rules": {
       "require-jsdoc": [
         "error",
