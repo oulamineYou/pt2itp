@@ -3,7 +3,7 @@ const turf = require('@turf/turf');
 const test = require('tape');
 const fs = require('fs');
 
-test('Intersections', async (t) => {
+test('Intersections', async(t) => {
     try {
         const intsec = new Intersection();
 
@@ -21,9 +21,9 @@ test('Intersections', async (t) => {
         }], {
             country: 'ca'
         })
-        
+
         t.ok(res[0].id);
-        delete res[0].id; 
+        delete res[0].id;
 
         t.deepEquals(res, [{
             type: 'Feature',
@@ -37,14 +37,14 @@ test('Intersections', async (t) => {
                 coordinates: [ 0, 0 ]
             }
         }]);
-    } catch(err) {
+    } catch (err) {
         t.error(err);
     }
 
     t.end();
 });
 
-test('Intersections - Synonyms', async (t) => {
+test('Intersections - Synonyms', async(t) => {
     try {
         const intsec = new Intersection();
 
@@ -64,10 +64,10 @@ test('Intersections - Synonyms', async (t) => {
         }], {
             country: 'ca'
         });
-       
+
         t.ok(res[0].id);
         delete res[0].id;
-        
+
         t.deepEquals(res, [{
             type: 'Feature',
             properties: {
@@ -80,7 +80,7 @@ test('Intersections - Synonyms', async (t) => {
                 coordinates: [ 0, 0 ]
             }
         }]);
-    } catch(err) {
+    } catch (err) {
         t.error(err);
     }
 

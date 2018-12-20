@@ -8,7 +8,7 @@
     "pt2itp": "./index.js"
   },
   "scripts": {
-    "lint": "eslint index.js test/* lib/*",
+    "lint": "eslint index.js test/ lib/",
     "coverage": "nyc tape test/*.js && nyc report --reporter=text-lcov > coverage.lcov",
     "coverage-upload": "coveralls < ./coverage.lcov",
     "doc": "./node_modules/documentation/bin/documentation.js lint ./lib/**",
