@@ -10,11 +10,15 @@
 
 ## Version History
 
-## 17.2.1
+## v17.3.0
+
+- :tada: Add intersection support
+
+## v17.2.1
 
 - :arrow_up: Documentation & carmen to latest versions
 
-## 17.2.0
+## v17.2.0
 
 - :tada: Add ability to store generic props from address inputs
 - :rocket: Directory structure is cleaned up, with util not being a dumping ground for `map` mode
