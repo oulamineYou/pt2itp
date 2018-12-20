@@ -1,6 +1,6 @@
 {
   "name": "pt2itp",
-  "version": "17.2.0",
+  "version": "17.3.0",
   "license": "BSD-2-Clause ",
   "description": "Attach interpolation values given a road network and address points",
   "main": "index.js",
@@ -56,7 +56,7 @@
   },
   "eslintConfig": {
     "parserOptions": {
-        "ecmaVersion": 8
+      "ecmaVersion": 8
     },
     "rules": {
       "require-jsdoc": [
