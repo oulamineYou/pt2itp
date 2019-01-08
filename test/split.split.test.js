@@ -19,28 +19,28 @@ test.only('Split: Dulaney Valley Rd, MD', (t) => {
     });
 
     split.split(feat, (err, res) => {
-        q.error(err);
+        t.error(err);
 
-        q.equals(res.length, 1);
+        t.equals(res.length, 1);
 
         res = res[0];
 
-        q.equals(res.type, 'Feature', 'Type should be feature');
-        q.equals(res.geometry.type, 'GeometryCollection', 'Geometry should be GeometryCollection');
-        q.equals(res.geometry.geometries.length, 2, 'GeometryCollection should have 2 child geometries');
+        t.equals(res.type, 'Feature', 'Type should be feature');
+        t.equals(res.geometry.type, 'GeometryCollection', 'Geometry should be GeometryCollection');
+        t.equals(res.geometry.geometries.length, 2, 'GeometryCollection should have 2 child geometries');
 
-        q.equals(res.properties['carmen:text'], 'Dulaney Valley Road', 'Text should be Dulaney Valley Road');
-        q.deepEquals(res.properties['carmen:addressnumber'], [ null, [ '714', '716', '718', '720', '722', '730', '732', '740', '744', '806', '810', '812', '813', '814', '820', '822', '824', '825', '826', '828', '830', '834', '838', '901', '903', '949', '956', '1002', '1004', '1006', '1008', '1010', '1012', '1014', '1016', '1018', '1021', '1024', '1200', '1202', '1204', '1206', '1208', '1210', '1212', '1213', '1214', '1215', '1216', '1217', '1219', '1221', '1223', '1225', '1227', '1229', '1231', '1233', '1300', '1301', '1306', '1307', '1309', '1310', '1311', '1314', '1316', '1317', '1318', '1320', '1322', '1400', '1411', '1500', '1502', '1504', '1506', '1508', '1510', '1710', '1718', '1720', '1798', '1800', '1802', '1806', '1808', '1810', '1902', '1908', '2001', '2002', '2004', '2006', '2008', '2010', '2012', '2100', '2101', '2106', '2108', '2110', '2118', '2120', '2122', '2124', '2126', '2200', '2202', '2203', '2204', '2205', '2292', '2296', '2300', '2310', '12101', '12301', '12450', '12460', '12559', '12563', '12567', '12605', '12615', '12620', '12720', '12721', '12804', '12805', '12806', '12807', '12808', '12809', '12810', '12811', '12813', '12814', '12815', '12900', '12901', '12905', '12906', '12907', '12908', '12909', '12911', '12915', '12916', '12919', '13000', '13001', '13004', '13005', '13006', '13007', '13008', '13015', '13019', '13020', '13100', '13101', '13103', '13114', '13115', '13132', '13140', '13142', '13144', '13146', '13200', '13201', '13204', '13207', '13208', '13209', '13211', '13212', '13214', '13216', '13218', '13224' ] ], 'carmen:addressnumber should be stable');
-        q.deepEquals(res.properties['carmen:parityl'], [ [ null, null, null, 'O', 'O', 'O', null, null, 'E', null, 'O', 'O', 'O', 'O', null, null, null, 'E', null, 'E', null, 'E', 'E', null, 'E', 'E', 'E', null, null, null, null, null ], null ], 'carmen:parityl should be stable');
-        q.deepEquals(res.properties['carmen:parityr'], [ [ 'E', 'O', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', null, 'O', 'O', 'E', null, 'O', 'O', 'O', 'O', null, 'O', 'O', 'O', 'O', null, null, null, null, null ], null ], 'carmen:parityr should be stable');
+        t.equals(res.properties['carmen:text'], 'Dulaney Valley Road', 'Text should be Dulaney Valley Road');
+        t.deepEquals(res.properties['carmen:addressnumber'], [ null, [ '714', '716', '718', '720', '722', '730', '732', '740', '744', '806', '810', '812', '813', '814', '820', '822', '824', '825', '826', '828', '830', '834', '838', '901', '903', '949', '956', '1002', '1004', '1006', '1008', '1010', '1012', '1014', '1016', '1018', '1021', '1024', '1200', '1202', '1204', '1206', '1208', '1210', '1212', '1213', '1214', '1215', '1216', '1217', '1219', '1221', '1223', '1225', '1227', '1229', '1231', '1233', '1300', '1301', '1306', '1307', '1309', '1310', '1311', '1314', '1316', '1317', '1318', '1320', '1322', '1400', '1411', '1500', '1502', '1504', '1506', '1508', '1510', '1710', '1718', '1720', '1798', '1800', '1802', '1806', '1808', '1810', '1902', '1908', '2001', '2002', '2004', '2006', '2008', '2010', '2012', '2100', '2101', '2106', '2108', '2110', '2118', '2120', '2122', '2124', '2126', '2200', '2202', '2203', '2204', '2205', '2292', '2296', '2300', '2310', '12101', '12301', '12450', '12460', '12559', '12563', '12567', '12605', '12615', '12620', '12720', '12721', '12804', '12805', '12806', '12807', '12808', '12809', '12810', '12811', '12813', '12814', '12815', '12900', '12901', '12905', '12906', '12907', '12908', '12909', '12911', '12915', '12916', '12919', '13000', '13001', '13004', '13005', '13006', '13007', '13008', '13015', '13019', '13020', '13100', '13101', '13103', '13114', '13115', '13132', '13140', '13142', '13144', '13146', '13200', '13201', '13204', '13207', '13208', '13209', '13211', '13212', '13214', '13216', '13218', '13224' ] ], 'carmen:addressnumber should be stable');
+        t.deepEquals(res.properties['carmen:parityl'], [ [ null, null, null, 'O', 'O', 'O', null, null, 'E', null, 'O', 'O', 'O', 'O', null, null, null, 'E', null, 'E', null, 'E', 'E', null, 'E', 'E', 'E', null, null, null, null, null ], null ], 'carmen:parityl should be stable');
+        t.deepEquals(res.properties['carmen:parityr'], [ [ 'E', 'O', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', null, 'O', 'O', 'E', null, 'O', 'O', 'O', 'O', null, 'O', 'O', 'O', 'O', null, null, null, null, null ], null ], 'carmen:parityr should be stable');
 
-        q.deepEquals(res.properties['carmen:lfromhn'], [ [ null, null, null, 2101, 2101, 2205, null, null, 2002, null, 1411, 1317, 1233, 1021, null, null, null, 13218, null, 13132, null, 13008, 12450, null, 12620, 12720, 12906, null, null, null, null, null ], null ], 'carmen:lfromhn should be stable');
-        q.deepEquals(res.properties['carmen:ltohn'], [ [ 0, null, null, 2101, 2101, 2203, null, null, 1806, null, 1411, 1301, 1213, 1021, null, null, null, 13224, null, 13212, null, 13114, 12450, null, 12720, 12900, 20000, null, null, null, null, null ], null ], 'carmen:ltohn should be stable');
+        t.deepEquals(res.properties['carmen:lfromhn'], [ [ null, null, null, 2101, 2101, 2205, null, null, 2002, null, 1411, 1317, 1233, 1021, null, null, null, 13218, null, 13132, null, 13008, 12450, null, 12620, 12720, 12906, null, null, null, null, null ], null ], 'carmen:lfromhn should be stable');
+        t.deepEquals(res.properties['carmen:ltohn'], [ [ 0, null, null, 2101, 2101, 2203, null, null, 1806, null, 1411, 1301, 1213, 1021, null, null, null, 13224, null, 13212, null, 13114, 12450, null, 12720, 12900, 20000, null, null, null, null, null ], null ], 'carmen:ltohn should be stable');
 
-        q.deepEquals(res.properties['carmen:rfromhn'], [ [ 838, 1021, 2300, 2300, 2300, 2204, 2118, 2012, 2100, 1802, 1508, 1320, 1300, null, 825, 903, 1024, null, 12101, 13201, 12301, 13015, null, 12559, 12605, 12721, 12901, null, null, null, null, null ], null ], 'carmen:rfromhn should be stable');
-        q.deepEquals(res.properties['carmen:rtohn'], [ [ 0, 1021, 2300, 2310, 2296, 2118, 2106, 2002, 1806, 1510, 1400, 1300, 1200, null, 903, 1021, 956, null, 12101, 13211, 12301, 13115, null, 12605, 12615, 12901, 20001, null, null, null, null, null ], null ], 'carmen:rtohn should be stable');
+        t.deepEquals(res.properties['carmen:rfromhn'], [ [ 838, 1021, 2300, 2300, 2300, 2204, 2118, 2012, 2100, 1802, 1508, 1320, 1300, null, 825, 903, 1024, null, 12101, 13201, 12301, 13015, null, 12559, 12605, 12721, 12901, null, null, null, null, null ], null ], 'carmen:rfromhn should be stable');
+        t.deepEquals(res.properties['carmen:rtohn'], [ [ 0, 1021, 2300, 2310, 2296, 2118, 2106, 2002, 1806, 1510, 1400, 1300, 1200, null, 903, 1021, 956, null, 12101, 13211, 12301, 13115, null, 12605, 12615, 12901, 20001, null, null, null, null, null ], null ], 'carmen:rtohn should be stable');
 
-        q.end();
+        t.end();
     });
 });
 
