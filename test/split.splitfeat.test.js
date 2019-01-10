@@ -126,6 +126,8 @@ test('SplitFeat - from db', (t) => {
             q.deepEquals(feat.network.type, 'MultiLineString', 'network is MultiLineString');
             q.deepEquals(feat.address.type, 'MultiPoint', 'address is MultiPoint');
 
+            q.equals(feat.id, 1, 'network_cluster id retained');
+
             q.deepEquals(feat.address.coordinates, [
                 [ -76.554825, 39.460839, 1 ],
                 [ -76.567178, 39.462854, 2 ],
