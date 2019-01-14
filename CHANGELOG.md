@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v17.4.0
+
+- :rocket: Allow properties to be propogated through to the interpolization module, removing the `Units` encode/decode
+
 ## v17.3.0
 
 - :tada: Add intersection support
