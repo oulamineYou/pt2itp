@@ -3,8 +3,6 @@ const test = require('tape');
 const fs = require('fs');
 const _ = require('lodash');
 
-const cluster = new Cluster();
-
 /**
  * Helper function to sort segs for input into cluster#break
  *
@@ -17,7 +15,7 @@ function sort(seg) {
         return coord[2];
     }]).map((coord) => {
         seg.number.push({
-            num: coord.pop(),
+            number: coord.pop(),
             output: true
         });
 
@@ -71,7 +69,7 @@ test('cluster#break - address cliff', (t) => {
         }
     })];
 
-    let newSegs = cluster.break(segs);
+    let newSegs = Cluster.break(segs);
 
     t.equals(newSegs.length, 2);
 
@@ -136,7 +134,7 @@ test('cluster#break - address cliff (double)', (t) => {
         }
     })];
 
-    let newSegs = cluster.break(segs);
+    let newSegs = Cluster.break(segs);
 
     t.equals(newSegs.length, 3);
 
@@ -193,7 +191,7 @@ test('cluster#break - address hump', (t) => {
         }
     })];
 
-    let newSegs = cluster.break(segs);
+    let newSegs = Cluster.break(segs);
 
     t.equals(newSegs.length, 2);
 

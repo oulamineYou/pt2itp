@@ -158,10 +158,10 @@ test('Interpolize', (t) => {
             }
         },
         number:  [
-            { num: "8", output: true },
-            { num: "10", output: true },
-            { num: "9", output: true },
-            { num:"11", output: true }
+            { number: "8", output: true, props: {} },
+            { number: "10", output: true, props: {} },
+            { number: "9", output: true, props: {} },
+            { number:"11", output: true, props: {} }
         ]
     }];
 
@@ -240,15 +240,15 @@ test('Interpolize - Continious network - unique address duplicate num', (t) => {
             }
         },
         number:  [
-            { num: "2", output: true },
-            { num: "4", output: true },
-            { num: "6", output: true },
-            { num:"8", output: true },
-            { num: "4", output: true },
-            { num: "6", output: true },
-            { num: "8", output: true },
-            { num: "10", output: true },
-            { num: "12", output: true }
+            { number: "2", output: true, props: {} },
+            { number: "4", output: true, props: {} },
+            { number: "6", output: true, props: {} },
+            { number:"8", output: true, props: {} },
+            { number: "4", output: true, props: {} },
+            { number: "6", output: true, props: {} },
+            { number: "8", output: true, props: {} },
+            { number: "10", output: true, props: {} },
+            { number: "12", output: true, props: {} }
         ]
     }];
 
@@ -303,15 +303,15 @@ test('Interpolize - Continious network - unique address duplicate num - differen
             }
         },
         number:  [
-            { num: "2", output: true },
-            { num: "4", output: true },
-            { num: "6", output: true },
-            { num:"8", output: true },
-            { num: "10", output: true },
-            { num: "8", output: true },
-            { num: "6", output: true },
-            { num: "4", output: true },
-            { num: "2", output: true }
+            { number: "2", output: true, props: {} },
+            { number: "4", output: true, props: {} },
+            { number: "6", output: true, props: {} },
+            { number:"8", output: true, props: {} },
+            { number: "10", output: true, props: {} },
+            { number: "8", output: true, props: {} },
+            { number: "6", output: true, props: {} },
+            { number: "4", output: true, props: {} },
+            { number: "2", output: true, props: {} }
         ]
     }];
 
@@ -361,11 +361,11 @@ test('Interpolize - Ignore addresses above (average * 5) away from line', (t) =>
             }
         },
         number:  [
-            { num: "8", output: true },
-            { num: "10", output: true },
-            { num: "12", output: true },
-            { num:"14", output: true },
-            { num: "16000", output: true }
+            { number: "8", output: true, props: {} },
+            { number: "10", output: true, props: {} },
+            { number: "12", output: true, props: {} },
+            { number:"14", output: true, props: {} },
+            { number: "16000", output: true, props: {} }
         ]
     }];
 
@@ -410,12 +410,12 @@ test('Interpolize - Addr past line end', (t) => {
             }
         },
         number:  [
-            { num: "8", output: true },
-            { num: "10", output: true },
-            { num: "9", output: true },
-            { num:"11", output: true },
-            { num: "13", output: true },
-            { num: "12", output: true }
+            { number: "8", output: true, props: {} },
+            { number: "10", output: true, props: {} },
+            { number: "9", output: true, props: {} },
+            { number:"11", output: true, props: {} },
+            { number: "13", output: true, props: {} },
+            { number: "12", output: true, props: {} }
         ]
     }];
 
@@ -460,12 +460,12 @@ test('Interpolize - Addr past line end - opposite', (t) => {
             }
         },
         number:  [
-            { num: "8", output: true },
-            { num: "10", output: true },
-            { num: "9", output: true },
-            { num:"11", output: true },
-            { num: "13", output: true },
-            { num: "12", output: true }
+            { number: "8", output: true, props: {} },
+            { number: "10", output: true, props: {} },
+            { number: "9", output: true, props: {} },
+            { number:"11", output: true, props: {} },
+            { number: "13", output: true, props: {} },
+            { number: "12", output: true, props: {} }
         ]
     }];
 
@@ -509,10 +509,10 @@ test('Interpolize - Addr past line end - bend', (t) => {
             }
         },
         number:  [
-            { num: "2", output: true },
-            { num: "4", output: true },
-            { num: "1", output: true },
-            { num:"3", output: true }
+            { number: "2", output: true, props: {} },
+            { number: "4", output: true, props: {} },
+            { number: "1", output: true, props: {} },
+            { number:"3", output: true, props: {} }
         ]
     }];
 
@@ -556,10 +556,10 @@ test('Interpolize - Addr past line end - bend - reverse', (t) => {
             }
         },
         number:  [
-            { num: "2", output: true },
-            { num: "4", output: true },
-            { num: "1", output: true },
-            { num:"3", output: true }
+            { number: "2", output: true, props: {} },
+            { number: "4", output: true, props: {} },
+            { number: "1", output: true, props: {} },
+            { number:"3", output: true, props: {} }
         ]
     }];
 
@@ -617,17 +617,17 @@ test('Interpolize - Hooked Road', (t) => {
             }
         },
         number:  [
-            { num: "2", output: true },
-            { num: "4", output: true },
-            { num: "6", output: true },
-            { num: "8", output: true },
-            { num: "10", output: true },
-            { num: "12", output: true },
-            { num: "1", output: true },
-            { num: "3", output: true },
-            { num: "5", output: true },
-            { num: "7", output: true },
-            { num: "9", output: true }
+            { number: "2", output: true, props: {} },
+            { number: "4", output: true, props: {} },
+            { number: "6", output: true, props: {}},
+            { number: "8", output: true, props: {} },
+            { number: "10", output: true, props: {} },
+            { number: "12", output: true, props: {} },
+            { number: "1", output: true, props: {} },
+            { number: "3", output: true, props: {} },
+            { number: "5", output: true, props: {} },
+            { number: "7", output: true, props: {} },
+            { number: "9", output: true, props: {} }
         ]
     }];
 
