@@ -15,7 +15,7 @@ function sort(seg) {
         return coord[2];
     }]).map((coord) => {
         seg.number.push({
-            num: coord.pop(),
+            number: coord.pop(),
             output: true
         });
 
