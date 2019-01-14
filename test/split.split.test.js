@@ -209,7 +209,7 @@ test('Split: Ensure cluster#break roads are split (Washington St)', (t) => {
     split.split(feat, (err, res) => {
         t.error(err);
 
-        t.equals(res.length, 11);
+        t.equals(res.length, 7);
 
         t.deepEquals(res[0].properties['carmen:addressnumber'][1].indexOf('160'), 11, 'has 160 address at pos 11');
         t.deepEquals(res[1].properties['carmen:addressnumber'][1].indexOf('160'), -1, 'has no 160 address');
@@ -217,11 +217,7 @@ test('Split: Ensure cluster#break roads are split (Washington St)', (t) => {
         t.deepEquals(res[3].properties['carmen:addressnumber'][1].indexOf('160'), -1, 'has no 160 address');
         t.deepEquals(res[4].properties['carmen:addressnumber'][1].indexOf('160'), -1, 'has no 160 address');
         t.deepEquals(res[5].properties['carmen:addressnumber'][1].indexOf('160'), -1, 'hsa no 160 address');
-        t.deepEquals(res[6].properties['carmen:addressnumber'][1].indexOf('160'), -1, 'has no 160 address');
-        t.deepEquals(res[7].properties['carmen:addressnumber'][1].indexOf('160'), 78, 'has 160 address at pos 78');
-        t.deepEquals(res[8].properties['carmen:addressnumber'][1].indexOf('160'), -1, 'has no 160 address');
-        t.deepEquals(res[9].properties['carmen:addressnumber'][1].indexOf('160'), -1, 'has no 160 address');
-        t.deepEquals(res[10].properties['carmen:addressnumber'][1].indexOf('160'), 4, 'has 160 address at pos 4');
+        t.deepEquals(res[6].properties['carmen:addressnumber'][1].indexOf('160'), 86, 'has 170 address at pos 86');
 
         t.end();
     });
