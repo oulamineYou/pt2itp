@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v17.4.1
+
+- :rocket: Add `accuracy: intersection` to intersection output
+
 ## v17.4.0
 
 - :rocket: Allow properties to be propogated through to the interpolization module, removing the `Units` encode/decode
