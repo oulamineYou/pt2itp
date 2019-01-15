@@ -30,7 +30,8 @@ test('Intersections', async(t) => {
             properties: {
                 'carmen:text': 'Main Street and 1st Avenue,1st Avenue and Main Street',
                 'carmen:geocoder_stack': 'ca',
-                'carmen:center': [ 0, 0 ]
+                'carmen:center': [ 0, 0 ],
+                accuracy: 'intersection'
             },
             geometry: {
                 type: 'Point',
@@ -73,7 +74,8 @@ test('Intersections - Synonyms', async(t) => {
             properties: {
                 'carmen:text': 'Main Street and 1st Avenue,1st Avenue and Main Street,US Highway 2 and 1st Avenue,1st Avenue and US Highway 2',
                 'carmen:geocoder_stack': 'ca',
-                'carmen:center': [ 0, 0 ]
+                'carmen:center': [ 0, 0 ],
+                accuracy: 'intersection'
             },
             geometry: {
                 type: 'Point',
