@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v17.4.2
+
+- :arrow_up: update carmen dep
+
 ## v17.4.1
 
 - :rocket: Add `accuracy: intersection` to intersection output
