@@ -91,7 +91,7 @@ if (require.main === module) {
             });
             break;
         case ('convert'):
-            require('./lib/convert')(process.argv, (err) => {
+            require('../native/index.node')(process.argv, (err) => {
                 if (err) throw err;
 
                 process.exit(0);
