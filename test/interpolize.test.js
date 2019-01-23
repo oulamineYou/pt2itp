@@ -172,6 +172,7 @@ test('Interpolize', (t) => {
     t.equals(res.type, 'Feature', 'is feature');
 
     t.deepEquals(res.properties, {
+        address_props: [{}, {}, {}, {}],
         'carmen:rangetype':'tiger',
         'carmen:parityl':[ ['O'], null],
         'carmen:lfromhn':[ [1] , null],
