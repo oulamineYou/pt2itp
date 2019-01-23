@@ -4,9 +4,7 @@ const test = require('tape');
 test('Post: Props', (t) => {
     t.equals(post(), undefined);
 
-    let props = [];
-
-    let opts = { args: { props: props } };
+    let opts = { args: { props: [] } };
 
     t.deepEquals(post({
         type: 'Feature',
@@ -31,6 +29,177 @@ test('Post: Props', (t) => {
         properties: { },
         geometry: { }
     }, 'remove address_props if no props specified');
+
+    opts.args.props = ['accuracy'];
+    t.deepEquals(post({
+        type: 'Feature',
+        properties: {
+            address_props: [{
+                accuracy: 'parcel'
+            },{
+                accuracy: 'building'
+            },{
+                accuracy: 'parcel'
+            }]
+        },
+        geometry: { }
+    }, opts), {
+        type: 'Feature',
+        properties: {
+            accuracy: 'parcel',
+            'carmen:addressprops': {
+                accuracy: {
+                    1: 'building'
+                }
+            }
+        },
+        geometry: { }
+    }, 'Basic addressprops example');
+
+    t.deepEquals(post({
+        type: 'Feature',
+        properties: {
+            address_props: [{
+                accuracy: 'parcel'
+            },{
+                accuracy: 'building'
+            },{
+                accuracy: 'parcel'
+            },{
+                accuracy: 'entrance'
+            },{
+                accuracy: 'door'
+            }]
+        },
+        geometry: { }
+    }, opts), {
+        type: 'Feature',
+        properties: {
+            accuracy: 'parcel',
+            'carmen:addressprops': {
+                accuracy: {
+                    1: 'building',
+                    3: 'entrance',
+                    4: 'door'
+                }
+            }
+        },
+        geometry: { }
+    }, 'Multiple conflicting props');
+
+    t.deepEquals(post({
+        type: 'Feature',
+        properties: {
+            address_props: [{
+                accuracy: 'parcel'
+            },{
+                accuracy: 'parcel'
+            },{
+                accuracy: 'parcel'
+            },{
+                accuracy: 'parcel'
+            },{
+                accuracy: 'parcel'
+            }]
+        },
+        geometry: { }
+    }, opts), {
+        type: 'Feature',
+        properties: {
+            accuracy: 'parcel'
+        },
+        geometry: { }
+    }, 'All props the same');
+
+    t.deepEquals(post({
+        type: 'Feature',
+        properties: {
+            address_props: [{
+                accuracy: 'parcel'
+            }]
+        },
+        geometry: { }
+    }, opts), {
+        type: 'Feature',
+        properties: {
+            accuracy: 'parcel'
+        },
+        geometry: { }
+    }, 'All props the same (single)');
+
+    t.deepEquals(post({
+        type: 'Feature',
+        properties: {
+            address_props: [{
+                accuracy: 'parcel',
+                undesired: 'test'
+            },{
+                accuracy: 'building',
+                fake: true
+            },{
+                accuracy: 'parcel',
+                zip: 123
+            },{
+                accuracy: 'entrance',
+                door: 2
+            },{
+                accuracy: 'door'
+            }]
+        },
+        geometry: { }
+    }, opts), {
+        type: 'Feature',
+        properties: {
+            accuracy: 'parcel',
+            'carmen:addressprops': {
+                accuracy: {
+                    1: 'building',
+                    3: 'entrance',
+                    4: 'door'
+                }
+            }
+        },
+        geometry: { }
+    }, 'Multiple conflicting props w/ undesired props');
+
+    opts.args.props = ['accuracy', 'door'];
+    t.deepEquals(post({
+        type: 'Feature',
+        properties: {
+            address_props: [{
+                accuracy: 'parcel',
+                undesired: 'test'
+            },{
+                accuracy: 'building',
+                fake: true
+            },{
+                accuracy: 'parcel',
+                zip: 123
+            },{
+                accuracy: 'entrance',
+                door: 'I am door'
+            },{
+                accuracy: 'door'
+            }]
+        },
+        geometry: { }
+    }, opts), {
+        type: 'Feature',
+        properties: {
+            accuracy: 'parcel',
+            'carmen:addressprops': {
+                accuracy: {
+                    1: 'building',
+                    3: 'entrance',
+                    4: 'door'
+                },
+                door: {
+                    3: 'I am door'
+                }
+            }
+        },
+        geometry: { }
+    }, 'Multiple conflicting props w/ undesired props');
 
     t.end();
 });
