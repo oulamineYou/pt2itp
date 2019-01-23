@@ -1,4 +1,4 @@
-const convert = require('../lib/convert');
+const convert = require('../native/index.node').convert;
 const test = require('tape');
 const path = require('path');
 const os = require('os');
