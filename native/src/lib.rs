@@ -3,6 +3,7 @@ extern crate neon_serde;
 #[macro_use] extern crate serde_derive;
 use std::fs::File;
 use std::io::{self, BufRead, Write, BufReader, BufWriter};
+extern crate geojson;
 
 use neon::prelude::*;
 
@@ -60,7 +61,7 @@ fn convert(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
 fn convert_stream(stream: impl BufRead, mut sink: impl Write) {
     sink.write(String::from("{ \"type\": \"FeatureCollection\", \"features\": [\n").as_bytes()).unwrap();
-    let first = true;
+    let mut first = true;
 
     for line in stream.lines() {
         let mut line = line.unwrap();
@@ -70,8 +71,31 @@ fn convert_stream(stream: impl BufRead, mut sink: impl Write) {
             line.pop();
         }
 
+        let geojson = line.parse::<geojson::GeoJson>().unwrap();
+
+        let line = match geojson {
+            geojson::GeoJson::Geometry(geom) => {
+                geojson::GeoJson::from(geojson::Feature {
+                    id: None,
+                    bbox: None,
+                    geometry: Some(geom),
+                    properties: None,
+                    foreign_members: None
+                }).to_string()
+            },
+            geojson::GeoJson::Feature(_) => line,
+            geojson::GeoJson::FeatureCollection(fc) => {
+                let mut line = String::new();
+                for feat in fc.features {
+                    line = format!("{},\n{}", line, geojson::GeoJson::from(feat).to_string());
+                }
+                line
+            }
+        };
+
         if first {
             sink.write(format!("{}", line).as_bytes()).unwrap();
+            first = false;
         } else {
             sink.write(format!("\n,{}", line).as_bytes()).unwrap();
         }
