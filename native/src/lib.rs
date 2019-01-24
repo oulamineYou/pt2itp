@@ -41,15 +41,27 @@ fn convert(mut cx: FunctionContext) -> JsResult<JsString> {
 }
 
 fn convert_stream(stream: impl BufRead, mut sink: impl Write) {
-    sink.write(String::from(r#"{ "type": "FeatureCollection", "features": [ "#).as_bytes()).unwrap();
+    sink.write(String::from("{ \"type\": \"FeatureCollection\", \"features\": [\n").as_bytes()).unwrap();
+    let first = true;
 
     for line in stream.lines() {
-        let line = line.unwrap();
+        let mut line = line.unwrap();
 
-        sink.write(format!("{},\n", line).as_bytes()).unwrap();
+        //Remove Ascii Record Separators
+        if line.ends_with("\u{001E}") {
+            line.pop();
+        }
+
+        if first {
+            sink.write(format!("{}", line).as_bytes()).unwrap();
+        } else {
+            sink.write(format!("\n,{}", line).as_bytes()).unwrap();
+        }
     }
 
-    sink.write(String::from(r#"]}"#).as_bytes()).unwrap();
+    sink.write(String::from("\n]}\n").as_bytes()).unwrap();
+
+    sink.flush().unwrap();
 }
 
 register_module!(mut m, {
