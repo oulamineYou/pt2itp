@@ -25,40 +25,36 @@ test('Convert - Feature', (t) => {
     convert({
         input: path.resolve(__dirname, 'fixtures/convert.Feature'),
         output: path.resolve(os.tmpdir(), 'convert.Feature.json')
-    }, (err) => {
-        t.error(err);
-
-        let res = require(path.resolve(os.tmpdir(), 'convert.Feature.json'));
-
-        t.equals(res.type, 'FeatureCollection');
-        t.equals(res.features.length, 10);
-
-        res.features.forEach((feat) => {
-            t.equals(feat.type, 'Feature');
-        });
-
-        t.end();
     });
+
+    let res = require(path.resolve(os.tmpdir(), 'convert.Feature.json'));
+
+    t.equals(res.type, 'FeatureCollection');
+    t.equals(res.features.length, 10);
+
+    res.features.forEach((feat) => {
+        t.equals(feat.type, 'Feature');
+    });
+
+    t.end();
 });
 
 test('Convert - Raw', (t) => {
     convert({
         input: path.resolve(__dirname, 'fixtures/convert.Raw'),
         output: path.resolve(os.tmpdir(), 'convert.Raw.json')
-    }, (err) => {
-        t.error(err);
-
-        let res = require(os.tmpdir() + '/' + 'convert.Raw.json');
-
-        t.equals(res.type, 'FeatureCollection');
-        t.equals(res.features.length, 10);
-
-        res.features.forEach((feat) => {
-            t.equals(feat.type, 'Feature');
-        });
-
-        t.end();
     });
+
+    let res = require(os.tmpdir() + '/' + 'convert.Raw.json');
+
+    t.equals(res.type, 'FeatureCollection');
+    t.equals(res.features.length, 10);
+
+    res.features.forEach((feat) => {
+        t.equals(feat.type, 'Feature');
+    });
+
+    t.end();
 });
 
 test('Convert - Raw With Record Separator', (t) => {
