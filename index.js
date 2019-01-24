@@ -91,7 +91,14 @@ if (require.main === module) {
             });
             break;
         case ('convert'):
-            require('./native/index.node').convert(process.argv, (err) => {
+            let argv = require('minimist')(process.argv, {
+                string: [ 'input', 'output' ]
+            });
+
+            require('./native/index.node').convert({
+                input: process.input,
+                output: process.output
+            }, (err) => {
                 if (err) throw err;
 
                 process.exit(0);
