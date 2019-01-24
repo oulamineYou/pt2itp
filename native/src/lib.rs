@@ -86,8 +86,15 @@ fn convert_stream(stream: impl BufRead, mut sink: impl Write) {
             geojson::GeoJson::Feature(_) => line,
             geojson::GeoJson::FeatureCollection(fc) => {
                 let mut line = String::new();
+                let mut fcfirst = true;
+
                 for feat in fc.features {
-                    line = format!("{},\n{}", line, geojson::GeoJson::from(feat).to_string());
+                    if fcfirst {
+                        line = format!("{}", geojson::GeoJson::from(feat).to_string());
+                        fcfirst = false;
+                    } else {
+                        line = format!("{},\n{}", line, geojson::GeoJson::from(feat).to_string());
+                    }
                 }
                 line
             }
