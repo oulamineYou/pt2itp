@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v17.4.3
+
+- :bug: Use `inputs` dir in conflate mode
+
 ## v17.4.2
 
 - :arrow_up: update carmen dep
