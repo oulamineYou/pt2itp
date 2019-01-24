@@ -12,10 +12,28 @@ struct ConvertArgs {
     output: Option<String>,
 }
 
-fn convert(mut cx: FunctionContext) -> JsResult<JsString> {
-    let args = cx.argument::<JsValue>(0)?;
-    let args: ConvertArgs = neon_serde::from_value(&mut cx, args)?;
+impl ConvertArgs {
+    pub fn new() -> Self {
+        ConvertArgs {
+            input: None,
+            output: None
+        }
+    }
+}
 
+fn convert(mut cx: FunctionContext) -> JsResult<JsBoolean> {
+    let args: ConvertArgs = match cx.argument_opt(0) {
+        None => ConvertArgs::new(),
+        Some(arg) => {
+            if arg.is_a::<JsUndefined>() || arg.is_a::<JsNull>() {
+                ConvertArgs::new()
+            } else {
+                let arg_val = cx.argument::<JsValue>(0)?;
+                neon_serde::from_value(&mut cx, arg_val)?
+            }
+        }
+    };
+        
     match args.input {
         Some(inpath) => {
             let infile = File::open(inpath).unwrap();
@@ -37,7 +55,7 @@ fn convert(mut cx: FunctionContext) -> JsResult<JsString> {
         }
     };
 
-    Ok(cx.string("Hello"))
+    Ok(cx.boolean(true))
 }
 
 fn convert_stream(stream: impl BufRead, mut sink: impl Write) {
