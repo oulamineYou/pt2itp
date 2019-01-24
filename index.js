@@ -98,11 +98,8 @@ if (require.main === module) {
             require('./native/index.node').convert({
                 input: process.input,
                 output: process.output
-            }, (err) => {
-                if (err) throw err;
-
-                process.exit(0);
             });
+
             break;
         default:
             help(argv);
