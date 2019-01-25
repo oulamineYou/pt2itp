@@ -35,7 +35,7 @@ fn convert(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             }
         }
     };
-        
+
     match args.input {
         Some(inpath) => {
             let infile = match File::open(inpath) {
@@ -52,7 +52,7 @@ fn convert(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
                     convert_stream(BufReader::new(infile), BufWriter::new(outfile))
                 },
-                None => convert_stream(io::stdin().lock(), io::stdout().lock())
+                None => convert_stream(BufReader::new(infile), io::stdout().lock())
             };
         },
         None => match args.output {
