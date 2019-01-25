@@ -116,6 +116,6 @@ if (require.main === module) {
         testcsv: require('./lib/testcsv'),
         strip: require('./lib/strip'),
         analyze: require('./lib/analyze'),
-        convert: require('./lib/convert')
+        convert: require('./native/index.node').convert
     };
 }
