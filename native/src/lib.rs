@@ -3,6 +3,7 @@ extern crate neon_serde;
 #[macro_use] extern crate serde_derive;
 use std::fs::File;
 use std::io::{self, BufRead, Write, BufReader, BufWriter};
+use std::convert::From;
 extern crate geojson;
 
 use neon::prelude::*;
@@ -37,11 +38,18 @@ fn convert(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         
     match args.input {
         Some(inpath) => {
-            let infile = File::open(inpath).unwrap();
+            let infile = match File::open(inpath) {
+                Ok(infile) => infile,
+                Err(err) => { panic!("Unable to open input file: {}", err); }
+            };
 
             match args.output {
                 Some(outpath) => {
-                    let outfile = File::create(outpath).unwrap();
+                    let outfile = match File::create(outpath) {
+                        Ok(outfile) => outfile,
+                        Err(err) => { panic!("Unable to owrite to output file: {}", err); }
+                    };
+
                     convert_stream(BufReader::new(infile), BufWriter::new(outfile))
                 },
                 None => convert_stream(io::stdin().lock(), io::stdout().lock())
@@ -49,7 +57,11 @@ fn convert(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         },
         None => match args.output {
             Some(outpath) => {
-                let outfile = File::create(outpath).unwrap();
+                let outfile = match File::create(outpath) {
+                    Ok(outfile) => outfile,
+                    Err(err) => { panic!("Unable to owrite to output file: {}", err); }
+                };
+
                 convert_stream(io::stdin().lock(), BufWriter::new(outfile))
             },
             None => convert_stream(io::stdin().lock(), io::stdout().lock())
@@ -60,7 +72,7 @@ fn convert(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 }
 
 fn convert_stream(stream: impl BufRead, mut sink: impl Write) {
-    sink.write(String::from("{ \"type\": \"FeatureCollection\", \"features\": [\n").as_bytes()).unwrap();
+    if sink.write(String::from("{ \"type\": \"FeatureCollection\", \"features\": [\n").as_bytes()).is_err() { panic!("Failed to write to output stream"); };
     let mut first = true;
 
     for line in stream.lines() {
@@ -73,7 +85,12 @@ fn convert_stream(stream: impl BufRead, mut sink: impl Write) {
             line.pop();
         }
 
-        let geojson = line.parse::<geojson::GeoJson>().unwrap();
+        let geojson = match line.parse::<geojson::GeoJson>() {
+            Ok(geojson) => geojson,
+            Err(err) => {
+                panic!("Invalid GeoJSON ({:?}): {}", err, line);
+            }
+        };
 
         let line = match geojson {
             geojson::GeoJson::Geometry(geom) => {
@@ -103,16 +120,16 @@ fn convert_stream(stream: impl BufRead, mut sink: impl Write) {
         };
 
         if first {
-            sink.write(format!("{}", line).as_bytes()).unwrap();
+            if sink.write(format!("{}", line).as_bytes()).is_err() { panic!("Failed to write to output stream"); };
             first = false;
         } else {
-            sink.write(format!("\n,{}", line).as_bytes()).unwrap();
+            if sink.write(format!("\n,{}", line).as_bytes()).is_err() { panic!("Failed to write to output stream"); };
         }
     }
 
-    sink.write(String::from("\n]}\n").as_bytes()).unwrap();
+    if sink.write(String::from("\n]}\n").as_bytes()).is_err() { panic!("Failed to write to output stream"); };
 
-    sink.flush().unwrap();
+    if sink.flush().is_err() { panic!("Failed to flush output stream"); }
 }
 
 register_module!(mut m, {
