@@ -9,11 +9,11 @@ pub struct GeoStream {
 
 pub enum Input {
     File(std::io::Lines<BufReader<File>>),
-    StdIn(std::io::Stdin)
+    StdIn(std::io::Lines<std::io::StdinLock<'static>>),
 }
 
 impl GeoStream {
-    pub fn new(input: Option<String>) -> Self {
+    fn new(input: Option<String>) -> Self {
         let stream = match input {
             Some(inpath) => match File::open(inpath) {
                 Ok(file) => GeoStream {
@@ -23,81 +23,55 @@ impl GeoStream {
             },
             None => {
                 GeoStream {
-                    input: Input::StdIn(io::stdin())
+                    input: Input::StdIn(Box::leak(Box::new(io::stdin())).lock().lines())
                 }
             }
         };
 
         stream
     }
-}
 
-/*
-impl Itertor for GeoStream {
-    pub fn next(&mut self) -> Option<Self::Item> {
-        let line = match &self.input {
-            Input::File {
-
+    fn line(input: &mut Input) -> Option<String> {
+        match input {
+            Input::File(ref mut file) => match file.next() {
+                None => None,
+                Some(file) => match file {
+                    Ok(line) => Some(line),
+                    Err(err) => { return panic!("{}", err); }
+                }
+            },
+            Input::StdIn(ref mut stdin) => match stdin.next() {
+                None => None,
+                Some(stdin) => match stdin {
+                    Ok(line) => Some(line),
+                    Err(err) => { return panic!("{}", err); }
+                }
             }
         }
-
-        for line in stream.lines() {
-            let mut line = line.unwrap();
-
-            if line.trim().len() == 0 { continue; }
-
-            //Remove Ascii Record Separators at beginning or end of line
-            if line.ends_with("\u{001E}") {
-                line.pop();
-            } else if line.starts_with("\u{001E}") {
-                line.replace_range(0..1, "");
-            }
-
-            let geojson = match line.parse::<geojson::GeoJson>() {
-                Ok(geojson) => geojson,
-                Err(err) => {
-                    panic!("Invalid GeoJSON ({:?}): {}", err, line);
-                }
-            };
-
-            let line = match geojson {
-                geojson::GeoJson::Geometry(geom) => {
-                    geojson::GeoJson::from(geojson::Feature {
-                        id: None,
-                        bbox: None,
-                        geometry: Some(geom),
-                        properties: None,
-                        foreign_members: None
-                    }).to_string()
-                },
-                geojson::GeoJson::Feature(_) => line,
-                geojson::GeoJson::FeatureCollection(fc) => {
-                    let mut line = String::new();
-                    let mut fcfirst = true;
-
-                    for feat in fc.features {
-                        if fcfirst {
-                            line = format!("{}", geojson::GeoJson::from(feat).to_string());
-                            fcfirst = false;
-                        } else {
-                            line = format!("{},\n{}", line, geojson::GeoJson::from(feat).to_string());
-                        }
-                    }
-                    line
-                }
-            };
-
-            if first {
-                if sink.write(format!("{}", line).as_bytes()).is_err() { panic!("Failed to write to output stream"); };
-                first = false;
-            } else {
-                if sink.write(format!("\n,{}", line).as_bytes()).is_err() { panic!("Failed to write to output stream"); };
-            }
-        }
-
-        if sink.write(String::from("\n]}\n").as_bytes()).is_err() { panic!("Failed to write to output stream"); };
-
-        if sink.flush().is_err() { panic!("Failed to flush output stream"); }
     }
 }
-*/
+
+impl Iterator for GeoStream {
+    type Item = geojson::GeoJson;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let mut line = match GeoStream::line(&mut self.input) {
+            None => { return None; },
+            Some(line) => line
+        };
+
+        //Remove Ascii Record Separators at beginning or end of line
+        if line.ends_with("\u{001E}") {
+            line.pop();
+        } else if line.starts_with("\u{001E}") {
+            line.replace_range(0..1, "");
+        }
+
+        match line.parse::<geojson::GeoJson>() {
+            Ok(geojson) => Some(geojson),
+            Err(err) => {
+                panic!("Invalid GeoJSON ({:?}): {}", err, line);
+            }
+        }
+    }
+}
