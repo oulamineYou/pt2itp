@@ -28,7 +28,9 @@ test('Drop/Init Database', (t) => {
 
 test('orphan.address', (t) => {
     const post = new Post();
-    const orphan = new Orphan(pool, {}, output);
+    const orphan = new Orphan(pool, {
+        props: ['accuracy']
+    }, output);
     const popQ = new Queue(1);
 
     // populate address
@@ -102,30 +104,7 @@ test('orphan output', (t) => {
         t.deepEquals(feat.properties["carmen:addressnumber"], orphans[feat.properties["carmen:text"]], 'ok - orphan has correct addresses');
 
         t.ok(feat.properties.accuracy);
-    })
-
-    rl.on('close', () => {
-        t.equals(counter, 2, 'ok - output had correct number of orphan clusters');
-        t.end();
     });
-});
-
-test('orphan output', (t) => {
-    let counter = 0;
-    const orphans = {
-        'Main Street': [['3','4']],
-        'Fake Avenue': [['5']]
-    };
-
-    const rl = readline.createInterface({
-        input : fs.createReadStream(path.resolve(__dirname, '../test/fixtures/orphan-output.geojson')),
-    })
-    rl.on('line', (line) => {
-        if (!line) return;
-        counter++;
-        let feat = JSON.parse(line);
-        t.deepEquals(feat.properties["carmen:addressnumber"], orphans[feat.properties["carmen:text"]], 'ok - orphan has correct addresses');
-    })
 
     rl.on('close', () => {
         t.equals(counter, 2, 'ok - output had correct number of orphan clusters');
