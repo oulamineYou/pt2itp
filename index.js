@@ -91,11 +91,15 @@ if (require.main === module) {
             });
             break;
         case ('convert'):
-            require('./lib/convert')(process.argv, (err) => {
-                if (err) throw err;
-
-                process.exit(0);
+            let convert_arg = require('minimist')(process.argv, {
+                string: [ 'input', 'output' ]
             });
+
+            require('./native/index.node').convert({
+                input: convert_arg.input,
+                output: convert_arg.output
+            });
+
             break;
         default:
             help(argv);
@@ -112,6 +116,6 @@ if (require.main === module) {
         testcsv: require('./lib/testcsv'),
         strip: require('./lib/strip'),
         analyze: require('./lib/analyze'),
-        convert: require('./lib/convert')
+        convert: require('./native/index.node').convert
     };
 }
