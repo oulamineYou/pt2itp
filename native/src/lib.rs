@@ -80,9 +80,11 @@ fn convert_stream(stream: impl BufRead, mut sink: impl Write) {
 
         if line.trim().len() == 0 { continue; }
 
-        //Remove Ascii Record Separators
+        //Remove Ascii Record Separators at beginning or end of line
         if line.ends_with("\u{001E}") {
             line.pop();
+        } else if line.starts_with("\u{001E}") {
+            line.replace_range(0..1, "");
         }
 
         let geojson = match line.parse::<geojson::GeoJson>() {
