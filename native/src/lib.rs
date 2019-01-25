@@ -66,6 +66,8 @@ fn convert_stream(stream: impl BufRead, mut sink: impl Write) {
     for line in stream.lines() {
         let mut line = line.unwrap();
 
+        if line.trim().len() == 0 { continue; }
+
         //Remove Ascii Record Separators
         if line.ends_with("\u{001E}") {
             line.pop();
