@@ -4,6 +4,7 @@ extern crate neon_serde;
 extern crate geojson;
 
 mod convert;
+mod geostream;
 
 register_module!(mut m, {
     m.export_function("convert", convert::convert)?;
