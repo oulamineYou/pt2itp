@@ -1,0 +1,20 @@
+[package]
+name = "pt2itp"
+version = "0.1.0"
+authors = ["ingalls <ingalls@protonmail.com>"]
+edition = "2018"
+build = "build.rs"
+
+[lib]
+name = "pt2itp"
+crate-type = ["dylib"]
+
+[build-dependencies]
+neon-build = "0.2"
+
+[dependencies]
+geojson = "0.14.0"
+neon = "0.2"
+neon-serde = "0.1.1"
+serde_derive = "1.0"
+serde = "1.0"
