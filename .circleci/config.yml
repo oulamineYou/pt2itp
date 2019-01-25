@@ -14,7 +14,7 @@ jobs:
                 command: |
                   apt-get update -y \
                   && apt-get install -y build-essential python software-properties-common git postgresql-client curl wget gnupg2 \
-                  && add-apt-repository --yes ppa:ubuntu-toolchain-r/test" \
+                  && add-apt-repository --yes ppa:ubuntu-toolchain-r/test \
                   && apt-get update -y \
                   && apt-get -y install libstdc++-5-dev gcc-4.8 g++-4.8; export CXX=g++-4.8
             - run:
