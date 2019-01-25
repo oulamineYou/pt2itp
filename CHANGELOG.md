@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v18.0.0
+
+- :rocket: Faster `convert` mode written in Rust
+
 ## v17.4.3
 
 - :bug: Use `inputs` dir in conflate mode
