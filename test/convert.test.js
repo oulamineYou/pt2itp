@@ -61,18 +61,16 @@ test('Convert - Raw With Record Separator', (t) => {
     convert({
         input: path.resolve(__dirname, 'fixtures/convert.RawWithRecordSeparator'),
         output: path.resolve(os.tmpdir(), 'convert.RawWithRecordSeparator.json')
-    }, (err) => {
-        t.error(err);
-
-        let res = require(os.tmpdir() + '/' + 'convert.RawWithRecordSeparator.json');
-
-        t.equals(res.type, 'FeatureCollection');
-        t.equals(res.features.length, 10);
-
-        res.features.forEach((feat) => {
-            t.equals(feat.type, 'Feature');
-        });
-
-        t.end();
     });
+
+    let res = require(os.tmpdir() + '/' + 'convert.RawWithRecordSeparator.json');
+
+    t.equals(res.type, 'FeatureCollection');
+    t.equals(res.features.length, 10);
+
+    res.features.forEach((feat) => {
+        t.equals(feat.type, 'Feature');
+    });
+
+    t.end();
 });
