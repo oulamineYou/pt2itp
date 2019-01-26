@@ -37,14 +37,14 @@ impl GeoStream {
                 None => None,
                 Some(file) => match file {
                     Ok(line) => Some(line),
-                    Err(err) => { return panic!("{}", err); }
+                    Err(err) => panic!("{}", err)
                 }
             },
             Input::StdIn(ref mut stdin) => match stdin.next() {
                 None => None,
                 Some(stdin) => match stdin {
                     Ok(line) => Some(line),
-                    Err(err) => { return panic!("{}", err); }
+                    Err(err) => panic!("{}", err)
                 }
             }
         }
@@ -56,7 +56,8 @@ impl Iterator for GeoStream {
 
     fn next(&mut self) -> Option<Self::Item> {
         let mut line = Some(String::from(""));
-        while line.is_some() && line.as_ref().unwrap().trim().len() != 0 {
+
+        while line.is_some() && line.as_ref().unwrap().trim().len() == 0 {
             line = match GeoStream::line(&mut self.input) {
                 None => None,
                 Some(line) => Some(line)

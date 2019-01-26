@@ -1,8 +1,10 @@
 use std::fs::File;
-use std::io::{self, BufRead, Write, BufReader, BufWriter};
+use std::io::{self, Write, BufWriter};
 use std::convert::From;
 
 use neon::prelude::*;
+
+use super::geostream::GeoStream;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ConvertArgs {
@@ -32,65 +34,30 @@ pub fn convert(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         }
     };
 
-    match args.input {
-        Some(inpath) => {
-            let infile = match File::open(inpath) {
-                Ok(infile) => infile,
-                Err(err) => { panic!("Unable to open input file: {}", err); }
+    let stream = GeoStream::new(args.input);
+
+    match args.output {
+        Some(outpath) => {
+            let outfile = match File::create(outpath) {
+                Ok(outfile) => outfile,
+                Err(err) => { panic!("Unable to owrite to output file: {}", err); }
             };
 
-            match args.output {
-                Some(outpath) => {
-                    let outfile = match File::create(outpath) {
-                        Ok(outfile) => outfile,
-                        Err(err) => { panic!("Unable to owrite to output file: {}", err); }
-                    };
-
-                    convert_stream(BufReader::new(infile), BufWriter::new(outfile))
-                },
-                None => convert_stream(BufReader::new(infile), io::stdout().lock())
-            };
+            convert_stream(stream, BufWriter::new(outfile))
         },
-        None => match args.output {
-            Some(outpath) => {
-                let outfile = match File::create(outpath) {
-                    Ok(outfile) => outfile,
-                    Err(err) => { panic!("Unable to owrite to output file: {}", err); }
-                };
-
-                convert_stream(io::stdin().lock(), BufWriter::new(outfile))
-            },
-            None => convert_stream(io::stdin().lock(), io::stdout().lock())
-        }
-    };
+        None => convert_stream(stream, io::stdout().lock())
+    }
 
     Ok(cx.boolean(true))
 }
 
-fn convert_stream(stream: impl BufRead, mut sink: impl Write) {
+fn convert_stream(mut stream: GeoStream, mut sink: impl Write) {
     if sink.write(String::from("{ \"type\": \"FeatureCollection\", \"features\": [\n").as_bytes()).is_err() { panic!("Failed to write to output stream"); };
     let mut first = true;
 
-    for line in stream.lines() {
-        let mut line = line.unwrap();
+    for geo in stream.next() {
 
-        if line.trim().len() == 0 { continue; }
-
-        //Remove Ascii Record Separators at beginning or end of line
-        if line.ends_with("\u{001E}") {
-            line.pop();
-        } else if line.starts_with("\u{001E}") {
-            line.replace_range(0..1, "");
-        }
-
-        let geojson = match line.parse::<geojson::GeoJson>() {
-            Ok(geojson) => geojson,
-            Err(err) => {
-                panic!("Invalid GeoJSON ({:?}): {}", err, line);
-            }
-        };
-
-        let line = match geojson {
+        let line = match geo {
             geojson::GeoJson::Geometry(geom) => {
                 geojson::GeoJson::from(geojson::Feature {
                     id: None,
@@ -100,7 +67,7 @@ fn convert_stream(stream: impl BufRead, mut sink: impl Write) {
                     foreign_members: None
                 }).to_string()
             },
-            geojson::GeoJson::Feature(_) => line,
+            geojson::GeoJson::Feature(_) => geo.to_string(),
             geojson::GeoJson::FeatureCollection(fc) => {
                 let mut line = String::new();
                 let mut fcfirst = true;
