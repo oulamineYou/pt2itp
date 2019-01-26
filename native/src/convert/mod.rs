@@ -51,11 +51,11 @@ pub fn convert(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     Ok(cx.boolean(true))
 }
 
-fn convert_stream(mut stream: GeoStream, mut sink: impl Write) {
+fn convert_stream(stream: GeoStream, mut sink: impl Write) {
     if sink.write(String::from("{ \"type\": \"FeatureCollection\", \"features\": [\n").as_bytes()).is_err() { panic!("Failed to write to output stream"); };
     let mut first = true;
 
-    for geo in stream.next() {
+    for geo in stream {
 
         let line = match geo {
             geojson::GeoJson::Geometry(geom) => {
