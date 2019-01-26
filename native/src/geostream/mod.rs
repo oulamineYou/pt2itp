@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{self, Read, BufRead, BufReader};
+use std::io::{self, BufRead, BufReader};
 use std::convert::From;
 use std::iter::Iterator;
 
@@ -13,7 +13,7 @@ pub enum Input {
 }
 
 impl GeoStream {
-    fn new(input: Option<String>) -> Self {
+    pub fn new(input: Option<String>) -> Self {
         let stream = match input {
             Some(inpath) => match File::open(inpath) {
                 Ok(file) => GeoStream {
