@@ -56,7 +56,6 @@ fn convert_stream(stream: GeoStream, mut sink: impl Write) {
     let mut first = true;
 
     for geo in stream {
-
         let line = match geo {
             geojson::GeoJson::Geometry(geom) => {
                 geojson::GeoJson::from(geojson::Feature {
@@ -96,8 +95,3 @@ fn convert_stream(stream: GeoStream, mut sink: impl Write) {
 
     if sink.flush().is_err() { panic!("Failed to flush output stream"); }
 }
-
-register_module!(mut m, {
-    m.export_function("convert", convert)?;
-    Ok(())
-});
