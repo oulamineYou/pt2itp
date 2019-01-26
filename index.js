@@ -56,12 +56,13 @@ if (require.main === module) {
             });
             break;
         case ('stat'):
+        case ('stats'):
             let stat_arg = require('minimist')(process.argv, {
                 string: [ 'input' ]
             });
 
             let stats = require('./native/index.node').stats({
-                input: convert_arg.input
+                input: stat_arg.input
             });
 
             console.log(JSON.stringify(stats));
