@@ -18,6 +18,7 @@ impl StatsArgs {
 pub struct Stats {
     feats: i64, // Total number of features
     clusters: i64, // Total number of addr/network clusters
+    invalid: i64, // Total number of unrecognized features (not counted in feats)
     addresses: i64, // Total number of address points in clusters/orphans
     intersections: i64, // Total number of address features
     address_orphans: i64, // Total number of address orphans
@@ -29,6 +30,7 @@ impl Stats {
         Stats {
             feats: 0,
             clusters: 0,
+            invalid: 0,
             addresses: 0,
             intersections: 0,
             address_orphans: 0,
@@ -61,15 +63,18 @@ pub fn stats(mut cx: FunctionContext) -> JsResult<JsValue> {
 
                 if feat.geometry.is_none() { continue; }
 
-                match feat.geometry.as_ref().unwrap() {
+                match feat.geometry.as_ref().unwrap().value {
                     geojson::Value::Point(_) => {
 
                     },
                     geojson::Value::MultiPoint(_)  => {
 
                     },
-                    geojson::GeometryCollection(_) => {
+                    geojson::Value::GeometryCollection(_) => {
 
+                    },
+                    _ => {
+                        stats.invalid = stats.invalid + 1;
                     }
                 }
             },
