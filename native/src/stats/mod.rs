@@ -65,22 +65,56 @@ pub fn stats(mut cx: FunctionContext) -> JsResult<JsValue> {
 
                 match feat.geometry.as_ref().unwrap().value {
                     geojson::Value::Point(_) => {
+                        //TODO Support intersections here
 
+                        stats.invalid = stats.invalid + 1;
                     },
-                    geojson::Value::MultiPoint(_)  => {
+                    geojson::Value::MultiPoint(_) => {
+                        let addr = count_addresses(&feat);
 
+                        if addr > 0 {
+                            stats.addresses = stats.addresses + count_addresses(&feat);
+                            stats.address_orphans = stats.address_orphans + 1;
+                        } else {
+                            stats.invalid = stats.invalid + 1;
+                        }
                     },
                     geojson::Value::GeometryCollection(_) => {
+                        let addr = count_addresses(&feat);
+                        let net = count_networks(&feat);
 
+                        if addr == 0 && net == 0 {
+                            stats.invalid = stats.invalid + 1;
+                        } else if addr > 0 && net > 0 {
+                            stats.addresses = stats.addresses + count_addresses(&feat);
+
+                            stats.clusters = stats.clusters + 1;
+                        } else if addr > 0 {
+                            stats.addresses = stats.addresses + count_addresses(&feat);
+
+                            stats.address_orphans = stats.address_orphans + 1;
+                        } else if net > 0 {
+                            stats.network_orphans = stats.network_orphans + 1;
+                        }
                     },
                     _ => {
                         stats.invalid = stats.invalid + 1;
                     }
                 }
             },
-            _ => panic!("Only Line Delimited GeoJSON Features are supported")
+            _ => {
+                stats.invalid = stats.invalid + 1;
+            }
         };
     }
 
     Ok(neon_serde::to_value(&mut cx, &stats)?)
+}
+
+fn count_addresses(feat: &geojson::Feature) -> i64 {
+    1
+}
+
+fn count_networks(feat: &geojson::Feature) -> i64 {
+    1
 }
