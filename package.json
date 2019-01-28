@@ -123,6 +123,7 @@
     "node": ">= 8"
   },
   "repository": {
-    "type": "git"
+    "type": "git",
+    "url": "git+https://github.com/ingalls/pt2itp.git"
   }
 }

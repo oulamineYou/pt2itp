@@ -15,3 +15,4 @@ All PRs to master _must_ have a corresponding versioned release
 - `git push`
 - `git push --tags`
 - `yarn publish`
+- `yarn package`
