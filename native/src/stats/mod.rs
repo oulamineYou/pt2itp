@@ -112,9 +112,19 @@ pub fn stats(mut cx: FunctionContext) -> JsResult<JsValue> {
 }
 
 fn count_addresses(feat: &geojson::Feature) -> i64 {
-    1
+    match feat.properties {
+        None => 0,
+        Some(props) => match props.get(String::from("carmen:addressnumber")
+            
+        }
+    }
 }
 
 fn count_networks(feat: &geojson::Feature) -> i64 {
-    1
+    match feat.properties {
+        None => 0,
+        Some(props) => {
+
+        }
+    }
 }
