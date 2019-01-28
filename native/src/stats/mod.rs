@@ -148,7 +148,11 @@ fn count_networks(feat: &geojson::Feature) -> i64 {
     match feat.properties {
         None => 0,
         Some(ref props) => {
-            0
+            if props.contains_key(&String::from("carmen:rangetype")) {
+                1
+            } else {
+                0
+            }
         }
     }
 }
