@@ -128,11 +128,11 @@ fn count_addresses(feat: &geojson::Feature) -> i64 {
                     for ele in array.iter() {
                         if ele.is_array() {
                             for elenest in ele.as_array().unwrap() {
-                                if elenest.is_number() {
+                                if elenest.is_number() || elenest.is_string() {
                                     addr = addr + 1;
                                 }
                             }
-                        } else if ele.is_number() {
+                        } else if ele.is_number() || ele.is_string() {
                             addr = addr + 1;
                         }
                     }
