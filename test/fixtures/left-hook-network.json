@@ -1,6 +1,7 @@
 {
     "type": "Feature",
     "properties": {
+        "address_props": [],
         "carmen:rangetype": "tiger",
         "carmen:parityl": [
             [

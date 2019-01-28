@@ -1,6 +1,6 @@
 {
   "name": "pt2itp",
-  "version": "18.1.0",
+  "version": "18.1.0-props1",
   "license": "BSD-2-Clause ",
   "description": "Attach interpolation values given a road network and address points",
   "main": "index.js",
@@ -9,9 +9,9 @@
   },
   "scripts": {
     "install": "node-pre-gyp install --fallback-to-build=false || neon build --release",
-    "build": "neon build",
+    "build": "neon build --release",
     "lint": "eslint index.js test/ lib/",
-    "package": "node-pre-gyp package && node-pre-gyp-github publish",
+    "package": "neon build --release && node-pre-gyp package && node-pre-gyp-github publish",
     "coverage": "nyc tape test/*.js && nyc report --reporter=text-lcov > coverage.lcov",
     "coverage-upload": "coveralls < ./coverage.lcov",
     "doc": "./node_modules/documentation/bin/documentation.js lint ./lib/**",
@@ -28,7 +28,7 @@
   },
   "author": "Nicholas Ingalls <nicholas.ingalls@gmail.com>",
   "dependencies": {
-    "@amilajack/node-pre-gyp": "amilajack/node-pre-gyp#neon-compat",
+    "node-pre-gyp": "~0.10.0",
     "@mapbox/carmen": "26.1.0",
     "@mapbox/geocoder-abbreviations": "2.4.0",
     "@mapbox/geojson-area": "^0.2.2",
@@ -47,7 +47,6 @@
     "minimist": "^1.2.0",
     "n-readlines": "^1.0.0",
     "neon-cli": "^0.2.0",
-    "node-pre-gyp": "amilajack/node-pre-gyp#neon-compat",
     "node-pre-gyp-github": "^1.4.3",
     "pg": "^7.3.0",
     "pg-copy-streams": "^1.2.0",
