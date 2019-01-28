@@ -912,10 +912,10 @@
     nan "~2.10.0"
     node-pre-gyp "~0.10.1"
 
-"@mapbox/carmen@26.1.0":
-  version "26.1.0"
-  resolved "https://registry.yarnpkg.com/@mapbox/carmen/-/carmen-26.1.0.tgz#2d69a5f1688aa0d712af06126d48c0cea3a086ae"
-  integrity sha512-CkXVAVzH/9U6YiVSwFheZs0Rfpp8A5EA0AsCoQSiAQkRmq4EF0tRuiygLqq8MHaJ8xcb4rtcbVVXVlqQ85mA0w==
+"@mapbox/carmen@26.2.0":
+  version "26.2.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/carmen/-/carmen-26.2.0.tgz#12874aafe2c5329f7d6d29a5ebf00089e04f1a3f"
+  integrity sha512-XdDXgik5qi34RByGjq07ZNKpXXfT1MMlHZsrz5u2os0C8JsanKmWZ+kgwtY9ld0MgQxPE7zi940f5Xaaz9TLFQ==
   dependencies:
     "@mapbox/carmen-cache" "0.25.0"
     "@mapbox/geojsonhint" "^2.0.1"
@@ -929,6 +929,7 @@
     "@turf/bbox" "^6.0.1"
     "@turf/bbox-clip" "^6.0.3"
     "@turf/bearing" "^6.0.1"
+    "@turf/buffer" "^5.1.5"
     "@turf/center" "^6.0.1"
     "@turf/destination" "^6.0.1"
     "@turf/distance" "^6.0.1"
@@ -1250,7 +1251,7 @@
     "@turf/helpers" "^5.1.5"
     "@turf/invariant" "^5.1.5"
 
-"@turf/buffer@5.1.x":
+"@turf/buffer@5.1.x", "@turf/buffer@^5.1.5":
   version "5.1.5"
   resolved "https://registry.yarnpkg.com/@turf/buffer/-/buffer-5.1.5.tgz#841c9627cfb974b122ac4e1a956f0466bc0231c4"
   integrity sha1-hByWJ8+5dLEirE4alW8EZrwCMcQ=
@@ -5807,6 +5808,22 @@ node-pre-gyp@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.11.0.tgz#db1f33215272f692cd38f03238e3e9b47c5dd054"
   integrity sha512-TwWAOZb0j7e9eGaf9esRx3ZcLaE5tQ2lvYy1pb5IAaG1a2e2Kv5Lms1Y4hpj+ciXJRofIxxlt5haeQ/2ANeE0Q==
+  dependencies:
+    detect-libc "^1.0.2"
+    mkdirp "^0.5.1"
+    needle "^2.2.1"
+    nopt "^4.0.1"
+    npm-packlist "^1.1.6"
+    npmlog "^4.0.2"
+    rc "^1.2.7"
+    rimraf "^2.6.1"
+    semver "^5.3.0"
+    tar "^4"
+
+node-pre-gyp@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.12.0.tgz#39ba4bb1439da030295f899e3b520b7785766149"
+  integrity sha512-4KghwV8vH5k+g2ylT+sLTjy5wmUOb9vPhnM8NHvRf9dHmnW/CndrFXy2aRPaPST6dugXSdHXfeaHQm77PIz/1A==
   dependencies:
     detect-libc "^1.0.2"
     mkdirp "^0.5.1"
