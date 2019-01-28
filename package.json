@@ -1,6 +1,6 @@
 {
   "name": "pt2itp",
-  "version": "18.1.0-props1",
+  "version": "18.2.0",
   "license": "BSD-2-Clause ",
   "description": "Attach interpolation values given a road network and address points",
   "main": "index.js",
@@ -28,7 +28,6 @@
   },
   "author": "Nicholas Ingalls <nicholas.ingalls@gmail.com>",
   "dependencies": {
-    "node-pre-gyp": "~0.10.0",
     "@mapbox/carmen": "26.1.0",
     "@mapbox/geocoder-abbreviations": "2.4.0",
     "@mapbox/geojson-area": "^0.2.2",
@@ -47,6 +46,7 @@
     "minimist": "^1.2.0",
     "n-readlines": "^1.0.0",
     "neon-cli": "^0.2.0",
+    "node-pre-gyp": "~0.10.0",
     "node-pre-gyp-github": "^1.4.3",
     "pg": "^7.3.0",
     "pg-copy-streams": "^1.2.0",
