@@ -114,8 +114,32 @@ pub fn stats(mut cx: FunctionContext) -> JsResult<JsValue> {
 fn count_addresses(feat: &geojson::Feature) -> i64 {
     match feat.properties {
         None => 0,
-        Some(props) => match props.get(String::from("carmen:addressnumber")
-            
+        Some(ref props) => match props.get(&String::from("carmen:addressnumber")) {
+            None => 0,
+            Some(prop) => match prop.as_array() {
+                None => 0,
+                Some(ref array) => {
+                    if array.len() == 0 {
+                        return 0;
+                    }
+
+                    let mut addr = 0;
+
+                    for ele in array.iter() {
+                        if ele.is_array() {
+                            for elenest in ele.as_array().unwrap() {
+                                if elenest.is_number() {
+                                    addr = addr + 1;
+                                }
+                            }
+                        } else if ele.is_number() {
+                            addr = addr + 1;
+                        }
+                    }
+
+                    addr
+                }
+            }
         }
     }
 }
@@ -123,8 +147,8 @@ fn count_addresses(feat: &geojson::Feature) -> i64 {
 fn count_networks(feat: &geojson::Feature) -> i64 {
     match feat.properties {
         None => 0,
-        Some(props) => {
-
+        Some(ref props) => {
+            0
         }
     }
 }
