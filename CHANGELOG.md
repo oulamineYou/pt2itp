@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v18.2.0
+
+- :tada: Add `--props` arg to `map` mode to allow properties to be output in resultant geojson
+
 ## v18.1.0
 
 - :tada: Store binaries on github with node-pre-gyp
