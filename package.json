@@ -47,7 +47,6 @@
     "minimist": "^1.2.0",
     "n-readlines": "^1.0.0",
     "neon-cli": "^0.2.0",
-    "node-pre-gyp": "amilajack/node-pre-gyp#neon-compat",
     "node-pre-gyp-github": "^1.4.3",
     "pg": "^7.3.0",
     "pg-copy-streams": "^1.2.0",

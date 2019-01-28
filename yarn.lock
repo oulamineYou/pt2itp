@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@amilajack/node-pre-gyp@amilajack/node-pre-gyp#neon-compat", node-pre-gyp@amilajack/node-pre-gyp#neon-compat:
+"@amilajack/node-pre-gyp@amilajack/node-pre-gyp#neon-compat":
   version "0.12.0"
   resolved "https://codeload.github.com/amilajack/node-pre-gyp/tar.gz/2f08ba34f4941171387472e110a3cc51e2e62df4"
   dependencies:
