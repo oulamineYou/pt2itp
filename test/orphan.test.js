@@ -28,19 +28,21 @@ test('Drop/Init Database', (t) => {
 
 test('orphan.address', (t) => {
     const post = new Post();
-    const orphan = new Orphan(pool, {}, output);
+    const orphan = new Orphan(pool, {
+        props: ['accuracy']
+    }, output);
     const popQ = new Queue(1);
 
     // populate address
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO address (id, name, number, geom, netid) VALUES (1, '[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 1, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 1] }'), 4326), 1);
-            INSERT INTO address (id, name, number, geom, netid) VALUES (2, '[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 2, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 2] }'), 4326), 1);
-            INSERT INTO address (id, name, number, geom, netid) VALUES (6, '[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 6, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 6] }'), 4326), 1);
-            INSERT INTO address (id, name, number, geom, netid) VALUES (3, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 3, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 3] }'), 4326), NULL);
-            INSERT INTO address (id, name, number, geom, netid) VALUES (4, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 4, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 4] }'), 4326), NULL);
-            INSERT INTO address (id, name, number, geom, netid) VALUES (5, '[{ "tokenized": "fake av", "tokenless": "fake", "display": "Fake Avenue" }]', 5, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-85.25390625,52.908902047770255, 5] }'), 4326), NULL);
+            INSERT INTO address (id, name, number, geom, netid, props) VALUES (1, '[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 1, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 1] }'), 4326), 1, '{ "accuracy": "building" }');
+            INSERT INTO address (id, name, number, geom, netid, props) VALUES (2, '[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 2, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 2] }'), 4326), 1, '{ "accuracy": "building" }');
+            INSERT INTO address (id, name, number, geom, netid, props) VALUES (6, '[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 6, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 6] }'), 4326), 1, '{ "accuracy": "parcel" }');
+            INSERT INTO address (id, name, number, geom, netid, props) VALUES (3, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 3, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 3] }'), 4326), NULL, '{ "accuracy": "parcel" }');
+            INSERT INTO address (id, name, number, geom, netid, props) VALUES (4, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 4, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 4] }'), 4326), NULL, '{ "accuracy": "parcel" }');
+            INSERT INTO address (id, name, number, geom, netid, props) VALUES (5, '[{ "tokenized": "fake av", "tokenless": "fake", "display": "Fake Avenue" }]', 5, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-85.25390625,52.908902047770255, 5] }'), 4326), NULL, '{ "accuracy": "building" }');
             COMMIT;
         `, (err, res) => {
             t.error(err, 'ok - added addresses to table');
@@ -98,8 +100,11 @@ test('orphan output', (t) => {
         if (!line) return;
         counter++;
         let feat = JSON.parse(line);
+
         t.deepEquals(feat.properties["carmen:addressnumber"], orphans[feat.properties["carmen:text"]], 'ok - orphan has correct addresses');
-    })
+
+        t.ok(feat.properties.accuracy);
+    });
 
     rl.on('close', () => {
         t.equals(counter, 2, 'ok - output had correct number of orphan clusters');

@@ -1,6 +1,14 @@
 {
     "type": "Feature",
     "properties": {
+        "address_props": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+        ],
         "carmen:addressnumber": [
             null,
             [

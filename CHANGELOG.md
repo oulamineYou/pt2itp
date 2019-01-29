@@ -10,6 +10,18 @@
 
 ## Version History
 
+## v18.2.1
+
+- :bug: Ensure z coordinate is removed from `MultiPoint` geoms
+
+## v18.2.0
+
+- :tada: Add `--props` arg to `map` mode to allow properties to be output in resultant geojson
+
+## v18.1.0
+
+- :tada: Store binaries on github with node-pre-gyp
+
 ## v18.0.0
 
 - :rocket: Faster `convert` mode written in Rust
