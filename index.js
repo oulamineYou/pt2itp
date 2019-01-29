@@ -56,11 +56,17 @@ if (require.main === module) {
             });
             break;
         case ('stat'):
-            require('./lib/stat')(process.argv, (err) => {
-                if (err) throw err;
-
-                process.exit(0);
+        case ('stats'):
+            let stat_arg = require('minimist')(process.argv, {
+                string: [ 'input' ]
             });
+
+            let stats = require('./native/index.node').stats({
+                input: stat_arg.input
+            });
+
+            console.log(JSON.stringify(stats));
+
             break;
         case ('test'):
             require('./lib/test')(process.argv, (err) => {
@@ -111,7 +117,7 @@ if (require.main === module) {
         clean: require('./lib/clean'),
         map: require('./lib/map'),
         conflate: require('./lib/conflate'),
-        stat: require('./lib/stat'),
+        stat: require('./native/index.node').stats,
         test: require('./lib/test'),
         testcsv: require('./lib/testcsv'),
         strip: require('./lib/strip'),

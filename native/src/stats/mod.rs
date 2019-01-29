@@ -1,0 +1,158 @@
+use neon::prelude::*;
+use super::geostream::GeoStream;
+
+#[derive(Serialize, Deserialize, Debug)]
+struct StatsArgs {
+    input: Option<String>
+}
+
+impl StatsArgs {
+    pub fn new() -> Self {
+        StatsArgs {
+            input: None
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Stats {
+    feats: i64, // Total number of features
+    clusters: i64, // Total number of addr/network clusters
+    invalid: i64, // Total number of unrecognized features (not counted in feats)
+    addresses: i64, // Total number of address points in clusters/orphans
+    intersections: i64, // Total number of address features
+    address_orphans: i64, // Total number of address orphans
+    network_orphans: i64 // Total number of network orphans
+}
+
+impl Stats {
+    fn new() -> Self {
+        Stats {
+            feats: 0,
+            clusters: 0,
+            invalid: 0,
+            addresses: 0,
+            intersections: 0,
+            address_orphans: 0,
+            network_orphans: 0
+        }
+    }
+}
+
+pub fn stats(mut cx: FunctionContext) -> JsResult<JsValue> {
+    let args: StatsArgs = match cx.argument_opt(0) {
+        None => StatsArgs::new(),
+        Some(arg) => {
+            if arg.is_a::<JsUndefined>() || arg.is_a::<JsNull>() {
+                StatsArgs::new()
+            } else {
+                let arg_val = cx.argument::<JsValue>(0)?;
+                neon_serde::from_value(&mut cx, arg_val)?
+            }
+        }
+    };
+
+    let stream = GeoStream::new(args.input);
+
+    let mut stats = Stats::new();
+
+    for geo in stream {
+        match geo {
+            geojson::GeoJson::Feature(feat) => {
+                stats.feats = stats.feats + 1;
+
+                if feat.geometry.is_none() { continue; }
+
+                match feat.geometry.as_ref().unwrap().value {
+                    geojson::Value::Point(_) => {
+                        //TODO Support intersections here
+
+                        stats.invalid = stats.invalid + 1;
+                    },
+                    geojson::Value::MultiPoint(_) => {
+                        let addr = count_addresses(&feat);
+
+                        if addr > 0 {
+                            stats.addresses = stats.addresses + count_addresses(&feat);
+                            stats.address_orphans = stats.address_orphans + 1;
+                        } else {
+                            stats.invalid = stats.invalid + 1;
+                        }
+                    },
+                    geojson::Value::GeometryCollection(_) => {
+                        let addr = count_addresses(&feat);
+                        let net = count_networks(&feat);
+
+                        if addr == 0 && net == 0 {
+                            stats.invalid = stats.invalid + 1;
+                        } else if addr > 0 && net > 0 {
+                            stats.addresses = stats.addresses + count_addresses(&feat);
+
+                            stats.clusters = stats.clusters + 1;
+                        } else if addr > 0 {
+                            stats.addresses = stats.addresses + count_addresses(&feat);
+
+                            stats.address_orphans = stats.address_orphans + 1;
+                        } else if net > 0 {
+                            stats.network_orphans = stats.network_orphans + 1;
+                        }
+                    },
+                    _ => {
+                        stats.invalid = stats.invalid + 1;
+                    }
+                }
+            },
+            _ => {
+                stats.invalid = stats.invalid + 1;
+            }
+        };
+    }
+
+    Ok(neon_serde::to_value(&mut cx, &stats)?)
+}
+
+fn count_addresses(feat: &geojson::Feature) -> i64 {
+    match feat.properties {
+        None => 0,
+        Some(ref props) => match props.get(&String::from("carmen:addressnumber")) {
+            None => 0,
+            Some(prop) => match prop.as_array() {
+                None => 0,
+                Some(ref array) => {
+                    if array.len() == 0 {
+                        return 0;
+                    }
+
+                    let mut addr = 0;
+
+                    for ele in array.iter() {
+                        if ele.is_array() {
+                            for elenest in ele.as_array().unwrap() {
+                                if elenest.is_number() || elenest.is_string() {
+                                    addr = addr + 1;
+                                }
+                            }
+                        } else if ele.is_number() || ele.is_string() {
+                            addr = addr + 1;
+                        }
+                    }
+
+                    addr
+                }
+            }
+        }
+    }
+}
+
+fn count_networks(feat: &geojson::Feature) -> i64 {
+    match feat.properties {
+        None => 0,
+        Some(ref props) => {
+            if props.contains_key(&String::from("carmen:rangetype")) {
+                1
+            } else {
+                0
+            }
+        }
+    }
+}

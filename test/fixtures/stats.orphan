@@ -1,0 +1,1 @@
+{ "type": "Feature", "properties": { "carmen:addressnumber": [100,"200a"] }, "geometry": { "type": "GeometryCollection", "geometries": [ { "type": "MultiPoint", "coordinates": [[1,1],[2,2]] }] } }
