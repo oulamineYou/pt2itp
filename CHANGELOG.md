@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v19.0.0
+
+- :tada: Rewrite `stats` module to use `GeoStream` rust module & expose far more stats
+
 ## v18.2.1
 
 - :bug: Ensure z coordinate is removed from `MultiPoint` geoms
