@@ -87,7 +87,17 @@ impl AddrStream {
             }
         };
 
-        // TODO: STREET
+        let street: Vec<super::Name> = match props.remove(&String::from("street")) {
+            Some(street) => match serde_json::from_value(street) {
+                Ok(street) => street,
+                Err(err) => {
+                    retur self.next_addr();
+                }
+            },
+            None => {
+                return self.next_addr();
+            }
+        };
 
         Some(super::Address {
             id: match feat.id {

@@ -74,6 +74,8 @@ impl Address {
 }
 
 /// Representation of a street name with associated 
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Name {
     /// Street Name
     display: String,
