@@ -1,21 +1,16 @@
-use postgres;
+use postgres::{Connection};
+use std::io::Read;
 
-pub struct PGStream {
-    input: String
-}
+pub fn stream(conn: &Connection, table: &String, mut data: impl Read) {
+    let stmt = conn.prepare(format!("COPY {} FROM STDIN", &table).as_str()).unwrap();
 
-impl PGStream {
-    pub fn new() -> Self {
-        PGStream {
-            input: String::from("")
-        }
-    }
+    stmt.copy_in(&[], &mut data).unwrap();
 }
 
 pub struct Table ();
 
 impl Table {
-    pub fn address(conn: &postgres::Connection) {
+    pub fn address(conn: &Connection) {
         conn.execute(r#"
             CREATE EXTENSION POSTGIS;
         "#, &[]).unwrap();
