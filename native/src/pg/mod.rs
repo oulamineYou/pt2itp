@@ -12,7 +12,7 @@ pub struct Table ();
 impl Table {
     pub fn address(conn: &Connection) {
         conn.execute(r#"
-            CREATE EXTENSION POSTGIS;
+             CREATE EXTENSION IF NOT EXISTS POSTGIS
         "#, &[]).unwrap();
 
         conn.execute(r#"
