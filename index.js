@@ -107,6 +107,20 @@ if (require.main === module) {
             });
 
             break;
+        case ('dedupe'):
+            let dedupe_arg = require('minimist')(process.argv, {
+                string: [ 'input', 'output', 'tokens' ],
+                boolean: ['hecate']
+            });
+
+            require('./native/index.node').dedupe({
+                input: dedupe_arg.input,
+                output: dedupe_arg.output,
+                tokens: dedupe_arg.tokens,
+                hecate: dedupe_arg.hecate
+            });
+
+            break;
         default:
             help(argv);
             break;
@@ -117,7 +131,7 @@ if (require.main === module) {
         clean: require('./lib/clean'),
         map: require('./lib/map'),
         conflate: require('./lib/conflate'),
-        dedupe: require('./native/.index.node').dedupe,
+        dedupe: require('./native/index.node').dedupe,
         stat: require('./native/index.node').stats,
         test: require('./lib/test'),
         testcsv: require('./lib/testcsv'),

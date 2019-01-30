@@ -26,11 +26,11 @@ impl DedupeArgs {
 }
 
 pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
-    let args: ConvertArgs = match cx.argument_opt(0) {
-        None => ConvertArgs::new(),
+    let args: DedupeArgs = match cx.argument_opt(0) {
+        None => DedupeArgs::new(),
         Some(arg) => {
             if arg.is_a::<JsUndefined>() || arg.is_a::<JsNull>() {
-                ConvertArgs::new()
+                DedupeArgs::new()
             } else {
                 let arg_val = cx.argument::<JsValue>(0)?;
                 neon_serde::from_value(&mut cx, arg_val)?
