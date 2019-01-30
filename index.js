@@ -121,7 +121,7 @@ if (require.main === module) {
                 output: dedupe_arg.output,
                 tokens: dedupe_arg.tokens,
                 hecate: dedupe_arg.hecate,
-                database: dedupe_arg.db
+                db: dedupe_arg.db
             });
 
             break;

@@ -4,9 +4,9 @@ pub struct PGStream {
     input: String
 }
 
-impl PGtream {
+impl PGStream {
     pub fn new() -> Self {
-        GeoStream {
+        PGStream {
             input: String::from("")
         }
     }
@@ -15,16 +15,16 @@ impl PGtream {
 pub struct Table ();
 
 impl Table {
-    fn address(conn: &postgres::Connection) {
-        match conn.execute(r#"
+    pub fn address(conn: &postgres::Connection) {
+        conn.execute(r#"
             CREATE EXTENSION POSTGIS;
-        )"#, &[]).unwrap();
+        "#, &[]).unwrap();
 
-        match conn.execute(r#"
+        conn.execute(r#"
             DROP TABLE IF EXISTS address;
-        )"#, &[]).unwrap();
+        "#, &[]).unwrap();
 
-        match conn.execute(r#"
+        conn.execute(r#"
             CREATE TABLE address (
                 id SERIAL,
                 name JSONB,

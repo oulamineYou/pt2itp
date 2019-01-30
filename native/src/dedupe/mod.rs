@@ -20,6 +20,7 @@ struct DedupeArgs {
 impl DedupeArgs {
     pub fn new() -> Self {
         DedupeArgs {
+            db: String::from("dedupe"),
             input: None,
             output: None,
             tokens: None,
@@ -41,7 +42,10 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         }
     };
 
-    let conn = Connection::connect("postgres://postgres@localhost:5432/conflate", TlsMode::None).unwrap();
+    println!("{}", args.db);
+    let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
+
+    Table::address(&conn);
 
     let stream = GeoStream::new(args.input);
 

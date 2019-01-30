@@ -6,7 +6,7 @@ extern crate postgres;
 
 // Internal Helper Libraries
 pub mod geostream;
-pub mod pgstream;
+pub mod pg;
 
 // External PT2ITP Modes
 pub mod convert;
