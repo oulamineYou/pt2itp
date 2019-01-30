@@ -42,7 +42,6 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         }
     };
 
-    println!("{}", args.db);
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
     Table::address(&conn);

@@ -25,7 +25,7 @@ impl Table {
         "#, &[]).unwrap();
 
         conn.execute(r#"
-            CREATE TABLE address (
+            CREATE UNLOGGED TABLE address (
                 id SERIAL,
                 name JSONB,
                 number TEXT,
