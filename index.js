@@ -117,6 +117,7 @@ if (require.main === module) {
         clean: require('./lib/clean'),
         map: require('./lib/map'),
         conflate: require('./lib/conflate'),
+        dedupe: require('./native/.index.node').dedupe,
         stat: require('./native/index.node').stats,
         test: require('./lib/test'),
         testcsv: require('./lib/testcsv'),
