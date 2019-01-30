@@ -29,19 +29,58 @@ impl AddrStream {
     /// Iterate over underlying geostream until a valid
     /// Address type is returnable or the stream is exhausted
     fn next_addr(&mut self) -> Option<super::Address> {
-        let feat = self.next_feat()?;
+        let mut feat: geojson::Feature = self.next_feat()?;
 
-        let addr = super::Address {
-            id: None,
-            number: String::from("1"),
-            street: vec![super::Name::new(String::from("Main St"))],
-            output: false,
-            interpolate: false,
-            props: json!({}),
-            geometry: vec![(0.0, 0.0)]
+        let mut props = match feat.properties {
+            Some(props) => props,
+            None => {
+                return self.next_addr();
+            }
         };
 
-        Some(addr)
+        let number = match props.remove(&String::from("number")) {
+            Some(number) => {
+                if number.is_string() {
+                    String::from(number.as_str().unwrap())
+                } else if number.is_i64() {
+                    number.as_i64().unwrap().to_string()
+                } else {
+                    return self.next_addr();
+                }
+            },
+            None => {
+                return self.next_addr();
+            }
+        };
+
+        let interpolate = match props.remove(&String::from("interpolate")) {
+            Some(itp) => match itp.as_bool() {
+                None => true,
+                Some(itp) => itp
+            },
+            None => true
+        };
+
+        let output = match props.remove(&String::from("output")) {
+            Some(itp) => match itp.as_bool() {
+                None => true,
+                Some(itp) => itp
+            },
+            None => true
+        };
+
+        Some(super::Address {
+            id: match feat.id {
+                Some(geojson::feature::Id::Number(id)) => id.as_i64(),
+                _ => None
+            },
+            number: number,
+            street: vec![super::Name::new(String::from("Main St"))],
+            output: output,
+            interpolate: interpolate,
+            props: json!({}),
+            geometry: vec![(0.0, 0.0)]
+        })
     }
 }
 
