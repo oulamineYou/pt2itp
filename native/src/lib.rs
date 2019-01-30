@@ -7,6 +7,7 @@ extern crate postgres;
 
 // Internal Helper Libraries
 pub mod geostream;
+pub mod addrstream;
 pub mod pg;
 
 // External PT2ITP Modes
@@ -39,10 +40,6 @@ pub struct Address {
 }
 
 impl Address {
-    pub fn new() {
-
-    }
-
     /// Create a new Address feature given the id of the
     /// address in the 'address' table
     pub fn from_db(conn: &postgres::Connection, id: &i64) {
