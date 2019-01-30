@@ -3,8 +3,12 @@
 extern crate neon_serde;
 extern crate geojson;
 
-pub mod convert;
+// Internal Helper Libraries
 pub mod geostream;
+pub mod pgstream;
+
+// External PT2ITP Modes
+pub mod convert;
 pub mod stats;
 pub mod dedupe;
 
