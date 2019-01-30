@@ -1,13 +1,16 @@
 use std::fs::File;
 use std::io::{self, Write, BufWriter};
 use std::convert::From;
+use postgres::{Connection, TlsMode};
 
 use neon::prelude::*;
 
 use super::geostream::GeoStream;
+use super::pg::Table;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct DedupeArgs {
+    db: String,
     input: Option<String>,
     output: Option<String>,
     tokens: Option<String>,
@@ -37,6 +40,8 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             }
         }
     };
+
+    let conn = Connection::connect("postgres://postgres@localhost:5432/conflate", TlsMode::None).unwrap();
 
     let stream = GeoStream::new(args.input);
 

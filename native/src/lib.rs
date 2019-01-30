@@ -2,6 +2,7 @@
 #[macro_use] extern crate serde_derive;
 extern crate neon_serde;
 extern crate geojson;
+extern crate postgres;
 
 // Internal Helper Libraries
 pub mod geostream;
