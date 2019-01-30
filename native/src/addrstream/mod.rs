@@ -78,7 +78,7 @@ impl AddrStream {
             street: vec![super::Name::new(String::from("Main St"))],
             output: output,
             interpolate: interpolate,
-            props: json!({}),
+            props: props,
             geometry: vec![(0.0, 0.0)]
         })
     }

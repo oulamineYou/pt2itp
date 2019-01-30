@@ -33,7 +33,7 @@ pub struct Address {
     interpolate: bool,
 
     /// JSON representation of properties
-    props: serde_json::Value,
+    props: serde_json::Map<String, serde_json::Value>,
 
     /// Simple representation of Lng/Lat geometry
     geometry: Vec<(f64, f64)>
