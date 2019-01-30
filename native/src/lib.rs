@@ -38,6 +38,44 @@ pub struct Address {
     geometry: Vec<(f64, f64)>
 }
 
+impl Address {
+    pub fn new() {
+
+    }
+
+    /// Create a new Address feature given the id of the
+    /// address in the 'address' table
+    pub fn from_db(conn: &postgres::Connection, id: &i64) {
+        match conn.query(r#"
+            SELECT
+                id,
+                name,
+                number,
+                source,
+                geom,
+                props
+            FROM
+                address
+            WHERE
+                id = {}
+        "#, &[ &id ]) {
+            Ok(res) => (),
+            Err(err) => ()
+        };
+    }
+
+    /// Save the feature to the database, overwriting the feature
+    /// if the optional id exists
+    pub fn to_db(&self, conn: &postgres::Connection) {
+        match conn.query(r#"
+            //TODO
+        "#, &[]) {
+            Ok(res) => (),
+            Err(err) => ()
+        };
+    }
+}
+
 /// Representation of a street name with associated 
 pub struct Name {
     /// Street Name
