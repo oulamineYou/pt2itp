@@ -1,5 +1,3 @@
-use std::fs::File;
-use std::io::{self, Write, BufWriter};
 use std::convert::From;
 use postgres::{Connection, TlsMode};
 
@@ -49,7 +47,7 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let addresses = AddrStream::from(GeoStream::new(args.input));
 
-    for address in addresses {
+    for _address in addresses {
         println!("ADDRESS");
     }
 

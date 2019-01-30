@@ -1,17 +1,18 @@
-use std::io::{self, BufRead, BufReader};
 use std::convert::From;
 use std::iter::Iterator;
 
 use super::geostream;
 
 pub struct AddrStream {
-    input: geostream::GeoStream
+    input: geostream::GeoStream,
+    buffer: Option<Vec<u8>> //Used by Read impl for storing partial features
 }
 
 impl AddrStream {
     pub fn new(input: geostream::GeoStream) -> Self {
         AddrStream {
-            input: input
+            input: input,
+            buffer: None
         }
     }
 
@@ -29,7 +30,7 @@ impl AddrStream {
     /// Iterate over underlying geostream until a valid
     /// Address type is returnable or the stream is exhausted
     fn next_addr(&mut self) -> Option<super::Address> {
-        let mut feat: geojson::Feature = self.next_feat()?;
+        let feat: geojson::Feature = self.next_feat()?;
 
         let mut props = match feat.properties {
             Some(props) => props,
@@ -51,6 +52,17 @@ impl AddrStream {
             None => {
                 return self.next_addr();
             }
+        };
+
+        let source = match props.remove(&String::from("source")) {
+            Some(source) => {
+                if source.is_string() {
+                    Some(String::from(source.as_str().unwrap()))
+                } else {
+                    None
+                }
+            },
+            None => None
         };
 
         let interpolate = match props.remove(&String::from("interpolate")) {
@@ -105,8 +117,9 @@ impl AddrStream {
                 _ => None
             },
             number: number,
-            street: vec![super::Name::new(String::from("Main St"))],
+            street: street,
             output: output,
+            source: source,
             interpolate: interpolate,
             props: props,
             point: point
@@ -120,11 +133,29 @@ impl From<super::geostream::GeoStream> for AddrStream {
     }
 }
 
+/*
+impl std::io::Read for AddrStream {
+    fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+        while write.len() < buf.len() {
+            let mut write: Vec<u8>;
+
+            if self.pending.is_some() {
+                write = self.pending.take();
+            } else {
+                write = Vec::new();
+            }
+
+            let address = self.next();
+        }
+    }
+}
+*/
+
 impl Iterator for AddrStream {
     type Item = super::Address;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let mut feat = self.next_addr()?;
+        let feat = self.next_addr()?;
 
         Some(feat)
     }
