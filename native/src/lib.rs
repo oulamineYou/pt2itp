@@ -36,7 +36,7 @@ pub struct Address {
     props: serde_json::Map<String, serde_json::Value>,
 
     /// Simple representation of Lng/Lat geometry
-    geometry: Vec<(f64, f64)>
+    point: (f64, f64)
 }
 
 impl Address {

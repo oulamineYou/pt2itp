@@ -69,6 +69,26 @@ impl AddrStream {
             None => true
         };
 
+        let point = match feat.geometry {
+            Some(geom) => match geom.value {
+                geojson::Value::Point(pt) => {
+                    if pt.len() != 2 {
+                        return self.next_addr();
+                    }
+
+                    (pt[0], pt[1])
+                },
+                _ => {
+                    return self.next_addr();
+                }
+            },
+            None => {
+                return self.next_addr();
+            }
+        };
+
+        // TODO: STREET
+
         Some(super::Address {
             id: match feat.id {
                 Some(geojson::feature::Id::Number(id)) => id.as_i64(),
@@ -79,7 +99,7 @@ impl AddrStream {
             output: output,
             interpolate: interpolate,
             props: props,
-            geometry: vec![(0.0, 0.0)]
+            point: point
         })
     }
 }
