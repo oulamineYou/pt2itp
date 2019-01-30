@@ -91,7 +91,7 @@ impl AddrStream {
             Some(street) => match serde_json::from_value(street) {
                 Ok(street) => street,
                 Err(err) => {
-                    retur self.next_addr();
+                    return self.next_addr();
                 }
             },
             None => {

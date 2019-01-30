@@ -6,6 +6,7 @@ use postgres::{Connection, TlsMode};
 use neon::prelude::*;
 
 use super::geostream::GeoStream;
+use super::addrstream::AddrStream;
 use super::pg::Table;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -46,7 +47,7 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     Table::address(&conn);
 
-    let stream = GeoStream::new(args.input);
+    let stream = AddrStream::from(GeoStream::new(args.input));
 
     Ok(cx.boolean(true))
 }
