@@ -2,7 +2,7 @@ use postgres::{Connection};
 use std::io::Read;
 
 pub fn addrstream(conn: &Connection, mut data: impl Read) {
-    let stmt = conn.prepare(format!("COPY addresses (name, number, source, props, geom) FROM STDIN", &table).as_str()).unwrap();
+    let stmt = conn.prepare(format!("COPY address (name, number, source, props, geom) FROM STDIN").as_str()).unwrap();
 
     println!("STARTING");
     stmt.copy_in(&[], &mut data).unwrap();
