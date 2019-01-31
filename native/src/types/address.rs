@@ -31,6 +31,8 @@ pub struct Address {
 impl Address {
     /// Create a new Address feature given the id of the
     /// address in the 'address' table
+    ///
+    /// TODO
     pub fn from_db(conn: &postgres::Connection, id: &i64) {
         match conn.query(r#"
             SELECT
@@ -52,6 +54,9 @@ impl Address {
 
     /// Save the feature to the database, overwriting the feature
     /// if the optional id exists
+    ///
+    ///
+    /// TODO
     pub fn to_db(&self, conn: &postgres::Connection) {
         match conn.query(r#"
             //TODO

@@ -133,23 +133,27 @@ impl From<super::geostream::GeoStream> for AddrStream {
     }
 }
 
-/*
 impl std::io::Read for AddrStream {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
-        while write.len() < buf.len() {
-            let mut write: Vec<u8>;
+        let buf_len = buf.len();
+        let mut write: Vec<u8> = Vec::new();
 
-            if self.pending.is_some() {
-                write = self.pending.take();
+        while write.len() < buf_len {
+            if self.buffer.is_some() {
+                write = self.buffer.take().unwrap();
             } else {
-                write = Vec::new();
+                let feat = match self.next() {
+                    Some(feat) => feat.to_tsv(),
+                    None => String::from("")
+                };
             }
 
             let address = self.next();
         }
+
+        Ok(write.len())
     }
 }
-*/
 
 impl Iterator for AddrStream {
     type Item = super::Address;
