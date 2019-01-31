@@ -1,10 +1,12 @@
 use postgres::{Connection};
 use std::io::Read;
 
-pub fn stream(conn: &Connection, table: &String, mut data: impl Read) {
-    let stmt = conn.prepare(format!("COPY {} FROM STDIN", &table).as_str()).unwrap();
+pub fn addrstream(conn: &Connection, mut data: impl Read) {
+    let stmt = conn.prepare(format!("COPY addresses (name, number, source, props, geom) FROM STDIN", &table).as_str()).unwrap();
 
+    println!("STARTING");
     stmt.copy_in(&[], &mut data).unwrap();
+    println!("COMPLETE");
 }
 
 pub struct Table ();
@@ -25,7 +27,7 @@ impl Table {
                 name JSONB,
                 number TEXT,
                 source TEXT,
-                geom GEOMETRY(POINTZ, 4326),
+                geom GEOMETRY(POINT, 4326),
                 props JSONB
             )
         "#, &[]).unwrap();
