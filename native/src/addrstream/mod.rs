@@ -139,7 +139,7 @@ impl std::io::Read for AddrStream {
         let mut write: Vec<u8> = Vec::new();
         let mut end = false;
 
-        while write.len() < buf_len {
+        while write.len() < buf_len && !end {
             if self.buffer.is_some() {
                 write = self.buffer.take().unwrap();
             } else {
@@ -154,19 +154,19 @@ impl std::io::Read for AddrStream {
                 } else {
                     write.append(&mut bytes);
                 }
-            }
 
-            if write.len() == 0 {
-                return Ok(0);
-            } else if write.len() > buf_len || end {
-                self.buffer = Some(write.split_off(buf_len));
-
-                for it in 0..write.len() {
-                    buf[it] = write[it];
+                if write.len() == 0 {
+                    return Ok(0);
                 }
-
-                break;
             }
+        }
+
+        if write.len() > buf_len {
+            self.buffer = Some(write.split_off(buf_len));
+        }
+
+        for it in 0..write.len() {
+            buf[it] = write[it];
         }
 
         Ok(write.len())
