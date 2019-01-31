@@ -1,3 +1,6 @@
+use postgis::ewkb::AsEwkbPoint;
+use postgis::ewkb::EwkbWrite;
+
 /// A representation of a single Address
 pub struct Address {
     /// An optional identifier for the address
@@ -47,19 +50,6 @@ impl Address {
         };
     }
 
-    ///Return a PG Copyable String of the feature
-    ///
-    ///name, number, source, props, geom
-    pub fn to_db_copy(&self) -> String {
-        let geom = postgis::ewkb::Point::new(self.point.0, self.point.1, Some(4326));
-
-        /* TODO
-        format!("{}\t{}\t{}\t{}\t{}\n", self.street, self.number, self.source, self.props, geom)
-        */
-       
-        String::new()
-    }
-    
     /// Save the feature to the database, overwriting the feature
     /// if the optional id exists
     pub fn to_db(&self, conn: &postgres::Connection) {
@@ -70,5 +60,20 @@ impl Address {
             Err(err) => ()
         };
     }
-}
 
+    ///Return a PG Copyable String of the feature
+    ///
+    ///name, number, source, props, geom
+    pub fn to_tsv(self) -> String {
+        let geom = postgis::ewkb::Point::new(self.point.0, self.point.1, Some(4326)).as_ewkb().to_hex_ewkb();
+
+        format!("{name}\t{number}\t{source}\t{props}\t{geom}\n",
+            name = serde_json::to_string(&self.street).unwrap_or(String::from("")),
+            number = self.number,
+            source = self.source.as_ref().unwrap_or(&String::from("")),
+            props = serde_json::value::Value::from(self.props),
+            geom = geom
+        )
+    }
+    
+}

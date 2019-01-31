@@ -1,4 +1,17 @@
 #[derive(Serialize, Deserialize, Debug)]
+pub struct Names {
+    names: Vec<Name>
+}
+
+impl Names {
+    pub fn new(names: Vec<Name>) -> Self {
+        Names {
+            names: names
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Name {
     /// Street Name
     pub display: String,

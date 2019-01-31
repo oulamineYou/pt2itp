@@ -47,8 +47,8 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let addresses = AddrStream::from(GeoStream::new(args.input));
 
-    for _address in addresses {
-        println!("ADDRESS");
+    for address in addresses {
+        println!("{}", address.to_tsv());
     }
 
     Ok(cx.boolean(true))
