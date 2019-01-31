@@ -146,9 +146,21 @@ impl std::io::Read for AddrStream {
                     Some(feat) => feat.to_tsv(),
                     None => String::from("")
                 };
+
+                write.append(&mut feat.into_bytes());
             }
 
-            let address = self.next();
+            if write.len() == 0 {
+                return Ok(0);
+            } else if write.len() > buf_len {
+                self.buffer = Some(write.split_off(buf_len));
+
+                for it in 0..write.len() {
+                    buf[it] = write[it];
+                }
+
+                break;
+            }
         }
 
         Ok(write.len())
