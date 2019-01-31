@@ -1,15 +1,16 @@
 use std::convert::From;
 use std::iter::Iterator;
 
-use super::geostream;
+use super::geo;
+use super::super::Address;
 
 pub struct AddrStream {
-    input: geostream::GeoStream,
+    input: geo::GeoStream,
     buffer: Option<Vec<u8>> //Used by Read impl for storing partial features
 }
 
 impl AddrStream {
-    pub fn new(input: geostream::GeoStream) -> Self {
+    pub fn new(input: geo::GeoStream) -> Self {
         AddrStream {
             input: input,
             buffer: None
@@ -29,7 +30,7 @@ impl AddrStream {
 
     /// Iterate over underlying geostream until a valid
     /// Address type is returnable or the stream is exhausted
-    fn next_addr(&mut self) -> Option<super::Address> {
+    fn next_addr(&mut self) -> Option<Address> {
         let feat: geojson::Feature = self.next_feat()?;
 
         let mut props = match feat.properties {
@@ -81,7 +82,7 @@ impl AddrStream {
             None => true
         };
 
-        let point = match feat.geometry {
+        let geom = match feat.geometry {
             Some(geom) => match geom.value {
                 geojson::Value::Point(pt) => {
                     if pt.len() != 2 {
@@ -99,7 +100,7 @@ impl AddrStream {
             }
         };
 
-        let street: Vec<super::Name> = match props.remove(&String::from("street")) {
+        let names: Vec<super::super::Name> = match props.remove(&String::from("street")) {
             Some(street) => match serde_json::from_value(street) {
                 Ok(street) => street,
                 Err(err) => {
@@ -111,24 +112,24 @@ impl AddrStream {
             }
         };
 
-        Some(super::Address {
+        Some(Address {
             id: match feat.id {
                 Some(geojson::feature::Id::Number(id)) => id.as_i64(),
                 _ => None
             },
             number: number,
-            street: street,
+            names: names,
             output: output,
             source: source,
             interpolate: interpolate,
             props: props,
-            point: point
+            geom: geom
         })
     }
 }
 
-impl From<super::geostream::GeoStream> for AddrStream {
-    fn from(input: super::geostream::GeoStream) -> Self {
+impl From<super::geo::GeoStream> for AddrStream {
+    fn from(input: super::geo::GeoStream) -> Self {
         AddrStream::new(input)
     }
 }
@@ -174,7 +175,7 @@ impl std::io::Read for AddrStream {
 }
 
 impl Iterator for AddrStream {
-    type Item = super::Address;
+    type Item = Address;
 
     fn next(&mut self) -> Option<Self::Item> {
         let feat = self.next_addr()?;

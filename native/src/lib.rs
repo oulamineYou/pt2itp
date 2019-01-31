@@ -6,8 +6,8 @@ extern crate geojson;
 extern crate postgres;
 
 // Internal Helper Libraries
-pub mod geostream;
-pub mod addrstream;
+pub mod stream;
+
 pub mod types;
 pub mod pg;
 

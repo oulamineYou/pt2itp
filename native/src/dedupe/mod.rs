@@ -3,8 +3,8 @@ use postgres::{Connection, TlsMode};
 
 use neon::prelude::*;
 
-use super::geostream::GeoStream;
-use super::addrstream::AddrStream;
+use super::stream::GeoStream;
+use super::stream::AddrStream;
 use super::pg;
 
 #[derive(Serialize, Deserialize, Debug)]
