@@ -13,6 +13,7 @@ use super::pg::Table;
 #[derive(Serialize, Deserialize, Debug)]
 struct DedupeArgs {
     db: String,
+    context: Option<super::types::Context>,
     input: Option<String>,
     output: Option<String>,
     tokens: Option<String>,
@@ -23,6 +24,7 @@ impl DedupeArgs {
     pub fn new() -> Self {
         DedupeArgs {
             db: String::from("dedupe"),
+            context: None,
             input: None,
             output: None,
             tokens: None,
