@@ -31,7 +31,7 @@ impl Table {
                 names JSONB,
                 source TEXT,
                 props JSONB,
-                geom GEOMETRY(POINT, 4326)
+                geom GEOMETRY(MultiLineString, 4326)
             )
         "#, &[]).unwrap();
     }
