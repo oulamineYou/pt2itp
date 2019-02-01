@@ -4,4 +4,4 @@ pub mod net;
 
 pub use self::geo::GeoStream;
 pub use self::addr::AddrStream;
-pub use self::addr::NetStream;
+pub use self::net::NetStream;

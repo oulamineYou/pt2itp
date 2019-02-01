@@ -40,21 +40,6 @@ impl NetStream {
             }
         };
 
-        let number = match props.remove(&String::from("number")) {
-            Some(number) => {
-                if number.is_string() {
-                    String::from(number.as_str().unwrap())
-                } else if number.is_i64() {
-                    number.as_i64().unwrap().to_string()
-                } else {
-                    return self.next_net();
-                }
-            },
-            None => {
-                return self.next_net();
-            }
-        };
-
         let source = match props.remove(&String::from("source")) {
             Some(source) => {
                 if source.is_string() {
@@ -66,30 +51,29 @@ impl NetStream {
             None => None
         };
 
-        let interpolate = match props.remove(&String::from("interpolate")) {
-            Some(itp) => match itp.as_bool() {
-                None => true,
-                Some(itp) => itp
-            },
-            None => true
-        };
-
-        let output = match props.remove(&String::from("output")) {
-            Some(itp) => match itp.as_bool() {
-                None => true,
-                Some(itp) => itp
-            },
-            None => true
-        };
-
         let geom = match feat.geometry {
             Some(geom) => match geom.value {
-                geojson::Value::Point(pt) => {
-                    if pt.len() != 2 {
-                        return self.next_net();
+                geojson::Value::LineString(ln) => {
+                    let mut ln_tup = Vec::with_capacity(ln.len());
+                    for pt in ln {
+                        ln_tup.push((pt[0], pt[1]));
                     }
 
-                    (pt[0], pt[1])
+                    vec![ln_tup]
+                },
+                geojson::Value::MultiLineString(mln) => {
+                    let mut mln_tup = Vec::with_capacity(mln.len());
+
+                    for ln in mln {
+                        let mut ln_tup = Vec::with_capacity(ln.len());
+                        for pt in ln {
+                            ln_tup.push((pt[0], pt[1]));
+                        }
+
+                        mln_tup.push(ln_tup);
+                    }
+
+                    mln_tup
                 },
                 _ => {
                     return self.next_net();
@@ -117,24 +101,21 @@ impl NetStream {
                 Some(geojson::feature::Id::Number(id)) => id.as_i64(),
                 _ => None
             },
-            number: number,
             names: names,
-            output: output,
             source: source,
-            interpolate: interpolate,
             props: props,
             geom: geom
         })
     }
 }
 
-impl From<super::geo::GeoStream> for AddrStream {
+impl From<super::geo::GeoStream> for NetStream {
     fn from(input: super::geo::GeoStream) -> Self {
-        AddrStream::new(input)
+        NetStream::new(input)
     }
 }
 
-impl std::io::Read for AddrStream {
+impl std::io::Read for NetStream {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
         let buf_len = buf.len();
         let mut write: Vec<u8> = Vec::new();
