@@ -7,6 +7,12 @@ pub fn addrstream(conn: &Connection, mut data: impl Read) {
     stmt.copy_in(&[], &mut data).unwrap();
 }
 
+pub fn netstream(conn: &Connection, mut data: impl Read) {
+    let stmt = conn.prepare(format!("COPY network (names, source, props, geom) FROM STDIN").as_str()).unwrap();
+
+    stmt.copy_in(&[], &mut data).unwrap();
+}
+
 pub struct Table ();
 
 impl Table {
@@ -24,8 +30,8 @@ impl Table {
                 id SERIAL,
                 names JSONB,
                 source TEXT,
-                geom GEOMETRY(POINT, 4326),
-                props JSONB
+                props JSONB,
+                geom GEOMETRY(POINT, 4326)
             )
         "#, &[]).unwrap();
     }
