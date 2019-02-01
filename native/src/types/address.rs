@@ -127,7 +127,20 @@ impl Address {
         // Transform '123 B' = '123B' so it is supported
         self.number = Regex::new(r"^(?P<num>\d+)\s(?P<unit>[a-z])$").unwrap().replace(self.number, "$num$unit");
 
-        println!("{}", &self.number);
+        let supported = RegexSet::new(&[
+            r"^\d+[a-z]?$",
+            r"^(\d+)-(\d+)[a-z]?$",
+            r"^(\d+)([nsew])(\d+)[a-z]?$",
+            r"^([nesw])(\d+)([nesw]\d+)?$"
+        ]).unwrap();
+
+        if !supported.matches(self.number) {
+            return Err(String::from("Number is not a supported address/unit type"));
+        }
+
+        if self.number.len() > 10 {
+            return Err(String::from("Number should not exceed 10 chars"));
+        }
     }
 
     ///Return a PG Copyable String of the feature
