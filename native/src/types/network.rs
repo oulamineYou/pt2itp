@@ -24,9 +24,31 @@ impl Network {
     ///
     ///names, source, props, geom
     pub fn to_tsv(self) -> String {
+        let mut twkb = postgis::twkb::MultiLineString {
+            lines: Vec::with_capacity(self.geom.len()),
+            ids: None
+        };
 
-        //TODO use multilinestring geom
-        let geom = postgis::ewkb::Point::new(0.0, 0.0, Some(4326)).as_ewkb().to_hex_ewkb();
+        for ln in self.geom {
+            let mut line = postgis::twkb::LineString {
+                points: Vec::with_capacity(ln.len())
+            };
+
+            for pt in ln {
+                line.points.push(postgis::twkb::Point {
+                    x: pt.0,
+                    y: pt.1
+                });
+            }
+
+            twkb.lines.push(line);
+        }
+
+        let geom = postgis::ewkb::EwkbMultiLineString {
+            geom: &twkb,
+            srid: Some(4326),
+            point_type: postgis::ewkb::PointType::Point
+        }.to_hex_ewkb();
 
         format!("{names}\t{source}\t{props}\t{geom}\n",
             names = serde_json::to_string(&self.names).unwrap_or(String::from("")),
@@ -35,5 +57,4 @@ impl Network {
             geom = geom
         )
     }
-    
 }
