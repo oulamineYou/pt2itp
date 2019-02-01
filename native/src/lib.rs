@@ -4,6 +4,7 @@ extern crate serde_json;
 extern crate neon_serde;
 extern crate geojson;
 extern crate postgres;
+extern crate regex;
 
 // Internal Helper Libraries
 pub mod stream;

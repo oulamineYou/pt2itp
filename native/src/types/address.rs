@@ -1,5 +1,6 @@
 use postgis::ewkb::AsEwkbPoint;
 use postgis::ewkb::EwkbWrite;
+use regex::{Regex, RegexSet};
 
 /// A representation of a single Address
 pub struct Address {
@@ -85,6 +86,12 @@ impl Address {
                         return Err(String::from("Geometry must have 2 coordinates"));
                     }
 
+                    if pt[0] < -180.0 || pt[0] < 180.0 {
+                        return Err(String::from("Geometry exceeds +/-180deg coord bounds"));
+                    } else if pt[1] < -85.0 || pt[1] > 85.0 {
+                        return Err(String::from("Geometry exceeds +/-85deg coord bounds"));
+                    }
+
                     (pt[0], pt[1])
                 },
                 _ => { return Err(String::from("Addresses must have Point geometry")); }
@@ -100,7 +107,7 @@ impl Address {
             None => { return Err(String::from("Street Property required")); }
         };
 
-        let addr = Address {
+        let mut addr = Address {
             id: match feat.id {
                 Some(geojson::feature::Id::Number(id)) => id.as_i64(),
                 _ => None
@@ -122,10 +129,10 @@ impl Address {
         self.number.to_lowercase();
 
         // Remove 1/2 Numbers from addresses as they are not currently supported
-        self.number = Regex::new(r"\s1\/2$").unwrap().replace(self.number, "");
+        self.number = Regex::new(r"\s1\/2$").unwrap().replace(self.number.as_str(), "").to_string();
 
         // Transform '123 B' = '123B' so it is supported
-        self.number = Regex::new(r"^(?P<num>\d+)\s(?P<unit>[a-z])$").unwrap().replace(self.number, "$num$unit");
+        self.number = Regex::new(r"^(?P<num>\d+)\s(?P<unit>[a-z])$").unwrap().replace(self.number.as_str(), "$num$unit").to_string();
 
         let supported = RegexSet::new(&[
             r"^\d+[a-z]?$",
@@ -134,13 +141,15 @@ impl Address {
             r"^([nesw])(\d+)([nesw]\d+)?$"
         ]).unwrap();
 
-        if !supported.matches(self.number) {
+        if !supported.is_match(self.number.as_str()) {
             return Err(String::from("Number is not a supported address/unit type"));
         }
 
         if self.number.len() > 10 {
             return Err(String::from("Number should not exceed 10 chars"));
         }
+
+        Ok(())
     }
 
     ///Return a PG Copyable String of the feature
