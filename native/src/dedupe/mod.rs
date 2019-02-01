@@ -44,15 +44,15 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
-    /*
     pg::Table::address(&conn);
     let addresses = AddrStream::from(GeoStream::new(args.input));
     pg::addrstream(&conn, addresses);
-    */
 
+    /*
     pg::Table::network(&conn);
     let networks = NetStream::from(GeoStream::new(args.input));
     pg::netstream(&conn, networks);
+    */
 
 
     Ok(cx.boolean(true))

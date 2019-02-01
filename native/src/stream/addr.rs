@@ -16,116 +16,6 @@ impl AddrStream {
             buffer: None
         }
     }
-
-    /// Get a GeoJSON feature from the underlying geostream
-    /// ignoring other geojson types until a feature is returned
-    /// or the stream is exhausted
-    fn next_feat(&mut self) -> Option<geojson::Feature> {
-        match self.input.next() {
-            Some(geojson::GeoJson::Feature(feat)) => Some(feat),
-            None => { return None; },
-            _ => self.next_feat()
-        }
-    }
-
-    /// Iterate over underlying geostream until a valid
-    /// Address type is returnable or the stream is exhausted
-    fn next_addr(&mut self) -> Option<Address> {
-        let feat: geojson::Feature = self.next_feat()?;
-
-        let mut props = match feat.properties {
-            Some(props) => props,
-            None => {
-                return self.next_addr();
-            }
-        };
-
-        let number = match props.remove(&String::from("number")) {
-            Some(number) => {
-                if number.is_string() {
-                    String::from(number.as_str().unwrap())
-                } else if number.is_i64() {
-                    number.as_i64().unwrap().to_string()
-                } else {
-                    return self.next_addr();
-                }
-            },
-            None => {
-                return self.next_addr();
-            }
-        };
-
-        let source = match props.remove(&String::from("source")) {
-            Some(source) => {
-                if source.is_string() {
-                    Some(String::from(source.as_str().unwrap()))
-                } else {
-                    None
-                }
-            },
-            None => None
-        };
-
-        let interpolate = match props.remove(&String::from("interpolate")) {
-            Some(itp) => match itp.as_bool() {
-                None => true,
-                Some(itp) => itp
-            },
-            None => true
-        };
-
-        let output = match props.remove(&String::from("output")) {
-            Some(itp) => match itp.as_bool() {
-                None => true,
-                Some(itp) => itp
-            },
-            None => true
-        };
-
-        let geom = match feat.geometry {
-            Some(geom) => match geom.value {
-                geojson::Value::Point(pt) => {
-                    if pt.len() != 2 {
-                        return self.next_addr();
-                    }
-
-                    (pt[0], pt[1])
-                },
-                _ => {
-                    return self.next_addr();
-                }
-            },
-            None => {
-                return self.next_addr();
-            }
-        };
-
-        let names: Vec<super::super::Name> = match props.remove(&String::from("street")) {
-            Some(street) => match serde_json::from_value(street) {
-                Ok(street) => street,
-                Err(err) => {
-                    return self.next_addr();
-                }
-            },
-            None => {
-                return self.next_addr();
-            }
-        };
-
-        Some(Address {
-            id: match feat.id {
-                Some(geojson::feature::Id::Number(id)) => id.as_i64(),
-                _ => None
-            },
-            number: number,
-            names: names,
-            output: output,
-            source: source,
-            interpolate: interpolate,
-            props: props,
-            geom: geom
-        })
-    }
 }
 
 impl From<super::geo::GeoStream> for AddrStream {
@@ -178,8 +68,15 @@ impl Iterator for AddrStream {
     type Item = Address;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let feat = self.next_addr()?;
+        let mut next: Result<Address, String> = Err(String::from(""));
+           
+        while next.is_err() {
+            next = match self.input.next() {
+                Some(next) => Address::new(next),
+                None => { return None; }
+            }
+        }
 
-        Some(feat)
+        Some(next.unwrap())
     }
 }

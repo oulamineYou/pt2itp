@@ -1,4 +1,3 @@
-use postgis::ewkb::AsEwkbPoint;
 use postgis::ewkb::EwkbWrite;
 
 /// A representation of a single network
