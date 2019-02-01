@@ -3,6 +3,7 @@ use std::io::Read;
 
 pub trait Table {
     fn create(conn: &Connection);
+    fn count(conn: &Connection) -> i64;
     fn input(conn: &Connection, mut data: impl Read);
 }
 
@@ -28,6 +29,18 @@ impl Table for Address {
                 props JSONB
             )
         "#, &[]).unwrap();
+    }
+
+    fn count(conn: &Connection) -> i64 {
+        match conn.query(r#"
+            SELECT count(*) FROM address
+        "#, &[]) {
+            Ok(res) => {
+                let cnt: i64 = res.get(0).get(0);
+                cnt
+            },
+            _ => 0
+        }
     }
 
     fn input(conn: &Connection, mut data: impl Read) {
@@ -58,6 +71,18 @@ impl Table for Network {
                 geom GEOMETRY(MultiLineString, 4326)
             )
         "#, &[]).unwrap();
+    }
+
+    fn count(conn: &Connection) -> i64 {
+        match conn.query(r#"
+            SELECT count(*) FROM network
+        "#, &[]) {
+            Ok(res) => {
+                let cnt: i64 = res.get(0).get(0);
+                cnt
+            },
+            _ => 0
+        }
     }
 
     fn input(conn: &Connection, mut data: impl Read) {
