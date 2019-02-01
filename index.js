@@ -131,16 +131,16 @@ if (require.main === module) {
     }
 } else {
     module.exports = {
+        dedupe: require('./native/index.node').dedupe,
+        stat: require('./native/index.node').stats,
+        convert: require('./native/index.node').convert,
         debug: require('./lib/debug'),
         clean: require('./lib/clean'),
         map: require('./lib/map'),
         conflate: require('./lib/conflate'),
-        dedupe: require('./native/index.node').dedupe,
-        stat: require('./native/index.node').stats,
         test: require('./lib/test'),
         testcsv: require('./lib/testcsv'),
         strip: require('./lib/strip'),
-        analyze: require('./lib/analyze'),
-        convert: require('./native/index.node').convert
+        analyze: require('./lib/analyze')
     };
 }
