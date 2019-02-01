@@ -16,97 +16,6 @@ impl NetStream {
             buffer: None
         }
     }
-
-    /// Get a GeoJSON feature from the underlying geostream
-    /// ignoring other geojson types until a feature is returned
-    /// or the stream is exhausted
-    fn next_feat(&mut self) -> Option<geojson::Feature> {
-        match self.input.next() {
-            Some(geojson::GeoJson::Feature(feat)) => Some(feat),
-            None => { return None; },
-            _ => self.next_feat()
-        }
-    }
-
-    /// Iterate over underlying geostream until a valid
-    /// Network type is returnable or the stream is exhausted
-    fn next_net(&mut self) -> Option<Network> {
-        let feat: geojson::Feature = self.next_feat()?;
-
-        let mut props = match feat.properties {
-            Some(props) => props,
-            None => {
-                return self.next_net();
-            }
-        };
-
-        let source = match props.remove(&String::from("source")) {
-            Some(source) => {
-                if source.is_string() {
-                    Some(String::from(source.as_str().unwrap()))
-                } else {
-                    None
-                }
-            },
-            None => None
-        };
-
-        let geom = match feat.geometry {
-            Some(geom) => match geom.value {
-                geojson::Value::LineString(ln) => {
-                    let mut ln_tup = Vec::with_capacity(ln.len());
-                    for pt in ln {
-                        ln_tup.push((pt[0], pt[1]));
-                    }
-
-                    vec![ln_tup]
-                },
-                geojson::Value::MultiLineString(mln) => {
-                    let mut mln_tup = Vec::with_capacity(mln.len());
-
-                    for ln in mln {
-                        let mut ln_tup = Vec::with_capacity(ln.len());
-                        for pt in ln {
-                            ln_tup.push((pt[0], pt[1]));
-                        }
-
-                        mln_tup.push(ln_tup);
-                    }
-
-                    mln_tup
-                },
-                _ => {
-                    return self.next_net();
-                }
-            },
-            None => {
-                return self.next_net();
-            }
-        };
-
-        let names: Vec<super::super::Name> = match props.remove(&String::from("street")) {
-            Some(street) => match serde_json::from_value(street) {
-                Ok(street) => street,
-                Err(err) => {
-                    return self.next_net();
-                }
-            },
-            None => {
-                return self.next_net();
-            }
-        };
-
-        Some(Network {
-            id: match feat.id {
-                Some(geojson::feature::Id::Number(id)) => id.as_i64(),
-                _ => None
-            },
-            names: names,
-            source: source,
-            props: props,
-            geom: geom
-        })
-    }
 }
 
 impl From<super::geo::GeoStream> for NetStream {
@@ -159,8 +68,16 @@ impl Iterator for NetStream {
     type Item = Network;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let feat = self.next_net()?;
+        let mut next: Result<Network, String> = Err(String::from(""));
+    
+        while next.is_err() {
+            next = match self.input.next() {
+                Some(next) => Network::new(next),
+                None => { return None; }
+            }
+        }
 
-        Some(feat)
+        Some(next.unwrap())
+
     }
 }

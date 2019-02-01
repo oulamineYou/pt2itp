@@ -87,7 +87,7 @@ impl Address {
 
                     (pt[0], pt[1])
                 },
-                _ => { return Err(String::from("Addresses must have point geometry")); }
+                _ => { return Err(String::from("Addresses must have Point geometry")); }
             },
             None => { return Err(String::from("Addresses must have geometry")); }
         };
