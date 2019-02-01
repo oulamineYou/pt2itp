@@ -1,22 +1,46 @@
 use postgres::{Connection};
 use std::io::Read;
 
-pub fn addrstream(conn: &Connection, mut data: impl Read) {
-    let stmt = conn.prepare(format!("COPY address (names, number, source, props, geom) FROM STDIN").as_str()).unwrap();
-
-    stmt.copy_in(&[], &mut data).unwrap();
+pub trait Table {
+    fn create(conn: &Connection);
+    fn input(conn: &Connection, mut data: impl Read);
 }
 
-pub fn netstream(conn: &Connection, mut data: impl Read) {
-    let stmt = conn.prepare(format!("COPY network (names, source, props, geom) FROM STDIN").as_str()).unwrap();
+pub struct Address ();
 
-    stmt.copy_in(&[], &mut data).unwrap();
+impl Table for Address {
+    fn create(conn: &Connection) {
+        conn.execute(r#"
+             CREATE EXTENSION IF NOT EXISTS POSTGIS
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            DROP TABLE IF EXISTS address;
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            CREATE UNLOGGED TABLE address (
+                id SERIAL,
+                names JSONB,
+                number TEXT,
+                source TEXT,
+                geom GEOMETRY(POINT, 4326),
+                props JSONB
+            )
+        "#, &[]).unwrap();
+    }
+
+    fn input(conn: &Connection, mut data: impl Read) {
+        let stmt = conn.prepare(format!("COPY address (names, number, source, props, geom) FROM STDIN").as_str()).unwrap();
+
+        stmt.copy_in(&[], &mut data).unwrap();
+    }
 }
 
-pub struct Table ();
+pub struct Network ();
 
-impl Table {
-    pub fn network(conn: &Connection) {
+impl Table for Network {
+    fn create(conn: &Connection) {
         conn.execute(r#"
              CREATE EXTENSION IF NOT EXISTS POSTGIS
         "#, &[]).unwrap();
@@ -36,24 +60,9 @@ impl Table {
         "#, &[]).unwrap();
     }
 
-    pub fn address(conn: &Connection) {
-        conn.execute(r#"
-             CREATE EXTENSION IF NOT EXISTS POSTGIS
-        "#, &[]).unwrap();
+    fn input(conn: &Connection, mut data: impl Read) {
+        let stmt = conn.prepare(format!("COPY network (names, source, props, geom) FROM STDIN").as_str()).unwrap();
 
-        conn.execute(r#"
-            DROP TABLE IF EXISTS address;
-        "#, &[]).unwrap();
-
-        conn.execute(r#"
-            CREATE UNLOGGED TABLE address (
-                id SERIAL,
-                names JSONB,
-                number TEXT,
-                source TEXT,
-                geom GEOMETRY(POINT, 4326),
-                props JSONB
-            )
-        "#, &[]).unwrap();
+        stmt.copy_in(&[], &mut data).unwrap();
     }
 }

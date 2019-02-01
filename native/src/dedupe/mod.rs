@@ -6,7 +6,9 @@ use neon::prelude::*;
 use super::stream::GeoStream;
 use super::stream::AddrStream;
 use super::stream::NetStream;
+
 use super::pg;
+use super::pg::Table;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct DedupeArgs {
@@ -44,14 +46,12 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
-    pg::Table::address(&conn);
-    let addresses = AddrStream::from(GeoStream::new(args.input));
-    pg::addrstream(&conn, addresses);
+    pg::Address::create(&conn);
+    pg::Address::input(&conn, AddrStream::from(GeoStream::new(args.input)));
 
     /*
-    pg::Table::network(&conn);
-    let networks = NetStream::from(GeoStream::new(args.input));
-    pg::netstream(&conn, networks);
+    pg::Network::create(&conn);
+    pg::Network::input(&conn, NetStream::from(GeoStream::new(args.input)));
     */
 
 
