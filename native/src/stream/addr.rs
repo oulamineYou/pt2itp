@@ -5,13 +5,15 @@ use super::geo;
 use super::super::Address;
 
 pub struct AddrStream {
+    context: Option<super::super::types::Context>,
     input: geo::GeoStream,
     buffer: Option<Vec<u8>> //Used by Read impl for storing partial features
 }
 
 impl AddrStream {
-    pub fn new(input: geo::GeoStream) -> Self {
+    pub fn new(input: geo::GeoStream, context: Option<super::super::types::Context>) -> Self {
         AddrStream {
+            context: context,
             input: input,
             buffer: None
         }
@@ -20,7 +22,7 @@ impl AddrStream {
 
 impl From<super::geo::GeoStream> for AddrStream {
     fn from(input: super::geo::GeoStream) -> Self {
-        AddrStream::new(input)
+        AddrStream::new(input, None)
     }
 }
 
@@ -72,7 +74,7 @@ impl Iterator for AddrStream {
            
         while next.is_err() {
             next = match self.input.next() {
-                Some(next) => Address::new(next),
+                Some(next) => Address::new(next, &self.context),
                 None => { return None; }
             }
         }

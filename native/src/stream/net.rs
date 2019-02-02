@@ -5,13 +5,15 @@ use super::geo;
 use super::super::Network;
 
 pub struct NetStream {
+    context: Option<super::super::types::Context>,
     input: geo::GeoStream,
     buffer: Option<Vec<u8>> //Used by Read impl for storing partial features
 }
 
 impl NetStream {
-    pub fn new(input: geo::GeoStream) -> Self {
+    pub fn new(input: geo::GeoStream, context: Option<super::super::types::Context>) -> Self {
         NetStream {
+            context: context,
             input: input,
             buffer: None
         }
@@ -20,7 +22,7 @@ impl NetStream {
 
 impl From<super::geo::GeoStream> for NetStream {
     fn from(input: super::geo::GeoStream) -> Self {
-        NetStream::new(input)
+        NetStream::new(input, None)
     }
 }
 
@@ -72,7 +74,7 @@ impl Iterator for NetStream {
     
         while next.is_err() {
             next = match self.input.next() {
-                Some(next) => Network::new(next),
+                Some(next) => Network::new(next, &self.context),
                 None => { return None; }
             }
         }

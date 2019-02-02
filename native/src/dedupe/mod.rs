@@ -34,7 +34,7 @@ impl DedupeArgs {
 }
 
 pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
-    let args: DedupeArgs = match cx.argument_opt(0) {
+    let mut args: DedupeArgs = match cx.argument_opt(0) {
         None => DedupeArgs::new(),
         Some(arg) => {
             if arg.is_a::<JsUndefined>() || arg.is_a::<JsNull>() {
@@ -48,8 +48,10 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
+    let context = args.context.take();
+
     pg::Address::create(&conn);
-    pg::Address::input(&conn, AddrStream::from(GeoStream::new(args.input)));
+    pg::Address::input(&conn, AddrStream::new(GeoStream::new(args.input), context));
 
     /*
     pg::Network::create(&conn);
