@@ -30,7 +30,7 @@ pub struct Address {
 }
 
 impl Address {
-    pub fn new(feat: geojson::GeoJson) -> Result<Self, String> {
+    pub fn new(feat: geojson::GeoJson, context: Option<super::super::types::Context>) -> Result<Self, String> {
         let feat = match feat {
             geojson::GeoJson::Feature(feat) => feat,
             _ => { return Err(String::from("Not a GeoJSON Feature")); }
