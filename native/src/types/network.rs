@@ -1,6 +1,7 @@
 use postgis::ewkb::EwkbWrite;
 
 /// A representation of a single network
+#[derive(Debug)]
 pub struct Network {
     /// An optional identifier for the network
     pub id: Option<i64>,

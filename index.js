@@ -117,7 +117,7 @@ if (require.main === module) {
             });
 
             let context = undefined;
-            if (dedupe.arg.country) {
+            if (dedupe_arg.country) {
                 context = {
                     country: debug_arg.country,
                     region: debug_arg.region

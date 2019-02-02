@@ -76,7 +76,9 @@ impl Iterator for AddrStream {
             next = match self.input.next() {
                 Some(next) => Address::new(next, &self.context),
                 None => { return None; }
-            }
+            };
+
+            println!("{:?}", next);
         }
 
         Some(next.unwrap())

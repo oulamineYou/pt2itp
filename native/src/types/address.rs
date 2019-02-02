@@ -3,6 +3,7 @@ use postgis::ewkb::EwkbWrite;
 use regex::{Regex, RegexSet};
 
 /// A representation of a single Address
+#[derive(Debug)]
 pub struct Address {
     /// An optional identifier for the address
     pub id: Option<i64>,
@@ -86,7 +87,7 @@ impl Address {
                         return Err(String::from("Geometry must have 2 coordinates"));
                     }
 
-                    if pt[0] < -180.0 || pt[0] < 180.0 {
+                    if pt[0] < -180.0 || pt[0] > 180.0 {
                         return Err(String::from("Geometry exceeds +/-180deg coord bounds"));
                     } else if pt[1] < -85.0 || pt[1] > 85.0 {
                         return Err(String::from("Geometry exceeds +/-85deg coord bounds"));
