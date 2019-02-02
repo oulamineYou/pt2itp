@@ -7,7 +7,7 @@ pub struct Network {
     pub id: Option<i64>,
 
     /// Vector of all street name synonyms
-    pub names: Vec<super::Name>,
+    pub names: super::Names,
 
     /// String source/provider/timestamp for the given data
     pub source: String,
@@ -78,6 +78,8 @@ impl Network {
             },
             None => { return Err(String::from("Street Property required")); }
         };
+
+        let names = super::super::Names::new(names);
 
         Ok(Network {
             id: match feat.id {

@@ -4,6 +4,11 @@ use std::iter::Iterator;
 use super::geo;
 use super::super::Address;
 
+/*
+ * TODO:
+ * - Add optional file to log error'd addresses to
+ */
+
 pub struct AddrStream {
     context: Option<super::super::types::Context>,
     input: geo::GeoStream,
