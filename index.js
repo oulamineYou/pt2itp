@@ -109,18 +109,27 @@ if (require.main === module) {
             break;
         case ('dedupe'):
             let dedupe_arg = require('minimist')(process.argv, {
-                string: [ 'input', 'output', 'tokens', 'db' ],
+                string: [ 'input', 'output', 'tokens', 'db', 'country', 'region' ],
                 boolean: ['hecate'],
                 alias: {
                     database: 'db'
                 }
             });
 
+            let context = undefined;
+            if (dedupe.arg.country) {
+                context = {
+                    country: debug_arg.country,
+                    region: debug_arg.region
+                };
+            }
+
             require('./native/index.node').dedupe({
                 input: dedupe_arg.input,
                 output: dedupe_arg.output,
                 tokens: dedupe_arg.tokens,
                 hecate: dedupe_arg.hecate,
+                context: context,
                 db: dedupe_arg.db
             });
 
