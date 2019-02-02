@@ -26,7 +26,7 @@ impl Names {
     pub fn written_numeric(&mut self) {
         let numeric = Regex::new(r"(?i)(Twenty|Thirty|Fourty|Fifty|Sixty|Seventy|Eighty|Ninety)-(First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth)").unwrap();
 
-        for name in self.names {
+        for name in &self.names {
             if numeric.is_match(name.display.as_str()) {
 
                 /*

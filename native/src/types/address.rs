@@ -11,7 +11,7 @@ pub struct Address {
     pub number: String,
 
     /// Vector of all street name synonyms
-    pub names: Vec<super::Name>,
+    pub names: super::Names,
 
     /// String source/provider/timestamp for the given data
     pub source: String,
@@ -99,7 +99,7 @@ impl Address {
             None => { return Err(String::from("Addresses must have geometry")); }
         };
 
-        let names: Vec<super::super::Name> = match props.remove(&String::from("street")) {
+        let names: super::super::Names = match props.remove(&String::from("street")) {
             Some(street) => match serde_json::from_value(street) {
                 Ok(street) => street,
                 Err(err) => { return Err(String::from("Invalid Street Property")); }
