@@ -13,6 +13,7 @@ crate-type = ["dylib"]
 neon-build = "0.2"
 
 [dependencies]
+lazy_static = "1.2.0"
 regex = "1.1"
 postgres = "0.15.2"
 postgis = "0.6.0"
