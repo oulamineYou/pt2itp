@@ -121,11 +121,11 @@ impl Address {
             geom: geom
         };
 
-        addr.std()?;
+        addr.std(&context)?;
 
         Ok(addr)
     }
-    pub fn std(&mut self) -> Result<(), String> {
+    pub fn std(&mut self, context: &Option<super::super::types::Context>) -> Result<(), String> {
         self.number.to_lowercase();
 
         // Remove 1/2 Numbers from addresses as they are not currently supported
@@ -148,6 +148,16 @@ impl Address {
         if self.number.len() > 10 {
             return Err(String::from("Number should not exceed 10 chars"));
         }
+
+        match context {
+            Some(context) => {
+                if context.country == String::from("us") {
+                    self.names.number_suffix();
+                    self.names.written_numeric();
+                }
+            },
+            None => ()
+        };
 
         Ok(())
     }

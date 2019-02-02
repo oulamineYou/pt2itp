@@ -1,7 +1,7 @@
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Context {
-    country: String,
-    region: Option<String> 
+    pub country: String,
+    pub region: Option<String> 
 }
 
 impl Context {
