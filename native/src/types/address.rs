@@ -132,7 +132,7 @@ impl Address {
         self.number.to_lowercase();
 
         // Remove 1/2 Numbers from addresses as they are not currently supported
-        self.number = Regex::new(r"\s1\/2$").unwrap().replace(self.number.as_str(), "").to_string();
+        self.number = Regex::new(r"\s1/2$").unwrap().replace(self.number.as_str(), "").to_string();
 
         // Transform '123 B' = '123B' so it is supported
         self.number = Regex::new(r"^(?P<num>\d+)\s(?P<unit>[a-z])$").unwrap().replace(self.number.as_str(), "$num$unit").to_string();
