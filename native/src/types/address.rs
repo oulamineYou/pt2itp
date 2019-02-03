@@ -100,15 +100,7 @@ impl Address {
             None => { return Err(String::from("Addresses must have geometry")); }
         };
 
-        let names: Vec<super::super::Name> = match props.remove(&String::from("street")) {
-            Some(street) => match serde_json::from_value(street) {
-                Ok(street) => street,
-                Err(err) => { return Err(String::from("Invalid Street Property")); }
-            },
-            None => { return Err(String::from("Street Property required")); }
-        };
-
-        let names = super::super::Names::new(names);
+        let names = super::super::Names::from_value(props.remove(&String::from("street")))?;
 
         let mut addr = Address {
             id: match feat.id {

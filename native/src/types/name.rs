@@ -12,6 +12,26 @@ impl Names {
         }
     }
 
+    /// Parse a Names object from a serde_json value, returning
+    /// an empty names vec if unparseable
+    pub fn from_value(value: Option<serde_json::Value>) -> Result<Self, String> {
+        let names: Vec<super::super::Name> = match value {
+            Some(street) => {
+                if street.is_string() {
+                    vec![super::super::Name::new(street.as_str().unwrap().to_string())]
+                } else {
+                    match serde_json::from_value(street) {
+                        Ok(street) => street,
+                        Err(err) => { return Err(String::from("Invalid Street Property")); }
+                    }
+                }    
+            },
+            None => Vec::new()
+        };
+        
+        Ok(Names::new(names))
+    }
+
     ///
     /// Detect Strings like `5 Avenue` and return a synonym
     /// like `5th Avenue` where possible

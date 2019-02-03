@@ -28,8 +28,8 @@ pub use self::types::Name;
 
 // Functions registered here will be made avaliable to be called from NodeJS
 register_module!(mut m, {
-    m.export_function("map", map::import_addr)?;
-    m.export_function("map", map::import_net)?;
+    m.export_function("import_addr", map::import_addr)?;
+    m.export_function("import_net", map::import_net)?;
 
     m.export_function("convert", convert::convert)?;
     m.export_function("stats", stats::stats)?;
