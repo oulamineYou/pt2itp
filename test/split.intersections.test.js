@@ -21,12 +21,14 @@ test('Split: Simple Intersection', (t) => {
         { "type":"MultiPoint","coordinates": [[-79.43893074989319, 38.74276213271957, 1], [-79.43694591522217, 38.74308011985037, 2], [-79.43537950515747, 38.74588336618241, 3]] },
         [{
             id: 1,
-            a_name: [{
+            a_id: 1,
+            b_id: 2,
+            a_street: [{
                 "display": "Riverton Road South",
                 "tokenized": "riverton rd s",
                 "tokenless": "riverton"
             }],
-            b_name: [{
+            b_street: [{
                 "display": "Germany Valley Road",
                 "tokenized": "germany vly rd",
                 "tokenless": "germany"
@@ -34,7 +36,9 @@ test('Split: Simple Intersection', (t) => {
             geom: { "type": "Point", "coordinates": [ -79.43606615066528, 38.743573833905266 ] }
         },{
             id: 2,
-            a_name: [{
+            a_id: 3,
+            b_id: 1,
+            a_street: [{
                 "display": "WV Route 33",
                 "tokenized": "wv rte 33",
                 "tokenless": ""
@@ -43,7 +47,7 @@ test('Split: Simple Intersection', (t) => {
                 "tokenized": "mountaineer dr",
                 "tokenless": "mountaineer"
             }],
-            b_name: [{
+            b_street: [{
                 "display": "Riverton Road South",
                 "tokenized": "riverton rd s",
                 "tokenless": "riverton"
@@ -55,7 +59,8 @@ test('Split: Simple Intersection', (t) => {
     const split = new Split({
         stdout: false,
         debug: true,
-        country: 'us'
+        country: 'us',
+        intersections: true
     });
 
     split.split(feat, (err, res) => {
@@ -66,6 +71,11 @@ test('Split: Simple Intersection', (t) => {
         res = res[0];
 
         t.deepEquals(res.properties, {
+            'carmen:intersections': [
+                'Germany Valley Road',
+                'Mountaineer Drive',
+                'Wv Route 33'
+            ],
             'carmen:addressnumber': [ null, [ '2', '10', '20' ] ],
             'carmen:rangetype': 'tiger',
             'carmen:parityl': [ [ 'E', 'E' ], null ],
@@ -86,8 +96,11 @@ test('Split: Simple Intersection', (t) => {
                 coordinates: [[[-79.43969249725342,38.74246924858317],[-79.43917751312256,38.74222238816381]],[[-79.43564413755021,38.74447392917718],[-79.43511664867401,38.74597541121073]]]
             },{
                 type: "MultiPoint",
-                coordinates: [[-79.43893074989319,38.74276213271957,1],[-79.43694591522217,38.74308011985037,2],[-79.43537950515747,38.74588336618241,3]]}
-            ]
+                coordinates: [[-79.43893074989319,38.74276213271957,1],[-79.43694591522217,38.74308011985037,2],[-79.43537950515747,38.74588336618241,3]]
+            },{
+                type: "MultiPoint",
+                coordinates: [ [ -79.43606615066528, 38.743573833905266 ], [ -79.43968176841736, 38.74250272111668 ], [ -79.43968176841736, 38.74250272111668 ] ]
+            }]
         }, 'matches geometry');
 
         t.end();
