@@ -33,15 +33,23 @@ pub fn written_numeric(text: String) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use super::super::*;
 
     #[test]
     fn test_written_numeric() {
-        let names = Names::new(vec![Name::new(String::from("Twenty-third Avenue NW"), &None)]);
+        assert_eq!(
+            number_suffix(String::from("Twenty-third Avenue NW")),
+            String::from("")
+        );
 
-        let names = Names::new(vec![Name::new(String::from("North twenty-Third Avenue"), &None)]);
+        assert_eq!(
+            number_suffix(String::from("North twenty-Third Avenue")),
+            String::from("")
+        );
 
-        let names = Names::new(vec![Name::new(String::from("TWENTY-THIRD Avenue"), &None)]);
+        assert_eq!(
+            number_suffix(String::from("TWENTY-THIRD Avenue")),
+            String::from("")
+        );
     }
 
     #[test]

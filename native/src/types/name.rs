@@ -1,5 +1,28 @@
-use regex::Regex;
 use std::collections::HashMap;
+use regex::Regex;
+
+///
+/// InputName is only used internally to serialize a names array to the
+/// Names type. It should not be used unless as an intermediary into the Names type
+///
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
+struct InputName {
+    /// Street Name
+    pub display: String,
+
+    /// When choosing which street name is primary, order by priority
+    pub priority: i8
+}
+
+impl InputName {
+    pub fn new(mut display: String, priority: i8) -> Self {
+        InputName {
+            display: display,
+            priority: priority
+        }
+    }
+}
+
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Names {
@@ -7,7 +30,19 @@ pub struct Names {
 }
 
 impl Names {
-    pub fn new(names: Vec<Name>) -> Self {
+    pub fn new(names: Vec<Name>, context: &Option<super::Context>) -> Self {
+        /*
+        match context {
+            Some(context) => {
+                if context.country == String::from("us") {
+                    display = super::super::text::number_suffix(display);
+                    display = super::super::text::written_numeric(display);
+                }
+            },
+            None => ()
+        };
+        */
+
         Names {
             names: names
         }
@@ -18,21 +53,27 @@ impl Names {
     /// an empty names vec if unparseable
     ///
     pub fn from_value(value: Option<serde_json::Value>, context: &Option<super::Context>) -> Result<Self, String> {
-        let names: Vec<super::super::Name> = match value {
+        let names: Vec<Name> = match value {
             Some(street) => {
                 if street.is_string() {
-                    vec![super::super::Name::new(street.as_str().unwrap().to_string(), &context)]
+                    vec![Name::new(street.as_str().unwrap().to_string(), 0)]
                 } else {
-                    match serde_json::from_value(street) {
+                    let names: Vec<InputName> = match serde_json::from_value(street) {
                         Ok(street) => street,
                         Err(err) => { return Err(String::from("Invalid Street Property")); }
-                    }
+                    };
+
+                    let names: Vec<Name> = names.iter().map(|name| {
+                        Name::new(name.display.clone(), name.priority)
+                    }).collect();
+
+                    names
                 }
             },
             None => Vec::new()
         };
 
-        Ok(Names::new(names))
+        Ok(Names::new(names, &context))
     }
 }
 
@@ -64,19 +105,9 @@ impl Name {
     /// # Example
     ///
     /// ```
-    /// let name = Name::new(String::from("Main St NW"), None);
+    /// let name = Name::new(String::from("Main St NW"), 0);
     /// ```
-    pub fn new(mut display: String, context: &Option<super::Context>) -> Self {
-        match context {
-            Some(context) => {
-                if context.country == String::from("us") {
-                    display = super::super::text::number_suffix(display);
-                    display = super::super::text::written_numeric(display);
-                }
-            },
-            None => ()
-        };
-
+    pub fn new(mut display: String, priority: i8) -> Self {
         Name {
             display: display,
             priority: 0,
@@ -93,7 +124,7 @@ mod tests {
 
     #[test]
     fn test_name() {
-        assert_eq!(Name::new(String::from("Main St NW"), &None), Name {
+        assert_eq!(Name::new(String::from("Main St NW"), 0), Name {
             display: String::from("Main St NW"),
             priority: 0,
             source: String::from(""),
@@ -103,13 +134,26 @@ mod tests {
     }
 
     #[test]
+    fn test_inputname() {
+        assert_eq!(InputName::new(String::from("Main St NW"), 1), InputName {
+            display: String::from("Main St NW"),
+            priority: 1
+        });
+
+        assert_eq!(InputName::new(String::from("S Main St NW"), 0), InputName {
+            display: String::from("S Main St NW"),
+            priority: 0
+        });
+    }
+
+    #[test]
     fn test_names() {
-        assert_eq!(Names::new(vec![]), Names {
+        assert_eq!(Names::new(vec![], &None), Names {
             names: Vec::new()
         });
 
-        assert_eq!(Names::new(vec![Name::new(String::from("Main St NW"), &None)]), Names {
-            names: vec![Name::new(String::from("Main St NW"), &None)]
+        assert_eq!(Names::new(vec![Name::new(String::from("Main St NW"), 0)], &None), Names {
+            names: vec![Name::new(String::from("Main St NW"), 0)]
         });
     }
 }
