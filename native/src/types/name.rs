@@ -1,7 +1,7 @@
 use regex::Regex;
 use std::collections::HashMap;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Names {
     names: Vec<Name>
 }
@@ -13,8 +13,10 @@ impl Names {
         }
     }
 
+    ///
     /// Parse a Names object from a serde_json value, returning
     /// an empty names vec if unparseable
+    ///
     pub fn from_value(value: Option<serde_json::Value>) -> Result<Self, String> {
         let names: Vec<super::super::Name> = match value {
             Some(street) => {
@@ -34,21 +36,24 @@ impl Names {
     }
 
     ///
-    /// Detect Strings like `5 Avenue` and return a synonym
-    /// like `5th Avenue` where possible
+    /// Detect Strings like `5 Avenue` and return a synonym like `5th Avenue` where possible
     ///
     pub fn number_suffix(&mut self) {
 
     }
 
+    ///
     /// One -> Twenty are handled as geocoder-abbrev. Because Twenty-First has a hyphen, which is
     /// converted to a space by the tokenized, these cannot currently be managed as token level
     /// replacements and are handled as synonyms instead
+    ///
     pub fn written_numeric(&mut self) {
-        let numeric = Regex::new(r"(?i)(Twenty|Thirty|Fourty|Fifty|Sixty|Seventy|Eighty|Ninety)-(First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth)").unwrap();
+        lazy_static! {
+            static ref NUMERIC: Regex = Regex::new(r"(?i)(Twenty|Thirty|Fourty|Fifty|Sixty|Seventy|Eighty|Ninety)-(First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth)").unwrap();
+        }
 
         for name in &self.names {
-            if numeric.is_match(name.display.as_str()) {
+            if NUMERIC.is_match(name.display.as_str()) {
 
                 /*
                     let num = {
@@ -64,7 +69,7 @@ impl Names {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Name {
     /// Street Name
     pub display: String,
@@ -104,4 +109,41 @@ impl Name {
         }
     }
 
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_name() {
+        assert_eq!(Name::new(String::from("Main St NW")), Name {
+            display: String::from("Main St NW"),
+            priority: 0,
+            source: String::from(""),
+            tokenized: String::from(""),
+            tokenless: String::from("")
+        });
+    }
+
+    #[test]
+    fn test_names() {
+        assert_eq!(Names::new(vec![]), Names {
+            names: Vec::new()        
+        });
+
+        assert_eq!(Names::new(vec![Name::new(String::from("Main St NW"))]), Names {
+            names: vec![Name::new(String::from("Main St NW"))]
+        });
+    }
+
+    #[test]
+    fn test_written_numeric() {
+
+    }
+
+    #[test]
+    fn test_number_suffix() {
+
+    }
 }
