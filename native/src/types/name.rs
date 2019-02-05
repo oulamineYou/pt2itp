@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Names {
-    names: Vec<Name>
+    pub names: Vec<Name>
 }
 
 impl Names {
@@ -97,7 +97,7 @@ impl Name {
     /// # Example
     ///
     /// ```
-    /// let name = Name::new("Main St NW");
+    /// let name = Name::new(String::from("Main St NW"));
     /// ```
     pub fn new(display: String) -> Self {
         Name {
@@ -108,7 +108,6 @@ impl Name {
             tokenless: String::from("")
         }
     }
-
 }
 
 #[cfg(test)]
@@ -129,7 +128,7 @@ mod tests {
     #[test]
     fn test_names() {
         assert_eq!(Names::new(vec![]), Names {
-            names: Vec::new()        
+            names: Vec::new()
         });
 
         assert_eq!(Names::new(vec![Name::new(String::from("Main St NW"))]), Names {
@@ -139,7 +138,11 @@ mod tests {
 
     #[test]
     fn test_written_numeric() {
+        let names = Names::new(vec![Name::new(String::from("Twenty-third Avenue NW"))]);
 
+        let names = Names::new(vec![Name::new(String::from("North twenty-Third Avenue"))]);
+
+        let names = Names::new(vec![Name::new(String::from("TWENTY-THIRD Avenue"))]);
     }
 
     #[test]
