@@ -71,7 +71,7 @@ impl Network {
             None => { return Err(String::from("Network must have geometry")); }
         };
 
-        let names =  super::super::Names::from_value(props.remove(&String::from("street")))?;
+        let names =  super::super::Names::from_value(props.remove(&String::from("street")), &context)?;
 
         Ok(Network {
             id: match feat.id {
@@ -83,8 +83,6 @@ impl Network {
             props: props,
             geom: geom
         })
-
-
     }
 
     ///Return a PG Copyable String of the feature

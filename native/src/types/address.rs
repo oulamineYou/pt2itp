@@ -39,7 +39,7 @@ impl Address {
 
         let mut props = match feat.properties {
             Some(props) => props,
-            None => { return Err(String::from("Feature has no properties")); }   
+            None => { return Err(String::from("Feature has no properties")); }
         };
 
         let number = match props.remove(&String::from("number")) {
@@ -100,7 +100,7 @@ impl Address {
             None => { return Err(String::from("Addresses must have geometry")); }
         };
 
-        let names = super::super::Names::from_value(props.remove(&String::from("street")))?;
+        let names = super::super::Names::from_value(props.remove(&String::from("street")), &context)?;
 
         let mut addr = Address {
             id: match feat.id {
@@ -116,11 +116,11 @@ impl Address {
             geom: geom
         };
 
-        addr.std(&context)?;
+        addr.std()?;
 
         Ok(addr)
     }
-    pub fn std(&mut self, context: &Option<super::super::types::Context>) -> Result<(), String> {
+    pub fn std(&mut self) -> Result<(), String> {
         self.number.to_lowercase();
 
         // Remove 1/2 Numbers from addresses as they are not currently supported
@@ -147,16 +147,6 @@ impl Address {
         if self.number.len() > 10 {
             return Err(String::from("Number should not exceed 10 chars"));
         }
-
-        match context {
-            Some(context) => {
-                if context.country == String::from("us") {
-                    self.names.number_suffix();
-                    self.names.written_numeric();
-                }
-            },
-            None => ()
-        };
 
         Ok(())
     }

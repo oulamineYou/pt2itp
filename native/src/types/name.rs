@@ -17,11 +17,11 @@ impl Names {
     /// Parse a Names object from a serde_json value, returning
     /// an empty names vec if unparseable
     ///
-    pub fn from_value(value: Option<serde_json::Value>) -> Result<Self, String> {
+    pub fn from_value(value: Option<serde_json::Value>, context: &Option<super::Context>) -> Result<Self, String> {
         let names: Vec<super::super::Name> = match value {
             Some(street) => {
                 if street.is_string() {
-                    vec![super::super::Name::new(street.as_str().unwrap().to_string())]
+                    vec![super::super::Name::new(street.as_str().unwrap().to_string(), &context)]
                 } else {
                     match serde_json::from_value(street) {
                         Ok(street) => street,
@@ -33,39 +33,6 @@ impl Names {
         };
 
         Ok(Names::new(names))
-    }
-
-    ///
-    /// Detect Strings like `5 Avenue` and return a synonym like `5th Avenue` where possible
-    ///
-    pub fn number_suffix(&mut self) {
-
-    }
-
-    ///
-    /// One -> Twenty are handled as geocoder-abbrev. Because Twenty-First has a hyphen, which is
-    /// converted to a space by the tokenized, these cannot currently be managed as token level
-    /// replacements and are handled as synonyms instead
-    ///
-    pub fn written_numeric(&mut self) {
-        lazy_static! {
-            static ref NUMERIC: Regex = Regex::new(r"(?i)(Twenty|Thirty|Fourty|Fifty|Sixty|Seventy|Eighty|Ninety)-(First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth)").unwrap();
-        }
-
-        for name in &self.names {
-            if NUMERIC.is_match(name.display.as_str()) {
-
-                /*
-                    let num = {
-                                twenty: '2', thirty: '3', fourty: '4', fifty: '5', sixty: '6', seventy: '7', eighty: '8', ninety: '9',
-                                        first: '1st', second: '2nd', third: '3rd', fourth: '4th', fifth: '5th', sixth: '6th', seventh: '7th', eighth: '8th', ninth: '9th'
-                                                };
-
-                    return text.replace(RegExp(match[0], 'i'), num[match[1].toLowerCase()] + num[match[2].toLowerCase()])
-                    */
-
-            }
-        }
     }
 }
 
@@ -99,7 +66,17 @@ impl Name {
     /// ```
     /// let name = Name::new(String::from("Main St NW"));
     /// ```
-    pub fn new(display: String) -> Self {
+    pub fn new(mut display: String, context: &Option<super::Context>) -> Self {
+        match context {
+            Some(context) => {
+                if context.country == String::from("us") {
+                    display = super::super::text::number_suffix(display);
+                    display = super::super::text::written_numeric(display);
+                }
+            },
+            None => ()
+        };
+
         Name {
             display: display,
             priority: 0,
@@ -134,19 +111,5 @@ mod tests {
         assert_eq!(Names::new(vec![Name::new(String::from("Main St NW"))]), Names {
             names: vec![Name::new(String::from("Main St NW"))]
         });
-    }
-
-    #[test]
-    fn test_written_numeric() {
-        let names = Names::new(vec![Name::new(String::from("Twenty-third Avenue NW"))]);
-
-        let names = Names::new(vec![Name::new(String::from("North twenty-Third Avenue"))]);
-
-        let names = Names::new(vec![Name::new(String::from("TWENTY-THIRD Avenue"))]);
-    }
-
-    #[test]
-    fn test_number_suffix() {
-
     }
 }
