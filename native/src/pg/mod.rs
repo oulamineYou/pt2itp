@@ -66,6 +66,13 @@ impl Table for Address {
 
     fn index(conn: &Connection) {
         conn.execute(r#"
+            ALTER TABLE address
+                ALTER COLUMN geom
+                TYPE GEOMETRY(POINTZ, 4326)
+                USING ST_SetSRID(ST_MakePoint(ST_X(geom), ST_Y(geom), id::FLOAT), 4326);
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
             CREATE INDEX address_idx ON address (id);
         "#, &[]).unwrap();
 
