@@ -66,16 +66,20 @@ impl Table for Address {
 
     fn index(conn: &Connection) {
         conn.execute(r#"
-            BEGIN;
-
             CREATE INDEX address_idx ON address (id);
-            CREATE INDEX address_gix ON address USING GIST (geom);
-            CLUSTER address USING address_idx;
-            ANALYZE address;
-
-            COMMIT;
         "#, &[]).unwrap();
 
+        conn.execute(r#"
+            CREATE INDEX address_gix ON address USING GIST (geom);
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            CLUSTER address USING address_idx;
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            ANALYZE address;
+        "#, &[]).unwrap();
     }
 }
 
@@ -122,15 +126,19 @@ impl Table for Network {
 
     fn index(conn: &Connection) {
         conn.execute(r#"
-            BEGIN;
-
             CREATE INDEX network_idx ON network (id);
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
             CREATE INDEX network_gix ON network USING GIST (geom);
+        "#, &[]).unwrap();
 
+        conn.execute(r#"
             CLUSTER network USING network_idx;
-            ANALYZE network;
+        "#, &[]).unwrap();
 
-            COMMIT;
+        conn.execute(r#"
+            ANALYZE network;
         "#, &[]).unwrap();
     }
 }
