@@ -71,19 +71,19 @@ test('Split: Simple Intersection', (t) => {
         res = res[0];
 
         t.deepEquals(res.properties, {
-            'carmen:intersections': [
+            'carmen:intersections': [null, null, [
                 'Germany Valley Road',
                 'Mountaineer Drive',
                 'Wv Route 33'
-            ],
-            'carmen:addressnumber': [ null, [ '2', '10', '20' ] ],
+            ]],
+            'carmen:addressnumber': [ null, [ '2', '10', '20' ], null ],
             'carmen:rangetype': 'tiger',
-            'carmen:parityl': [ [ 'E', 'E' ], null ],
-            'carmen:lfromhn': [ [ 0, 20 ], null ],
-            'carmen:ltohn': [ [ 10, 30 ], null ],
-            'carmen:parityr': [ [ null, null ], null ],
-            'carmen:rfromhn': [ [ null, null ], null ],
-            'carmen:rtohn': [ [ 0, 10 ], null ],
+            'carmen:parityl': [ [ 'E', 'E' ], null, null ],
+            'carmen:lfromhn': [ [ 0, 20 ], null, null ],
+            'carmen:ltohn': [ [ 10, 30 ], null, null ],
+            'carmen:parityr': [ [ null, null ], null, null ],
+            'carmen:rfromhn': [ [ null, null ], null, null ],
+            'carmen:rtohn': [ [ 0, 10 ], null, null ],
             'carmen:text': 'Riverton Road South',
             'carmen:geocoder_stack': 'us',
             'carmen:center': [ -79.43694591522217, 38.74308011985037 ]
