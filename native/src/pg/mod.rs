@@ -23,11 +23,13 @@ impl Table for Address {
         conn.execute(r#"
             CREATE UNLOGGED TABLE address (
                 id SERIAL,
+                netid BIGINT,
                 names JSONB,
                 number TEXT,
                 source TEXT,
-                geom GEOMETRY(POINT, 4326),
-                props JSONB
+                output BOOLEAN,
+                props JSONB,
+                geom GEOMETRY(POINT, 4326)
             )
         "#, &[]).unwrap();
     }
@@ -45,7 +47,17 @@ impl Table for Address {
     }
 
     fn input(conn: &Connection, mut data: impl Read) {
-        let stmt = conn.prepare(format!("COPY address (names, number, source, props, geom) FROM STDIN").as_str()).unwrap();
+        let stmt = conn.prepare(format!(r#"
+            COPY address (
+                id,
+                names,
+                number,
+                source,
+                output,
+                props,
+                geom
+            ) FROM STDIN
+        "#).as_str()).unwrap();
 
         stmt.copy_in(&[], &mut data).unwrap();
     }

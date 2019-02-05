@@ -167,8 +167,13 @@ impl Address {
     pub fn to_tsv(self) -> String {
         let geom = postgis::ewkb::Point::new(self.geom.0, self.geom.1, Some(4326)).as_ewkb().to_hex_ewkb();
 
-        format!("{names}\t{number}\t{source}\t{props}\t{geom}\n",
+        format!("{id}\t{names}\t{number}\t{source}\t{output}\t{props}\t{geom}\n",
+            id = match self.id {
+                Some(id) => id.to_string(),
+                None => String::from("")
+            },
             names = serde_json::to_string(&self.names).unwrap_or(String::from("")),
+            output = self.output,
             number = self.number,
             source = self.source,
             props = serde_json::value::Value::from(self.props),
