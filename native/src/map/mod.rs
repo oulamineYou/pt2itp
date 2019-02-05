@@ -46,6 +46,7 @@ pub fn import_addr(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     pg::Address::create(&conn);
     pg::Address::input(&conn, AddrStream::new(GeoStream::new(args.input), context));
+    pg::Address::index(&conn);
 
     Ok(cx.boolean(true))
 }
@@ -69,6 +70,7 @@ pub fn import_net(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     pg::Network::create(&conn);
     pg::Network::input(&conn, NetStream::from(GeoStream::new(args.input)));
+    pg::Network::index(&conn);
 
     Ok(cx.boolean(true))
 }

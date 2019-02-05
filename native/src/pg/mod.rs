@@ -49,14 +49,16 @@ impl Table for Address {
     fn input(conn: &Connection, mut data: impl Read) {
         let stmt = conn.prepare(format!(r#"
             COPY address (
-                id,
                 names,
                 number,
                 source,
                 output,
                 props,
                 geom
-            ) FROM STDIN
+            )
+            FROM STDIN
+            WITH
+                NULL AS ''
         "#).as_str()).unwrap();
 
         stmt.copy_in(&[], &mut data).unwrap();
@@ -64,8 +66,16 @@ impl Table for Address {
 
     fn index(conn: &Connection) {
         conn.execute(r#"
-             CREATE INDEX ON address (id);
+            BEGIN;
+
+            CREATE INDEX address_idx ON address (id);
+            CREATE INDEX address_gix ON address USING GIST (geom);
+            CLUSTER address USING address_idx;
+            ANALYZE address;
+
+            COMMIT;
         "#, &[]).unwrap();
+
     }
 }
 
@@ -112,7 +122,15 @@ impl Table for Network {
 
     fn index(conn: &Connection) {
         conn.execute(r#"
-             CREATE INDEX ON network (id);
+            BEGIN;
+
+            CREATE INDEX network_idx ON network (id);
+            CREATE INDEX network_gix ON network USING GIST (geom);
+
+            CLUSTER network USING network_idx;
+            ANALYZE network;
+
+            COMMIT;
         "#, &[]).unwrap();
     }
 }
