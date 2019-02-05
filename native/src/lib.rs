@@ -9,6 +9,7 @@ extern crate regex;
 
 // Internal Helper Libraries
 pub mod stream;
+pub mod text;
 
 pub mod types;
 pub mod pg;

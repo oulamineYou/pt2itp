@@ -1,4 +1,5 @@
 use regex::Regex;
+use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Names {
@@ -24,11 +25,11 @@ impl Names {
                         Ok(street) => street,
                         Err(err) => { return Err(String::from("Invalid Street Property")); }
                     }
-                }    
+                }
             },
             None => Vec::new()
         };
-        
+
         Ok(Names::new(names))
     }
 
@@ -37,7 +38,7 @@ impl Names {
     /// like `5th Avenue` where possible
     ///
     pub fn number_suffix(&mut self) {
-        
+
     }
 
     /// One -> Twenty are handled as geocoder-abbrev. Because Twenty-First has a hyphen, which is
@@ -57,7 +58,7 @@ impl Names {
 
                     return text.replace(RegExp(match[0], 'i'), num[match[1].toLowerCase()] + num[match[2].toLowerCase()])
                     */
-               
+
             }
         }
     }
@@ -69,7 +70,16 @@ pub struct Name {
     pub display: String,
 
     /// When choosing which street name is primary, order by priority
-    pub priority: i8
+    pub priority: i8,
+
+    /// Table source of a given name (network or address)
+    pub source: String,
+
+    /// Abbreviated form of the name
+    pub tokenized: String,
+
+    /// All abbreviations removed form of the name
+    pub tokenless: String
 }
 
 impl Name {
@@ -87,7 +97,10 @@ impl Name {
     pub fn new(display: String) -> Self {
         Name {
             display: display,
-            priority: 0
+            priority: 0,
+            source: String::from(""),
+            tokenized: String::from(""),
+            tokenless: String::from("")
         }
     }
 
