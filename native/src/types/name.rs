@@ -64,7 +64,7 @@ impl Name {
     /// # Example
     ///
     /// ```
-    /// let name = Name::new(String::from("Main St NW"));
+    /// let name = Name::new(String::from("Main St NW"), None);
     /// ```
     pub fn new(mut display: String, context: &Option<super::Context>) -> Self {
         match context {
@@ -93,7 +93,7 @@ mod tests {
 
     #[test]
     fn test_name() {
-        assert_eq!(Name::new(String::from("Main St NW")), Name {
+        assert_eq!(Name::new(String::from("Main St NW"), &None), Name {
             display: String::from("Main St NW"),
             priority: 0,
             source: String::from(""),
@@ -108,8 +108,8 @@ mod tests {
             names: Vec::new()
         });
 
-        assert_eq!(Names::new(vec![Name::new(String::from("Main St NW"))]), Names {
-            names: vec![Name::new(String::from("Main St NW"))]
+        assert_eq!(Names::new(vec![Name::new(String::from("Main St NW"), &None)]), Names {
+            names: vec![Name::new(String::from("Main St NW"), &None)]
         });
     }
 }

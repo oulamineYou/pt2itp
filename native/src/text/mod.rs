@@ -8,11 +8,18 @@ use regex::Regex;
 /// 
 pub fn number_suffix(text: String) -> String {
     lazy_static! {
-        static ref NUMSUFFIX: Regex = Regex::new(r"(?i)^(\d+)(\s+\w.*)$").unwrap();
+        static ref NUMSUFFIX: Regex = Regex::new(r"(?i)^(?P<number>\d+)(?P<name>\s+\w.*)$").unwrap();
     }
 
     match NUMSUFFIX.captures(text.as_str()) {
-        Some(group) => {
+        Some(capture) => {
+            let num: i64 = match capture["number"].parse() {
+                Ok(num) => num,
+                _ => {
+                    return text
+                }
+            };
+
             text
         },
         None => text
@@ -26,14 +33,15 @@ pub fn written_numeric(text: String) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use super::super::*;
 
     #[test]
     fn test_written_numeric() {
-        let names = Names::new(vec![Name::new(String::from("Twenty-third Avenue NW"))]);
+        let names = Names::new(vec![Name::new(String::from("Twenty-third Avenue NW"), &None)]);
 
-        let names = Names::new(vec![Name::new(String::from("North twenty-Third Avenue"))]);
+        let names = Names::new(vec![Name::new(String::from("North twenty-Third Avenue"), &None)]);
 
-        let names = Names::new(vec![Name::new(String::from("TWENTY-THIRD Avenue"))]);
+        let names = Names::new(vec![Name::new(String::from("TWENTY-THIRD Avenue"), &None)]);
     }
 
     #[test]
