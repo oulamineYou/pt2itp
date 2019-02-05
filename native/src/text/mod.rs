@@ -1,6 +1,11 @@
 use std::collections::HashMap;
 use regex::Regex;
 
+///
+/// Remove all diacritics from the given string
+///
+/// Ported from: https://github.com/andrewrk/node-diacritics
+///
 fn diacritics(text: &String) -> String {
     lazy_static! {
         static ref HAS_DIACRITICS: Regex = Regex::new(r"[^\u0000-\u007e]").unwrap();
