@@ -79,6 +79,20 @@ pub fn written_numeric(text: &String) -> Option<String> {
     }
 }
 
+///
+/// Removes the octothorpe from names like "HWY #35", to get "HWY 35"
+///
+pub fn remove_octo(text: &String) -> Option<String> {
+    lazy_static! {
+        static ref OCTO: Regex = Regex::new(r"(?i)^(?P<type>HWY |HIGHWAY |RTE |ROUTE |US )(#)(?P<post>\d+)$").unwrap();
+    }
+
+    match OCTO.captures(text.as_str()) {
+        Some(capture) => Some(format!("{}{}", &capture["type"], &capture["post"])),
+        _ => None
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -136,6 +150,24 @@ mod tests {
         assert_eq!(
             written_numeric(&String::from("TWENTY-THIRD Avenue")),
             Some(String::from("23rd Avenue"))
+        );
+    }
+
+    #[test]
+    fn test_remove_octo() {
+        assert_eq!(
+            remove_octo(&String::from("Highway #12 West")),
+            Some(String::from("Highway 12 West"))
+        );
+
+        assert_eq!(
+            remove_octo(&String::from("Route #A")),
+            Some(String::from("Route A"))
+        );
+
+        assert_eq!(
+            remove_octo(&String::from("RTe #1")),
+            Some(String::from("Route 1"))
         );
     }
 }

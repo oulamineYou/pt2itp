@@ -121,7 +121,7 @@ impl Address {
         Ok(addr)
     }
     pub fn std(&mut self) -> Result<(), String> {
-        self.number.to_lowercase();
+        self.number = self.number.to_lowercase();
 
         // Remove 1/2 Numbers from addresses as they are not currently supported
         lazy_static! {

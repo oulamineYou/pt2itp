@@ -73,7 +73,7 @@ impl Network {
 
         let names =  super::super::Names::from_value(props.remove(&String::from("street")), &context)?;
 
-        Ok(Network {
+        let mut net = Network {
             id: match feat.id {
                 Some(geojson::feature::Id::Number(id)) => id.as_i64(),
                 _ => None
@@ -82,7 +82,15 @@ impl Network {
             source: source,
             props: props,
             geom: geom
-        })
+        };
+
+        net.std()?;
+
+        Ok(net)
+    }
+
+    pub fn std(&mut self) -> Result<(), String> {
+        Ok(())
     }
 
     ///Return a PG Copyable String of the feature
