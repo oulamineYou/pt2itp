@@ -24,6 +24,7 @@ pub mod dedupe;
 
 pub use self::types::Address;
 pub use self::types::Network;
+pub use self::types::Context;
 pub use self::types::Names;
 pub use self::types::Name;
 

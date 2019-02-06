@@ -36,14 +36,8 @@ impl Names {
                     let mut synonyms: Vec<Name> = Vec::new();
 
                     for name in names.iter() {
-                        match super::super::text::number_suffix(&name.display) {
-                            Some(syn) => synonyms.push(Name::new(syn, 0)),
-                            None => ()
-                        };
-                        match super::super::text::written_numeric(&name.display) {
-                            Some(syn) => synonyms.push(Name::new(syn, 0)),
-                            None => ()
-                        };
+                        synonyms.append(&mut super::super::text::syn_number_suffix(&name));
+                        synonyms.append(&mut super::super::text::syn_written_numeric(&name));
                     }
 
                     names.append(&mut synonyms);

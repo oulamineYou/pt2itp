@@ -1,22 +1,43 @@
 mod diacritics;
 
-pub use self::diacritics::diacritics;
 use std::collections::HashMap;
 use regex::Regex;
+use crate::{Name, Context};
+
+//
+// A note on fn names:
+// - Functions that operate on Strings should be prefixed with `str_`
+// - Functions that generate Name synonyms should be prefixed with `syn_`
+//
+
+///
+/// Removes the octothorpe from names like "HWY #35", to get "HWY 35"
+///
+pub fn str_remove_octo(text: &String) -> Option<String> {
+    lazy_static! {
+        static ref OCTO: Regex = Regex::new(r"(?i)^(?P<type>HWY |HIGHWAY |RTE |ROUTE |US )(#)(?P<post>\d+\s?.*)$").unwrap();
+    }
+
+    match OCTO.captures(text.as_str()) {
+        Some(capture) => Some(format!("{}{}", &capture["type"], &capture["post"])),
+        _ => None
+    }
+}
+
 
 ///
 /// Detect Strings like `5 Avenue` and return a synonym like `5th Avenue` where possible
 ///
-pub fn number_suffix(text: &String) -> Option<String> {
+pub fn syn_number_suffix(name: &Name) -> Vec<Name> {
     lazy_static! {
         static ref NUMSUFFIX: Regex = Regex::new(r"(?i)^(?P<number>\d+)\s+(?P<name>\w.*)$").unwrap();
     }
 
-    match NUMSUFFIX.captures(text.as_str()) {
+    match NUMSUFFIX.captures(name.display.as_str()) {
         Some(capture) => {
             let num: i64 = match capture["number"].parse() {
                 Ok(num) => num,
-                _ => { return None; }
+                _ => { return Vec::new(); }
             };
 
             let suffix: String;
@@ -32,13 +53,13 @@ pub fn number_suffix(text: &String) -> Option<String> {
                 suffix = String::from("th");
             }
 
-            Some(format!("{}{} {}", num, suffix, &capture["name"]))
+            vec![Name::new(format!("{}{} {}", num, suffix, &capture["name"]), 0)]
         },
-        None => None
+        None => Vec::new()
     }
 }
 
-pub fn written_numeric(text: &String) -> Option<String> {
+pub fn syn_written_numeric(name: &Name) -> Vec<Name> {
     lazy_static! {
         static ref NUMERIC: Regex = Regex::new(r"(?i)(?P<pre>^.*)(?P<tenth>Twenty|Thirty|Fourty|Fifty|Sixty|Seventy|Eighty|Ninety)-(?P<nth>First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth)(?P<post>.*$)").unwrap();
 
@@ -68,30 +89,21 @@ pub fn written_numeric(text: &String) -> Option<String> {
         };
     }
 
-    match NUMERIC.captures(text.as_str()) {
+    match NUMERIC.captures(name.display.as_str()) {
         Some(capture) => {
-            let tenth = NUMERIC_MAP.get(&capture["tenth"].to_lowercase())?;
-            let nth = NUMERIC_MAP.get(&capture["nth"].to_lowercase())?;
+            let tenth = match NUMERIC_MAP.get(&capture["tenth"].to_lowercase()) {
+                None => { return Vec::new(); },
+                Some(tenth) => tenth
+            };
 
-            Some(format!("{}{}{}{}", &capture["pre"], tenth, nth, &capture["post"]))
+            let nth = match NUMERIC_MAP.get(&capture["nth"].to_lowercase()) {
+                None => { return Vec::new(); },
+                Some(nth) => nth
+            };
+
+            vec![Name::new(format!("{}{}{}{}", &capture["pre"], tenth, nth, &capture["post"]), 0)]
         },
-        _ => None
-    }
-}
-
-///
-/// Removes the octothorpe from names like "HWY #35", to get "HWY 35"
-///
-pub fn remove_octo(text: &String) -> Option<String> {
-    lazy_static! {
-        static ref OCTO: Regex = Regex::new(r"(?i)^(?P<type>HWY |HIGHWAY |RTE |ROUTE |US )(#)(?P<post>\d+\s?.*)$").unwrap();
-    }
-
-    println!("{}", OCTO.is_match(text.as_str()));
-
-    match OCTO.captures(text.as_str()) {
-        Some(capture) => Some(format!("{}{}", &capture["type"], &capture["post"])),
-        _ => None
+        _ => Vec::new()
     }
 }
 
@@ -99,66 +111,67 @@ pub fn remove_octo(text: &String) -> Option<String> {
 /// Replace names like "NC 1 => North Carolina Highway 1"
 /// Replace names like "State Highway 1 => NC 1, North Carolina Highway 1
 ///
-fn alt_state_hwy(text: &String, context: &Option<super::super::Context>, replace_primary: bool) {
-
+fn syn_state_hwy(name: &Name, context: &Option<Context>, replace_primary: bool) -> Vec<Name> {
+    Vec::new()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::Name;
 
     #[test]
     fn test_number_suffix() {
         assert_eq!(
-            number_suffix(&String::from("1st Avenue")),
+            syn_number_suffix(&Name::new(String::from("1st Avenue"), 0)),
             None
         );
 
         assert_eq!(
-            number_suffix(&String::from("1 Avenue")),
-            Some(String::from("1st Avenue"))
+            syn_number_suffix(&Name::new(String::from("1 Avenue"), 0)),
+            Some(vec![Name::new(String::from("1st Avenue"), 0)])
         );
 
         assert_eq!(
-            number_suffix(&String::from("2 Avenue")),
-            Some(String::from("2nd Avenue"))
+            syn_number_suffix(&Name::new(String::from("2 Avenue"), 0)),
+            Some(vec![Name::new(String::from("2nd Avenue"), 0)])
         );
 
         assert_eq!(
-            number_suffix(&String::from("3 Street")),
-            Some(String::from("3rd Street"))
+            syn_number_suffix(&Name::new(String::from("3 Street"), 0)),
+            Some(vec![Name::new(String::from("3rd Street"), 0)])
         );
 
         assert_eq!(
-            number_suffix(&String::from("4 Street")),
-            Some(String::from("4th Street"))
+            syn_number_suffix(&Name::new(String::from("4 Street"), 0)),
+            Some(vec![Name::new(String::from("4th Street"), 0)])
         );
 
         assert_eq!(
-            number_suffix(&String::from("20 Street")),
-            Some(String::from("20th Street"))
+            syn_number_suffix(&Name::new(String::from("20 Street"), 0)),
+            Some(vec![Name::new(String::from("20th Street"), 0)])
         );
 
         assert_eq!(
-            number_suffix(&String::from("21 Street")),
-            Some(String::from("21st Street"))
+            syn_number_suffix(&Name::new(String::from("21 Street"), 0)),
+            Some(vec![Name::new(String::from("21st Street"), 0)])
         );
     }
 
     #[test]
     fn test_written_numeric() {
         assert_eq!(
-            written_numeric(&String::from("Twenty-third Avenue NW")),
+            syn_written_numeric(&Name::new(String::from("Twenty-third Avenue NW"), 0)),
             Some(String::from("23rd Avenue NW"))
         );
 
         assert_eq!(
-            written_numeric(&String::from("North twenty-Third Avenue")),
+            syn_written_numeric(&Name::new(String::from("North twenty-Third Avenue"), 0)),
             Some(String::from("North 23rd Avenue"))
         );
 
         assert_eq!(
-            written_numeric(&String::from("TWENTY-THIRD Avenue")),
+            syn_written_numeric(&Name::new(String::from("TWENTY-THIRD Avenue"), 0)),
             Some(String::from("23rd Avenue"))
         );
     }
@@ -166,12 +179,12 @@ mod tests {
     #[test]
     fn test_remove_octo() {
         assert_eq!(
-            remove_octo(&String::from("Highway #12 West")),
+            str_remove_octo(&String::from("Highway #12 West")),
             Some(String::from("Highway 12 West"))
         );
 
         assert_eq!(
-            remove_octo(&String::from("RTe #1")),
+            str_remove_octo(&String::from("RTe #1")),
             Some(String::from("RTe 1"))
         );
     }
