@@ -5,7 +5,6 @@ use neon::prelude::*;
 
 use super::stream::GeoStream;
 use super::stream::AddrStream;
-use super::stream::NetStream;
 
 use super::pg;
 use super::pg::Table;

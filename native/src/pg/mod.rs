@@ -4,7 +4,7 @@ use std::io::Read;
 pub trait Table {
     fn create(conn: &Connection);
     fn count(conn: &Connection) -> i64;
-    fn input(conn: &Connection, mut data: impl Read);
+    fn input(conn: &Connection, data: impl Read);
     fn index(conn: &Connection);
 }
 

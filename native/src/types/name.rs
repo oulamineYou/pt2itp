@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-use regex::Regex;
 
 ///
 /// InputName is only used internally to serialize a names array to the
@@ -15,7 +13,7 @@ struct InputName {
 }
 
 impl InputName {
-    pub fn new(mut display: String, priority: i8) -> Self {
+    pub fn new(display: String, priority: i8) -> Self {
         InputName {
             display: display,
             priority: priority
@@ -71,7 +69,7 @@ impl Names {
                 } else {
                     let names: Vec<InputName> = match serde_json::from_value(street) {
                         Ok(street) => street,
-                        Err(err) => { return Err(String::from("Invalid Street Property")); }
+                        _ => { return Err(String::from("Invalid Street Property")); }
                     };
 
                     let names: Vec<Name> = names.iter().map(|name| {
@@ -118,10 +116,10 @@ impl Name {
     /// ```
     /// let name = Name::new(String::from("Main St NW"), 0);
     /// ```
-    pub fn new(mut display: String, priority: i8) -> Self {
+    pub fn new(display: String, priority: i8) -> Self {
         Name {
             display: display,
-            priority: 0,
+            priority: priority,
             source: String::from(""),
             tokenized: String::from(""),
             tokenless: String::from("")
