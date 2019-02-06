@@ -38,6 +38,7 @@ impl Names {
                     for name in names.iter() {
                         synonyms.append(&mut super::super::text::syn_number_suffix(&name));
                         synonyms.append(&mut super::super::text::syn_written_numeric(&name));
+                        synonyms.append(&mut super::super::text::syn_state_hwy(&name, &context));
                     }
 
                     names.append(&mut synonyms);
@@ -88,7 +89,7 @@ pub struct Name {
     /// When choosing which street name is primary, order by priority
     pub priority: i8,
 
-    /// Table source of a given name (network or address)
+    /// Geometry Type of a given name (network/address)
     pub source: String,
 
     /// Abbreviated form of the name

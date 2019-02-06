@@ -116,7 +116,7 @@ pub fn syn_written_numeric(name: &Name) -> Vec<Name> {
 /// Replace names like "NC 1 => North Carolina Highway 1"
 /// Replace names like "State Highway 1 => NC 1, North Carolina Highway 1
 ///
-fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
+pub fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
 
     let region = match context.region {
         Some(ref region) => region,
