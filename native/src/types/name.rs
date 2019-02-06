@@ -39,6 +39,8 @@ impl Names {
                         synonyms.append(&mut super::super::text::syn_number_suffix(&name));
                         synonyms.append(&mut super::super::text::syn_written_numeric(&name));
                         synonyms.append(&mut super::super::text::syn_state_hwy(&name, &context));
+                        synonyms.append(&mut super::super::text::syn_us_cr(&name, &context));
+                        synonyms.append(&mut super::super::text::syn_us_hwy(&name, &context));
                     }
 
                     names.append(&mut synonyms);
