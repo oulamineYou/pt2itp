@@ -40,7 +40,7 @@ pub fn number_suffix(text: String) -> Option<String> {
 
 pub fn written_numeric(text: String) -> Option<String> {
     lazy_static! {
-        static ref NUMERIC: Regex = Regex::new(r"(?i)(?P<pre>^.*)\s(?P<tenth>Twenty|Thirty|Fourty|Fifty|Sixty|Seventy|Eighty|Ninety)-(?P<nth>First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth)\s(?P<post>.*$)").unwrap();
+        static ref NUMERIC: Regex = Regex::new(r"(?i)(?P<pre>^.*)(?P<tenth>Twenty|Thirty|Fourty|Fifty|Sixty|Seventy|Eighty|Ninety)-(?P<nth>First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth)(?P<post>.*$)").unwrap();
 
         static ref NUMERIC_MAP: HashMap<String, String> = {
             let mut m = HashMap::new();
@@ -70,10 +70,10 @@ pub fn written_numeric(text: String) -> Option<String> {
 
     match NUMERIC.captures(text.as_str()) {
         Some(capture) => {
-            let tenth = NUMERIC_MAP.get(&capture["tenth"])?;
-            let nth = NUMERIC_MAP.get(&capture["nth"])?;
+            let tenth = NUMERIC_MAP.get(&capture["tenth"].to_lowercase())?;
+            let nth = NUMERIC_MAP.get(&capture["nth"].to_lowercase())?;
 
-            Some(String::from(format!("{} {}{} {}", &capture["pre"], tenth, nth, &capture["post"])))
+            Some(format!("{}{}{}{}", &capture["pre"], tenth, nth, &capture["post"]))
         },
         _ => None
     }
@@ -125,17 +125,17 @@ mod tests {
     fn test_written_numeric() {
         assert_eq!(
             written_numeric(String::from("Twenty-third Avenue NW")),
-            Some(String::from(""))
+            Some(String::from("23rd Avenue NW"))
         );
 
         assert_eq!(
             written_numeric(String::from("North twenty-Third Avenue")),
-            Some(String::from(""))
+            Some(String::from("North 23rd Avenue"))
         );
 
         assert_eq!(
             written_numeric(String::from("TWENTY-THIRD Avenue")),
-            Some(String::from(""))
+            Some(String::from("23rd Avenue"))
         );
     }
 }
