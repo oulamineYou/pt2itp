@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v19.1.0
+
+- :rocket: Don't permutate cardinals for streets with both pre&post cardinals
+
 ## v19.0.0
 
 - :tada: Rewrite `stats` module to use `GeoStream` rust module & expose far more stats
