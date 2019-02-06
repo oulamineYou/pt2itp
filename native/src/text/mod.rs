@@ -131,15 +131,14 @@ fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
     // the goal is to get all the input highways to <state> #### and then format the matrix
 
     lazy_static! {
-        static ref PRE_HWY: Regex = Regex::new(r"
-            (?ix)^
+        static ref PRE_HWY: Regex = Regex::new(r"(?ix)^
             (?P<prefix>
               # State 123
               # State Highway 123
               (State\s(highway|hwy|route|rte)\s)
 
-              ## North Carolina 123
-              ## North Carolina Highway 123
+              # North Carolina 123
+              # North Carolina Highway 123
               |((Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New\sHampshire|New\sJersey|New\sMexico|New\sYork|North\sCarolina|North\sDakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode\sIsland|South\sCarolina|South\sDakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West\sVirginia|Wisconsin|Wyoming|District\sof\sColumbia|American\sSamoa|Guam|Northern\sMariana\sIslands|Puerto\sRico|United\sStates\sMinor\sOutlying\sIslands|Virgin\sIslands
             )\s((highway|hwy|route|rte)\s)?)
 
@@ -274,14 +273,14 @@ mod tests {
             syn_state_hwy(
                 &Name::new(String::from("PA-123"), 0),
                 &Context::new(String::from("US"), Some(String::from("PA")))
-            ), vec![]
+            ), results
         );
 
         assert_eq!(
             syn_state_hwy(
                 &Name::new(String::from("US-PA-123"), 0),
                 &Context::new(String::from("US"), Some(String::from("PA")))
-            ), vec![]
+            ), results
         );
     }
 
