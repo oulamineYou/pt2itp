@@ -172,41 +172,6 @@ test('Osmium', (t) => {
         }, { country: 'gb', region: 'pa'}), false, `${name} was dropped`);
     }
 
-    // handle suffixless numeric streets
-    let streets = [
-        ['1 Ave', 'st'],
-        ['2 St', 'nd'],
-        ['3 Lane', 'rd'],
-        ['4 St', 'th'],
-        ['10 Ave', 'th'],
-        ['11 Ave', 'th'],
-        ['12 Ave', 'th'],
-        ['13 Ave', 'th'],
-        ['14 Ave', 'th'],
-        ['21 Ave', 'st'],
-        ['22 Ave', 'nd'],
-        ['23 Ave', 'rd'],
-        ['34 Ave', 'th'],
-        ['101 St', 'st']
-    ];
-    streets.forEach((x) => {
-        let res = map({
-            type: 'Feature',
-            properties: {
-                highway: 'motorway',
-                '@id': 3,
-                name: x[0]
-            },
-            geometry: {
-                type: 'LineString',
-                coordinates: [[0,0],[1,1]]
-            }
-        }, { country: 'us' });
-
-        t.deepEquals(res, { type: 'Feature', properties: { id: 3, street: [ { display: x[0], priority: 0 }, { display: x[0].split(' ')[0] + x[1] + ' ' + x[0].split(' ')[1], priority: -1 } ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } });
-
-    });
-
     streets.forEach((x) => {
         let res = map({
             type: 'Feature',
@@ -244,73 +209,6 @@ test('Osmium', (t) => {
                 { display: name, priority: 0 },
                 { display: 'CR 123', priority: -1 },
         ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, `COUNTY ROAD: ${name}`);
-    }
-
-    for (let name of [
-        'State Highway 123',
-        'Highway 123',
-        'Hwy 123',
-        '123 hwy',
-        '123 Highway',
-        'Pennsylvania Hwy 123',
-        'Pennsylvania highway 123',
-        'PA 123'
-    ]) {
-        t.deepEquals(map({
-            type: 'Feature',
-            properties: {
-                highway: 'motorway',
-                '@id': 3,
-                name: name
-            },
-            geometry: {
-                type: 'LineString',
-                coordinates: [[0,0],[1,1]]
-            }
-        }, { country: 'us', region: 'pa'}),
-            { type: 'Feature', properties: { id: 3, street: [
-                { display: 'Pennsylvania Highway 123', priority: 1 },
-                { display: name, priority: 0 },
-                { display: 'PA 123', priority: -1 },
-                { display: 'SR 123', priority: -1 },
-                { display: 'State Highway 123', priority: -1 },
-                { display: 'State Route 123', priority: -1 },
-                { display: 'PA 123 Highway', priority: -2 },
-                { display: 'Highway 123', priority: -2 }
-        ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, `STATE HIGHWAY: ${name}`);
-    }
-    for (let name of [
-        'State Highway 123',
-        'Highway 123',
-        'Hwy 123',
-        '123 hwy',
-        '123 Highway',
-        'Pennsylvania Hwy 123',
-        'Pennsylvania highway 123',
-        'PA 123'
-    ]) {
-        t.deepEquals(map({
-            type: 'Feature',
-            properties: {
-                highway: 'motorway',
-                '@id': 3,
-                name: name
-            },
-            geometry: {
-                type: 'LineString',
-                coordinates: [[0,0],[1,1]]
-            }
-        }, { country: 'us', region: 'pa'}),
-            { type: 'Feature', properties: { id: 3, street: [
-                { display: 'Pennsylvania Highway 123', priority: 1 },
-                { display: name, priority: 0 },
-                { display: 'PA 123', priority: -1 },
-                { display: 'SR 123', priority: -1 },
-                { display: 'State Highway 123', priority: -1 },
-                { display: 'State Route 123', priority: -1 },
-                { display: 'PA 123 Highway', priority: -2 },
-                { display: 'Highway 123', priority: -2 }
-        ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, `STATE HIGHWAY: ${name}`);
     }
 
     for (let name of [

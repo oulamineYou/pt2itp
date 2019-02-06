@@ -195,7 +195,7 @@ fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
     // <State> Highway 123 (Display Form)
     //
     // TODO
-    if name.priority <= 0 {
+    if name.priority > 0 {
         syns.push(Name::new(format!("{} Highway {}", &region_name, &highway), 0));
     } else {
         syns.push(Name::new(format!("{} Highway {}", &region_name, &highway), 1));
@@ -207,7 +207,83 @@ fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Name;
+    use crate::{Name, Context};
+
+    #[test]
+    fn test_syn_state_highway() {
+        assert_eq!(
+            syn_state_hwy(
+                &Name::new(String::from(""), 0),
+                &Context::new(String::from("US"), None)
+            ), vec![]
+        );
+
+        let results = vec![
+            Name::new(String::from("PA 123 Highway"), -2),
+            Name::new(String::from("PA 123"), -1),
+            Name::new(String::from("Highway 123"), -2),
+            Name::new(String::from("SR 123"), -1),
+            Name::new(String::from("State Highway 123"), -1),
+            Name::new(String::from("State Route 123"), -1),
+            Name::new(String::from("Pennsylvania Highway 123"), 1)
+        ];
+
+        assert_eq!(
+            syn_state_hwy(
+                &Name::new(String::from("State Highway 123"), 0),
+                &Context::new(String::from("US"), Some(String::from("PA")))
+            ), results
+        );
+
+        assert_eq!(
+            syn_state_hwy(
+                &Name::new(String::from("Highway 123"), 0),
+                &Context::new(String::from("US"), Some(String::from("PA")))
+            ), results
+        );
+
+        assert_eq!(
+            syn_state_hwy(
+                &Name::new(String::from("Hwy 123"), 0),
+                &Context::new(String::from("US"), Some(String::from("PA")))
+            ), results
+        );
+
+        assert_eq!(
+            syn_state_hwy(
+                &Name::new(String::from("Pennsylvania Highway 123"), 0),
+                &Context::new(String::from("US"), Some(String::from("PA")))
+            ), results
+        );
+
+        assert_eq!(
+            syn_state_hwy(
+                &Name::new(String::from("Pennsylvania Route 123"), 0),
+                &Context::new(String::from("US"), Some(String::from("PA")))
+            ), results
+        );
+
+        assert_eq!(
+            syn_state_hwy(
+                &Name::new(String::from("PA 123"), 0),
+                &Context::new(String::from("US"), Some(String::from("PA")))
+            ), results
+        );
+
+        assert_eq!(
+            syn_state_hwy(
+                &Name::new(String::from("PA-123"), 0),
+                &Context::new(String::from("US"), Some(String::from("PA")))
+            ), vec![]
+        );
+
+        assert_eq!(
+            syn_state_hwy(
+                &Name::new(String::from("US-PA-123"), 0),
+                &Context::new(String::from("US"), Some(String::from("PA")))
+            ), vec![]
+        );
+    }
 
     #[test]
     fn test_syn_number_suffix() {
