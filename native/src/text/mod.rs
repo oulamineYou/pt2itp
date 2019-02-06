@@ -59,6 +59,11 @@ pub fn syn_number_suffix(name: &Name) -> Vec<Name> {
     }
 }
 
+///
+/// One -> Twenty are handled as geocoder-abbrev. Because Twenty-First has a hyphen, which is converted
+/// to a space by the tokenized, these cannot currently be managed as token level replacements and are handled
+/// as synonyms instead
+///
 pub fn syn_written_numeric(name: &Name) -> Vec<Name> {
     lazy_static! {
         static ref NUMERIC: Regex = Regex::new(r"(?i)(?P<pre>^.*)(?P<tenth>Twenty|Thirty|Fourty|Fifty|Sixty|Seventy|Eighty|Ninety)-(?P<nth>First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth)(?P<post>.*$)").unwrap();
@@ -111,8 +116,82 @@ pub fn syn_written_numeric(name: &Name) -> Vec<Name> {
 /// Replace names like "NC 1 => North Carolina Highway 1"
 /// Replace names like "State Highway 1 => NC 1, North Carolina Highway 1
 ///
-fn syn_state_hwy(name: &Name, context: &Option<Context>, replace_primary: bool) -> Vec<Name> {
-    Vec::new()
+fn syn_state_hwy(name: &Name, context: &Context, replace_primary: bool) -> Vec<Name> {
+
+    // the goal is to get all the input highways to <state> #### and then format the matrix
+
+    lazy_static! {
+        static ref PRE_HWY: RegexSet = Regex::new(r"
+            (?ix)^
+            (?P<prefix>
+              # State 123
+              # State Highway 123
+              (State\s(highway|hwy|route|rte)\s)
+
+              ## North Carolina 123
+              ## North Carolina Highway 123
+              |((Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New\sHampshire|New\sJersey|New\sMexico|New\sYork|North\sCarolina|North\sDakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode\sIsland|South\sCarolina|South\sDakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West\sVirginia|Wisconsin|Wyoming|District\sof\sColumbia|American\sSamoa|Guam|Northern\sMariana\sIslands|Puerto\sRico|United\sStates\sMinor\sOutlying\sIslands|Virgin\sIslands
+            )\s((highway|hwy|route|rte)\s)?)
+
+              # Highway 123
+              |((highway|hwy|route|rte)\s)
+
+              # US-AK 123
+              # US AK Highway 123
+              # AK 123
+              # AK Highway 123
+              |((US[-\s])?(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|DC|AS|GU|MP|PR|UM|VI|SR)[\s-]((highway|hwy|route|rte)\s)?)
+            )
+
+            (?P<num>\d+)
+
+            (\shighway$|\shwy$|\sroute$|\srte$)?
+
+            $
+        ");
+
+        static ref POST_HWY: Regex = Regex::new(r"(?i)^(highway|hwy|route|rte)\s(?P<num>\d+)$").unwrap();
+    }
+
+    let highway: String = match PRE_HWY.captures(name.display.as_str()) {
+        Some(capture) => capture["num"].to_string(),
+        None => match POST_HWY.captures(name.display.as_str()) {
+            Some(capture) => capture["num"].to_string(),
+            None => { return Vec::new(); }
+        }
+    }
+
+    // Note ensure capacity is increased if additional permuations are added below
+    let syns: Vec<Name> = Vec::with_capacity(7);
+
+    // NC 123 Highway
+    syns.push(Name::new(format!("{} {} Highway", context.region.to_uppercase(), &highway), -2);
+
+    // Highway 123
+    syns.push(Name::new(format!("Highway {}", &highway), -2);
+
+    // NC 123
+    syns.push(Name::new(format!("{} {}", context.region.to_uppercase(), &highway), -1);
+
+    // SR 123 (State Route)
+    syns.push(Name::new(format!("SR {}", context.region.to_uppercase(), &highway), -1);
+
+    //State Highway 123
+    syns.push(Name::new(format!("State Highway {}", context.region.to_uppercase(), &highway), -1);
+
+    //State Route 123
+    syns.push(Name::new(format!("State Route {}", context.region.to_uppercase(), &highway), -1);
+
+    // <State> Highway 123 (Display Form)
+    //
+    // TODO
+    if name.priority <= 0 {
+        syns.push(Name::new(format!(" {}", context.region.to_uppercase(), &highway), 0);
+    } else {
+        syns.push(Name::new(format!(" {}", context.region.to_uppercase(), &highway), 1);
+    }
+
+    syns
 }
 
 #[cfg(test)]
@@ -121,63 +200,63 @@ mod tests {
     use crate::Name;
 
     #[test]
-    fn test_number_suffix() {
+    fn test_syn_number_suffix() {
         assert_eq!(
             syn_number_suffix(&Name::new(String::from("1st Avenue"), 0)),
-            None
+            Vec::new()
         );
 
         assert_eq!(
             syn_number_suffix(&Name::new(String::from("1 Avenue"), 0)),
-            Some(vec![Name::new(String::from("1st Avenue"), 0)])
+            vec![Name::new(String::from("1st Avenue"), 0)]
         );
 
         assert_eq!(
             syn_number_suffix(&Name::new(String::from("2 Avenue"), 0)),
-            Some(vec![Name::new(String::from("2nd Avenue"), 0)])
+            vec![Name::new(String::from("2nd Avenue"), 0)]
         );
 
         assert_eq!(
             syn_number_suffix(&Name::new(String::from("3 Street"), 0)),
-            Some(vec![Name::new(String::from("3rd Street"), 0)])
+            vec![Name::new(String::from("3rd Street"), 0)]
         );
 
         assert_eq!(
             syn_number_suffix(&Name::new(String::from("4 Street"), 0)),
-            Some(vec![Name::new(String::from("4th Street"), 0)])
+            vec![Name::new(String::from("4th Street"), 0)]
         );
 
         assert_eq!(
             syn_number_suffix(&Name::new(String::from("20 Street"), 0)),
-            Some(vec![Name::new(String::from("20th Street"), 0)])
+            vec![Name::new(String::from("20th Street"), 0)]
         );
 
         assert_eq!(
             syn_number_suffix(&Name::new(String::from("21 Street"), 0)),
-            Some(vec![Name::new(String::from("21st Street"), 0)])
+            vec![Name::new(String::from("21st Street"), 0)]
         );
     }
 
     #[test]
-    fn test_written_numeric() {
+    fn test_syn_written_numeric() {
         assert_eq!(
             syn_written_numeric(&Name::new(String::from("Twenty-third Avenue NW"), 0)),
-            Some(String::from("23rd Avenue NW"))
+            vec![Name::new(String::from("23rd Avenue NW"), 0)]
         );
 
         assert_eq!(
             syn_written_numeric(&Name::new(String::from("North twenty-Third Avenue"), 0)),
-            Some(String::from("North 23rd Avenue"))
+            vec![Name::new(String::from("North 23rd Avenue"), 0)]
         );
 
         assert_eq!(
             syn_written_numeric(&Name::new(String::from("TWENTY-THIRD Avenue"), 0)),
-            Some(String::from("23rd Avenue"))
+            vec![Name::new(String::from("23rd Avenue"), 0)]
         );
     }
 
     #[test]
-    fn test_remove_octo() {
+    fn test_str_remove_octo() {
         assert_eq!(
             str_remove_octo(&String::from("Highway #12 West")),
             Some(String::from("Highway 12 West"))
