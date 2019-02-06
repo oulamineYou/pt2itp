@@ -7,7 +7,7 @@ use regex::Regex;
 ///
 /// Detect Strings like `5 Avenue` and return a synonym like `5th Avenue` where possible
 ///
-pub fn number_suffix(text: String) -> Option<String> {
+pub fn number_suffix(text: &String) -> Option<String> {
     lazy_static! {
         static ref NUMSUFFIX: Regex = Regex::new(r"(?i)^(?P<number>\d+)\s+(?P<name>\w.*)$").unwrap();
     }
@@ -38,7 +38,7 @@ pub fn number_suffix(text: String) -> Option<String> {
     }
 }
 
-pub fn written_numeric(text: String) -> Option<String> {
+pub fn written_numeric(text: &String) -> Option<String> {
     lazy_static! {
         static ref NUMERIC: Regex = Regex::new(r"(?i)(?P<pre>^.*)(?P<tenth>Twenty|Thirty|Fourty|Fifty|Sixty|Seventy|Eighty|Ninety)-(?P<nth>First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth)(?P<post>.*$)").unwrap();
 
@@ -86,37 +86,37 @@ mod tests {
     #[test]
     fn test_number_suffix() {
         assert_eq!(
-            number_suffix(String::from("1st Avenue")),
+            number_suffix(&String::from("1st Avenue")),
             None
         );
 
         assert_eq!(
-            number_suffix(String::from("1 Avenue")),
+            number_suffix(&String::from("1 Avenue")),
             Some(String::from("1st Avenue"))
         );
 
         assert_eq!(
-            number_suffix(String::from("2 Avenue")),
+            number_suffix(&String::from("2 Avenue")),
             Some(String::from("2nd Avenue"))
         );
 
         assert_eq!(
-            number_suffix(String::from("3 Street")),
+            number_suffix(&String::from("3 Street")),
             Some(String::from("3rd Street"))
         );
 
         assert_eq!(
-            number_suffix(String::from("4 Street")),
+            number_suffix(&String::from("4 Street")),
             Some(String::from("4th Street"))
         );
 
         assert_eq!(
-            number_suffix(String::from("20 Street")),
+            number_suffix(&String::from("20 Street")),
             Some(String::from("20th Street"))
         );
 
         assert_eq!(
-            number_suffix(String::from("21 Street")),
+            number_suffix(&String::from("21 Street")),
             Some(String::from("21st Street"))
         );
     }
@@ -124,17 +124,17 @@ mod tests {
     #[test]
     fn test_written_numeric() {
         assert_eq!(
-            written_numeric(String::from("Twenty-third Avenue NW")),
+            written_numeric(&String::from("Twenty-third Avenue NW")),
             Some(String::from("23rd Avenue NW"))
         );
 
         assert_eq!(
-            written_numeric(String::from("North twenty-Third Avenue")),
+            written_numeric(&String::from("North twenty-Third Avenue")),
             Some(String::from("North 23rd Avenue"))
         );
 
         assert_eq!(
-            written_numeric(String::from("TWENTY-THIRD Avenue")),
+            written_numeric(&String::from("TWENTY-THIRD Avenue")),
             Some(String::from("23rd Avenue"))
         );
     }

@@ -30,18 +30,29 @@ pub struct Names {
 }
 
 impl Names {
-    pub fn new(names: Vec<Name>, context: &Option<super::Context>) -> Self {
-        /*
+    pub fn new(mut names: Vec<Name>, context: &Option<super::Context>) -> Self {
         match context {
             Some(context) => {
                 if context.country == String::from("us") {
-                    display = super::super::text::number_suffix(display);
-                    display = super::super::text::written_numeric(display);
+
+                    let mut synonyms: Vec<Name> = Vec::new();
+
+                    for name in names.iter() {
+                        match super::super::text::number_suffix(&name.display) {
+                            Some(syn) => synonyms.push(Name::new(syn, 0)),
+                            None => ()
+                        };
+                        match super::super::text::written_numeric(&name.display) {
+                            Some(syn) => synonyms.push(Name::new(syn, 0)),
+                            None => ()
+                        };
+                    }
+
+                    names.append(&mut synonyms);
                 }
             },
             None => ()
         };
-        */
 
         Names {
             names: names
