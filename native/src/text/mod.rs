@@ -116,12 +116,17 @@ pub fn syn_written_numeric(name: &Name) -> Vec<Name> {
 /// Replace names like "NC 1 => North Carolina Highway 1"
 /// Replace names like "State Highway 1 => NC 1, North Carolina Highway 1
 ///
-fn syn_state_hwy(name: &Name, context: &Context, replace_primary: bool) -> Vec<Name> {
+fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
+
+    let region = match context.region {
+        Some(ref region) => region,
+        None => { return Vec::new() }
+    };
 
     // the goal is to get all the input highways to <state> #### and then format the matrix
 
     lazy_static! {
-        static ref PRE_HWY: RegexSet = Regex::new(r"
+        static ref PRE_HWY: Regex = Regex::new(r"
             (?ix)^
             (?P<prefix>
               # State 123
@@ -148,7 +153,7 @@ fn syn_state_hwy(name: &Name, context: &Context, replace_primary: bool) -> Vec<N
             (\shighway$|\shwy$|\sroute$|\srte$)?
 
             $
-        ");
+        ").unwrap();
 
         static ref POST_HWY: Regex = Regex::new(r"(?i)^(highway|hwy|route|rte)\s(?P<num>\d+)$").unwrap();
     }
@@ -159,36 +164,36 @@ fn syn_state_hwy(name: &Name, context: &Context, replace_primary: bool) -> Vec<N
             Some(capture) => capture["num"].to_string(),
             None => { return Vec::new(); }
         }
-    }
+    };
 
     // Note ensure capacity is increased if additional permuations are added below
-    let syns: Vec<Name> = Vec::with_capacity(7);
+    let mut syns: Vec<Name> = Vec::with_capacity(7);
 
     // NC 123 Highway
-    syns.push(Name::new(format!("{} {} Highway", context.region.to_uppercase(), &highway), -2);
-
-    // Highway 123
-    syns.push(Name::new(format!("Highway {}", &highway), -2);
+    syns.push(Name::new(format!("{} {} Highway", region.to_uppercase(), &highway), -2));
 
     // NC 123
-    syns.push(Name::new(format!("{} {}", context.region.to_uppercase(), &highway), -1);
+    syns.push(Name::new(format!("{} {}", region.to_uppercase(), &highway), -1));
+
+    // Highway 123
+    syns.push(Name::new(format!("Highway {}", &highway), -2));
 
     // SR 123 (State Route)
-    syns.push(Name::new(format!("SR {}", context.region.to_uppercase(), &highway), -1);
+    syns.push(Name::new(format!("SR {}", &highway), -1));
 
     //State Highway 123
-    syns.push(Name::new(format!("State Highway {}", context.region.to_uppercase(), &highway), -1);
+    syns.push(Name::new(format!("State Highway {}", &highway), -1));
 
     //State Route 123
-    syns.push(Name::new(format!("State Route {}", context.region.to_uppercase(), &highway), -1);
+    syns.push(Name::new(format!("State Route {}", &highway), -1));
 
     // <State> Highway 123 (Display Form)
     //
     // TODO
     if name.priority <= 0 {
-        syns.push(Name::new(format!(" {}", context.region.to_uppercase(), &highway), 0);
+        syns.push(Name::new(format!(" {}", &highway), 0));
     } else {
-        syns.push(Name::new(format!(" {}", context.region.to_uppercase(), &highway), 1);
+        syns.push(Name::new(format!(" {}", &highway), 1));
     }
 
     syns
