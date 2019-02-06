@@ -95,6 +95,14 @@ pub fn remove_octo(text: &String) -> Option<String> {
     }
 }
 
+///
+/// Replace names like "NC 1 => North Carolina Highway 1"
+/// Replace names like "State Highway 1 => NC 1, North Carolina Highway 1
+///
+fn alt_state_hwy(text: &String, context: &Option<super::super::Context>, replace_primary: bool) {
+
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
