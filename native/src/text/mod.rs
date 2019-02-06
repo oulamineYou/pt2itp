@@ -123,6 +123,11 @@ fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
         None => { return Vec::new() }
     };
 
+    let region_name = match context.region_name() {
+        Some(region) => region,
+        None => { return Vec::new() }
+    };
+
     // the goal is to get all the input highways to <state> #### and then format the matrix
 
     lazy_static! {
@@ -191,9 +196,9 @@ fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
     //
     // TODO
     if name.priority <= 0 {
-        syns.push(Name::new(format!(" {}", &highway), 0));
+        syns.push(Name::new(format!("{} Highway {}", &region_name, &highway), 0));
     } else {
-        syns.push(Name::new(format!(" {}", &highway), 1));
+        syns.push(Name::new(format!("{} Highway {}", &region_name, &highway), 1));
     }
 
     syns
