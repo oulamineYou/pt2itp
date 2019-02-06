@@ -212,41 +212,6 @@ test('Osmium', (t) => {
     }
 
     for (let name of [
-        'us-81',
-        'US 81',
-        'U.S. Route 81',
-        'US Route 81',
-        'US Rte 81',
-        'US Hwy 81',
-        'US Highway 81',
-        'United States 81',
-        'United States Route 81',
-        'United States Highway 81',
-        'United States Hwy 81',
-    ]) {
-        t.deepEquals(map({
-            type: 'Feature',
-            properties: {
-                highway: 'motorway',
-                "@id": 3,
-                name: name
-            },
-            geometry: {
-                type: 'LineString',
-                coordinates: [[0,0],[1,1]]
-            }
-        }, { country: 'us', region: 'pa'}),
-             { type: 'Feature', properties: { id: 3, street: [
-                 { display: 'US Route 81', priority: 1 },
-                 { display: name, priority: 0 },
-                 { display: 'US 81', priority: -1 },
-                 { display: 'US Highway 81', priority: -1 },
-                 { display: 'United States Route 81', priority: -1 },
-                { display: 'United States Highway 81', priority: -1 }
-             ] }, geometry: { type: 'LineString', coordinates: [ [ 0, 0 ], [ 1, 1 ] ] } }, `US ROUTE: ${name}`);
-    }
-
-    for (let name of [
         '101a',
         'NB-101a',
         'New Brunswick Route 101a',

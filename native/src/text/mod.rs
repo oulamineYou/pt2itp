@@ -122,13 +122,13 @@ pub fn syn_us_cr(name: &Name) -> Vec<Name> {
     let cr: String = match US_CR.captures(name.display.as_str()) {
         Some(capture) => capture["num"].to_string(),
         None => { return Vec::new(); }
-    }
+    };
 
     // Note ensure capacity is increased if additional permuations are added below
     let mut syns: Vec<Name> = Vec::with_capacity(2);
 
     // CR 123
-    syns.push(Name::new(format!("CR {}", &highway), -1));
+    syns.push(Name::new(format!("CR {}", &cr), -1));
 
     // County Road 123 (Display Form)
     if name.priority > 0 {
@@ -151,7 +151,7 @@ pub fn syn_us_hwy(name: &Name) -> Vec<Name> {
     let highway: String = match US_HWY.captures(name.display.as_str()) {
         Some(capture) => capture["num"].to_string(),
         None => { return Vec::new(); }
-    }
+    };
 
     // Note ensure capacity is increased if additional permuations are added below
     let mut syns: Vec<Name> = Vec::with_capacity(5);
@@ -271,6 +271,31 @@ pub fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
 mod tests {
     use super::*;
     use crate::{Name, Context};
+
+    #[test]
+    fn test_syn_us_hwy() {
+        assert_eq!(syn_us_hwy(&Name::new(String::from(""), 0)), vec![]);
+
+        let results = vec![
+            Name::new(String::from("US 81"), -1),
+            Name::new(String::from("US Route 81"), 1),
+            Name::new(String::from("US Highway 81"), -1),
+            Name::new(String::from("United States Route 81"), -1),
+            Name::new(String::from("United States Highway 81"), -1),
+        ];
+
+        assert_eq!(syn_us_hwy(&Name::new(String::from("us-81"), 0)), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("US 81"), 0)), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("U.S. Route 81"), 0)), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("US Route 81"), 0)), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("US Rte 81"), 0)), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("US Hwy 81"), 0)), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("US Highway 81"), 0)), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("United States 81"), 0)), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("United States Route 81"), 0)), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("United States Highway 81"), 0)), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("United States Hwy 81"), 0)), results);
+    }
 
     #[test]
     fn test_syn_state_highway() {
