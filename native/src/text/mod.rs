@@ -24,7 +24,6 @@ pub fn str_remove_octo(text: &String) -> Option<String> {
     }
 }
 
-
 ///
 /// Detect Strings like `5 Avenue` and return a synonym like `5th Avenue` where possible
 ///
@@ -113,6 +112,73 @@ pub fn syn_written_numeric(name: &Name) -> Vec<Name> {
 }
 
 ///
+/// Generate synonyms for name like "CR 123" => "County Road 123"
+///
+pub fn syn_us_cr(name: &Name) -> Vec<Name> {
+    lazy_static! {
+        static ref US_CR: Regex = Regex::new(r"(?i)^(CR |County Road )(?P<num>[0-9]+)$").unwrap();
+    }
+
+    let cr: String = match US_CR.captures(name.display.as_str()) {
+        Some(capture) => capture["num"].to_string(),
+        None => { return Vec::new(); }
+    }
+
+    // Note ensure capacity is increased if additional permuations are added below
+    let mut syns: Vec<Name> = Vec::with_capacity(2);
+
+    // CR 123
+    syns.push(Name::new(format!("CR {}", &highway), -1));
+
+    // County Road 123 (Display Form)
+    if name.priority > 0 {
+        syns.push(Name::new(format!("County Road {}", &cr), 0));
+    } else {
+        syns.push(Name::new(format!("County Road {}", &cr), 1));
+    }
+
+    syns
+}
+
+///
+/// Generate synonyms for names like "US 81" => "US Route 81"
+///
+pub fn syn_us_hwy(name: &Name) -> Vec<Name> {
+    lazy_static! {
+        static ref US_HWY: Regex = Regex::new(r"(?i)^(U\.?S\.?|United States)(\s|-)(Rte |Route |Hwy |Highway )?(?P<num>[0-9]+)$").unwrap();
+    }
+
+    let highway: String = match US_HWY.captures(name.display.as_str()) {
+        Some(capture) => capture["num"].to_string(),
+        None => { return Vec::new(); }
+    }
+
+    // Note ensure capacity is increased if additional permuations are added below
+    let mut syns: Vec<Name> = Vec::with_capacity(5);
+
+    // US 81
+    syns.push(Name::new(format!("US {}", &highway), -1));
+
+    //US Route 81 (Display Form)
+    if name.priority > 0 {
+        syns.push(Name::new(format!("US Route {}", &highway), 0));
+    } else {
+        syns.push(Name::new(format!("US Route {}", &highway), 1));
+    }
+
+    //US Highway 81
+    syns.push(Name::new(format!("US Highway {}", &highway), -1));
+
+    //United States Route 81
+    syns.push(Name::new(format!("United States Route {}", &highway), -1));
+
+    //United States Highway 81
+    syns.push(Name::new(format!("United States Highway {}", &highway), -1));
+
+    syns
+}
+
+///
 /// Replace names like "NC 1 => North Carolina Highway 1"
 /// Replace names like "State Highway 1 => NC 1, North Carolina Highway 1
 ///
@@ -192,8 +258,6 @@ pub fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
     syns.push(Name::new(format!("State Route {}", &highway), -1));
 
     // <State> Highway 123 (Display Form)
-    //
-    // TODO
     if name.priority > 0 {
         syns.push(Name::new(format!("{} Highway {}", &region_name, &highway), 0));
     } else {
