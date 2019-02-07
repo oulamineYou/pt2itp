@@ -30,7 +30,7 @@ pub fn is_drivethrough(text: &String, context: &Context) -> bool {
     ) && EN.is_match(text.as_str()) {
         return true;
     }
-    
+
     if (
         context.country == String::from("DE")
     ) && DE.is_match(text.as_str()) {
@@ -97,11 +97,18 @@ pub fn syn_ca_hwy(name: &Name, context: &Context) -> Vec<Name> {
         None => { return Vec::new() }
     };
 
+    let region_name = match context.region_name() {
+        Some(region) => region,
+        None => { return Vec::new() }
+    };
+
     lazy_static! {
         static ref HIGHWAY: RegexSet = RegexSet::new(&[
             r"(?i)^[0-9]+[a-z]?$",
+            r"(?i)(ON|QC|NS|NB|MB|BC|PE|PEI|SK|AB|NL|NT|YT|NU)-[0-9]+[a-z]?$",
             r"(?i)(Highway|hwy|route|rte) [0-9]+[a-z]?$",
-            r"(?)(Alberta|British Columbia| Saskatchewan|Manitoba|Yukon|New Brunswick|Newfoundland and Labrador|Newfoundland|Labrador|Price Edward Island|PEI|Quebec|Northwest Territories|Nunavut|Nova Scotia) (Highway|hwy|Route|rtw) [0-9]+[a-z]?"
+            r"(?i)King'?s Highway [0-9]+[a-z]?",
+            r"(?i)(Alberta|British Columbia|Saskatchewan|Manitoba|Yukon|New Brunswick|Newfoundland and Labrador|Newfoundland|Labrador|Price Edward Island|PEI|Quebec|Northwest Territories|Nunavut|Nova Scotia) (Highway|hwy|Route|rtw) [0-9]+[a-z]?"
         ]).unwrap();
 
         static ref NUM: Regex = Regex::new(r"(?i)(?P<num>[0-9]+[a-z]?$)").unwrap();
@@ -127,7 +134,12 @@ pub fn syn_ca_hwy(name: &Name, context: &Context) -> Vec<Name> {
                 syns.push(Name::new(format!("{} {}", &region, &num), -2));
 
                 let hwy_type: String;
-                if region == String::from("NB") || region == String::from("NL") || region == String::from("PE") || region == String::from("QC") {
+                if
+                    region == &String::from("NB")
+                    || region == &String::from("NL")
+                    || region == &String::from("PE")
+                    || region == &String::from("QC")
+                {
                     hwy_type = String::from("Highway");
                 } else {
                     hwy_type = String::from("Route");
@@ -135,9 +147,9 @@ pub fn syn_ca_hwy(name: &Name, context: &Context) -> Vec<Name> {
 
                 //New Brunswick Route 123 (Display Form)
                 if name.priority > 0 {
-                    syns.push(Name::new(format!("County Road {}", &cr), 0));
+                    syns.push(Name::new(format!("{} {} {}", &region_name, &hwy_type, &num), 0));
                 } else {
-                    syns.push(Name::new(format!("County Road {}", &cr), 1));
+                    syns.push(Name::new(format!("{} {} {}", &region_name, &hwy_type, &num), 1));
                 }
 
                 syns
@@ -414,6 +426,27 @@ mod tests {
 
         assert_eq!(syn_us_cr(&Name::new(String::from("County Road 123"), 0)), results);
         assert_eq!(syn_us_cr(&Name::new(String::from("CR 123"), 0)), results);
+    }
+
+    #[test]
+    fn test_syn_ca_hwy() {
+        let cntx = Context::new(String::from("ca"), Some(String::from("on")));
+
+        assert_eq!(syn_ca_hwy(&Name::new(String::from(""), 0), &cntx), vec![]);
+
+        let results = vec![
+            Name::new(String::from("Highway 101"), -1),
+            Name::new(String::from("Route 101"), -1),
+            Name::new(String::from("ON 101"), -2),
+            Name::new(String::from("Ontario Route 101"), 1)
+        ];
+
+        assert_eq!(syn_ca_hwy(&Name::new(String::from("101"), 0), &cntx), results);
+        assert_eq!(syn_ca_hwy(&Name::new(String::from("ON-101"), 0), &cntx), results);
+        assert_eq!(syn_ca_hwy(&Name::new(String::from("Kings's Highway 101"), 0), &cntx), results);
+        assert_eq!(syn_ca_hwy(&Name::new(String::from("Highway 101"), 0), &cntx), results);
+        assert_eq!(syn_ca_hwy(&Name::new(String::from("Route 101"), 0), &cntx), results);
+        assert_eq!(syn_ca_hwy(&Name::new(String::from("Ontario Highway 101"), 0), &cntx), results);
     }
 
     #[test]

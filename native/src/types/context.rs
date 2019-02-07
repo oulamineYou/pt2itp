@@ -87,6 +87,20 @@ impl Context {
                 m.insert(String::from("US-UM"), "United States Minor Outlying Islands");
                 m.insert(String::from("US-VI"), "Virgin Islands");
 
+                m.insert(String::from("CA-ON"), "Ontario");
+                m.insert(String::from("CA-QC"), "Quebec");
+                m.insert(String::from("CA-NS"), "Nova Scotia");
+                m.insert(String::from("CA-NB"), "New Brunswick");
+                m.insert(String::from("CA-MB"), "Manitoba");
+                m.insert(String::from("CA-BC"), "British Columbia");
+                m.insert(String::from("CA-PE"), "Prince Edward Island");
+                m.insert(String::from("CA-SK"), "Saskatchewan");
+                m.insert(String::from("CA-AB"), "Alberta");
+                m.insert(String::from("CA-NL"), "Newfoundland and Labrador");
+                m.insert(String::from("CA-NT"), "Northwest Territories");
+                m.insert(String::from("CA-YT"), "Yukon");
+                m.insert(String::from("CA-NU"), "Nunavut");
+
                 m
             };
         }
