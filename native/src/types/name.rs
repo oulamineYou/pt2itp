@@ -1,3 +1,4 @@
+use crate::{Context, text};
 
 ///
 /// InputName is only used internally to serialize a names array to the
@@ -28,7 +29,7 @@ pub struct Names {
 }
 
 impl Names {
-    pub fn new(mut names: Vec<Name>, context: &Option<super::Context>) -> Self {
+    pub fn new(mut names: Vec<Name>, context: &Option<Context>) -> Self {
         match context {
             Some(context) => {
                 if context.country == String::from("us") {
@@ -36,13 +37,23 @@ impl Names {
                     let mut synonyms: Vec<Name> = Vec::new();
 
                     for name in names.iter_mut() {
-                        name.display = super::super::text::str_remove_octo(&name.display);
+                        name.display = text::str_remove_octo(&name.display);
 
-                        synonyms.append(&mut super::super::text::syn_number_suffix(&name));
-                        synonyms.append(&mut super::super::text::syn_written_numeric(&name));
-                        synonyms.append(&mut super::super::text::syn_state_hwy(&name, &context));
-                        synonyms.append(&mut super::super::text::syn_us_hwy(&name));
-                        synonyms.append(&mut super::super::text::syn_us_cr(&name));
+                        synonyms.append(&mut text::syn_number_suffix(&name));
+                        synonyms.append(&mut text::syn_written_numeric(&name));
+                        synonyms.append(&mut text::syn_state_hwy(&name, &context));
+                        synonyms.append(&mut text::syn_us_hwy(&name));
+                        synonyms.append(&mut text::syn_us_cr(&name));
+                    }
+
+                    names.append(&mut synonyms);
+                } else if context.country == String::from("ca") {
+                    let mut synonyms: Vec<Name> = Vec::new();
+
+                    for name in names.iter_mut() {
+                        name.display = text::str_remove_octo(&name.display);
+
+                        synonyms.append(&mut text::syn_ca_hwy(&name, &context));
                     }
 
                     names.append(&mut synonyms);
@@ -60,7 +71,7 @@ impl Names {
     /// Parse a Names object from a serde_json value, returning
     /// an empty names vec if unparseable
     ///
-    pub fn from_value(value: Option<serde_json::Value>, context: &Option<super::Context>) -> Result<Self, String> {
+    pub fn from_value(value: Option<serde_json::Value>, context: &Option<Context>) -> Result<Self, String> {
         let names: Vec<Name> = match value {
             Some(street) => {
                 if street.is_string() {

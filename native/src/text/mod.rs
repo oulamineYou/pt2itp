@@ -62,6 +62,7 @@ pub fn syn_number_suffix(name: &Name) -> Vec<Name> {
 /// Adds Synonyms to names like "Highway 123 => NS-123, Nova Scotia Highway 123
 ///
 pub fn syn_ca_hwy(name: &Name, context: &Context) -> Vec<Name> {
+
     Vec::new()
 }
 
