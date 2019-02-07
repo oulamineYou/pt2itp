@@ -90,30 +90,13 @@ impl Network {
     }
 
     pub fn std(&mut self) -> Result<(), String> {
-    let accepted = [ 
-        'motorway',
-        'trunk',
-        'primary',
-        'secondary',
-        'tertiary',
-        'residential',
-        'unclassified',
-        'living_street',
-        'pedestrian',
-        'service',
-        'track',
-        'road',
-        'construction',
-        'proposed',
-        'footway'
-    ];
 
         Ok(())
     }
 
+    ///
     ///Return a PG Copyable String of the feature
     ///
-    ///names, source, props, geom
     pub fn to_tsv(self) -> String {
         let mut twkb = postgis::twkb::MultiLineString {
             lines: Vec::with_capacity(self.geom.len()),

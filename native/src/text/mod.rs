@@ -59,6 +59,13 @@ pub fn syn_number_suffix(name: &Name) -> Vec<Name> {
 }
 
 ///
+/// Adds Synonyms to names like "Highway 123 => NS-123, Nova Scotia Highway 123
+///
+pub fn syn_ca_hwy(name: &Name, context: &Context) -> Vec<Name> {
+
+}
+
+///
 /// One -> Twenty are handled as geocoder-abbrev. Because Twenty-First has a hyphen, which is converted
 /// to a space by the tokenized, these cannot currently be managed as token level replacements and are handled
 /// as synonyms instead
