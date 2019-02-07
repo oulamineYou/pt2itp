@@ -273,6 +273,19 @@ mod tests {
     use crate::{Name, Context};
 
     #[test]
+    fn test_syn_us_cr() {
+        assert_eq!(syn_us_cr(&Name::new(String::from(""), 0)), vec![]);
+
+        let results = vec![
+            Name::new(String::from("CR 123"), -1),
+            Name::new(String::from("County Road 123"), 1),
+        ];
+
+        assert_eq!(syn_us_cr(&Name::new(String::from("County Road 123"), 0)), results);
+        assert_eq!(syn_us_cr(&Name::new(String::from("CR 123"), 0)), results);
+    }
+
+    #[test]
     fn test_syn_us_hwy() {
         assert_eq!(syn_us_hwy(&Name::new(String::from(""), 0)), vec![]);
 
