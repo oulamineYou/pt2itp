@@ -90,6 +90,24 @@ impl Network {
     }
 
     pub fn std(&mut self) -> Result<(), String> {
+    let accepted = [ 
+        'motorway',
+        'trunk',
+        'primary',
+        'secondary',
+        'tertiary',
+        'residential',
+        'unclassified',
+        'living_street',
+        'pedestrian',
+        'service',
+        'track',
+        'road',
+        'construction',
+        'proposed',
+        'footway'
+    ];
+
         Ok(())
     }
 
