@@ -6,9 +6,39 @@ use crate::{Name, Context};
 
 //
 // A note on fn names:
+// - Functions that determine the type of a string should be prefixed with `is_`
 // - Functions that operate on Strings should be prefixed with `str_`
 // - Functions that generate Name synonyms should be prefixed with `syn_`
 //
+
+///
+/// Detects if the name looks like a driveway
+///
+pub fn is_drivethrough(text: &String, context: &Context) -> bool {
+    lazy_static! {
+        static ref DE: Regex = Regex::new(r"(?i) einfahrt$").unwrap();
+        static ref EN: Regex = Regex::new(r"(?i)drive.?(in|through|thru)$").unwrap();
+    }
+
+    if (
+        context.country == String::from("US")
+        || context.country == String::from("CA")
+        || context.country == String::from("GB")
+        || context.country == String::from("DE")
+        || context.country == String::from("CH")
+        || context.country == String::from("AT")
+    ) && EN.is_match(text.as_str()) {
+        return true;
+    }
+    
+    if (
+        context.country == String::from("DE")
+    ) && DE.is_match(text.as_str()) {
+        return true;
+    }
+
+    false
+}
 
 ///
 /// Removes the octothorpe from names like "HWY #35", to get "HWY 35"
@@ -279,6 +309,45 @@ pub fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
 mod tests {
     use super::*;
     use crate::{Name, Context};
+
+    #[test]
+    fn test_is_drivethrough() {
+
+        assert_eq!(is_drivethrough(
+            &String::from("Main St NE"),
+            &Context::new(String::from("US"), None)
+        ), false);
+
+        assert_eq!(is_drivethrough(
+            &String::from("McDonalds einfahrt"),
+            &Context::new(String::from("US"), None)
+        ), false);
+
+        assert_eq!(is_drivethrough(
+            &String::from("McDonalds einfahrt"),
+            &Context::new(String::from("DE"), None)
+        ), true);
+
+        assert_eq!(is_drivethrough(
+            &String::from("Burger King Drive-through"),
+            &Context::new(String::from("US"), None)
+        ), true);
+
+        assert_eq!(is_drivethrough(
+            &String::from("McDonalds Drivethrough"),
+            &Context::new(String::from("US"), None)
+        ), true);
+
+        assert_eq!(is_drivethrough(
+            &String::from("McDonalds Drive through"),
+            &Context::new(String::from("US"), None)
+        ), true);
+
+        assert_eq!(is_drivethrough(
+            &String::from("McDonalds Drivethru"),
+            &Context::new(String::from("US"), None)
+        ), true);
+    }
 
     #[test]
     fn test_syn_us_cr() {

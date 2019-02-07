@@ -1,17 +1,16 @@
 use std::convert::From;
 use std::iter::Iterator;
 
-use super::geo;
-use super::super::Network;
+use crate::{stream::geo::GeoStream, Network, Context};
 
 pub struct NetStream {
-    context: Option<super::super::types::Context>,
-    input: geo::GeoStream,
+    context: Option<Context>,
+    input: GeoStream,
     buffer: Option<Vec<u8>> //Used by Read impl for storing partial features
 }
 
 impl NetStream {
-    pub fn new(input: geo::GeoStream, context: Option<super::super::types::Context>) -> Self {
+    pub fn new(input: GeoStream, context: Option<Context>) -> Self {
         NetStream {
             context: context,
             input: input,
@@ -20,8 +19,8 @@ impl NetStream {
     }
 }
 
-impl From<super::geo::GeoStream> for NetStream {
-    fn from(input: super::geo::GeoStream) -> Self {
+impl From<GeoStream> for NetStream {
+    fn from(input: GeoStream) -> Self {
         NetStream::new(input, None)
     }
 }
