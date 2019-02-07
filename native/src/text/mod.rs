@@ -1,7 +1,7 @@
 mod diacritics;
 
 use std::collections::HashMap;
-use regex::Regex;
+use regex::{Regex, RegexSet};
 use crate::{Name, Context};
 
 //
@@ -92,8 +92,62 @@ pub fn syn_number_suffix(name: &Name) -> Vec<Name> {
 /// Adds Synonyms to names like "Highway 123 => NS-123, Nova Scotia Highway 123
 ///
 pub fn syn_ca_hwy(name: &Name, context: &Context) -> Vec<Name> {
+    let region = match context.region {
+        Some(ref region) => region,
+        None => { return Vec::new() }
+    };
 
-    Vec::new()
+    lazy_static! {
+        static ref HIGHWAY: RegexSet = RegexSet::new(&[
+            r"(?i)^[0-9]+[a-z]?$",
+            r"(?i)(Highway|hwy|route|rte) [0-9]+[a-z]?$",
+            r"(?)(Alberta|British Columbia| Saskatchewan|Manitoba|Yukon|New Brunswick|Newfoundland and Labrador|Newfoundland|Labrador|Price Edward Island|PEI|Quebec|Northwest Territories|Nunavut|Nova Scotia) (Highway|hwy|Route|rtw) [0-9]+[a-z]?"
+        ]).unwrap();
+
+        static ref NUM: Regex = Regex::new(r"(?i)(?P<num>[0-9]+[a-z]?$)").unwrap();
+    }
+
+    //Trans Canada shouldn't be provincial highway
+    if name.display == String::from("1") {
+        Vec::new()
+    } else if HIGHWAY.is_match(name.display.as_str()) {
+        match NUM.captures(name.display.as_str()) {
+            Some(capture) => {
+                let num = capture["num"].to_string();
+
+                let mut syns: Vec<Name> = Vec::new();
+
+                // Highway 123
+                syns.push(Name::new(format!("Highway {}", &num), -1));
+
+                // Route 123
+                syns.push(Name::new(format!("Route {}", &num), -1));
+
+                // NB 123
+                syns.push(Name::new(format!("{} {}", &region, &num), -2));
+
+                let hwy_type: String;
+                if region == String::from("NB") || region == String::from("NL") || region == String::from("PE") || region == String::from("QC") {
+                    hwy_type = String::from("Highway");
+                } else {
+                    hwy_type = String::from("Route");
+                }
+
+                //New Brunswick Route 123 (Display Form)
+                if name.priority > 0 {
+                    syns.push(Name::new(format!("County Road {}", &cr), 0));
+                } else {
+                    syns.push(Name::new(format!("County Road {}", &cr), 1));
+                }
+
+                syns
+            },
+            None => Vec::new()
+        }
+    } else {
+        Vec::new()
+    }
+
 }
 
 ///
