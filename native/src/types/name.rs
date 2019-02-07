@@ -35,7 +35,9 @@ impl Names {
 
                     let mut synonyms: Vec<Name> = Vec::new();
 
-                    for name in names.iter() {
+                    for name in names.iter_mut() {
+                        name.display = super::super::text::str_remove_octo(&name.display);
+
                         synonyms.append(&mut super::super::text::syn_number_suffix(&name));
                         synonyms.append(&mut super::super::text::syn_written_numeric(&name));
                         synonyms.append(&mut super::super::text::syn_state_hwy(&name, &context));

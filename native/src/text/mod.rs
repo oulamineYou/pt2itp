@@ -13,14 +13,14 @@ use crate::{Name, Context};
 ///
 /// Removes the octothorpe from names like "HWY #35", to get "HWY 35"
 ///
-pub fn str_remove_octo(text: &String) -> Option<String> {
+pub fn str_remove_octo(text: &String) -> String {
     lazy_static! {
         static ref OCTO: Regex = Regex::new(r"(?i)^(?P<type>HWY |HIGHWAY |RTE |ROUTE |US )(#)(?P<post>\d+\s?.*)$").unwrap();
     }
 
     match OCTO.captures(text.as_str()) {
-        Some(capture) => Some(format!("{}{}", &capture["type"], &capture["post"])),
-        _ => None
+        Some(capture) => format!("{}{}", &capture["type"], &capture["post"]),
+        _ => text.clone()
     }
 }
 
@@ -62,7 +62,7 @@ pub fn syn_number_suffix(name: &Name) -> Vec<Name> {
 /// Adds Synonyms to names like "Highway 123 => NS-123, Nova Scotia Highway 123
 ///
 pub fn syn_ca_hwy(name: &Name, context: &Context) -> Vec<Name> {
-
+    Vec::new()
 }
 
 ///
@@ -453,12 +453,12 @@ mod tests {
     fn test_str_remove_octo() {
         assert_eq!(
             str_remove_octo(&String::from("Highway #12 West")),
-            Some(String::from("Highway 12 West"))
+            String::from("Highway 12 West")
         );
 
         assert_eq!(
             str_remove_octo(&String::from("RTe #1")),
-            Some(String::from("RTe 1"))
+            String::from("RTe 1")
         );
     }
 }
