@@ -1,4 +1,8 @@
 mod diacritics;
+mod tokens;
+
+pub use self::diacritics::diacritics;
+pub use self::tokens::tokenize;
 
 use std::collections::HashMap;
 use regex::{Regex, RegexSet};
