@@ -3,17 +3,19 @@ use std::collections::HashMap;
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Context {
     pub country: String,
-    pub region: Option<String> 
+    pub region: Option<String>,
+    pub tokens: Option<Vec<Vec<String>>>
 }
 
 impl Context {
-    pub fn new(country: String, region: Option<String>) -> Self {
+    pub fn new(country: String, region: Option<String>, tokens: Option<Vec<Vec<String>>>) -> Self {
         Context {
             country: country.to_uppercase(),
             region: match region {
                 None => None,
                 Some(region) => Some(region.to_uppercase())
-            }
+            },
+            tokens: tokens
         }
     }
 
