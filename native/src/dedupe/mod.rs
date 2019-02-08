@@ -52,11 +52,5 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     pg::Address::create(&conn);
     pg::Address::input(&conn, AddrStream::new(GeoStream::new(args.input), context));
 
-    /*
-    pg::Network::create(&conn);
-    pg::Network::input(&conn, NetStream::from(GeoStream::new(args.input)));
-    */
-
-
     Ok(cx.boolean(true))
 }
