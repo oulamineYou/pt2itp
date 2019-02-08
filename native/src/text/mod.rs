@@ -382,231 +382,242 @@ mod tests {
 
     #[test]
     fn test_is_drivethrough() {
+        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
 
         assert_eq!(is_drivethrough(
             &String::from("Main St NE"),
-            &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
+            &context
         ), false);
 
         assert_eq!(is_drivethrough(
             &String::from("McDonalds einfahrt"),
-            &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
+            &context
         ), false);
 
         assert_eq!(is_drivethrough(
             &String::from("McDonalds einfahrt"),
-            &Context::new(String::from("DE"), None, Tokens::new(Vec::new()))
+            &context
         ), true);
 
         assert_eq!(is_drivethrough(
             &String::from("Burger King Drive-through"),
-            &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
+            &context
         ), true);
 
         assert_eq!(is_drivethrough(
             &String::from("McDonalds Drivethrough"),
-            &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
+            &context
         ), true);
 
         assert_eq!(is_drivethrough(
             &String::from("McDonalds Drive through"),
-            &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
+            &context
         ), true);
 
         assert_eq!(is_drivethrough(
             &String::from("McDonalds Drivethru"),
-            &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
+            &context
         ), true);
     }
 
     #[test]
     fn test_syn_us_cr() {
-        assert_eq!(syn_us_cr(&Name::new(String::from(""), 0)), vec![]);
+        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
+        
+        assert_eq!(syn_us_cr(&Name::new(String::from(""), 0, &context), &context), vec![]);
 
         let results = vec![
-            Name::new(String::from("CR 123"), -1),
-            Name::new(String::from("County Road 123"), 1),
+            Name::new(String::from("CR 123"), -1, &context),
+            Name::new(String::from("County Road 123"), 1, &context),
         ];
 
-        assert_eq!(syn_us_cr(&Name::new(String::from("County Road 123"), 0)), results);
-        assert_eq!(syn_us_cr(&Name::new(String::from("CR 123"), 0)), results);
+        assert_eq!(syn_us_cr(&Name::new(String::from("County Road 123"), 0, &context), &context), results);
+        assert_eq!(syn_us_cr(&Name::new(String::from("CR 123"), 0, &context), &context), results);
     }
 
     #[test]
     fn test_syn_ca_hwy() {
-        let cntx = Context::new(String::from("ca"), Some(String::from("on")), Tokens::new(Vec::new()));
+        let context = Context::new(String::from("ca"), Some(String::from("on")), Tokens::new(HashMap::new()));
 
-        assert_eq!(syn_ca_hwy(&Name::new(String::from(""), 0), &cntx), vec![]);
+        assert_eq!(syn_ca_hwy(&Name::new(String::from(""), 0, &context), &context), vec![]);
 
         let results = vec![
-            Name::new(String::from("Highway 101"), -1),
-            Name::new(String::from("Route 101"), -1),
-            Name::new(String::from("ON 101"), -2),
-            Name::new(String::from("Ontario Route 101"), 1)
+            Name::new(String::from("Highway 101"), -1, &context),
+            Name::new(String::from("Route 101"), -1, &context),
+            Name::new(String::from("ON 101"), -2, &context),
+            Name::new(String::from("Ontario Route 101"), 1, &context)
         ];
 
-        assert_eq!(syn_ca_hwy(&Name::new(String::from("101"), 0), &cntx), results);
-        assert_eq!(syn_ca_hwy(&Name::new(String::from("ON-101"), 0), &cntx), results);
-        assert_eq!(syn_ca_hwy(&Name::new(String::from("Kings's Highway 101"), 0), &cntx), results);
-        assert_eq!(syn_ca_hwy(&Name::new(String::from("Highway 101"), 0), &cntx), results);
-        assert_eq!(syn_ca_hwy(&Name::new(String::from("Route 101"), 0), &cntx), results);
-        assert_eq!(syn_ca_hwy(&Name::new(String::from("Ontario Highway 101"), 0), &cntx), results);
+        assert_eq!(syn_ca_hwy(&Name::new(String::from("101"), 0, &context), &context), results);
+        assert_eq!(syn_ca_hwy(&Name::new(String::from("ON-101"), 0, &context), &context), results);
+        assert_eq!(syn_ca_hwy(&Name::new(String::from("Kings's Highway 101"), 0, &context), &context), results);
+        assert_eq!(syn_ca_hwy(&Name::new(String::from("Highway 101"), 0, &context), &context), results);
+        assert_eq!(syn_ca_hwy(&Name::new(String::from("Route 101"), 0, &context), &context), results);
+        assert_eq!(syn_ca_hwy(&Name::new(String::from("Ontario Highway 101"), 0, &context), &context), results);
     }
 
     #[test]
     fn test_syn_us_hwy() {
-        assert_eq!(syn_us_hwy(&Name::new(String::from(""), 0)), vec![]);
+        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
+        
+        assert_eq!(syn_us_hwy(&Name::new(String::from(""), 0, &context), &context), vec![]);
 
         let results = vec![
-            Name::new(String::from("US 81"), -1),
-            Name::new(String::from("US Route 81"), 1),
-            Name::new(String::from("US Highway 81"), -1),
-            Name::new(String::from("United States Route 81"), -1),
-            Name::new(String::from("United States Highway 81"), -1),
+            Name::new(String::from("US 81"), -1, &context),
+            Name::new(String::from("US Route 81"), 1, &context),
+            Name::new(String::from("US Highway 81"), -1, &context),
+            Name::new(String::from("United States Route 81"), -1, &context),
+            Name::new(String::from("United States Highway 81"), -1, &context),
         ];
 
-        assert_eq!(syn_us_hwy(&Name::new(String::from("us-81"), 0)), results);
-        assert_eq!(syn_us_hwy(&Name::new(String::from("US 81"), 0)), results);
-        assert_eq!(syn_us_hwy(&Name::new(String::from("U.S. Route 81"), 0)), results);
-        assert_eq!(syn_us_hwy(&Name::new(String::from("US Route 81"), 0)), results);
-        assert_eq!(syn_us_hwy(&Name::new(String::from("US Rte 81"), 0)), results);
-        assert_eq!(syn_us_hwy(&Name::new(String::from("US Hwy 81"), 0)), results);
-        assert_eq!(syn_us_hwy(&Name::new(String::from("US Highway 81"), 0)), results);
-        assert_eq!(syn_us_hwy(&Name::new(String::from("United States 81"), 0)), results);
-        assert_eq!(syn_us_hwy(&Name::new(String::from("United States Route 81"), 0)), results);
-        assert_eq!(syn_us_hwy(&Name::new(String::from("United States Highway 81"), 0)), results);
-        assert_eq!(syn_us_hwy(&Name::new(String::from("United States Hwy 81"), 0)), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("us-81"), 0, &context), &context), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("US 81"), 0, &context), &context), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("U.S. Route 81"), 0, &context), &context), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("US Route 81"), 0, &context), &context), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("US Rte 81"), 0, &context), &context), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("US Hwy 81"), 0, &context), &context), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("US Highway 81"), 0, &context), &context), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("United States 81"), 0, &context), &context), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("United States Route 81"), 0, &context), &context), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("United States Highway 81"), 0, &context), &context), results);
+        assert_eq!(syn_us_hwy(&Name::new(String::from("United States Hwy 81"), 0, &context), &context), results);
     }
 
     #[test]
     fn test_syn_state_highway() {
+        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
+
         assert_eq!(
             syn_state_hwy(
-                &Name::new(String::from(""), 0),
-                &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
+                &Name::new(String::from(""), 0, &context),
+                &context
             ), vec![]
         );
 
         let results = vec![
-            Name::new(String::from("PA 123 Highway"), -2),
-            Name::new(String::from("PA 123"), -1),
-            Name::new(String::from("Highway 123"), -2),
-            Name::new(String::from("SR 123"), -1),
-            Name::new(String::from("State Highway 123"), -1),
-            Name::new(String::from("State Route 123"), -1),
-            Name::new(String::from("Pennsylvania Highway 123"), 1)
+            Name::new(String::from("PA 123 Highway"), -2, &context),
+            Name::new(String::from("PA 123"), -1, &context),
+            Name::new(String::from("Highway 123"), -2, &context),
+            Name::new(String::from("SR 123"), -1, &context),
+            Name::new(String::from("State Highway 123"), -1, &context),
+            Name::new(String::from("State Route 123"), -1, &context),
+            Name::new(String::from("Pennsylvania Highway 123"), 1, &context)
         ];
 
         assert_eq!(
             syn_state_hwy(
-                &Name::new(String::from("State Highway 123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
+                &Name::new(String::from("State Highway 123"), 0, &context),
+                &context
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
-                &Name::new(String::from("Highway 123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
+                &Name::new(String::from("Highway 123"), 0, &context),
+                &context
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
-                &Name::new(String::from("Hwy 123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
+                &Name::new(String::from("Hwy 123"), 0, &context),
+                &context
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
-                &Name::new(String::from("Pennsylvania Highway 123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
+                &Name::new(String::from("Pennsylvania Highway 123"), 0, &context),
+                &context
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
-                &Name::new(String::from("Pennsylvania Route 123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
+                &Name::new(String::from("Pennsylvania Route 123"), 0, &context),
+                &context
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
-                &Name::new(String::from("PA 123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
+                &Name::new(String::from("PA 123"), 0, &context),
+                &context
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
-                &Name::new(String::from("PA-123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
+                &Name::new(String::from("PA-123"), 0, &context),
+                &context
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
-                &Name::new(String::from("US-PA-123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
+                &Name::new(String::from("US-PA-123"), 0, &context),
+                &context
             ), results
         );
     }
 
     #[test]
     fn test_syn_number_suffix() {
+        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
+
         assert_eq!(
-            syn_number_suffix(&Name::new(String::from("1st Avenue"), 0)),
+            syn_number_suffix(&Name::new(String::from("1st Avenue"), 0, &context), &context),
             Vec::new()
         );
 
         assert_eq!(
-            syn_number_suffix(&Name::new(String::from("1 Avenue"), 0)),
-            vec![Name::new(String::from("1st Avenue"), 0)]
+            syn_number_suffix(&Name::new(String::from("1 Avenue"), 0, &context), &context),
+            vec![Name::new(String::from("1st Avenue"), 0, &context)]
         );
 
         assert_eq!(
-            syn_number_suffix(&Name::new(String::from("2 Avenue"), 0)),
-            vec![Name::new(String::from("2nd Avenue"), 0)]
+            syn_number_suffix(&Name::new(String::from("2 Avenue"), 0, &context), &context),
+            vec![Name::new(String::from("2nd Avenue"), 0, &context)]
         );
 
         assert_eq!(
-            syn_number_suffix(&Name::new(String::from("3 Street"), 0)),
-            vec![Name::new(String::from("3rd Street"), 0)]
+            syn_number_suffix(&Name::new(String::from("3 Street"), 0, &context), &context),
+            vec![Name::new(String::from("3rd Street"), 0, &context)]
         );
 
         assert_eq!(
-            syn_number_suffix(&Name::new(String::from("4 Street"), 0)),
-            vec![Name::new(String::from("4th Street"), 0)]
+            syn_number_suffix(&Name::new(String::from("4 Street"), 0, &context), &context),
+            vec![Name::new(String::from("4th Street"), 0, &context)]
         );
 
         assert_eq!(
-            syn_number_suffix(&Name::new(String::from("20 Street"), 0)),
-            vec![Name::new(String::from("20th Street"), 0)]
+            syn_number_suffix(&Name::new(String::from("20 Street"), 0, &context), &context),
+            vec![Name::new(String::from("20th Street"), 0, &context)]
         );
 
         assert_eq!(
-            syn_number_suffix(&Name::new(String::from("21 Street"), 0)),
-            vec![Name::new(String::from("21st Street"), 0)]
+            syn_number_suffix(&Name::new(String::from("21 Street"), 0, &context), &context),
+            vec![Name::new(String::from("21st Street"), 0, &context)]
         );
     }
 
     #[test]
     fn test_syn_written_numeric() {
+        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
+
         assert_eq!(
-            syn_written_numeric(&Name::new(String::from("Twenty-third Avenue NW"), 0)),
-            vec![Name::new(String::from("23rd Avenue NW"), 0)]
+            syn_written_numeric(&Name::new(String::from("Twenty-third Avenue NW"), 0, &context), &context),
+            vec![Name::new(String::from("23rd Avenue NW"), 0, &context)]
         );
 
         assert_eq!(
-            syn_written_numeric(&Name::new(String::from("North twenty-Third Avenue"), 0)),
-            vec![Name::new(String::from("North 23rd Avenue"), 0)]
+            syn_written_numeric(&Name::new(String::from("North twenty-Third Avenue"), 0, &context), &context),
+            vec![Name::new(String::from("North 23rd Avenue"), 0, &context)]
         );
 
         assert_eq!(
-            syn_written_numeric(&Name::new(String::from("TWENTY-THIRD Avenue"), 0)),
-            vec![Name::new(String::from("23rd Avenue"), 0)]
+            syn_written_numeric(&Name::new(String::from("TWENTY-THIRD Avenue"), 0, &context), &context),
+            vec![Name::new(String::from("23rd Avenue"), 0, &context)]
         );
     }
 

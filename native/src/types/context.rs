@@ -145,19 +145,19 @@ mod tests {
 
     #[test]
     fn context_test() {
-        assert_eq!(Context::new(String::from("us"), None, Tokens::new(Vec::new())), Context {
+        assert_eq!(Context::new(String::from("us"), None, Tokens::new(HashMap::new())), Context {
             country: String::from("US"),
             region: None,
-            tokens: Tokens::new(Vec::new())
+            tokens: Tokens::new(HashMap::new())
         });
 
-        assert_eq!(Context::new(String::from("uS"), Some(String::from("wv")), Tokens::new(Vec::new())), Context {
+        assert_eq!(Context::new(String::from("uS"), Some(String::from("wv")), Tokens::new(HashMap::new())), Context {
             country: String::from("US"),
             region: Some(String::from("WV")),
-            tokens: Tokens::new(Vec::new())
+            tokens: Tokens::new(HashMap::new())
         });
 
-        let cntx = Context::new(String::from("uS"), Some(String::from("wv")), Tokens::new(Vec::new()));
+        let cntx = Context::new(String::from("uS"), Some(String::from("wv")), Tokens::new(HashMap::new()));
 
         assert_eq!(cntx.region_code(), Some(String::from("US-WV")));
 

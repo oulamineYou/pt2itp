@@ -123,10 +123,14 @@ impl Name {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::collections::HashMap;
+    use crate::Tokens;
 
     #[test]
     fn test_name() {
-        assert_eq!(Name::new(String::from("Main St NW"), 0), Name {
+        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
+
+        assert_eq!(Name::new(String::from("Main St NW"), 0, &context), Name {
             display: String::from("Main St NW"),
             priority: 0,
             source: String::from(""),
@@ -136,26 +140,15 @@ mod tests {
     }
 
     #[test]
-    fn test_inputname() {
-        assert_eq!(InputName::new(String::from("Main St NW"), 1), InputName {
-            display: String::from("Main St NW"),
-            priority: 1
-        });
-
-        assert_eq!(InputName::new(String::from("S Main St NW"), 0), InputName {
-            display: String::from("S Main St NW"),
-            priority: 0
-        });
-    }
-
-    #[test]
     fn test_names() {
-        assert_eq!(Names::new(vec![], &None), Names {
+        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
+
+        assert_eq!(Names::new(vec![], &context), Names {
             names: Vec::new()
         });
 
-        assert_eq!(Names::new(vec![Name::new(String::from("Main St NW"), 0)], &None), Names {
-            names: vec![Name::new(String::from("Main St NW"), 0)]
+        assert_eq!(Names::new(vec![Name::new(String::from("Main St NW"), 0, &context)], &context), Names {
+            names: vec![Name::new(String::from("Main St NW"), 0, &context)]
         });
     }
 }
