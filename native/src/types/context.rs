@@ -8,6 +8,7 @@ pub struct InputContext {
     pub tokens: Option<Vec<Vec<String>>>
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Context {
     pub country: String,
     pub region: Option<String>,
@@ -144,17 +145,19 @@ mod tests {
 
     #[test]
     fn context_test() {
-        assert_eq!(Context::new(String::from("us"), None), Context {
+        assert_eq!(Context::new(String::from("us"), None, Tokens::new(Vec::new())), Context {
             country: String::from("US"),
-            region: None
+            region: None,
+            tokens: Tokens::new(Vec::new())
         });
 
-        assert_eq!(Context::new(String::from("uS"), Some(String::from("wv"))), Context {
+        assert_eq!(Context::new(String::from("uS"), Some(String::from("wv")), Tokens::new(Vec::new())), Context {
             country: String::from("US"),
-            region: Some(String::from("WV"))
+            region: Some(String::from("WV")),
+            tokens: Tokens::new(Vec::new())
         });
 
-        let cntx = Context::new(String::from("uS"), Some(String::from("wv")));
+        let cntx = Context::new(String::from("uS"), Some(String::from("wv")), Tokens::new(Vec::new()));
 
         assert_eq!(cntx.region_code(), Some(String::from("US-WV")));
 

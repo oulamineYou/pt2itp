@@ -378,44 +378,44 @@ pub fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{Name, Context};
+    use crate::{Name, Context, Tokens};
 
     #[test]
     fn test_is_drivethrough() {
 
         assert_eq!(is_drivethrough(
             &String::from("Main St NE"),
-            &Context::new(String::from("US"), None)
+            &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
         ), false);
 
         assert_eq!(is_drivethrough(
             &String::from("McDonalds einfahrt"),
-            &Context::new(String::from("US"), None)
+            &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
         ), false);
 
         assert_eq!(is_drivethrough(
             &String::from("McDonalds einfahrt"),
-            &Context::new(String::from("DE"), None)
+            &Context::new(String::from("DE"), None, Tokens::new(Vec::new()))
         ), true);
 
         assert_eq!(is_drivethrough(
             &String::from("Burger King Drive-through"),
-            &Context::new(String::from("US"), None)
+            &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
         ), true);
 
         assert_eq!(is_drivethrough(
             &String::from("McDonalds Drivethrough"),
-            &Context::new(String::from("US"), None)
+            &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
         ), true);
 
         assert_eq!(is_drivethrough(
             &String::from("McDonalds Drive through"),
-            &Context::new(String::from("US"), None)
+            &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
         ), true);
 
         assert_eq!(is_drivethrough(
             &String::from("McDonalds Drivethru"),
-            &Context::new(String::from("US"), None)
+            &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
         ), true);
     }
 
@@ -434,7 +434,7 @@ mod tests {
 
     #[test]
     fn test_syn_ca_hwy() {
-        let cntx = Context::new(String::from("ca"), Some(String::from("on")));
+        let cntx = Context::new(String::from("ca"), Some(String::from("on")), Tokens::new(Vec::new()));
 
         assert_eq!(syn_ca_hwy(&Name::new(String::from(""), 0), &cntx), vec![]);
 
@@ -483,7 +483,7 @@ mod tests {
         assert_eq!(
             syn_state_hwy(
                 &Name::new(String::from(""), 0),
-                &Context::new(String::from("US"), None)
+                &Context::new(String::from("US"), None, Tokens::new(Vec::new()))
             ), vec![]
         );
 
@@ -500,56 +500,56 @@ mod tests {
         assert_eq!(
             syn_state_hwy(
                 &Name::new(String::from("State Highway 123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")))
+                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
                 &Name::new(String::from("Highway 123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")))
+                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
                 &Name::new(String::from("Hwy 123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")))
+                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
                 &Name::new(String::from("Pennsylvania Highway 123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")))
+                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
                 &Name::new(String::from("Pennsylvania Route 123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")))
+                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
                 &Name::new(String::from("PA 123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")))
+                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
                 &Name::new(String::from("PA-123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")))
+                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
             ), results
         );
 
         assert_eq!(
             syn_state_hwy(
                 &Name::new(String::from("US-PA-123"), 0),
-                &Context::new(String::from("US"), Some(String::from("PA")))
+                &Context::new(String::from("US"), Some(String::from("PA")), Tokens::new(Vec::new()))
             ), results
         );
     }

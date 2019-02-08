@@ -27,6 +27,7 @@ pub use self::types::Network;
 pub use self::types::Context;
 pub use self::types::Names;
 pub use self::types::Name;
+pub use self::text::Tokens;
 
 // Functions registered here will be made avaliable to be called from NodeJS
 register_module!(mut m, {
