@@ -394,6 +394,7 @@ mod tests {
             &context
         ), false);
 
+        let context = Context::new(String::from("de"), None, Tokens::new(HashMap::new()));
         assert_eq!(is_drivethrough(
             &String::from("McDonalds einfahrt"),
             &context
@@ -485,7 +486,7 @@ mod tests {
 
     #[test]
     fn test_syn_state_highway() {
-        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
+        let context = Context::new(String::from("us"), Some(String::from("PA")), Tokens::new(HashMap::new()));
 
         assert_eq!(
             syn_state_hwy(

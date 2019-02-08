@@ -134,8 +134,8 @@ mod tests {
             display: String::from("Main St NW"),
             priority: 0,
             source: String::from(""),
-            tokenized: String::from(""),
-            tokenless: String::from("")
+            tokenized: String::from("main st nw"),
+            tokenless: String::from("main st nw")
         });
     }
 

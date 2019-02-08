@@ -84,7 +84,7 @@ impl Tokens {
 
             // all other ascii and unicode punctuation except '-' per
             // http://stackoverflow.com/questions/4328500 split terms
-            static ref SPACEPUNC: Regex = Regex::new(r"[\u2000-\u206F\u2E00-\u2E7F\'!#$%&()*+,./:;<=>?@[]^_`{|}~]").unwrap();
+            static ref SPACEPUNC: Regex = Regex::new(r"[\u2000-\u206F\u2E00-\u2E7F'!#$%&()*+,./:;<=>?@\[\]^_`{|}~]").unwrap();
 
             static ref SPACE: Regex = Regex::new(r"\s+").unwrap();
         }
