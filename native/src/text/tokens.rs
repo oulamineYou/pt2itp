@@ -66,9 +66,10 @@ impl Tokens {
             };
         }
 
-
-
-        (tokenized.join(" "), tokenless.join(" "))
+        (
+            tokenized.join(" ").trim().to_string(),
+            tokenless.join(" ").trim().to_string()
+        )
     }
 
     ///
@@ -84,9 +85,11 @@ impl Tokens {
 
             // all other ascii and unicode punctuation except '-' per
             // http://stackoverflow.com/questions/4328500 split terms
-            static ref SPACEPUNC: Regex = Regex::new(r"[\u2000-\u206F\u2E00-\u2E7F'!#$%&()*+,./:;<=>?@\[\]^_`{|}~]").unwrap();
+            static ref SPACEPUNC: Regex = Regex::new(r#"[\u2000-\u206F\u2E00-\u2E7F\\'!"$#%&()*+,./:;<=>?@\[\]^_`{|}~-]"#).unwrap();
 
             static ref SPACE: Regex = Regex::new(r"\s+").unwrap();
+
+            static ref IGNORE: Regex = Regex::new(r"(\d+)-(\d+)[a-z]?").unwrap();
         }
 
         let mut normalized = diacritics(&text.to_lowercase());
@@ -94,6 +97,7 @@ impl Tokens {
         normalized = UP.replace_all(normalized.as_str(), "").to_string();
         normalized = PUNC.replace_all(normalized.as_str(), "").to_string();
         normalized = SPACEPUNC.replace_all(normalized.as_str(), " ").to_string();
+        println!("AFTER: {}", normalized);
         normalized = SPACE.replace_all(normalized.as_str(), " ").to_string();
 
         let tokens: Vec<String> = normalized.split(" ").map(|split| {
@@ -109,7 +113,60 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_remove_diacritics() {
+        let tokens = Tokens::new(HashMap::new());
+
+        // diacritics are removed from latin text
+        assert_eq!(tokens.process(&String::from("Hérê àrë søme wöřdš, including diacritics and puncatuation!")).0, String::from("here are some words including diacritics and puncatuation"));
+
+        // nothing happens to latin text
+        assert_eq!(tokens.process(&String::from("Cranberries are low, creeping shrubs or vines up to 2 metres (7 ft)")).0, String::from("cranberries are low creeping shrubs or vines up to 2 metres 7 ft"));
+
+        // nothing happens to Japanese text
+        assert_eq!(tokens.process(&String::from("堪《たま》らん！」と片息《かたいき》になつて、喚《わめ》")).0, String::from("堪《たま》らん！」と片息《かたいき》になつて、喚《わめ》"));
+
+        // greek diacritics are removed and other characters stay the same
+        assert_eq!(tokens.process(&String::from("άΆέΈήΉίΊόΌύΎ αΑεΕηΗιΙοΟυΥ")).0, String::from("άάέέήήίίόόύύ ααεεηηιιοουυ"));
+
+        // cyrillic diacritics are removed and other characters stay the same
+        assert_eq!(tokens.process(&String::from("ўЎёЁѐЀґҐйЙ уУеЕеЕгГиИ")).0, String::from("ўўёёѐѐґґйй ууееееггии"));
+    }
+
+    #[test]
     fn test_tokenize() {
+        let tokens = Tokens::new(HashMap::new());
+
+        assert_eq!(tokens.process(&String::from("foo")).0, String::from("foo"));
+        assert_eq!(tokens.process(&String::from("foo bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo-bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo+bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo_bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo:bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo;bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo|bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo}bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo{bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo[bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo]bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo(bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo)bar")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo b.a.r")).0, String::from("foo bar"));
+        assert_eq!(tokens.process(&String::from("foo's bar")).0, String::from("foos bar"));
+
+        /*
+    t.deepEqual(tokenize.main('69-150'), ['69-150'], 'does not drop number hyphen');
+    t.deepEqual(tokenize.main('4-10'), ['4-10']);
+    t.deepEqual(tokenize.main('5-02A'), ['5-02a']);
+    t.deepEqual(tokenize.main('23-'), ['23'], 'drops dash at end of number');
+    t.deepEqual(tokenize.main('San José'), ['san', 'jose'], 'drops accent');
+    t.deepEqual(tokenize.main('A Coruña'), [ 'a', 'coruna' ], 'drops accent');
+    t.deepEqual(tokenize.main('Chamonix-Mont-Blanc'), ['chamonix','mont','blanc'], 'drops hyphen between words');
+    t.deepEqual(tokenize.main('Rue d\'Argout'), [ 'rue', 'dargout' ], 'drops apostraphe');
+    t.deepEqual(tokenize.main('Hale’iwa Road'), [ 'haleiwa', 'road' ]);
+    t.deepEqual(tokenize.main('Москва'), ['москва']);
+    t.deepEqual(tokenize.main('京都市'), ['京都市']);
+    t.deepEqual(tokenize.main('ஜொஹோர் பாரு'), [ 'ஜொஹோர்', 'பாரு' ]);
+    */
 
     }
 }
