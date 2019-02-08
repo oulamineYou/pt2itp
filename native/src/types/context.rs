@@ -1,14 +1,35 @@
 use std::collections::HashMap;
+use crate::text::Tokens;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
-pub struct Context {
-    pub country: String,
+pub struct InputContext {
+    pub country: Option<String>,
     pub region: Option<String>,
     pub tokens: Option<Vec<Vec<String>>>
 }
 
+pub struct Context {
+    pub country: String,
+    pub region: Option<String>,
+    pub tokens: Tokens
+}
+
+impl From<InputContext> for Context {
+    fn from(input: InputContext) -> Self {
+        let country = input.country.unwrap_or(String::from(""));
+        let region = input.region;
+        let tokens = match input.tokens {
+            None => Tokens::new(Vec::new()),
+            Some(tokens) => Tokens::new(tokens)
+        };
+
+        Context::new(country, region, tokens)
+    }
+}
+
+
 impl Context {
-    pub fn new(country: String, region: Option<String>, tokens: Option<Vec<Vec<String>>>) -> Self {
+    pub fn new(country: String, region: Option<String>, tokens: Tokens) -> Self {
         Context {
             country: country.to_uppercase(),
             region: match region {

@@ -14,6 +14,8 @@ impl Tokens {
     }
 
     pub fn process(&self, text: &String) -> (String, String) {
+        let tokenized = self.tokenize(&text);
+
         (String::from(""), String::from(""))
     }
 
@@ -21,7 +23,7 @@ impl Tokens {
     /// Remove all diacritics, punctuation non-space whitespace
     /// returning a vector of component tokens
     ///
-    fn tokenize(text: &String) -> Vec<String> {
+    fn tokenize(&self, text: &String) -> Vec<String> {
         lazy_static! {
             static ref UP: Regex = Regex::new(r"[\^]+").unwrap();
 

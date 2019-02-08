@@ -13,7 +13,7 @@ use super::pg::Table;
 #[derive(Serialize, Deserialize, Debug)]
 struct MapArgs {
     db: String,
-    context: Option<super::types::Context>,
+    context: Option<super::types::InputContext>,
     input: Option<String>
 }
 
@@ -42,8 +42,13 @@ pub fn import_addr(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
+    let context = match args.context {
+        Some(context) => Some(crate::Context::from(context)),
+        None => None
+    };
+
     pg::Address::create(&conn);
-    pg::Address::input(&conn, AddrStream::new(GeoStream::new(args.input), args.context));
+    pg::Address::input(&conn, AddrStream::new(GeoStream::new(args.input), context));
     pg::Address::index(&conn);
 
     Ok(cx.boolean(true))
@@ -64,8 +69,13 @@ pub fn import_net(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
+    let context = match args.context {
+        Some(context) => Some(crate::Context::from(context)),
+        None => None
+    };
+
     pg::Network::create(&conn);
-    pg::Network::input(&conn, NetStream::from(GeoStream::new(args.input)));
+    pg::Network::input(&conn, NetStream::new(GeoStream::new(args.input), context));
     pg::Network::index(&conn);
 
     Ok(cx.boolean(true))

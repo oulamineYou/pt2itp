@@ -12,7 +12,7 @@ use super::pg::Table;
 #[derive(Serialize, Deserialize, Debug)]
 struct DedupeArgs {
     db: String,
-    context: Option<super::types::Context>,
+    context: Option<super::types::InputContext>,
     input: Option<String>,
     output: Option<String>,
     tokens: Option<String>,
@@ -47,7 +47,10 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
-    let context = args.context.take();
+    let context = match args.context {
+        Some(context) => Some(crate::Context::from(context)),
+        None => None
+    };
 
     pg::Address::create(&conn);
     pg::Address::input(&conn, AddrStream::new(GeoStream::new(args.input), context));
