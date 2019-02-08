@@ -126,14 +126,13 @@ impl Name {
     /// let name = Name::new(String::from("Main St NW"), 0);
     /// ```
     pub fn new(display: String, priority: i8) -> Self {
-        let tokens = text::tokenize(&display);
 
         Name {
             display: display,
             priority: priority,
             source: String::from(""),
-            tokenized: tokens.0,
-            tokenless: tokens.1
+            tokenized: String::from(""),
+            tokenless: String::from("")
         }
     }
 }
