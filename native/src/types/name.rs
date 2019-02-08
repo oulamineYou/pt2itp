@@ -22,7 +22,6 @@ impl InputName {
     }
 }
 
-
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Names {
     pub names: Vec<Name>

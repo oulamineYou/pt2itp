@@ -2,7 +2,7 @@ mod diacritics;
 mod tokens;
 
 pub use self::diacritics::diacritics;
-pub use self::tokens::tokenize;
+pub use self::tokens::Tokens;
 
 use std::collections::HashMap;
 use regex::{Regex, RegexSet};
