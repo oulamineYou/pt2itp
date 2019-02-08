@@ -21,7 +21,7 @@ pub struct Network {
 }
 
 impl Network {
-    pub fn new(feat: geojson::GeoJson, context: &Option<Context>) -> Result<Self, String> {
+    pub fn new(feat: geojson::GeoJson, context: &Context) -> Result<Self, String> {
         let feat = match feat {
             geojson::GeoJson::Feature(feat) => feat,
             _ => { return Err(String::from("Not a GeoJSON Feature")); }
@@ -90,17 +90,12 @@ impl Network {
         Ok(net)
     }
 
-    pub fn std(&mut self, context: &Option<Context>) -> Result<(), String> {
-        match context {
-            None => (),
-            Some(ref context) => {
-                for name in self.names.names.iter() {
-                    if text::is_drivethrough(&name.display, &context) {
-                        return Err(String::from("Network is drivethrough like"));
-                    }
-                }
+    pub fn std(&mut self, context: &Context) -> Result<(), String> {
+        for name in self.names.names.iter() {
+            if text::is_drivethrough(&name.display, &context) {
+                return Err(String::from("Network is drivethrough like"));
             }
-        };
+        }
 
         Ok(())
     }

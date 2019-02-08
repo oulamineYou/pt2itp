@@ -61,7 +61,7 @@ pub fn str_remove_octo(text: &String) -> String {
 ///
 /// Detect Strings like `5 Avenue` and return a synonym like `5th Avenue` where possible
 ///
-pub fn syn_number_suffix(name: &Name) -> Vec<Name> {
+pub fn syn_number_suffix(name: &Name, context: &Context) -> Vec<Name> {
     lazy_static! {
         static ref NUMSUFFIX: Regex = Regex::new(r"(?i)^(?P<number>\d+)\s+(?P<name>\w.*)$").unwrap();
     }
@@ -86,7 +86,7 @@ pub fn syn_number_suffix(name: &Name) -> Vec<Name> {
                 suffix = String::from("th");
             }
 
-            vec![Name::new(format!("{}{} {}", num, suffix, &capture["name"]), 0)]
+            vec![Name::new(format!("{}{} {}", num, suffix, &capture["name"]), 0, &context)]
         },
         None => Vec::new()
     }
@@ -129,13 +129,13 @@ pub fn syn_ca_hwy(name: &Name, context: &Context) -> Vec<Name> {
                 let mut syns: Vec<Name> = Vec::new();
 
                 // Highway 123
-                syns.push(Name::new(format!("Highway {}", &num), -1));
+                syns.push(Name::new(format!("Highway {}", &num), -1, &context));
 
                 // Route 123
-                syns.push(Name::new(format!("Route {}", &num), -1));
+                syns.push(Name::new(format!("Route {}", &num), -1, &context));
 
                 // NB 123
-                syns.push(Name::new(format!("{} {}", &region, &num), -2));
+                syns.push(Name::new(format!("{} {}", &region, &num), -2, &context));
 
                 let hwy_type: String;
                 if
@@ -151,9 +151,9 @@ pub fn syn_ca_hwy(name: &Name, context: &Context) -> Vec<Name> {
 
                 //New Brunswick Route 123 (Display Form)
                 if name.priority > 0 {
-                    syns.push(Name::new(format!("{} {} {}", &region_name, &hwy_type, &num), 0));
+                    syns.push(Name::new(format!("{} {} {}", &region_name, &hwy_type, &num), 0, &context));
                 } else {
-                    syns.push(Name::new(format!("{} {} {}", &region_name, &hwy_type, &num), 1));
+                    syns.push(Name::new(format!("{} {} {}", &region_name, &hwy_type, &num), 1, &context));
                 }
 
                 syns
@@ -171,7 +171,7 @@ pub fn syn_ca_hwy(name: &Name, context: &Context) -> Vec<Name> {
 /// to a space by the tokenized, these cannot currently be managed as token level replacements and are handled
 /// as synonyms instead
 ///
-pub fn syn_written_numeric(name: &Name) -> Vec<Name> {
+pub fn syn_written_numeric(name: &Name, context: &Context) -> Vec<Name> {
     lazy_static! {
         static ref NUMERIC: Regex = Regex::new(r"(?i)(?P<pre>^.*)(?P<tenth>Twenty|Thirty|Fourty|Fifty|Sixty|Seventy|Eighty|Ninety)-(?P<nth>First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth)(?P<post>.*$)").unwrap();
 
@@ -213,7 +213,7 @@ pub fn syn_written_numeric(name: &Name) -> Vec<Name> {
                 Some(nth) => nth
             };
 
-            vec![Name::new(format!("{}{}{}{}", &capture["pre"], tenth, nth, &capture["post"]), 0)]
+            vec![Name::new(format!("{}{}{}{}", &capture["pre"], tenth, nth, &capture["post"]), 0, &context)]
         },
         _ => Vec::new()
     }
@@ -222,7 +222,7 @@ pub fn syn_written_numeric(name: &Name) -> Vec<Name> {
 ///
 /// Generate synonyms for name like "CR 123" => "County Road 123"
 ///
-pub fn syn_us_cr(name: &Name) -> Vec<Name> {
+pub fn syn_us_cr(name: &Name, context: &Context) -> Vec<Name> {
     lazy_static! {
         static ref US_CR: Regex = Regex::new(r"(?i)^(CR |County Road )(?P<num>[0-9]+)$").unwrap();
     }
@@ -236,13 +236,13 @@ pub fn syn_us_cr(name: &Name) -> Vec<Name> {
     let mut syns: Vec<Name> = Vec::with_capacity(2);
 
     // CR 123
-    syns.push(Name::new(format!("CR {}", &cr), -1));
+    syns.push(Name::new(format!("CR {}", &cr), -1, &context));
 
     // County Road 123 (Display Form)
     if name.priority > 0 {
-        syns.push(Name::new(format!("County Road {}", &cr), 0));
+        syns.push(Name::new(format!("County Road {}", &cr), 0, &context));
     } else {
-        syns.push(Name::new(format!("County Road {}", &cr), 1));
+        syns.push(Name::new(format!("County Road {}", &cr), 1, &context));
     }
 
     syns
@@ -251,7 +251,7 @@ pub fn syn_us_cr(name: &Name) -> Vec<Name> {
 ///
 /// Generate synonyms for names like "US 81" => "US Route 81"
 ///
-pub fn syn_us_hwy(name: &Name) -> Vec<Name> {
+pub fn syn_us_hwy(name: &Name, context: &Context) -> Vec<Name> {
     lazy_static! {
         static ref US_HWY: Regex = Regex::new(r"(?i)^(U\.?S\.?|United States)(\s|-)(Rte |Route |Hwy |Highway )?(?P<num>[0-9]+)$").unwrap();
     }
@@ -265,23 +265,23 @@ pub fn syn_us_hwy(name: &Name) -> Vec<Name> {
     let mut syns: Vec<Name> = Vec::with_capacity(5);
 
     // US 81
-    syns.push(Name::new(format!("US {}", &highway), -1));
+    syns.push(Name::new(format!("US {}", &highway), -1, &context));
 
     //US Route 81 (Display Form)
     if name.priority > 0 {
-        syns.push(Name::new(format!("US Route {}", &highway), 0));
+        syns.push(Name::new(format!("US Route {}", &highway), 0, &context));
     } else {
-        syns.push(Name::new(format!("US Route {}", &highway), 1));
+        syns.push(Name::new(format!("US Route {}", &highway), 1, &context));
     }
 
     //US Highway 81
-    syns.push(Name::new(format!("US Highway {}", &highway), -1));
+    syns.push(Name::new(format!("US Highway {}", &highway), -1, &context));
 
     //United States Route 81
-    syns.push(Name::new(format!("United States Route {}", &highway), -1));
+    syns.push(Name::new(format!("United States Route {}", &highway), -1, &context));
 
     //United States Highway 81
-    syns.push(Name::new(format!("United States Highway {}", &highway), -1));
+    syns.push(Name::new(format!("United States Highway {}", &highway), -1, &context));
 
     syns
 }
@@ -348,28 +348,28 @@ pub fn syn_state_hwy(name: &Name, context: &Context) -> Vec<Name> {
     let mut syns: Vec<Name> = Vec::with_capacity(7);
 
     // NC 123 Highway
-    syns.push(Name::new(format!("{} {} Highway", region.to_uppercase(), &highway), -2));
+    syns.push(Name::new(format!("{} {} Highway", region.to_uppercase(), &highway), -2, &context));
 
     // NC 123
-    syns.push(Name::new(format!("{} {}", region.to_uppercase(), &highway), -1));
+    syns.push(Name::new(format!("{} {}", region.to_uppercase(), &highway), -1, &context));
 
     // Highway 123
-    syns.push(Name::new(format!("Highway {}", &highway), -2));
+    syns.push(Name::new(format!("Highway {}", &highway), -2, &context));
 
     // SR 123 (State Route)
-    syns.push(Name::new(format!("SR {}", &highway), -1));
+    syns.push(Name::new(format!("SR {}", &highway), -1, &context));
 
     //State Highway 123
-    syns.push(Name::new(format!("State Highway {}", &highway), -1));
+    syns.push(Name::new(format!("State Highway {}", &highway), -1, &context));
 
     //State Route 123
-    syns.push(Name::new(format!("State Route {}", &highway), -1));
+    syns.push(Name::new(format!("State Route {}", &highway), -1, &context));
 
     // <State> Highway 123 (Display Form)
     if name.priority > 0 {
-        syns.push(Name::new(format!("{} Highway {}", &region_name, &highway), 0));
+        syns.push(Name::new(format!("{} Highway {}", &region_name, &highway), 0, &context));
     } else {
-        syns.push(Name::new(format!("{} Highway {}", &region_name, &highway), 1));
+        syns.push(Name::new(format!("{} Highway {}", &region_name, &highway), 1, &context));
     }
 
     syns

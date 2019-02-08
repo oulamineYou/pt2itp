@@ -13,53 +13,39 @@ struct InputName {
     pub priority: i8
 }
 
-impl InputName {
-    pub fn new(display: String, priority: i8) -> Self {
-        InputName {
-            display: display,
-            priority: priority
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Names {
     pub names: Vec<Name>
 }
 
 impl Names {
-    pub fn new(mut names: Vec<Name>, context: &Option<Context>) -> Self {
-        match context {
-            Some(context) => {
-                if context.country == String::from("us") {
+    pub fn new(mut names: Vec<Name>, context: &Context) -> Self {
+        if context.country == String::from("us") {
 
-                    let mut synonyms: Vec<Name> = Vec::new();
+            let mut synonyms: Vec<Name> = Vec::new();
 
-                    for name in names.iter_mut() {
-                        name.display = text::str_remove_octo(&name.display);
+            for name in names.iter_mut() {
+                name.display = text::str_remove_octo(&name.display);
 
-                        synonyms.append(&mut text::syn_number_suffix(&name));
-                        synonyms.append(&mut text::syn_written_numeric(&name));
-                        synonyms.append(&mut text::syn_state_hwy(&name, &context));
-                        synonyms.append(&mut text::syn_us_hwy(&name));
-                        synonyms.append(&mut text::syn_us_cr(&name));
-                    }
+                synonyms.append(&mut text::syn_number_suffix(&name, &context));
+                synonyms.append(&mut text::syn_written_numeric(&name, &context));
+                synonyms.append(&mut text::syn_state_hwy(&name, &context));
+                synonyms.append(&mut text::syn_us_hwy(&name, &context));
+                synonyms.append(&mut text::syn_us_cr(&name, &context));
+            }
 
-                    names.append(&mut synonyms);
-                } else if context.country == String::from("ca") {
-                    let mut synonyms: Vec<Name> = Vec::new();
+            names.append(&mut synonyms);
+        } else if context.country == String::from("ca") {
+            let mut synonyms: Vec<Name> = Vec::new();
 
-                    for name in names.iter_mut() {
-                        name.display = text::str_remove_octo(&name.display);
+            for name in names.iter_mut() {
+                name.display = text::str_remove_octo(&name.display);
 
-                        synonyms.append(&mut text::syn_ca_hwy(&name, &context));
-                    }
+                synonyms.append(&mut text::syn_ca_hwy(&name, &context));
+            }
 
-                    names.append(&mut synonyms);
-                }
-            },
-            None => ()
-        };
+            names.append(&mut synonyms);
+        }
 
         Names {
             names: names
@@ -70,11 +56,11 @@ impl Names {
     /// Parse a Names object from a serde_json value, returning
     /// an empty names vec if unparseable
     ///
-    pub fn from_value(value: Option<serde_json::Value>, context: &Option<Context>) -> Result<Self, String> {
+    pub fn from_value(value: Option<serde_json::Value>, context: &Context) -> Result<Self, String> {
         let names: Vec<Name> = match value {
             Some(street) => {
                 if street.is_string() {
-                    vec![Name::new(street.as_str().unwrap().to_string(), 0)]
+                    vec![Name::new(street.as_str().unwrap().to_string(), 0, &context)]
                 } else {
                     let names: Vec<InputName> = match serde_json::from_value(street) {
                         Ok(street) => street,
@@ -82,7 +68,7 @@ impl Names {
                     };
 
                     let names: Vec<Name> = names.iter().map(|name| {
-                        Name::new(name.display.clone(), name.priority)
+                        Name::new(name.display.clone(), name.priority, &context)
                     }).collect();
 
                     names
@@ -120,19 +106,16 @@ impl Name {
     ///
     /// * `display` - A string containing the street name (Main St)
     ///
-    /// # Example
-    ///
     /// ```
-    /// let name = Name::new(String::from("Main St NW"), 0);
-    /// ```
-    pub fn new(display: String, priority: i8) -> Self {
+    pub fn new(display: String, priority: i8, context: &Context) -> Self {
+        let tokens = context.tokens.process(&display);
 
         Name {
             display: display,
             priority: priority,
             source: String::from(""),
-            tokenized: String::from(""),
-            tokenless: String::from("")
+            tokenized: tokens.0,
+            tokenless: tokens.1
         }
     }
 }

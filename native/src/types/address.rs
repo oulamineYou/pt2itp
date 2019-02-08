@@ -2,6 +2,8 @@ use postgis::ewkb::AsEwkbPoint;
 use postgis::ewkb::EwkbWrite;
 use regex::{Regex, RegexSet};
 
+use crate::Context;
+
 /// A representation of a single Address
 #[derive(Debug)]
 pub struct Address {
@@ -31,7 +33,7 @@ pub struct Address {
 }
 
 impl Address {
-    pub fn new(feat: geojson::GeoJson, context: &Option<super::super::types::Context>) -> Result<Self, String> {
+    pub fn new(feat: geojson::GeoJson, context: &Context) -> Result<Self, String> {
         let feat = match feat {
             geojson::GeoJson::Feature(feat) => feat,
             _ => { return Err(String::from("Not a GeoJSON Feature")); }

@@ -118,6 +118,7 @@ test('map - good run', (t) => {
         'in-address': path.resolve(__dirname, './fixtures/sg-address.geojson'),
         'in-network': path.resolve(__dirname, './fixtures/sg-network.geojson'),
         output: '/tmp/itp.geojson',
+        tokens: 'en',
         debug: true,
         db: 'pt_test'
     }, (err, res) => {

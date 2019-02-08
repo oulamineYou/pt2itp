@@ -1,8 +1,7 @@
 use std::convert::From;
 use std::iter::Iterator;
 
-use super::geo;
-use super::super::Address;
+use crate::{stream::geo::GeoStream, Address, Context};
 
 /*
  * TODO:
@@ -10,24 +9,18 @@ use super::super::Address;
  */
 
 pub struct AddrStream {
-    context: Option<super::super::types::Context>,
-    input: geo::GeoStream,
+    context: Context,
+    input: GeoStream,
     buffer: Option<Vec<u8>> //Used by Read impl for storing partial features
 }
 
 impl AddrStream {
-    pub fn new(input: geo::GeoStream, context: Option<super::super::types::Context>) -> Self {
+    pub fn new(input: GeoStream, context: Context) -> Self {
         AddrStream {
             context: context,
             input: input,
             buffer: None
         }
-    }
-}
-
-impl From<super::geo::GeoStream> for AddrStream {
-    fn from(input: super::geo::GeoStream) -> Self {
-        AddrStream::new(input, None)
     }
 }
 

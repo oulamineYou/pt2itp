@@ -20,8 +20,8 @@ impl From<InputContext> for Context {
         let country = input.country.unwrap_or(String::from(""));
         let region = input.region;
         let tokens = match input.tokens {
-            None => Tokens::new(Vec::new()),
-            Some(tokens) => Tokens::new(tokens)
+            None => Tokens::new(HashMap::new()),
+            Some(tokens) =>  Tokens::generate(tokens)
         };
 
         Context::new(country, region, tokens)

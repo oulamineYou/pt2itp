@@ -1,5 +1,6 @@
 use std::convert::From;
 use postgres::{Connection, TlsMode};
+use std::collections::HashMap;
 
 use neon::prelude::*;
 
@@ -33,7 +34,7 @@ impl DedupeArgs {
 }
 
 pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
-    let mut args: DedupeArgs = match cx.argument_opt(0) {
+    let args: DedupeArgs = match cx.argument_opt(0) {
         None => DedupeArgs::new(),
         Some(arg) => {
             if arg.is_a::<JsUndefined>() || arg.is_a::<JsNull>() {
@@ -48,8 +49,8 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
     let context = match args.context {
-        Some(context) => Some(crate::Context::from(context)),
-        None => None
+        Some(context) => crate::Context::from(context),
+        None => crate::Context::new(String::from(""), None, crate::Tokens::new(HashMap::new()))
     };
 
     pg::Address::create(&conn);

@@ -4,24 +4,18 @@ use std::iter::Iterator;
 use crate::{stream::geo::GeoStream, Network, Context};
 
 pub struct NetStream {
-    context: Option<Context>,
+    context: Context,
     input: GeoStream,
     buffer: Option<Vec<u8>> //Used by Read impl for storing partial features
 }
 
 impl NetStream {
-    pub fn new(input: GeoStream, context: Option<Context>) -> Self {
+    pub fn new(input: GeoStream, context: Context) -> Self {
         NetStream {
             context: context,
             input: input,
             buffer: None
         }
-    }
-}
-
-impl From<GeoStream> for NetStream {
-    fn from(input: GeoStream) -> Self {
-        NetStream::new(input, None)
     }
 }
 
