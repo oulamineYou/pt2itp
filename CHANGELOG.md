@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v19.3.0
+
+- :rocket: Update `osmiunm` expectations
+
 ## v19.2.0
 
 - :rocket: Update to latest carmen intersection format
