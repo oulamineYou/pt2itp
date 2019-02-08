@@ -97,7 +97,6 @@ impl Tokens {
         normalized = UP.replace_all(normalized.as_str(), "").to_string();
         normalized = PUNC.replace_all(normalized.as_str(), "").to_string();
         normalized = SPACEPUNC.replace_all(normalized.as_str(), " ").to_string();
-        println!("AFTER: {}", normalized);
         normalized = SPACE.replace_all(normalized.as_str(), " ").to_string();
 
         let tokens: Vec<String> = normalized.split(" ").map(|split| {
@@ -136,6 +135,8 @@ mod tests {
     fn test_tokenize() {
         let tokens = Tokens::new(HashMap::new());
 
+        assert_eq!(tokens.process(&String::from("")).0, String::from(""));
+
         assert_eq!(tokens.process(&String::from("foo")).0, String::from("foo"));
         assert_eq!(tokens.process(&String::from("foo bar")).0, String::from("foo bar"));
         assert_eq!(tokens.process(&String::from("foo-bar")).0, String::from("foo bar"));
@@ -153,20 +154,37 @@ mod tests {
         assert_eq!(tokens.process(&String::from("foo b.a.r")).0, String::from("foo bar"));
         assert_eq!(tokens.process(&String::from("foo's bar")).0, String::from("foos bar"));
 
-        /*
-    t.deepEqual(tokenize.main('69-150'), ['69-150'], 'does not drop number hyphen');
-    t.deepEqual(tokenize.main('4-10'), ['4-10']);
-    t.deepEqual(tokenize.main('5-02A'), ['5-02a']);
-    t.deepEqual(tokenize.main('23-'), ['23'], 'drops dash at end of number');
-    t.deepEqual(tokenize.main('San José'), ['san', 'jose'], 'drops accent');
-    t.deepEqual(tokenize.main('A Coruña'), [ 'a', 'coruna' ], 'drops accent');
-    t.deepEqual(tokenize.main('Chamonix-Mont-Blanc'), ['chamonix','mont','blanc'], 'drops hyphen between words');
-    t.deepEqual(tokenize.main('Rue d\'Argout'), [ 'rue', 'dargout' ], 'drops apostraphe');
-    t.deepEqual(tokenize.main('Hale’iwa Road'), [ 'haleiwa', 'road' ]);
-    t.deepEqual(tokenize.main('Москва'), ['москва']);
-    t.deepEqual(tokenize.main('京都市'), ['京都市']);
-    t.deepEqual(tokenize.main('ஜொஹோர் பாரு'), [ 'ஜொஹோர்', 'பாரு' ]);
-    */
+        assert_eq!(tokens.process(&String::from("San José")).0, String::from("san jose"));
+        assert_eq!(tokens.process(&String::from("A Coruña")).0, String::from("a coruna"));
+        assert_eq!(tokens.process(&String::from("Chamonix-Mont-Blanc")).0, String::from("chamonix mont blanc"));
+        assert_eq!(tokens.process(&String::from("Rue d'Argout")).0, String::from("rue dargout"));
+        assert_eq!(tokens.process(&String::from("Hale’iwa Road")).0, String::from("haleiwa road"));
+        assert_eq!(tokens.process(&String::from("москва")).0, String::from("москва"));
+        assert_eq!(tokens.process(&String::from("京都市")).0, String::from("京都市"));
+    }
 
+    #[test]
+    fn test_replacement_tokens() {
+        let mut map: HashMap<String, String> = HashMap::new();
+        map.insert(String::from("barter"), String::from("foo"));
+        map.insert(String::from("saint"), String::from("st"));
+        map.insert(String::from("street"), String::from("st"));
+
+        let tokens = Tokens::new(map);
+
+        assert_eq!(tokens.process(&String::from("Main Street")), (
+            String::from("main st"),
+            String::from("main")
+        ));
+
+        assert_eq!(tokens.process(&String::from("foobarter")), (
+            String::from("foobarter"),
+            String::from("foobarter")
+        ));
+
+        assert_eq!(tokens.process(&String::from("foo barter")), (
+            String::from("foo foo"),
+            String::from("foo")
+        ));
     }
 }
