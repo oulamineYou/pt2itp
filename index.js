@@ -31,14 +31,6 @@ if (require.main === module) {
                 process.exit(0);
             });
             break;
-        case ('clean'):
-            require('./lib/clean')(process.argv, (err) => {
-                if (err) throw err;
-
-                console.error('ok - processing complete');
-                process.exit(0);
-            });
-            break;
         case ('map'):
             require('./lib/map')(process.argv, (err) => {
                 if (err) throw err;
