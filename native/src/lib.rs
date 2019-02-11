@@ -31,7 +31,9 @@ pub use self::text::Tokens;
 
 // Functions registered here will be made avaliable to be called from NodeJS
 register_module!(mut m, {
-    m.export_function("init", map::init)?;
+    m.export_function("pg_init", map::pg_init)?;
+    m.export_function("pg_optimize", map::pg_optimize)?;
+
     m.export_function("import_addr", map::import_addr)?;
     m.export_function("import_net", map::import_net)?;
 
