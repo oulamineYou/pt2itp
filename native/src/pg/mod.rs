@@ -133,6 +133,13 @@ impl Table for Network {
 
     fn index(conn: &Connection) {
         conn.execute(r#"
+            ALTER TABLE network
+                ALTER COLUMN geom
+                TYPE GEOMETRY(MULTILINESTRINGZ, 4326)
+                USING ST_GEomFromEWKT(Regexp_Replace(ST_AsEWKT(geom)::TEXT, '\d(?=[,)])', ' '||id, 'g'))
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
             CREATE INDEX network_idx ON network (id);
         "#, &[]).unwrap();
 
