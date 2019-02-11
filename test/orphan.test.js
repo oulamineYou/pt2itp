@@ -1,6 +1,8 @@
 const Orphan = require('../lib/map/orphan');
 const Post = require('../lib/map/post');
 const Index = require('../lib/map/index');
+const pg_init = require('../native/index.node').pg_init;
+const pg_optimize = require('../native/index.node').pg_optimize;
 
 const test = require('tape');
 const fs = require('fs');
@@ -20,6 +22,8 @@ const pool = new pg.Pool({
 const index = new Index(pool);
 
 test('Drop/Init Database', (t) => {
+    pg_init();
+
     index.init((err, res) => {
         t.error(err);
         t.end();
@@ -37,15 +41,18 @@ test('orphan.address', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO address (id, name, number, geom, netid, props) VALUES (1, '[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 1, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 1] }'), 4326), 1, '{ "accuracy": "building" }');
-            INSERT INTO address (id, name, number, geom, netid, props) VALUES (2, '[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 2, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 2] }'), 4326), 1, '{ "accuracy": "building" }');
-            INSERT INTO address (id, name, number, geom, netid, props) VALUES (6, '[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 6, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 6] }'), 4326), 1, '{ "accuracy": "parcel" }');
-            INSERT INTO address (id, name, number, geom, netid, props) VALUES (3, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 3, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 3] }'), 4326), NULL, '{ "accuracy": "parcel" }');
-            INSERT INTO address (id, name, number, geom, netid, props) VALUES (4, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 4, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 4] }'), 4326), NULL, '{ "accuracy": "parcel" }');
-            INSERT INTO address (id, name, number, geom, netid, props) VALUES (5, '[{ "tokenized": "fake av", "tokenless": "fake", "display": "Fake Avenue" }]', 5, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-85.25390625,52.908902047770255, 5] }'), 4326), NULL, '{ "accuracy": "building" }');
+            INSERT INTO address (names, number, geom, netid, props) VALUES ('[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 1, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024] }'), 4326), 1, '{ "accuracy": "building" }');
+            INSERT INTO address (names, number, geom, netid, props) VALUES ('[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 2, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024] }'), 4326), 1, '{ "accuracy": "building" }');
+            INSERT INTO address (names, number, geom, netid, props) VALUES ('[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 3, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606] }'), 4326), NULL, '{ "accuracy": "parcel" }');
+            INSERT INTO address (names, number, geom, netid, props) VALUES ('[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 4, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606] }'), 4326), NULL, '{ "accuracy": "parcel" }');
+            INSERT INTO address (names, number, geom, netid, props) VALUES ('[{ "tokenized": "fake av", "tokenless": "fake", "display": "Fake Avenue" }]', 5, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-85.25390625,52.908902047770255] }'), 4326), NULL, '{ "accuracy": "building" }');
+            INSERT INTO address (names, number, geom, netid, props) VALUES ('[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 6, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024] }'), 4326), 1, '{ "accuracy": "parcel" }');
             COMMIT;
         `, (err, res) => {
             t.error(err, 'ok - added addresses to table');
+           
+            pg_optimize();
+
             return done();
         });
     });
