@@ -1,4 +1,4 @@
-const ReadLine = require('readline');
+const ReadLine = require('n-readlines');
 const worker = require('../lib/conflate');
 
 const test = require('tape');
@@ -25,29 +25,30 @@ test('Compare', (t) => {
     }, (err, res) => {
         t.error(err);
 
-        rl = ReadLine.createInterface({
-            input: fs.createReadStream('/tmp/output.geojson')
+        const rl = new ReadLine('/tmp/output.geojson');
+
+        t.deepEquals(JSON.parse(rl.next()), {
+            action: 'create',
+            type: 'Feature',
+            properties: {
+                number: 112,
+                street: [{
+                    display: '4th ST NE',
+                    priority: 0 
+                }]
+            },
+            geometry: {
+                type: 'Point',
+                coordinates: [ -77.00080543756485, 38.89128752230519 ]
+            } 
         });
 
-        rl.on('line', (line) => {
-            if (!line) return;
-
-            feat = JSON.parse(line);
-
-            console.error(feat);
-
+        t.doesNotThrow(() => {
+            fs.accessSync('/tmp/error-persistent');
         });
 
-        rl.on('error', t.error);
-
-        rl.on('close', () => {
-            t.doesNotThrow(() => {
-                fs.accessSync('/tmp/error-persistent');
-            });
-
-            fs.unlinkSync('/tmp/ouput.geojson');
-            fs.unlinkSync('/tmp/error-persistent');
-            t.end();
-        });
+        fs.unlinkSync('/tmp/output.geojson');
+        fs.unlinkSync('/tmp/error-persistent');
+        t.end();
     });
 });
