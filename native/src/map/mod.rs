@@ -15,7 +15,8 @@ use super::pg::Table;
 struct MapArgs {
     db: String,
     context: Option<super::types::InputContext>,
-    input: Option<String>
+    input: Option<String>,
+    errors: Option<String>
 }
 
 impl MapArgs {
@@ -23,7 +24,8 @@ impl MapArgs {
         MapArgs {
             db: String::from("map"),
             context: None,
-            input: None
+            input: None,
+            errors: None
         }
     }
 }
