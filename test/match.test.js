@@ -49,7 +49,7 @@ test('Match', (t) => {
             COMMIT;
         `, (err, res) => {
             t.error(err);
-    
+
             pg_optimize();
 
             return done();

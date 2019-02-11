@@ -34,13 +34,13 @@ test('Compare', (t) => {
                 number: 112,
                 street: [{
                     display: '4th ST NE',
-                    priority: 0 
+                    priority: 0
                 }]
             },
             geometry: {
                 type: 'Point',
                 coordinates: [ -77.00080543756485, 38.89128752230519 ]
-            } 
+            }
         });
 
         t.doesNotThrow(() => {

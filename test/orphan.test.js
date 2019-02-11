@@ -50,7 +50,7 @@ test('orphan.address', (t) => {
             COMMIT;
         `, (err, res) => {
             t.error(err, 'ok - added addresses to table');
-           
+
             pg_optimize();
 
             return done();
