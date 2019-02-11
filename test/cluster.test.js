@@ -1,5 +1,6 @@
 const Cluster = require('../lib/map/cluster');
 const Index = require('../lib/map/index');
+const init = require('../native/index.node').init;
 
 const test = require('tape');
 const fs = require('fs');
@@ -17,6 +18,8 @@ const cluster = new Cluster({ pool: pool });
 const index = new Index(pool);
 
 test('Drop/Init Database', (t) => {
+    init();
+
     index.init((err, res) => {
         t.error(err);
         t.end();
@@ -31,14 +34,14 @@ test('cluster.address', (t) => {
         pool.query(`
             BEGIN;
 
-            INSERT INTO address (id, name, number, geom, netid) VALUES (1, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 1] }'), 4326), 1);
-            INSERT INTO address (id, name, number, geom, netid) VALUES (2, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 2] }'), 4326), 1);
-            INSERT INTO address (id, name, number, geom, netid) VALUES (6, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 6] }'), 4326), 1);
+            INSERT INTO address (id, names, number, geom, netid) VALUES (1, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 1] }'), 4326), 1);
+            INSERT INTO address (id, names, number, geom, netid) VALUES (2, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 2] }'), 4326), 1);
+            INSERT INTO address (id, names, number, geom, netid) VALUES (6, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024, 6] }'), 4326), 1);
 
-            INSERT INTO address (id, name, number, geom, netid) VALUES (3, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 13, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 3] }'), 4326), 3);
-            INSERT INTO address (id, name, number, geom, netid) VALUES (4, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 13, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 4] }'), 4326), 3);
+            INSERT INTO address (id, names, number, geom, netid) VALUES (3, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 13, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 3] }'), 4326), 3);
+            INSERT INTO address (id, names, number, geom, netid) VALUES (4, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 13, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-105.46875,56.36525013685606, 4] }'), 4326), 3);
 
-            INSERT INTO address (id, name, number, geom, netid) VALUES (5, '[{ "tokenized": "fake av", "tokenless": "fake", "display": "Fake Avenue" }]', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-85.25390625,52.908902047770255, 5] }'), 4326), 2);
+            INSERT INTO address (id, names, number, geom, netid) VALUES (5, '[{ "tokenized": "fake av", "tokenless": "fake", "display": "Fake Avenue" }]', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-85.25390625,52.908902047770255, 5] }'), 4326), 2);
 
             COMMIT;
         `, (err, res) => {
@@ -76,6 +79,8 @@ test('cluster.address', (t) => {
 });
 
 test('Drop/Init Database', (t) => {
+    init();
+
     index.init((err, res) => {
         t.error(err, 'no errors');
         t.end();
@@ -89,12 +94,12 @@ test('cluster.address - order synonyms by address count', (t) => {
         pool.query(`
             BEGIN;
 
-            INSERT INTO address (id, name, number, netid, geom) VALUES (21, '[{ "tokenized": "mill st nw", "tokenless": "mill", "display": "Mill Street NW" }]', 12, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41056871414183, 41.8005111239637, 5 ] }'), 4326));
-            INSERT INTO address (id, name, number, netid, geom) VALUES (22, '[{ "tokenized": "mill st nw", "tokenless": "mill", "display": "Mill Street NW" }]', 13, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41054725646971, 41.801102975153974, 6 ] }'), 4326));
+            INSERT INTO address (id, names, number, netid, geom) VALUES (21, '[{ "tokenized": "mill st nw", "tokenless": "mill", "display": "Mill Street NW" }]', 12, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41056871414183, 41.8005111239637, 5 ] }'), 4326));
+            INSERT INTO address (id, names, number, netid, geom) VALUES (22, '[{ "tokenized": "mill st nw", "tokenless": "mill", "display": "Mill Street NW" }]', 13, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41054725646971, 41.801102975153974, 6 ] }'), 4326));
 
-            INSERT INTO address (id, name, number, netid, geom) VALUES (23, '[{ "tokenized": "r st nw", "tokenless": "r", "display": "R Street NW" }]', 10, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41816473007202, 41.80102299558284, 7 ] }'), 4326));
-            INSERT INTO address (id, name, number, netid, geom) VALUES (24, '[{ "tokenized": "r st nw", "tokenless": "r", "display": "R Street NW" }]', 11, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.4172420501709, 41.80103899150505, 8 ] }'), 4326));
-            INSERT INTO address (id, name, number, netid, geom) VALUES (25, '[{ "tokenized": "r st nw", "tokenless": "r", "display": "R Street NW" }]', 12, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41599750518799, 41.801166958738996, 9 ] }'), 4326));
+            INSERT INTO address (id, names, number, netid, geom) VALUES (23, '[{ "tokenized": "r st nw", "tokenless": "r", "display": "R Street NW" }]', 10, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41816473007202, 41.80102299558284, 7 ] }'), 4326));
+            INSERT INTO address (id, names, number, netid, geom) VALUES (24, '[{ "tokenized": "r st nw", "tokenless": "r", "display": "R Street NW" }]', 11, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.4172420501709, 41.80103899150505, 8 ] }'), 4326));
+            INSERT INTO address (id, names, number, netid, geom) VALUES (25, '[{ "tokenized": "r st nw", "tokenless": "r", "display": "R Street NW" }]', 12, 20, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -85.41599750518799, 41.801166958738996, 9 ] }'), 4326));
 
 
             COMMIT;
@@ -143,6 +148,8 @@ test('cluster.address - order synonyms by address count', (t) => {
 });
 
 test('Drop/Init Database', (t) => {
+    init();
+
     index.init((err, res) => {
         t.error(err, 'no errors');
         t.end();
@@ -156,10 +163,10 @@ test('cluster.network', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO network (id, name, geom) VALUES (1, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -66.05390310287476, 45.26961632842303, 1 ], [ -66.05441808700562, 45.271035832768376, 1 ] ]}'), 4326));
-            INSERT INTO network (id, name, geom) VALUES (2, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -66.05435371398926, 45.27100563091792, 2 ], [ -66.05493307113646, 45.27245530161207, 2 ] ]}'), 4326));
-            INSERT INTO network (id, name, geom) VALUES (3, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -113.50117206573485, 53.55137413785917, 3 ], [ -113.50112915039062, 53.54836549323335, 3 ] ]}'), 4326));
-            INSERT INTO network (id, name, geom) VALUES (4, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -113.50100040435791, 53.54836549323335, 4 ], [ -113.50104331970215, 53.54614711825744, 4 ] ]}'), 4326));
+            INSERT INTO network (id, names, geom) VALUES (1, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -66.05390310287476, 45.26961632842303, 1 ], [ -66.05441808700562, 45.271035832768376, 1 ] ]}'), 4326)));
+            INSERT INTO network (id, names, geom) VALUES (2, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -66.05435371398926, 45.27100563091792, 2 ], [ -66.05493307113646, 45.27245530161207, 2 ] ]}'), 4326)));
+            INSERT INTO network (id, names, geom) VALUES (3, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -113.50117206573485, 53.55137413785917, 3 ], [ -113.50112915039062, 53.54836549323335, 3 ] ]}'), 4326)));
+            INSERT INTO network (id, names, geom) VALUES (4, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -113.50100040435791, 53.54836549323335, 4 ], [ -113.50104331970215, 53.54614711825744, 4 ] ]}'), 4326)));
             COMMIT;
         `, (err, res) => {
             t.error(err, 'no errors');
@@ -224,6 +231,8 @@ test('cluster.network', (t) => {
 });
 
 test('Drop/Init Database', (t) => {
+    init();
+
     index.init((err, res) => {
         t.error(err, 'no errors');
         t.end();
