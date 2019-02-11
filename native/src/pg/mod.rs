@@ -22,7 +22,8 @@ impl Table for Address {
 
         conn.execute(r#"
             CREATE UNLOGGED TABLE address (
-                id SERIAL,
+                id BIGINT,
+                version BIGINT,
                 netid BIGINT,
                 names JSONB,
                 number TEXT,
@@ -49,6 +50,8 @@ impl Table for Address {
     fn input(conn: &Connection, mut data: impl Read) {
         let stmt = conn.prepare(format!(r#"
             COPY address (
+                id,
+                version,
                 names,
                 number,
                 source,
@@ -65,6 +68,20 @@ impl Table for Address {
     }
 
     fn index(conn: &Connection) {
+        conn.execute(r#"
+            DROP SEQUENCE IF EXISTS address_seq;
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            CREATE SEQUENCE address_seq;
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            UPDATE address
+                SET id = nextval('address_seq')
+                WHERE id IS NULL;
+        "#, &[]).unwrap();
+
         conn.execute(r#"
             ALTER TABLE address
                 ALTER COLUMN geom

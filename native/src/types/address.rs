@@ -10,6 +10,8 @@ pub struct Address {
     /// An optional identifier for the address
     pub id: Option<i64>,
 
+    pub version: i64,
+
     /// The address number, can be numeric or semi-numeric (100 vs 100a)
     pub number: String,
 
@@ -42,6 +44,14 @@ impl Address {
         let mut props = match feat.properties {
             Some(props) => props,
             None => { return Err(String::from("Feature has no properties")); }
+        };
+
+        let version = match feat.foreign_members {
+            Some(mut props) => match props.remove(&String::from("version")) {
+                Some(version) => version.as_i64().unwrap(),
+                None => 0
+            },
+            None => 0
         };
 
         let number = match props.remove(&String::from("number")) {
@@ -110,6 +120,7 @@ impl Address {
                 _ => None
             },
             number: number,
+            version: version,
             names: names,
             output: output,
             source: source,
@@ -159,7 +170,12 @@ impl Address {
     pub fn to_tsv(self) -> String {
         let geom = postgis::ewkb::Point::new(self.geom.0, self.geom.1, Some(4326)).as_ewkb().to_hex_ewkb();
 
-        format!("{names}\t{number}\t{source}\t{output}\t{props}\t{geom}\n",
+        format!("{id}\t{version}\t{names}\t{number}\t{source}\t{output}\t{props}\t{geom}\n",
+            id = match self.id {
+                None => String::from(""),
+                Some(id) => id.to_string()
+            },
+            version = self.version,
             names = serde_json::to_string(&self.names.names).unwrap_or(String::from("")),
             output = self.output,
             number = self.number,

@@ -39,7 +39,7 @@ test('Points are clustered on netid', (t) => {
             COMMIT;
         `, (err, res) => {
             t.error(err);
-            
+
             pg_optimize();
 
             return done();
@@ -95,7 +95,7 @@ test('LineStrings far away should not be clustered', (t) => {
             t.error(err);
 
             pg_optimize();
-            
+
             return done();
         });
     });

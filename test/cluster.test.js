@@ -45,7 +45,7 @@ test('cluster.address', (t) => {
             COMMIT;
         `, (err, res) => {
             t.error(err, 'no errors');
-            
+
             pg_optimize();
 
             return done();
