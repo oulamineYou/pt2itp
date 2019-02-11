@@ -120,7 +120,9 @@ test('map - good run', (t) => {
         fs.unlinkSync('/tmp/itp.geojson');
         fs.unlinkSync('/tmp/error-network');
         fs.unlinkSync('/tmp/error-address');
-    } catch (err) {}
+    } catch (err) {
+        console.error('ok - cleaned tmp files');
+    }
 
     worker({
         'in-address': path.resolve(__dirname, './fixtures/sg-address.geojson'),
