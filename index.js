@@ -136,7 +136,6 @@ if (require.main === module) {
         stat: require('./native/index.node').stats,
         convert: require('./native/index.node').convert,
         debug: require('./lib/debug'),
-        clean: require('./lib/clean'),
         map: require('./lib/map'),
         conflate: require('./lib/conflate'),
         test: require('./lib/test'),

@@ -11,6 +11,23 @@ use super::stream::NetStream;
 use super::pg;
 use super::pg::Table;
 
+pub fn init(mut cx: FunctionContext) -> JsResult<JsBoolean> {
+    let db = match cx.argument_opt(0) {
+        Some(arg) => arg.downcast::<JsString>().or_throw(&mut cx)?.value(),
+        None => String::from("pt_test")
+    };
+
+    let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db).as_str(), TlsMode::None).unwrap();
+
+    pg::Address::create(&conn);
+    pg::Address::index(&conn);
+
+    pg::Network::create(&conn);
+    pg::Network::index(&conn);
+
+    Ok(cx.boolean(true))
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 struct MapArgs {
     db: String,
