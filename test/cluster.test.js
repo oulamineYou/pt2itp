@@ -130,7 +130,13 @@ test('cluster.address - order synonyms by address count', (t) => {
     popQ.defer((done) => {
         // check that text has r st, then mill st
         pool.query(`
-            SELECT id, name FROM address_cluster ORDER BY id;
+            SELECT
+                id,
+                name
+            FROM
+                address_cluster
+            ORDER BY
+                id;
         `, (err, res) => {
             t.error(err, 'no errors');
 
@@ -174,10 +180,10 @@ test('cluster.network', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO network (id, names, geom) VALUES (1, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -66.05390310287476, 45.26961632842303 ], [ -66.05441808700562, 45.271035832768376 ] ]}'), 4326)));
-            INSERT INTO network (id, names, geom) VALUES (2, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -66.05435371398926, 45.27100563091792 ], [ -66.05493307113646, 45.27245530161207 ] ]}'), 4326)));
-            INSERT INTO network (id, names, geom) VALUES (3, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -113.50117206573485, 53.55137413785917 ], [ -113.50112915039062, 53.54836549323335 ] ]}'), 4326)));
-            INSERT INTO network (id, names, geom) VALUES (4, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -113.50100040435791, 53.54836549323335 ], [ -113.50104331970215, 53.54614711825744 ] ]}'), 4326)));
+            INSERT INTO network (names, geom) VALUES ('[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "MultiLineString", "coordinates": [ [ [ -66.05390310287476, 45.26961632842303 ], [ -66.05441808700562, 45.271035832768376 ] ] ]}'), 4326));
+            INSERT INTO network (names, geom) VALUES ('[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "MultiLineString", "coordinates": [ [ [ -66.05435371398926, 45.27100563091792 ], [ -66.05493307113646, 45.27245530161207 ] ] ]}'), 4326));
+            INSERT INTO network (names, geom) VALUES ('[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "MultiLineString", "coordinates": [ [ [ -113.50117206573485, 53.55137413785917 ], [ -113.50112915039062, 53.54836549323335 ] ] ]}'), 4326));
+            INSERT INTO network (names, geom) VALUES ('[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "MultiLineString", "coordinates": [ [ [ -113.50100040435791, 53.54836549323335 ], [ -113.50104331970215, 53.54614711825744 ] ] ]}'), 4326));
             COMMIT;
         `, (err, res) => {
             t.error(err, 'no errors');
@@ -202,17 +208,16 @@ test('cluster.network', (t) => {
                 name,
                 ST_AsGeoJSON(geom)::JSON AS geom,
                 source_ids
-            FROM network_cluster;
+            FROM
+                network_cluster
+            ORDER BY
+                id ASC;
         `, (err, res) => {
             t.error(err, 'no errors');
 
             t.equals(res.rows.length, 2);
 
             t.deepEquals(res.rows[0], {
-                geom: {
-                    type: "MultiLineString",
-                    coordinates: [[[-66.0539031028748,45.269616328423],[-66.0544180870056,45.2710358327684]],[[-66.0543537139893,45.2710056309179],[-66.0549330711365,45.2724553016121]]]
-                },
                 id: 1,
                 name: [{
                     freq: 1,
@@ -220,6 +225,10 @@ test('cluster.network', (t) => {
                     tokenless: 'main',
                     display: 'Main Street'
                 }],
+                geom: {
+                    type: "MultiLineString",
+                    coordinates: [ [ [ -66.0539031028748, 45.26961632842 ], [ -66.0544180870056, 45.271035832768 ] ], [ [ -66.0543537139893, 45.271005630917 ], [ -66.0549330711365, 45.272455301612 ] ] ]
+                },
                 source_ids: [ '1', '2' ]
             });
 
@@ -227,7 +236,7 @@ test('cluster.network', (t) => {
                 id: 2,
                 geom: {
                     type: "MultiLineString",
-                    coordinates: [[[-113.501172065735,53.5513741378592],[-113.501129150391,53.5483654932333]],[[-113.501000404358,53.5483654932333],[-113.501043319702,53.5461471182574]]]
+                    coordinates: [ [ [ -113.501172065735, 53.551374137859 ], [ -113.501129150391, 53.548365493233 ] ], [ [ -113.501000404358, 53.548365493233 ], [ -113.501043319702, 53.546147118257 ] ] ]
                 },
                 name: [{
                     freq: 1,
