@@ -112,7 +112,9 @@ impl Address {
             None => { return Err(String::from("Addresses must have geometry")); }
         };
 
-        let names = super::super::Names::from_value(props.remove(&String::from("street")), &context)?;
+        let mut names = super::super::Names::from_value(props.remove(&String::from("street")), &context)?;
+
+        names.set_source(String::from("address"));
 
         let mut addr = Address {
             id: match feat.id {

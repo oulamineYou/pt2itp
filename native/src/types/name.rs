@@ -94,6 +94,15 @@ impl Names {
             }
         });
     }
+
+    ///
+    /// Set the source on all the given names
+    ///
+    pub fn set_source(&mut self, source: String) {
+        for name in self.names.iter_mut() {
+            name.source = source.clone();
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
@@ -111,7 +120,10 @@ pub struct Name {
     pub tokenized: String,
 
     /// All abbreviations removed form of the name
-    pub tokenless: String
+    pub tokenless: String,
+
+    /// Frequency of the given name
+    pub freq: i64
 }
 
 impl Name {
@@ -130,7 +142,8 @@ impl Name {
             priority: priority,
             source: String::from(""),
             tokenized: tokens.0,
-            tokenless: tokens.1
+            tokenless: tokens.1,
+            freq: 1
         }
     }
 }
@@ -150,7 +163,8 @@ mod tests {
             priority: 0,
             source: String::from(""),
             tokenized: String::from("main st nw"),
-            tokenless: String::from("main st nw")
+            tokenless: String::from("main st nw"),
+            freq: 1
         });
     }
 

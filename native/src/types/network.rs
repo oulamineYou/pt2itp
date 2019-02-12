@@ -72,7 +72,9 @@ impl Network {
             None => { return Err(String::from("Network must have geometry")); }
         };
 
-        let names = Names::from_value(props.remove(&String::from("street")), &context)?;
+        let mut names = Names::from_value(props.remove(&String::from("street")), &context)?;
+
+        names.set_source(String::from("network"));
 
         let mut net = Network {
             id: match feat.id {
