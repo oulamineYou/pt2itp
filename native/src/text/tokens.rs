@@ -21,7 +21,7 @@ impl Tokens {
             if group.len() == 0 {
                 continue;
             } else if group.len() == 1 {
-                map.insert(diacritics(&group[0]), diacritics(&group[0]));
+                map.insert(diacritics(&group[0].to_lowercase()), diacritics(&group[0].to_lowercase()));
             } else {
                 group.sort_by(|a, b| {
                     if a.len() > b.len() {
@@ -33,11 +33,11 @@ impl Tokens {
                     }
                 });
 
-                let master = diacritics(&group[0]);
+                let master = diacritics(&group[0].to_lowercase());
 
                 for token in group.iter() {
                     if token != &master {
-                        map.insert(diacritics(&token), master.clone());
+                        map.insert(diacritics(&token.to_lowercase()), master.clone());
                     }
                 }
             }
