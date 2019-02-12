@@ -79,6 +79,21 @@ impl Names {
 
         Ok(Names::new(names, &context))
     }
+
+    ///
+    /// Sort names object by priority
+    ///
+    pub fn sort(&mut self) {
+        self.names.sort_by(|a, b| {
+            if a.priority > b.priority {
+                std::cmp::Ordering::Greater
+            } else if a.priority < b.priority {
+                std::cmp::Ordering::Less
+            } else {
+                std::cmp::Ordering::Equal
+            }
+        });
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]

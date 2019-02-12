@@ -1,12 +1,12 @@
 use postgis::ewkb::EwkbWrite;
-use crate::{Context, text};
+use crate::{Context, text, Names};
 
-/// A representation of a single network
 #[derive(Debug)]
+/// A representation of a single network
 pub struct Network {
     /// An optional identifier for the network
     pub id: Option<i64>,
-
+    
     /// Vector of all street name synonyms
     pub names: super::Names,
 
@@ -72,7 +72,7 @@ impl Network {
             None => { return Err(String::from("Network must have geometry")); }
         };
 
-        let names =  super::super::Names::from_value(props.remove(&String::from("street")), &context)?;
+        let names = Names::from_value(props.remove(&String::from("street")), &context)?;
 
         let mut net = Network {
             id: match feat.id {
