@@ -2,6 +2,9 @@ use std::convert::From;
 use postgres::{Connection, TlsMode};
 use std::collections::HashMap;
 
+use crate::Context as CrateContext;
+use crate::Tokens;
+
 use neon::prelude::*;
 
 use super::stream::GeoStream;
@@ -74,8 +77,8 @@ pub fn import_addr(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
     let context = match args.context {
-        Some(context) => crate::Context::from(context),
-        None => crate::Context::new(String::from(""), None, crate::Tokens::new(HashMap::new()))
+        Some(context) => CrateContext::from(context),
+        None => CrateContext::new(String::from(""), None, Tokens::new(HashMap::new()))
     };
 
     pg::Address::create(&conn);
@@ -101,8 +104,8 @@ pub fn import_net(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
     let context = match args.context {
-        Some(context) => crate::Context::from(context),
-        None => crate::Context::new(String::from(""), None, crate::Tokens::new(HashMap::new()))
+        Some(context) => CrateContext::from(context),
+        None => CrateContext::new(String::from(""), None, Tokens::new(HashMap::new()))
     };
 
     pg::Network::create(&conn);
