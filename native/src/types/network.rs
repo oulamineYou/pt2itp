@@ -97,6 +97,13 @@ impl Network {
             }
         }
 
+        self.names.sort();
+        if self.names.names.len() > 1 {
+            if self.names.names[0].priority <= self.names.names[1].priority {
+                return Err(String::from("1 Synonym must have greater priority"));
+            }
+        }
+
         Ok(())
     }
 
