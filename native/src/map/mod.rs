@@ -49,6 +49,7 @@ pub fn pg_optimize(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 struct MapArgs {
     db: String,
     context: Option<super::types::InputContext>,
+    seq: bool,
     input: Option<String>,
     errors: Option<String>
 }
@@ -57,6 +58,7 @@ impl MapArgs {
     pub fn new() -> Self {
         MapArgs {
             db: String::from("map"),
+            seq: true,
             context: None,
             input: None,
             errors: None
@@ -86,7 +88,9 @@ pub fn import_addr(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     pg::Address::create(&conn);
     pg::Address::input(&conn, AddrStream::new(GeoStream::new(args.input), context, args.errors));
-    pg::Address::seq_id(&conn);
+    if args.seq {
+        pg::Address::seq_id(&conn);
+    }
     pg::Address::index(&conn);
 
     Ok(cx.boolean(true))
@@ -114,7 +118,9 @@ pub fn import_net(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     pg::Network::create(&conn);
     pg::Network::input(&conn, NetStream::new(GeoStream::new(args.input), context, args.errors));
-    pg::Network::seq_id(&conn);
+    if args.seq {
+        pg::Network::seq_id(&conn);
+    }
     pg::Network::index(&conn);
 
     Ok(cx.boolean(true))
