@@ -78,7 +78,8 @@ impl Table for Address {
         "#, &[]).unwrap();
 
         conn.execute(r#"
-            UPDATE address SET id = nextval('address_seq')
+            UPDATE address
+                SET id = nextval('address_seq');
         "#, &[]).unwrap();
     }
 
@@ -159,7 +160,8 @@ impl Table for Network {
         "#, &[]).unwrap();
 
         conn.execute(r#"
-            UPDATE network SET id = nextval('network_seq')
+            UPDATE network
+                SET id = nextval('network_seq');
         "#, &[]).unwrap();
     }
 
