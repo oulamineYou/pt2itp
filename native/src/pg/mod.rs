@@ -5,6 +5,7 @@ pub trait Table {
     fn create(conn: &Connection);
     fn count(conn: &Connection) -> i64;
     fn input(conn: &Connection, data: impl Read);
+    fn seq_id(conn: &Connection);
     fn index(conn: &Connection);
 }
 
@@ -67,7 +68,7 @@ impl Table for Address {
         stmt.copy_in(&[], &mut data).unwrap();
     }
 
-    fn index(conn: &Connection) {
+    fn seq_id(conn: &Connection) {
         conn.execute(r#"
             DROP SEQUENCE IF EXISTS address_seq;
         "#, &[]).unwrap();
@@ -77,11 +78,11 @@ impl Table for Address {
         "#, &[]).unwrap();
 
         conn.execute(r#"
-            UPDATE address
-                SET id = nextval('address_seq')
-                WHERE id IS NULL;
+            UPDATE address SET id = nextval('address_seq')
         "#, &[]).unwrap();
+    }
 
+    fn index(conn: &Connection) {
         conn.execute(r#"
             ALTER TABLE address
                 ALTER COLUMN geom
@@ -121,7 +122,7 @@ impl Table for Network {
 
         conn.execute(r#"
             CREATE UNLOGGED TABLE network (
-                id SERIAL,
+                id BIGINT,
                 names JSONB,
                 source TEXT,
                 props JSONB,
@@ -146,6 +147,20 @@ impl Table for Network {
         let stmt = conn.prepare(format!("COPY network (names, source, props, geom) FROM STDIN").as_str()).unwrap();
 
         stmt.copy_in(&[], &mut data).unwrap();
+    }
+
+    fn seq_id(conn: &Connection) {
+        conn.execute(r#"
+            DROP SEQUENCE IF EXISTS network_seq;
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            CREATE SEQUENCE network_seq;
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            UPDATE network SET id = nextval('network_seq')
+        "#, &[]).unwrap();
     }
 
     fn index(conn: &Connection) {

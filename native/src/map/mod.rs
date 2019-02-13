@@ -36,6 +36,9 @@ pub fn pg_optimize(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db).as_str(), TlsMode::None).unwrap();
 
+    pg::Address::seq_id(&conn);
+    pg::Network::seq_id(&conn);
+
     pg::Address::index(&conn);
     pg::Network::index(&conn);
 
