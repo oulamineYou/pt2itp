@@ -3,7 +3,7 @@ use std::iter::Iterator;
 use std::io::{Write, BufWriter};
 use std::fs::File;
 
-use crate::{stream::geo::GeoStream, Polygon, Context};
+use crate::{stream::geo::GeoStream, Polygon};
 
 pub struct PolyStream {
     input: GeoStream,
@@ -72,7 +72,7 @@ impl Iterator for PolyStream {
 
         while next.is_err() {
             next = match self.input.next() {
-                Some(potential) => match Polygon::new(potential, &self.context) {
+                Some(potential) => match Polygon::new(potential) {
                     Ok(potential) => Ok(potential),
                     Err(err) => match self.errors {
                         None => Err(err),
