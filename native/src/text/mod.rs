@@ -86,7 +86,7 @@ pub fn syn_number_suffix(name: &Name, context: &Context) -> Vec<Name> {
                 suffix = String::from("th");
             }
 
-            vec![Name::new(format!("{}{} {}", num, suffix, &capture["name"]), 0, &context)]
+            vec![Name::new(format!("{}{} {}", num, suffix, &capture["name"]), -1, &context)]
         },
         None => Vec::new()
     }
@@ -213,7 +213,7 @@ pub fn syn_written_numeric(name: &Name, context: &Context) -> Vec<Name> {
                 Some(nth) => nth
             };
 
-            vec![Name::new(format!("{}{}{}{}", &capture["pre"], tenth, nth, &capture["post"]), 0, &context)]
+            vec![Name::new(format!("{}{}{}{}", &capture["pre"], tenth, nth, &capture["post"]), -1, &context)]
         },
         _ => Vec::new()
     }
