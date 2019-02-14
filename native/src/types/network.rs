@@ -17,7 +17,7 @@ pub struct Network {
     pub props: serde_json::Map<String, serde_json::Value>,
 
     /// Simple representation of MultiLineString
-    pub geom: Vec<Vec<(f64, f64)>>
+    pub geom: Vec<geojson::LineStringType>
 }
 
 impl Network {
@@ -45,28 +45,8 @@ impl Network {
 
         let geom = match feat.geometry {
             Some(geom) => match geom.value {
-                geojson::Value::LineString(ln) => {
-                    let mut ln_tup = Vec::with_capacity(ln.len());
-                    for pt in ln {
-                        ln_tup.push((pt[0], pt[1]));
-                    }
-
-                    vec![ln_tup]
-                },
-                geojson::Value::MultiLineString(mln) => {
-                    let mut mln_tup = Vec::with_capacity(mln.len());
-
-                    for ln in mln {
-                        let mut ln_tup = Vec::with_capacity(ln.len());
-                        for pt in ln {
-                            ln_tup.push((pt[0], pt[1]));
-                        }
-
-                        mln_tup.push(ln_tup);
-                    }
-
-                    mln_tup
-                },
+                geojson::Value::LineString(ln) => vec![ln],
+                geojson::Value::MultiLineString(mln) => mln,
                 _ => { return Err(String::from("Network must have (Multi)LineString geometry")); }
             },
             None => { return Err(String::from("Network must have geometry")); }
@@ -125,8 +105,8 @@ impl Network {
 
             for pt in ln {
                 line.points.push(postgis::twkb::Point {
-                    x: pt.0,
-                    y: pt.1
+                    x: pt[0],
+                    y: pt[1]
                 });
             }
 

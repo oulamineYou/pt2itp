@@ -31,7 +31,7 @@ pub struct Address {
     pub props: serde_json::Map<String, serde_json::Value>,
 
     /// Simple representation of Lng/Lat geometry
-    pub geom: (f64, f64)
+    pub geom: geojson::PointType
 }
 
 impl Address {
@@ -105,7 +105,7 @@ impl Address {
                         return Err(String::from("Geometry exceeds +/-85deg coord bounds"));
                     }
 
-                    (pt[0], pt[1])
+                    pt
                 },
                 _ => { return Err(String::from("Addresses must have Point geometry")); }
             },
@@ -170,7 +170,7 @@ impl Address {
     ///
     ///name, number, source, props, geom
     pub fn to_tsv(self) -> String {
-        let geom = postgis::ewkb::Point::new(self.geom.0, self.geom.1, Some(4326)).as_ewkb().to_hex_ewkb();
+        let geom = postgis::ewkb::Point::new(self.geom[0], self.geom[1], Some(4326)).as_ewkb().to_hex_ewkb();
 
         format!("{id}\t{version}\t{names}\t{number}\t{source}\t{output}\t{props}\t{geom}\n",
             id = match self.id {

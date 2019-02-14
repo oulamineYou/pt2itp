@@ -11,7 +11,7 @@ pub struct Polygon {
     pub props: serde_json::Map<String, serde_json::Value>,
 
     /// Simple representation of Lng/Lat geometry
-    pub geom: Vec<Vec<Vec<(f64, f64)>>>
+    pub geom: Vec<geojson::PolygonType>
 }
 
 impl Polygon {
@@ -28,28 +28,8 @@ impl Polygon {
 
         let geom = match feat.geometry {
             Some(geom) => match geom.value {
-                geojson::Value::Polygon(ln) => {
-                    let mut ln_tup = Vec::with_capacity(ln.len());
-                    for pt in ln {
-                        ln_tup.push((pt[0], pt[1]));
-                    }
-
-                    vec![ln_tup]
-                },
-                geojson::Value::MultiPolygon(mln) => {
-                    let mut mln_tup = Vec::with_capacity(mln.len());
-
-                    for ln in mln {
-                        let mut ln_tup = Vec::with_capacity(ln.len());
-                        for pt in ln {
-                            ln_tup.push((pt[0], pt[1]));
-                        }
-
-                        mln_tup.push(ln_tup);
-                    }
-
-                    mln_tup
-                },
+                geojson::Value::Polygon(py) => vec![py],
+                geojson::Value::MultiPolygon(mpy) => mpy,
                 _ => { return Err(String::from("Polygon must have (Multi)Polygon geometry")); }
             },
             None => { return Err(String::from("Polygon must have geometry")); }
@@ -61,7 +41,7 @@ impl Polygon {
                 _ => None
             },
             props: props,
-            geom: Vec::new()
+            geom: geom
         })
     }
 
