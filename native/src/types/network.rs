@@ -2,7 +2,9 @@ use postgis::ewkb::EwkbWrite;
 use crate::{Context, text, Names};
 
 #[derive(Debug)]
+///
 /// A representation of a single network
+///
 pub struct Network {
     /// An optional identifier for the network
     pub id: Option<i64>,
@@ -90,7 +92,8 @@ impl Network {
     }
 
     ///
-    ///Return a PG Copyable String of the feature
+    /// Return a PG Copyable String of the feature
+    /// names, source, props, geom
     ///
     pub fn to_tsv(self) -> String {
         let mut twkb = postgis::twkb::MultiLineString {
