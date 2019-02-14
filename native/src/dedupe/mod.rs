@@ -53,8 +53,9 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         None => crate::Context::new(String::from(""), None, crate::Tokens::new(HashMap::new()))
     };
 
-    pg::Address::create(&conn);
-    pg::Address::input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
+    let address = pg::Address::new();
+    address.create(&conn);
+    address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
 
     Ok(cx.boolean(true))
 }

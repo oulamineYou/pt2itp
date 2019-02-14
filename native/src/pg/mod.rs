@@ -2,17 +2,111 @@ use postgres::{Connection};
 use std::io::Read;
 
 pub trait Table {
-    fn create(conn: &Connection);
-    fn count(conn: &Connection) -> i64;
-    fn input(conn: &Connection, data: impl Read);
-    fn seq_id(conn: &Connection);
-    fn index(conn: &Connection);
+    fn create(&self, conn: &Connection);
+    fn count(&self, conn: &Connection) -> i64;
+    fn input(&self, conn: &Connection, data: impl Read);
+    fn seq_id(&self, conn: &Connection);
+    fn index(&self, conn: &Connection);
+}
+
+///
+/// Polygon table are special in that they don't make assumptions about the underlying
+/// data. They can be any one of a number of types - building polys, parcels, places
+///
+pub struct Polygon {
+    name: String
+}
+
+impl Polygon {
+    pub fn new(name: String) -> Self {
+        Polygon {
+            name: name
+        }
+    }
+}
+
+impl Table for Polygon {
+    fn create(&self, conn: &Connection) {
+        conn.execute(r#"
+             CREATE EXTENSION IF NOT EXISTS POSTGIS
+        "#, &[]).unwrap();
+
+        conn.execute(format!(r#"
+            DROP TABLE IF EXISTS {};
+        "#, &self.name).as_str(), &[]).unwrap();
+
+        conn.execute(format!(r#"
+            CREATE UNLOGGED TABLE {} (
+                id BIGINT,
+                props JSONB,
+                geom GEOMETRY(MultiPolygon, 4326)
+            )
+        "#, &self.name).as_str(), &[]).unwrap();
+    }
+
+    fn count(&self, conn: &Connection) -> i64 {
+        match conn.query(format!(r#"
+            SELECT count(*) FROM {}
+        "#, &self.name).as_str(), &[]) {
+            Ok(res) => {
+                let cnt: i64 = res.get(0).get(0);
+                cnt
+            },
+            _ => 0
+        }
+    }
+
+    fn input(&self, conn: &Connection, mut data: impl Read) {
+        let stmt = conn.prepare(format!(r#"
+            COPY {} (
+                id,
+                props,
+                geom
+            )
+            FROM STDIN
+            WITH
+                NULL AS ''
+        "#, &self.name).as_str()).unwrap();
+
+        stmt.copy_in(&[], &mut data).unwrap();
+    }
+
+    fn seq_id(&self, conn: &Connection) {
+        conn.execute(format!(r#"
+            DROP SEQUENCE IF EXISTS {}_seq;
+        "#, &self.name).as_str(), &[]).unwrap();
+
+        conn.execute(format!(r#"
+            CREATE SEQUENCE {}_seq;
+        "#, &self.name).as_str(), &[]).unwrap();
+
+        conn.execute(format!(r#"
+            UPDATE {name}
+                SET id = nextval('{name}_seq');
+        "#, name = &self.name).as_str(), &[]).unwrap();
+    }
+
+    fn index(&self, conn: &Connection) {
+        conn.execute(format!(r#"
+            CREATE INDEX {name}_idx ON {name} (id);
+        "#, name = &self.name).as_str(), &[]).unwrap();
+
+        conn.execute(format!(r#"
+            CREATE INDEX {name}_gix ON {name} USING GIST (geom);
+        "#, name = &self.name).as_str(), &[]).unwrap();
+    }
 }
 
 pub struct Address ();
 
+impl Address {
+    pub fn new() -> Self {
+        Address()
+    }
+}
+
 impl Table for Address {
-    fn create(conn: &Connection) {
+    fn create(&self, conn: &Connection) {
         conn.execute(r#"
              CREATE EXTENSION IF NOT EXISTS POSTGIS
         "#, &[]).unwrap();
@@ -36,7 +130,7 @@ impl Table for Address {
         "#, &[]).unwrap();
     }
 
-    fn count(conn: &Connection) -> i64 {
+    fn count(&self, conn: &Connection) -> i64 {
         match conn.query(r#"
             SELECT count(*) FROM address
         "#, &[]) {
@@ -48,7 +142,7 @@ impl Table for Address {
         }
     }
 
-    fn input(conn: &Connection, mut data: impl Read) {
+    fn input(&self, conn: &Connection, mut data: impl Read) {
         let stmt = conn.prepare(format!(r#"
             COPY address (
                 id,
@@ -68,7 +162,7 @@ impl Table for Address {
         stmt.copy_in(&[], &mut data).unwrap();
     }
 
-    fn seq_id(conn: &Connection) {
+    fn seq_id(&self, conn: &Connection) {
         conn.execute(r#"
             DROP SEQUENCE IF EXISTS address_seq;
         "#, &[]).unwrap();
@@ -83,7 +177,7 @@ impl Table for Address {
         "#, &[]).unwrap();
     }
 
-    fn index(conn: &Connection) {
+    fn index(&self, conn: &Connection) {
         conn.execute(r#"
             ALTER TABLE address
                 ALTER COLUMN geom
@@ -111,8 +205,14 @@ impl Table for Address {
 
 pub struct Network ();
 
+impl Network {
+    pub fn new() -> Self {
+        Network()
+    }
+}
+
 impl Table for Network {
-    fn create(conn: &Connection) {
+    fn create(&self, conn: &Connection) {
         conn.execute(r#"
              CREATE EXTENSION IF NOT EXISTS POSTGIS
         "#, &[]).unwrap();
@@ -132,7 +232,7 @@ impl Table for Network {
         "#, &[]).unwrap();
     }
 
-    fn count(conn: &Connection) -> i64 {
+    fn count(&self, conn: &Connection) -> i64 {
         match conn.query(r#"
             SELECT count(*) FROM network
         "#, &[]) {
@@ -144,13 +244,13 @@ impl Table for Network {
         }
     }
 
-    fn input(conn: &Connection, mut data: impl Read) {
+    fn input(&self, conn: &Connection, mut data: impl Read) {
         let stmt = conn.prepare(format!("COPY network (names, source, props, geom) FROM STDIN").as_str()).unwrap();
 
         stmt.copy_in(&[], &mut data).unwrap();
     }
 
-    fn seq_id(conn: &Connection) {
+    fn seq_id(&self, conn: &Connection) {
         conn.execute(r#"
             DROP SEQUENCE IF EXISTS network_seq;
         "#, &[]).unwrap();
@@ -165,7 +265,7 @@ impl Table for Network {
         "#, &[]).unwrap();
     }
 
-    fn index(conn: &Connection) {
+    fn index(&self, conn: &Connection) {
         conn.execute(r#"
             ALTER TABLE network
                 ALTER COLUMN geom
