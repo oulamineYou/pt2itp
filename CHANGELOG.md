@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v19.6.1
+
+- :rocket: Set internal split parallelism to 1
+
 ## v19.6.0
 
 - :bug: Fix network generation bug on postgres import
