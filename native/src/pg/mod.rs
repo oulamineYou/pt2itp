@@ -59,7 +59,6 @@ impl Table for Polygon {
     fn input(&self, conn: &Connection, mut data: impl Read) {
         let stmt = conn.prepare(format!(r#"
             COPY {} (
-                id,
                 props,
                 geom
             )

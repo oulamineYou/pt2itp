@@ -4,8 +4,7 @@ use std::collections::HashMap;
 
 use neon::prelude::*;
 
-use super::stream::GeoStream;
-use super::stream::AddrStream;
+use crate::stream::{GeoStream, AddrStream, PolyStream};
 
 use super::pg;
 use super::pg::Table;
@@ -14,6 +13,7 @@ use super::pg::Table;
 struct DedupeArgs {
     db: String,
     context: Option<super::types::InputContext>,
+    buildings: Option<String>,
     input: Option<String>,
     output: Option<String>,
     tokens: Option<String>,
@@ -25,6 +25,7 @@ impl DedupeArgs {
         DedupeArgs {
             db: String::from("dedupe"),
             context: None,
+            buildings: None,
             input: None,
             output: None,
             tokens: None,
@@ -56,6 +57,17 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let address = pg::Address::new();
     address.create(&conn);
     address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
+    address.index(&conn);
+
+    match args.buildings {
+        Some(buildings) => {
+            let polygon = pg::Polygon::new(String::from("buildings"));
+            polygon.create(&conn);
+            polygon.input(&conn, PolyStream::new(GeoStream::new(Some(buildings)), None));
+            polygon.index(&conn);
+        },
+        None => ()
+    };
 
     Ok(cx.boolean(true))
 }
