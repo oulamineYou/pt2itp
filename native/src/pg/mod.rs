@@ -1,5 +1,66 @@
+use std::iter::Iterator;
 use postgres::{Connection};
 use std::io::Read;
+use std::mem;
+
+pub struct Cursor {
+    pub fetch: i64,
+    pub query: String,
+    trans: postgres::transaction::Transaction<'static>,
+    #[allow(dead_code)]
+    conn: Box<postgres::Connection>,
+    cache: Vec<postgres::rows::Row<'static>>
+}
+
+impl Cursor {
+    pub fn new(conn: Connection, query: String) -> Self {
+        let fetch = 1000;
+    
+        let pg_conn = Box::new(conn);
+
+        let trans: postgres::transaction::Transaction = unsafe {
+            mem::transmute(pg_conn.transaction().unwrap())
+        };
+
+        trans.execute(format!(r#"
+            DECLARE next_cursor FOR
+                {}
+        "#, &query).as_str(), &[]).unwrap();
+
+        Cursor {
+            fetch: fetch,
+            conn: pg_conn,
+            trans: trans,
+            query: query,
+            cache: Vec::with_capacity(fetch as usize)
+        }
+    }
+}
+
+impl Iterator for Cursor {
+    type Item = postgres::rows::Row<'static>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if !self.cache.is_empty() {
+            return self.cache.pop()
+        }
+
+        let rows = self.trans.query(format!(r#"
+            FETCH {} FROM next_cursor
+        "#, &self.fetch).as_str(), &[]).unwrap();
+
+        // Cursor is finished
+        if rows.is_empty() {
+            return None;
+        } else {
+            for i in rows.len()..0 {
+                self.cache.push(rows.get(i));
+            }
+
+            return Some(self.cache.pop())
+        }
+    }
+}
 
 pub trait Table {
     fn create(&self, conn: &Connection);

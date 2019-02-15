@@ -47,6 +47,11 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         }
     };
 
+    let hecate = match args.hecate {
+        Some(hecate) => hecate,
+        None => false
+    };
+
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
     let context = match args.context {
@@ -57,6 +62,14 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let address = pg::Address::new();
     address.create(&conn);
     address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
+
+    if !hecate {
+        // Hecate Addresses will already have ids present
+        // If not hecate, create sequential ids for processing
+
+        address.seq_id(&conn);
+    }
+
     address.index(&conn);
 
     match args.buildings {
@@ -69,7 +82,9 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         None => ()
     };
 
-    
+    format!(r#"
+        SELECT ARRAY_AGG(address.id) FROM address GROUP BY geom HAVING count(*) > 1;
+    "#);
 
     Ok(cx.boolean(true))
 }
