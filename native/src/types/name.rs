@@ -134,8 +134,10 @@ impl Name {
     /// * `display` - A string containing the street name (Main St)
     ///
     /// ```
-    pub fn new(display: String, priority: i8, context: &Context) -> Self {
+    pub fn new(mut display: String, priority: i8, context: &Context) -> Self {
         let tokens = context.tokens.process(&display);
+
+        display = display.replace(r#"""#, "");
 
         Name {
             display: display,
