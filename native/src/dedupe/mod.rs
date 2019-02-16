@@ -59,18 +59,18 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         None => crate::Context::new(String::from(""), None, crate::Tokens::new(HashMap::new()))
     };
 
-    let address = pg::Address::new();
-    address.create(&conn);
-    address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
+    //let address = pg::Address::new();
+    //address.create(&conn);
+    //address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
 
     if !hecate {
         // Hecate Addresses will already have ids present
         // If not hecate, create sequential ids for processing
 
-        address.seq_id(&conn);
+        //address.seq_id(&conn);
     }
 
-    address.index(&conn);
+    //address.index(&conn);
 
     match args.buildings {
         Some(buildings) => {
@@ -82,9 +82,20 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         None => ()
     };
 
-    format!(r#"
-        SELECT ARRAY_AGG(address.id) FROM address GROUP BY geom HAVING count(*) > 1;
-    "#);
+    let exact_dups = pg::Cursor::new(conn, format!(r#"
+        SELECT
+            JSON_AGG(address.id)
+        FROM
+            address
+        GROUP BY
+            geom
+        HAVING
+            count(*) > 1;
+    "#));
+
+    for dup in exact_dups {
+        println!("{:?}", &dup);
+    }
 
     Ok(cx.boolean(true))
 }
