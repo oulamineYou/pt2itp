@@ -139,7 +139,7 @@ impl Name {
 
         display = display
             .replace(r#"""#, "")
-            .replace(r#"\"#, "")
+            .replace("\t", "")
             .replace("\n", "");
 
         Name {
