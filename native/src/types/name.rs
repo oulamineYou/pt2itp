@@ -137,7 +137,10 @@ impl Name {
     pub fn new(mut display: String, priority: i8, context: &Context) -> Self {
         let tokens = context.tokens.process(&display);
 
-        display = display.replace(r#"""#, "");
+        display = display
+            .replace(r#"""#, "")
+            .replace(r#"\"#, "")
+            .replace("\n", "");
 
         Name {
             display: display,
