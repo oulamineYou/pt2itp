@@ -1,6 +1,7 @@
 use std::convert::From;
 use postgres::{Connection, TlsMode};
 use std::collections::HashMap;
+use std::thread;
 
 use neon::prelude::*;
 
@@ -59,18 +60,18 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         None => crate::Context::new(String::from(""), None, crate::Tokens::new(HashMap::new()))
     };
 
-    //let address = pg::Address::new();
-    //address.create(&conn);
-    //address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
+    let address = pg::Address::new();
+    address.create(&conn);
+    address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
 
     if !hecate {
         // Hecate Addresses will already have ids present
         // If not hecate, create sequential ids for processing
 
-        //address.seq_id(&conn);
+        address.seq_id(&conn);
     }
 
-    //address.index(&conn);
+    address.index(&conn);
 
     match args.buildings {
         Some(buildings) => {
@@ -82,6 +83,28 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         None => ()
     };
 
+    let batch = address.count(&conn);
+
+    let cpus = num_cpus::get();
+    let mut web = Vec::new();
+
+    for cpu in (0..cpus) {
+        web.push(thread::Builder::new()
+            .name(format!("Exact Dup #{}", &cpu))
+            .spawn())
+        ::Bultthread::spawn(move || {
+            println!("I AM SPIDER # {}", cpu);
+        }));
+    }
+
+    for strand in web {
+        thread.join().unwrap();
+    }
+
+    Ok(cx.boolean(true))
+}
+
+/*
     let exact_dups = pg::Cursor::new(conn, format!(r#"
         SELECT
             JSON_AGG(address.id)
@@ -92,10 +115,4 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         HAVING
             count(*) > 1;
     "#));
-
-    for dup in exact_dups {
-        println!("{:?}", &dup);
-    }
-
-    Ok(cx.boolean(true))
-}
+    */

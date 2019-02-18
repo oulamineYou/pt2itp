@@ -6,6 +6,7 @@ extern crate neon_serde;
 extern crate geojson;
 extern crate postgres;
 extern crate regex;
+extern crate num_cpus;
 
 // Internal Helper Libraries
 pub mod stream;
