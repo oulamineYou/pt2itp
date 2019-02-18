@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v19.6.3
+
+- :rocket: Remove `\n` and `\` from display names
+
 ## v19.6.2
 
 - :rocket: Remove `"` char from display names
