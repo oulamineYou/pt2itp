@@ -250,7 +250,7 @@ impl Table for Network {
         }
     }
 
-    fn input(conn: &Connection, mut data: impl Read) {
+    fn input(&self, conn: &Connection, mut data: impl Read) {
         let stmt = conn.prepare(format!(r#"
             COPY network (
                 names,

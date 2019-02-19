@@ -83,36 +83,53 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         None => ()
     };
 
-    let batch = address.count(&conn);
-
-    let cpus = num_cpus::get();
+    let count = address.count(&conn);
+    let cpus = num_cpus::get() as i64;
     let mut web = Vec::new();
 
-    for cpu in (0..cpus) {
-        web.push(thread::Builder::new()
-            .name(format!("Exact Dup #{}", &cpu))
-            .spawn())
-        ::Bultthread::spawn(move || {
-            println!("I AM SPIDER # {}", cpu);
-        }));
+    let batch_extra = count % cpus;
+    let batch = (count - batch_extra) / cpus;
+
+    for cpu in 0..cpus {
+        let db_conn = args.db.clone();
+
+        web.push(thread::Builder::new().name(format!("Exact Dup #{}", &cpu)).spawn(move || {
+            let mut min_id = batch * cpu;
+            let max_id = batch * cpu + batch + batch_extra;
+
+            if cpu != 0 {
+                min_id = min_id + batch_extra + 1;
+            }
+
+            println!("Exact Dedupe # {} ({} - {})", &cpu, &min_id, &max_id);
+
+            let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db_conn).as_str(), TlsMode::None).unwrap();
+
+            let exact_dups = pg::Cursor::new(conn, format!(r#"
+                SELECT
+                    JSON_AGG(address.id)
+                FROM
+                    address
+                WHERE
+                    id >= ${min_id}
+                    AND id <= ${max_id}
+                GROUP BY
+                    geom
+                HAVING
+                    count(*) > 1;
+            "#,
+                min_id = min_id,
+                max_id = max_id
+            ));
+        }).unwrap());
     }
 
     for strand in web {
-        thread.join().unwrap();
+        strand.join().unwrap();
     }
 
     Ok(cx.boolean(true))
 }
 
 /*
-    let exact_dups = pg::Cursor::new(conn, format!(r#"
-        SELECT
-            JSON_AGG(address.id)
-        FROM
-            address
-        GROUP BY
-            geom
-        HAVING
-            count(*) > 1;
-    "#));
     */
