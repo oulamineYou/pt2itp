@@ -10,6 +10,18 @@
 
 ## Version History
 
+## v19.6.4
+
+- :rocket: Use `FORMAT CSV` for importing JSON data
+
+## v19.6.3
+
+- :rocket: Remove `\n` and `\` from display names
+
+## v19.6.2
+
+- :rocket: Remove `"` char from display names
+
 ## v19.6.1
 
 - :rocket: Set internal split parallelism to 1

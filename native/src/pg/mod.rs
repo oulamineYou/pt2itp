@@ -157,8 +157,12 @@ impl Table for Address {
                 geom
             )
             FROM STDIN
-            WITH
-                NULL AS ''
+            WITH (
+                FORMAT CSV,
+                NULL '',
+                DELIMITER E'\t',
+                QUOTE E'\b'
+            )
         "#).as_str()).unwrap();
 
         stmt.copy_in(&[], &mut data).unwrap();
@@ -246,8 +250,22 @@ impl Table for Network {
         }
     }
 
-    fn input(&self, conn: &Connection, mut data: impl Read) {
-        let stmt = conn.prepare(format!("COPY network (names, source, props, geom) FROM STDIN").as_str()).unwrap();
+    fn input(conn: &Connection, mut data: impl Read) {
+        let stmt = conn.prepare(format!(r#"
+            COPY network (
+                names,
+                source,
+                props,
+                geom
+            )
+            FROM STDIN
+            WITH (
+                FORMAT CSV,
+                NULL '',
+                DELIMITER E'\t',
+                QUOTE E'\b'
+            )
+        "#).as_str()).unwrap();
 
         stmt.copy_in(&[], &mut data).unwrap();
     }
