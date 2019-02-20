@@ -5,7 +5,10 @@ use std::thread;
 
 use neon::prelude::*;
 
-use crate::stream::{GeoStream, AddrStream, PolyStream};
+use crate::{
+    Address,
+    stream::{GeoStream, AddrStream, PolyStream}
+};
 
 use super::pg;
 use super::pg::Table;
@@ -105,16 +108,37 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
             let exact_dups = match pg::Cursor::new(Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db_conn).as_str(), TlsMode::None).unwrap(), format!(r#"
                 SELECT
-                    JSON_AGG(address.id)
+                    JSON_Build_Object(
+                        'id', a.id,
+                        'version', a.version,
+                        'names', a.names,
+                        'number', a.number,
+                        'source', a.source,
+                        'output', a.output,
+                        'props', a.props,
+                        'geom', ST_AsGeoJSON(a.geom)
+                    )::JSONB || (
+                        SELECT
+                            JSON_AGG(JSON_Build_Object(
+                                'id', id,
+                                'version', version,
+                                'names', names,
+                                'number', number,
+                                'source', source,
+                                'output', output,
+                                'props', props,
+                                'geom', ST_AsGeoJSON(geom)
+                            ))
+                        FROM
+                            address
+                        WHERE
+                            ST_DWithin(a.geom, geom, 0.00001)
+                    )::JSONB
                 FROM
-                    address
+                    address a
                 WHERE
                     id >= {min_id}
                     AND id <= {max_id}
-                GROUP BY
-                    geom
-                HAVING
-                    count(*) > 1;
             "#,
                 min_id = min_id,
                 max_id = max_id
@@ -122,16 +146,33 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 Ok(cursor) => cursor,
                 Err(err) => return println!("ERR: {}", err.to_string())
             };
+
+            //
+            // Since this operation is performed in parallel - duplicates could be potentially
+            // processed by multiple threads - resulting in duplicate output. To avoid this
+            // the dup_feat will only be processed if the lowest ID in the match falls within
+            // the min_id/max_id that the given thread is processing
+            //
+            for dup_feats in exact_dups {
+                let dup_feats: Vec<Address> = match dup_feats {
+                    serde_json::value::Value::Array(feats) => {
+                        let mut addrfeats = Vec::with_capacity(feats.len());
+
+                        for feat in feats {
+                            addrfeats.push(Address::from_value(feat).unwrap());
+                        }
+
+                        addrfeats
+                    },
+                    _ => panic!("Duplicate Features should be Vec<Value>")
+                };
+
+                println!("HERE");
+            }
         }) {
             Ok(strand) => strand,
             Err(err) => panic!("{}", err.to_string())
         };
-
-        let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db_conn).as_str(), TlsMode::None).unwrap();
-
-        for dup_feats in exact_dups {
-
-        }
 
         web.push(strand);
     }

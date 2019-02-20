@@ -2,7 +2,7 @@ use postgis::ewkb::AsEwkbPoint;
 use postgis::ewkb::EwkbWrite;
 use regex::{Regex, RegexSet};
 
-use crate::Context;
+use crate::{Context, Names};
 
 /// A representation of a single Address
 #[derive(Debug)]
@@ -16,7 +16,7 @@ pub struct Address {
     pub number: String,
 
     /// Vector of all street name synonyms
-    pub names: super::Names,
+    pub names: Names,
 
     /// String source/provider/timestamp for the given data
     pub source: String,
@@ -48,22 +48,18 @@ impl Address {
 
         let version = match feat.foreign_members {
             Some(mut props) => match props.remove(&String::from("version")) {
-                Some(version) => version.as_i64().unwrap(),
+                Some(version) => match version.as_i64() {
+                    Some(version) => version,
+                    _ => {
+                        return Err(String::from("Version must be numeric"));
+                    }
+                },
                 None => 0
             },
             None => 0
         };
 
-        let number = match props.remove(&String::from("number")) {
-            Some(number) => {
-                if number.is_string() {
-                    String::from(number.as_str().unwrap())
-                } else if number.is_i64() {
-                    number.as_i64().unwrap().to_string()
-                } else { return Err(String::from("Number property must be String or Numeric")); }
-            },
-            None => { return Err(String::from("Number property required")); }
-        };
+        let number = get_number(&mut props)?;
 
         let source = match props.remove(&String::from("source")) {
             Some(source) => {
@@ -112,7 +108,7 @@ impl Address {
             None => { return Err(String::from("Addresses must have geometry")); }
         };
 
-        let mut names = super::super::Names::from_value(props.remove(&String::from("street")), &context)?;
+        let mut names = Names::from_value(props.remove(&String::from("street")), &context)?;
 
         names.set_source(String::from("address"));
 
@@ -135,6 +131,65 @@ impl Address {
 
         Ok(addr)
     }
+
+    ///
+    /// Construct an address instance via a Row JSON Value
+    ///
+    pub fn from_value(value: serde_json::Value) -> Result<Self, String> {
+        let mut value = match value {
+            serde_json::Value::Object(obj) => obj,
+            _ => { return Err(String::from("Address::from_row value must be JSON Object")); }
+        };
+
+        Ok(Address {
+            id: match value.remove(&String::from("id")) {
+                Some(id) => match id.as_i64() {
+                    Some(id) => Some(id),
+                    _ => { return Err(String::from("ID must be numeric")); }
+                },
+                None => None
+            },
+            number: get_number(&mut value)?,
+            version: match value.remove(&String::from("version")) {
+                Some(version) => match version.as_i64() {
+                    Some(version) => version,
+                    _ => { return Err(String::from("Version must be numeric")); }
+                },
+                None => 0
+            },
+            names: serde_json::from_value(value.remove(&String::from("names")).unwrap()).unwrap(),
+            output: match value.remove(&String::from("output")) {
+                Some(itp) => match itp.as_bool() {
+                    None => true,
+                    Some(itp) => itp
+                },
+                None => true
+            },
+            source: match value.remove(&String::from("source")) {
+                Some(source) => {
+                    if source.is_string() {
+                        String::from(source.as_str().unwrap())
+                    } else {
+                        String::from("")
+                    }
+                },
+                None => String::from("")
+            },
+            interpolate: match value.remove(&String::from("interpolate")) {
+                Some(itp) => match itp.as_bool() {
+                    None => true,
+                    Some(itp) => itp
+                },
+                None => true
+            },
+            props: match value.remove(&String::from("props")).unwrap() {
+                serde_json::Value::Object(obj) => obj,
+                _ => { return Err(String::from("Address::from_row value must be JSON Object")); }
+            },
+            geom: serde_json::from_value(value.remove(&String::from("props")).unwrap()).unwrap()
+        })
+    }
+
     pub fn std(&mut self) -> Result<(), String> {
         self.number = self.number.to_lowercase();
 
@@ -187,3 +242,19 @@ impl Address {
         )
     }
 }
+
+fn get_number(map: &mut serde_json::Map<String, serde_json::Value>) -> Result<String, String> {
+    match map.remove(&String::from("number")) {
+        Some(number) => {
+            if number.is_string() {
+                Ok(String::from(number.as_str().unwrap()))
+            } else if number.is_i64() {
+                Ok(number.as_i64().unwrap().to_string())
+            } else {
+                return Err(String::from("Number property must be String or Numeric"));
+            }
+        },
+        None => { return Err(String::from("Number property required")); }
+    }
+}
+
