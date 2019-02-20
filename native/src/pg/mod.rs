@@ -325,7 +325,7 @@ pub struct Cursor {
 }
 
 impl Cursor {
-    pub fn new(conn: Connection, query: String) -> Self {
+    pub fn new(conn: Connection, query: String) -> Result<Self, String> {
         let fetch = 1000;
 
         let pg_conn = Box::new(conn);
@@ -334,17 +334,22 @@ impl Cursor {
             mem::transmute(pg_conn.transaction().unwrap())
         };
 
-        trans.execute(format!(r#"
+        match trans.execute(format!(r#"
             DECLARE next_cursor CURSOR FOR {}
-        "#, &query).as_str(), &[]).unwrap();
+        "#, &query).as_str(), &[]) {
+            Err(err) => {
+                return Err(err.to_string());
+            },
+            _ => ()
+        };
 
-        Cursor {
+        Ok(Cursor {
             fetch: fetch,
             conn: pg_conn,
             trans: trans,
             query: query,
             cache: Vec::with_capacity(fetch as usize)
-        }
+        })
     }
 }
 

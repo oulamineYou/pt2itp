@@ -93,7 +93,7 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     for cpu in 0..cpus {
         let db_conn = args.db.clone();
 
-        web.push(thread::Builder::new().name(format!("Exact Dup #{}", &cpu)).spawn(move || {
+        let strand = match thread::Builder::new().name(format!("Exact Dup #{}", &cpu)).spawn(move || {
             let mut min_id = batch * cpu;
             let max_id = batch * cpu + batch + batch_extra;
 
@@ -103,16 +103,14 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
             println!("Exact Dedupe # {} ({} - {})", &cpu, &min_id, &max_id);
 
-            let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db_conn).as_str(), TlsMode::None).unwrap();
-
-            let exact_dups = pg::Cursor::new(conn, format!(r#"
+            let exact_dups = match pg::Cursor::new(Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db_conn).as_str(), TlsMode::None).unwrap(), format!(r#"
                 SELECT
                     JSON_AGG(address.id)
                 FROM
                     address
                 WHERE
-                    id >= ${min_id}
-                    AND id <= ${max_id}
+                    id >= {min_id}
+                    AND id <= {max_id}
                 GROUP BY
                     geom
                 HAVING
@@ -120,8 +118,22 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             "#,
                 min_id = min_id,
                 max_id = max_id
-            ));
-        }).unwrap());
+            )) {
+                Ok(cursor) => cursor,
+                Err(err) => return println!("ERR: {}", err.to_string())
+            };
+        }) {
+            Ok(strand) => strand,
+            Err(err) => panic!("{}", err.to_string())
+        };
+
+        let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db_conn).as_str(), TlsMode::None).unwrap();
+
+        for dup_feats in exact_dups {
+
+        }
+
+        web.push(strand);
     }
 
     for strand in web {
