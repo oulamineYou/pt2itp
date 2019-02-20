@@ -46,47 +46,16 @@ impl Address {
             None => { return Err(String::from("Feature has no properties")); }
         };
 
+        let number = get_number(&mut props)?;
+
         let version = match feat.foreign_members {
-            Some(mut props) => match props.remove(&String::from("version")) {
-                Some(version) => match version.as_i64() {
-                    Some(version) => version,
-                    _ => {
-                        return Err(String::from("Version must be numeric"));
-                    }
-                },
-                None => 0
-            },
+            Some(mut props) => get_version(&mut props)?,
             None => 0
         };
 
-        let number = get_number(&mut props)?;
-
-        let source = match props.remove(&String::from("source")) {
-            Some(source) => {
-                if source.is_string() {
-                    String::from(source.as_str().unwrap())
-                } else {
-                    String::from("")
-                }
-            },
-            None => String::from("")
-        };
-
-        let interpolate = match props.remove(&String::from("interpolate")) {
-            Some(itp) => match itp.as_bool() {
-                None => true,
-                Some(itp) => itp
-            },
-            None => true
-        };
-
-        let output = match props.remove(&String::from("output")) {
-            Some(itp) => match itp.as_bool() {
-                None => true,
-                Some(itp) => itp
-            },
-            None => true
-        };
+        let source = get_source(&mut props)?;
+        let interpolate = get_interpolate(&mut props)?;
+        let output = get_output(&mut props)?;
 
         let geom = match feat.geometry {
             Some(geom) => match geom.value {
@@ -141,52 +110,40 @@ impl Address {
             _ => { return Err(String::from("Address::from_row value must be JSON Object")); }
         };
 
-        Ok(Address {
-            id: match value.remove(&String::from("id")) {
-                Some(id) => match id.as_i64() {
-                    Some(id) => Some(id),
-                    _ => { return Err(String::from("ID must be numeric")); }
-                },
-                None => None
+        let names: Names = match value.remove(&String::from("names")) {
+            Some(names) => match serde_json::from_value(names) {
+                Ok(names) => names,
+                Err(err) => { return Err(format!("Names Conversion Error: {}", err.to_string())); }
             },
-            number: get_number(&mut value)?,
-            version: match value.remove(&String::from("version")) {
-                Some(version) => match version.as_i64() {
-                    Some(version) => version,
-                    _ => { return Err(String::from("Version must be numeric")); }
-                },
-                None => 0
-            },
-            names: serde_json::from_value(value.remove(&String::from("names")).unwrap()).unwrap(),
-            output: match value.remove(&String::from("output")) {
-                Some(itp) => match itp.as_bool() {
-                    None => true,
-                    Some(itp) => itp
-                },
-                None => true
-            },
-            source: match value.remove(&String::from("source")) {
-                Some(source) => {
-                    if source.is_string() {
-                        String::from(source.as_str().unwrap())
-                    } else {
-                        String::from("")
-                    }
-                },
-                None => String::from("")
-            },
-            interpolate: match value.remove(&String::from("interpolate")) {
-                Some(itp) => match itp.as_bool() {
-                    None => true,
-                    Some(itp) => itp
-                },
-                None => true
-            },
-            props: match value.remove(&String::from("props")).unwrap() {
+            None => { return Err(String::from("names key/value is required")); }
+        };
+
+        let props = match value.remove(&String::from("props")) {
+            Some(props) => match props {
                 serde_json::Value::Object(obj) => obj,
                 _ => { return Err(String::from("Address::from_row value must be JSON Object")); }
             },
-            geom: serde_json::from_value(value.remove(&String::from("props")).unwrap()).unwrap()
+            None => { return Err(String::from("props key/value is required")); }
+        };
+
+        let geom = match value.remove(&String::from("geom")) {
+            Some(geom) => match serde_json::from_value(geom) {
+                Ok(geom) => geom,
+                Err(err) => { return Err(format!("Failed to parse geom: {}", err.to_string())); }
+            },
+            None => { return Err(String::from("geom key/value is required")); }
+        };
+
+        Ok(Address {
+            id: get_id(&mut value)?,
+            number: get_number(&mut value)?,
+            version: get_version(&mut value)?,
+            names: names,
+            output: get_output(&mut value)?,
+            source: get_source(&mut value)?,
+            interpolate: get_interpolate(&mut value)?,
+            props: props,
+            geom: geom
         })
     }
 
@@ -243,18 +200,67 @@ impl Address {
     }
 }
 
-fn get_number(map: &mut serde_json::Map<String, serde_json::Value>) -> Result<String, String> {
-    match map.remove(&String::from("number")) {
-        Some(number) => {
-            if number.is_string() {
-                Ok(String::from(number.as_str().unwrap()))
-            } else if number.is_i64() {
-                Ok(number.as_i64().unwrap().to_string())
-            } else {
-                return Err(String::from("Number property must be String or Numeric"));
-            }
+fn get_id(map: &mut serde_json::Map<String, serde_json::Value>) -> Result<Option<i64>, String> {
+    match map.remove(&String::from("id")) {
+        Some(id) => match id.as_i64() {
+            Some(id) => Ok(Some(id)),
+            None => Err(String::from("ID must be numeric"))
         },
-        None => { return Err(String::from("Number property required")); }
+        None => Ok(None)
     }
 }
 
+fn get_number(map: &mut serde_json::Map<String, serde_json::Value>) -> Result<String, String> {
+    match map.remove(&String::from("number")) {
+        Some(number) => match number {
+            serde_json::value::Value::Number(num) => {
+                Ok(String::from(num.to_string()))
+            },
+            serde_json::value::Value::String(num) => {
+                Ok(num)
+            },
+            _ => Err(String::from("Number property must be String or Numeric"))
+        },
+        None => Err(String::from("Number property required"))
+    }
+}
+
+fn get_version(map: &mut serde_json::Map<String, serde_json::Value>) -> Result<i64, String> {
+    match map.remove(&String::from("version")) {
+        Some(version) => match version.as_i64() {
+            Some(version) => Ok(version),
+            _ => Err(String::from("Version must be numeric"))
+        },
+        None => Ok(0)
+    }
+}
+
+fn get_source(map: &mut serde_json::Map<String, serde_json::Value>) -> Result<String, String> {
+    match map.remove(&String::from("source")) {
+        Some(source) => match source {
+            serde_json::value::Value::String(source) => Ok(source),
+            _ => Ok(String::from(""))
+        },
+        None => Ok(String::from(""))
+    }
+}
+
+fn get_output(map: &mut serde_json::Map<String, serde_json::Value>) -> Result<bool, String> {
+    match map.remove(&String::from("output")) {
+        Some(output) => match output.as_bool() {
+            None => Ok(true),
+            Some(output) => Ok(output)
+        },
+        None => Ok(true)
+    }
+}
+
+fn get_interpolate(map: &mut serde_json::Map<String, serde_json::Value>) -> Result<bool, String> {
+    match map.remove(&String::from("interpolate")) {
+        Some(itp) => match itp.as_bool() {
+            None => Ok(true),
+            Some(itp) => Ok(itp)
+        },
+        None => Ok(true)
+    }
+}

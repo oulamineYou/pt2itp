@@ -331,7 +331,12 @@ impl Cursor {
         let pg_conn = Box::new(conn);
 
         let trans: postgres::transaction::Transaction = unsafe {
-            mem::transmute(pg_conn.transaction().unwrap())
+            mem::transmute(match pg_conn.transaction() {
+                Ok(trans) => trans,
+                Err(err) => {
+                    return Err(err.to_string());
+                }
+            })
         };
 
         match trans.execute(format!(r#"
@@ -361,9 +366,12 @@ impl Iterator for Cursor {
             return self.cache.pop()
         }
 
-        let rows = self.trans.query(format!(r#"
+        let rows = match self.trans.query(format!(r#"
             FETCH {} FROM next_cursor
-        "#, &self.fetch).as_str(), &[]).unwrap();
+        "#, &self.fetch).as_str(), &[]) {
+            Ok(rows) => rows,
+            Err(err) => panic!("Fetch Error: {}", err.to_string())
+        };
 
         // Cursor is finished
         if rows.is_empty() {

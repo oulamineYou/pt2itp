@@ -106,46 +106,55 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
             println!("Exact Dedupe # {} ({} - {})", &cpu, &min_id, &max_id);
 
-            let exact_dups = match pg::Cursor::new(Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db_conn).as_str(), TlsMode::None).unwrap(), format!(r#"
+            let conn = match Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db_conn).as_str(), TlsMode::None) {
+                Ok(conn) => conn,
+                Err(err) => panic!("Connection Error: {}", err.to_string())
+            };
+
+            let exact_dups = match pg::Cursor::new(conn, format!(r#"
                 SELECT
-                    JSON_Build_Object(
-                        'id', a.id,
-                        'version', a.version,
-                        'names', a.names,
-                        'number', a.number,
-                        'source', a.source,
-                        'output', a.output,
-                        'props', a.props,
-                        'geom', ST_AsGeoJSON(a.geom)
-                    )::JSONB || (
-                        SELECT
-                            JSON_AGG(JSON_Build_Object(
-                                'id', id,
-                                'version', version,
-                                'names', names,
-                                'number', number,
-                                'source', source,
-                                'output', output,
-                                'props', props,
-                                'geom', ST_AsGeoJSON(geom)
-                            ))
-                        FROM
-                            address
-                        WHERE
-                            ST_DWithin(a.geom, geom, 0.00001)
-                    )::JSONB
+                    (
+                        JSON_Build_Object(
+                            'id', a.id,
+                            'version', a.version,
+                            'names', a.names,
+                            'number', a.number,
+                            'source', a.source,
+                            'output', a.output,
+                            'props', a.props,
+                            'geom', ST_AsGeoJSON(a.geom)
+                        )::JSONB || (
+                            SELECT
+                                JSON_AGG(JSON_Build_Object(
+                                    'id', id,
+                                    'version', version,
+                                    'names', names,
+                                    'number', number,
+                                    'source', source,
+                                    'output', output,
+                                    'props', props,
+                                    'geom', ST_AsGeoJSON(geom)
+                                ))
+                            FROM
+                                address
+                            WHERE
+                                ST_DWithin(a.geom, geom, 0.00001)
+                        )::JSONB
+                    )::JSON
                 FROM
                     address a
                 WHERE
-                    id >= {min_id}
-                    AND id <= {max_id}
+                    a.id >= {min_id}
+                    AND a.id <= {max_id}
             "#,
                 min_id = min_id,
                 max_id = max_id
             )) {
                 Ok(cursor) => cursor,
-                Err(err) => return println!("ERR: {}", err.to_string())
+                Err(err) => panic!("ERR: {}", err.to_string())
             };
+
+            println!("POST EXACT DUPS");
 
             //
             // Since this operation is performed in parallel - duplicates could be potentially
@@ -154,12 +163,18 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             // the min_id/max_id that the given thread is processing
             //
             for dup_feats in exact_dups {
-                let dup_feats: Vec<Address> = match dup_feats {
+                println!("DUP FEAT INTERNAL START");
+                let mut dup_feats: Vec<Address> = match dup_feats {
                     serde_json::value::Value::Array(feats) => {
                         let mut addrfeats = Vec::with_capacity(feats.len());
 
                         for feat in feats {
-                            addrfeats.push(Address::from_value(feat).unwrap());
+                            println!("FOR FEAT START");
+                            addrfeats.push(match Address::from_value(feat) {
+                                Ok(feat) => feat,
+                                Err(err) => panic!("Vec<Address> Error: {}", err.to_string())
+                            });
+                            println!("FOR FEAT END");
                         }
 
                         addrfeats
@@ -167,18 +182,29 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                     _ => panic!("Duplicate Features should be Vec<Value>")
                 };
 
-                println!("HERE");
+                dup_feats.sort_by(|a, b| {
+                    if a.id.unwrap() < b.id.unwrap() {
+                        std::cmp::Ordering::Less
+                    } else if a.id.unwrap() > b.id.unwrap() {
+                        std::cmp::Ordering::Greater
+                    } else {
+                        std::cmp::Ordering::Equal
+                    }
+                });
             }
         }) {
             Ok(strand) => strand,
-            Err(err) => panic!("{}", err.to_string())
+            Err(err) => panic!("Thread Creation Error: {}", err.to_string())
         };
 
         web.push(strand);
     }
 
     for strand in web {
-        strand.join().unwrap();
+        match strand.join() {
+            Err(err) => panic!("Thread Join Error: {:?}", err),
+            _ => ()
+        }
     }
 
     Ok(cx.boolean(true))
