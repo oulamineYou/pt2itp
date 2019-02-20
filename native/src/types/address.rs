@@ -2,7 +2,7 @@ use postgis::ewkb::AsEwkbPoint;
 use postgis::ewkb::EwkbWrite;
 use regex::{Regex, RegexSet};
 
-use crate::{Context, Names};
+use crate::{Context, Names, Name};
 
 /// A representation of a single Address
 #[derive(Debug)]
@@ -111,9 +111,15 @@ impl Address {
         };
 
         let names: Names = match value.remove(&String::from("names")) {
-            Some(names) => match serde_json::from_value(names) {
-                Ok(names) => names,
-                Err(err) => { return Err(format!("Names Conversion Error: {}", err.to_string())); }
+            Some(names) => {
+                let names: Vec<Name> = match serde_json::from_value(names) {
+                    Ok(names) => names,
+                    Err(err) => { return Err(format!("Names Conversion Error: {}", err.to_string())); }
+                };
+
+                Names {
+                    names: names
+                }
             },
             None => { return Err(String::from("names key/value is required")); }
         };
@@ -127,9 +133,18 @@ impl Address {
         };
 
         let geom = match value.remove(&String::from("geom")) {
-            Some(geom) => match serde_json::from_value(geom) {
-                Ok(geom) => geom,
-                Err(err) => { return Err(format!("Failed to parse geom: {}", err.to_string())); }
+            Some(geom) => match geom {
+                serde_json::value::Value::String(geom) => match geom.parse::<geojson::GeoJson>() {
+                    Ok (geom) => match geom {
+                        geojson::GeoJson::Geometry(geom) => match geom.value {
+                            geojson::Value::Point(pt) => pt,
+                            _ => { return Err(String::from("Geometry must be point type")); }
+                        },
+                        _ => { return Err(String::from("Geometry must be point type")); }
+                    },
+                    Err(err) => { return Err(format!("geom parse error: {}", err.to_string())); }
+                },
+                _ => { return Err(String::from("geom only supports TEXT type")); }
             },
             None => { return Err(String::from("geom key/value is required")); }
         };

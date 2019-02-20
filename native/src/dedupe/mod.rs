@@ -122,7 +122,7 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                             'source', a.source,
                             'output', a.output,
                             'props', a.props,
-                            'geom', ST_AsGeoJSON(a.geom)
+                            'geom', ST_AsGeoJSON(a.geom)::TEXT
                         )::JSONB || (
                             SELECT
                                 JSON_AGG(JSON_Build_Object(
@@ -133,7 +133,7 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                                     'source', source,
                                     'output', output,
                                     'props', props,
-                                    'geom', ST_AsGeoJSON(geom)
+                                    'geom', ST_AsGeoJSON(geom)::TEXT
                                 ))
                             FROM
                                 address
@@ -154,8 +154,6 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 Err(err) => panic!("ERR: {}", err.to_string())
             };
 
-            println!("POST EXACT DUPS");
-
             //
             // Since this operation is performed in parallel - duplicates could be potentially
             // processed by multiple threads - resulting in duplicate output. To avoid this
@@ -163,18 +161,15 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             // the min_id/max_id that the given thread is processing
             //
             for dup_feats in exact_dups {
-                println!("DUP FEAT INTERNAL START");
                 let mut dup_feats: Vec<Address> = match dup_feats {
                     serde_json::value::Value::Array(feats) => {
                         let mut addrfeats = Vec::with_capacity(feats.len());
 
                         for feat in feats {
-                            println!("FOR FEAT START");
                             addrfeats.push(match Address::from_value(feat) {
                                 Ok(feat) => feat,
                                 Err(err) => panic!("Vec<Address> Error: {}", err.to_string())
                             });
-                            println!("FOR FEAT END");
                         }
 
                         addrfeats
@@ -191,6 +186,15 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                         std::cmp::Ordering::Equal
                     }
                 });
+
+                if 
+                    dup_feats.len() < 2
+                    || dup_feats[0].id.unwrap() < min_id
+                    || dup_feats[0].id.unwrap() > max_id 
+                {
+                    continue;
+                }
+
             }
         }) {
             Ok(strand) => strand,
