@@ -12,7 +12,7 @@ test('dedupe (dataset)', (t) => {
 
     t.doesNotThrow(() => {
         dedupe({
-            db: 'test',
+            db: 'pt_test',
             hecate: false,
             input: './test/fixtures/dedupe.geojson',
             output: '/tmp/dedupeout.geojson',
@@ -128,7 +128,7 @@ test('dedupe (hecate)', (t) => {
 
     t.doesNotThrow(() => {
         dedupe({
-            db: 'test',
+            db: 'pt_test',
             hecate: true,
             input: './test/fixtures/dedupe.geojson',
             output: '/tmp/dedupeout.geojson',
