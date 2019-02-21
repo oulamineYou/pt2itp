@@ -3,10 +3,11 @@
 #[macro_use] extern crate lazy_static;
 extern crate serde_json;
 extern crate neon_serde;
-extern crate geojson;
-extern crate postgres;
-extern crate regex;
+extern crate crossbeam;
 extern crate num_cpus;
+extern crate postgres;
+extern crate geojson;
+extern crate regex;
 
 // Internal Helper Libraries
 pub mod stream;

@@ -2,7 +2,6 @@ use std::convert::From;
 use postgres::{Connection, TlsMode};
 use std::collections::HashMap;
 use std::thread;
-use std::sync::mpsc;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 
@@ -95,11 +94,11 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let batch_extra = count % cpus;
     let batch = (count - batch_extra) / cpus;
 
-    let (sender, receiver) = mpsc::channel();
+    let (tx, rx) = crossbeam::channel::unbounded();
 
     for cpu in 0..cpus {
         let db_conn = args.db.clone();
-        let sender_n = sender.clone();
+        let tx_n = tx.clone();
 
         let strand = match thread::Builder::new().name(format!("Exact Dup #{}", &cpu)).spawn(move || {
             let mut min_id = batch * cpu;
@@ -116,8 +115,7 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 Err(err) => panic!("Connection Error: {}", err.to_string())
             };
 
-            exact_batch(min_id, max_id, conn, sender_n);
-
+            exact_batch(min_id, max_id, conn, tx_n);
         }) {
             Ok(strand) => strand,
             Err(err) => panic!("Thread Creation Error: {}", err.to_string())
@@ -126,6 +124,8 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         web.push(strand);
     }
 
+    drop(tx);
+
     match args.output {
         Some(outpath) => {
             let outfile = match File::create(outpath) {
@@ -133,15 +133,19 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 Err(err) => { panic!("Unable to write to output file: {}", err); }
             };
 
-            output(receiver, BufWriter::new(outfile))
+            output(rx, BufWriter::new(outfile))
         },
-        None => output(receiver, std::io::stdout().lock())
+        None => output(rx, std::io::stdout().lock())
+    }
+
+    for strand in web {
+        strand.join().unwrap();
     }
 
     Ok(cx.boolean(true))
 }
 
-fn output(receive: mpsc::Receiver<String>, mut sink: impl Write) {
+fn output(receive: crossbeam::Receiver<String>, mut sink: impl Write) {
     for result in receive.iter() {
         if sink.write(format!("{}\n", result).as_bytes()).is_err() {
             panic!("Failed to write to output stream");
@@ -153,7 +157,7 @@ fn output(receive: mpsc::Receiver<String>, mut sink: impl Write) {
     }
 }
 
-fn exact_batch(min_id: i64, max_id: i64, conn: postgres::Connection, sender: mpsc::Sender<String>) {
+fn exact_batch(min_id: i64, max_id: i64, conn: postgres::Connection, tx: crossbeam::Sender<String>) {
     let exact_dups = match pg::Cursor::new(conn, format!(r#"
         SELECT
             JSON_Build_Object(
@@ -244,7 +248,6 @@ fn exact_batch(min_id: i64, max_id: i64, conn: postgres::Connection, sender: mps
             }
         });
 
-
         //
         // Since this operation is performed in parallel - duplicates could be potentially
         // processed by multiple threads - resulting in duplicate output. To avoid this
@@ -255,6 +258,8 @@ fn exact_batch(min_id: i64, max_id: i64, conn: postgres::Connection, sender: mps
             continue;
         }
 
-        sender.send(String::from("I AM OUTPUT")).unwrap();
+        tx.send(String::from("I AM OUTPUT")).unwrap();
     }
+
+    println!("DONE");
 }
