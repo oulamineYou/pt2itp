@@ -278,6 +278,4 @@ fn exact_batch(is_hecate: bool, min_id: i64, max_id: i64, conn: postgres::Connec
             tx.send(feat).unwrap();
         }
     }
-
-    println!("DONE");
 }
