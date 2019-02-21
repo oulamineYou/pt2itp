@@ -140,5 +140,75 @@ test('dedupe (hecate)', (t) => {
         });
     }, 'dedupe runs without err');
 
+    t.doesNotThrow(() => {
+        fs.accessSync('/tmp/dedupeout.geojson');
+    }, 'output exists');
+
+    const rl = new ReadLine('/tmp/dedupeout.geojson');
+
+    const output = {};
+
+    while (line = rl.next()) {
+        line = JSON.parse(line);
+
+        output[line.id] = line;
+    }
+
+    t.deepEquals(Object.keys(output), [
+        '2', '7', '8',  // ID 2,7 & 8 should be deleted (leaving 1) (duplicate geom/number/street)
+                        // ID 3 & 4 should be ignored - duplicate number/street but not geom
+                        // ID 5 & 6 should be ignored - duplicate street/geom - 123 vs 123a for number
+    ], 'output ids as expected');
+
+    t.deepEquals(output[2], {
+        id: 2,
+        version: 0,
+        type: 'Feature',
+        action: 'delete',
+        properties: {
+            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            number: '123',
+            source: 'random'
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [ -77.4818462133408, 37.5005295201296 ]
+        }
+    }, 'feature 2');
+
+    t.deepEquals(output[7], {
+        id: 7,
+        version: 0,
+        type: 'Feature',
+        action: 'delete',
+        properties: {
+            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            number: '123',
+            source: 'openaddresses',
+            random: 'property'
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [ -77.4818462133408, 37.5005295201296 ]
+        }
+    }, 'feature 7');
+
+    t.deepEquals(output[8], {
+        id: 8,
+        version: 0,
+        type: 'Feature',
+        action: 'delete',
+        properties: {
+            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            number: '123',
+            source: 'openaddresses',
+            random: 'property'
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [ -77.4818462133408, 37.5005295201296 ]
+        }
+    }, 'feature 8');
+
     t.end();
 });

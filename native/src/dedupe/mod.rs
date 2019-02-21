@@ -268,7 +268,9 @@ fn exact_batch(is_hecate: bool, min_id: i64, max_id: i64, conn: postgres::Connec
             // but the desired feature
 
             for dup_feat in dup_feats {
-                tx.send(dup_feat).unwrap();
+                if dup_feat.id.unwrap() != feat.id.unwrap() {
+                    tx.send(dup_feat).unwrap();
+                }
             }
         } else {
             // If not hecate, only print the desired feature
