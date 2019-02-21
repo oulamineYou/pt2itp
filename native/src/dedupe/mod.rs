@@ -265,10 +265,16 @@ fn exact_batch(is_hecate: bool, min_id: i64, max_id: i64, conn: postgres::Connec
             continue;
         }
 
-        // TODO support hecate/non-hecate distinction
         if is_hecate {
-            tx.send(feat).unwrap();
+            // If it is hecate output - delete all features
+            // but the desired feature
+
+            for dup_feat in dup_feats {
+                tx.send(dup_feat).unwrap();
+            }
         } else {
+            // If not hecate, only print the desired feature
+
             tx.send(feat).unwrap();
         }
     }
