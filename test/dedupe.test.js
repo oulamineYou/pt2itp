@@ -6,7 +6,7 @@ test('dedupe (dataset)', (t) => {
         dedupe({
             db: 'test',
             hecate: false,
-            input: 'fixtures/dedupe.geojson',
+            input: './test/fixtures/dedupe.geojson',
             output: '/tmp/dedupeout.geojson',
             tokens: 'en',
             context: {
@@ -24,7 +24,7 @@ test('dedupe (hecate)', (t) => {
         dedupe({
             db: 'test',
             hecate: true,
-            input: 'fixtures/dedupe.geojson',
+            input: './test/fixtures/dedupe.geojson',
             output: '/tmp/dedupeout.geojson',
             tokens: 'en',
             context: {
