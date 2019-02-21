@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v19.6.5
+
+- :bug: Ensure adding Z coordinate to addresses doesn't nullify geom
+
 ## v19.6.4
 
 - :rocket: Use `FORMAT CSV` for importing JSON data
