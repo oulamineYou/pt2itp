@@ -221,7 +221,7 @@ impl Address {
     /// Outputs Hecate Compatible GeoJSON feature,
     /// omitting PT2ITP specific properties
     ///
-    pub fn to_geojson(self, action: hecate::Action) -> geojson::Feature {
+    pub fn to_geojson(mut self, action: hecate::Action) -> geojson::Feature {
         let mut members: serde_json::map::Map<String, serde_json::Value> = serde_json::map::Map::new();
 
         if action != hecate::Action::None {
@@ -243,6 +243,10 @@ impl Address {
             },
             _ => ()
         };
+
+        self.props.insert(String::from("source"), serde_json::value::Value::String(self.source));
+        self.props.insert(String::from("names"), serde_json::to_value(self.names).unwrap());
+        self.props.insert(String::from("number"), serde_json::value::Value::String(self.number));
 
         geojson::Feature {
             id: match self.id {
