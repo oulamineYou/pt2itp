@@ -109,8 +109,6 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 min_id = min_id + batch_extra + 1;
             }
 
-            println!("Exact Dedupe Thread # {} (ids: {} - {})", &cpu, &min_id, &max_id);
-
             let conn = match Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db_conn).as_str(), TlsMode::None) {
                 Ok(conn) => conn,
                 Err(err) => panic!("Connection Error: {}", err.to_string())
