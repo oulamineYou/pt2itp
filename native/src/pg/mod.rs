@@ -92,7 +92,7 @@ impl Table for Address {
             ALTER TABLE address
                 ALTER COLUMN geom
                 TYPE GEOMETRY(POINTZ, 4326)
-                USING ST_SetSRID(ST_MakePoint(ST_X(geom), ST_Y(geom), id::FLOAT), 4326);
+                USING ST_SetSRID(ST_MakePoint(ST_X(geom), ST_Y(geom), COALESCE(id::FLOAT, 0)), 4326);
         "#, &[]).unwrap();
 
         conn.execute(r#"
