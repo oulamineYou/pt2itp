@@ -39,9 +39,9 @@ test('dedupe (dataset)', (t) => {
     }
 
     t.deepEquals(Object.keys(output), [
-        '1',        // ID 1,2,7 & 8 should be collapsed to only ID 1 (duplicate geom/number/street)
-        '3', '4',   // ID 3 & 4 should be output - duplicate number/street but not geom
-        '5', '6'    // ID 5 & 6 should be output - duplicate street/geom - 123 vs 123a for number
+        '1', // ID 1,2,7 & 8 should be collapsed to only ID 1 (duplicate geom/number/street)
+        '3', '4', // ID 3 & 4 should be output - duplicate number/street but not geom
+        '5', '6' // ID 5 & 6 should be output - duplicate street/geom - 123 vs 123a for number
     ], 'output ids as expected');
 
     t.deepEquals(output[1], {
@@ -155,7 +155,7 @@ test('dedupe (hecate)', (t) => {
     }
 
     t.deepEquals(Object.keys(output), [
-        '2', '7', '8',  // ID 2,7 & 8 should be deleted (leaving 1) (duplicate geom/number/street)
+        '2', '7', '8', // ID 2,7 & 8 should be deleted (leaving 1) (duplicate geom/number/street)
                         // ID 3 & 4 should be ignored - duplicate number/street but not geom
                         // ID 5 & 6 should be ignored - duplicate street/geom - 123 vs 123a for number
     ], 'output ids as expected');
