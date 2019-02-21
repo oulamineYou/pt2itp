@@ -39,7 +39,7 @@ test('dedupe (dataset)', (t) => {
     }
 
     t.deepEquals(Object.keys(output), [
-        '1',        // ID 1 & 2 should be collapsed to only ID 1 (duplicate geom/number/street)
+        '1',        // ID 1,2,7 & 8 should be collapsed to only ID 1 (duplicate geom/number/street)
         '3', '4',   // ID 3 & 4 should be output - duplicate number/street but not geom
         '5', '6'    // ID 5 & 6 should be output - duplicate street/geom - 123 vs 123a for number
     ], 'output ids as expected');
@@ -48,7 +48,10 @@ test('dedupe (dataset)', (t) => {
         id: 1,
         type: 'Feature',
         properties: {
-        
+            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            number: '123',
+            source: 'openaddresses',
+            random: 'property'
         },
         geometry: {
             type: 'Point',
@@ -60,7 +63,9 @@ test('dedupe (dataset)', (t) => {
         id: 3,
         type: 'Feature',
         properties: {
-
+            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            number: '123',
+            source: 'random'
         },
         geometry: {
             type: 'Point',
@@ -72,7 +77,9 @@ test('dedupe (dataset)', (t) => {
         id: 4,
         type: 'Feature',
         properties: {
-
+             names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            number: '123',
+            source: 'random'
         },
         geometry: {
             type: 'Point',
@@ -84,20 +91,23 @@ test('dedupe (dataset)', (t) => {
         id: 5,
         type: 'Feature',
         properties: {
-
+            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            number: '123',
+            source: 'openaddresses'
         },
         geometry: {
             type: 'Point',
             coordinates: [ -77.4813687801361, 37.4999975371368 ]
         }
-
     }, 'feature 5');
 
     t.deepEquals(output[6], {
         id: 6,
         type: 'Feature',
         properties: {
-
+            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            number: '123a',
+            source: 'rando'
         },
         geometry: {
             type: 'Point',
