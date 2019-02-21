@@ -224,6 +224,8 @@ impl Address {
     pub fn to_geojson(self, action: hecate::Action) -> geojson::Feature {
         let mut members: serde_json::map::Map<String, serde_json::Value> = serde_json::map::Map::new();
 
+        members.insert(String::from("version"), serde_json::value::Value::Number(serde_json::Number::from(self.version)));
+
         match action {
             hecate::Action::Create => {
                 members.insert(String::from("action"), serde_json::value::Value::String("create".to_string()));
