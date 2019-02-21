@@ -9,6 +9,7 @@ use neon::prelude::*;
 
 use crate::{
     Address,
+    types::hecate,
     stream::{GeoStream, AddrStream, PolyStream}
 };
 
@@ -53,8 +54,8 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         }
     };
 
-    let hecate = match args.hecate {
-        Some(hecate) => hecate,
+    let is_hecate = match args.hecate {
+        Some(is_hecate) => is_hecate,
         None => false
     };
 
@@ -69,7 +70,7 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     address.create(&conn);
     address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
 
-    if !hecate {
+    if !is_hecate {
         // Hecate Addresses will already have ids present
         // If not hecate, create sequential ids for processing
         address.seq_id(&conn);
@@ -115,7 +116,7 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 Err(err) => panic!("Connection Error: {}", err.to_string())
             };
 
-            exact_batch(min_id, max_id, conn, tx_n);
+            exact_batch(is_hecate, min_id, max_id, conn, tx_n);
         }) {
             Ok(strand) => strand,
             Err(err) => panic!("Thread Creation Error: {}", err.to_string())
@@ -133,9 +134,9 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 Err(err) => { panic!("Unable to write to output file: {}", err); }
             };
 
-            output(rx, BufWriter::new(outfile))
+            output(is_hecate, rx, BufWriter::new(outfile))
         },
-        None => output(rx, std::io::stdout().lock())
+        None => output(is_hecate, rx, std::io::stdout().lock())
     }
 
     for strand in web {
@@ -145,8 +146,14 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     Ok(cx.boolean(true))
 }
 
-fn output(receive: crossbeam::Receiver<String>, mut sink: impl Write) {
+fn output(is_hecate: bool, receive: crossbeam::Receiver<Address>, mut sink: impl Write) {
     for result in receive.iter() {
+
+        let result: String = match is_hecate {
+            true => geojson::GeoJson::Feature(result.to_geojson(hecate::Action::Delete)).to_string(),
+            false => geojson::GeoJson::Feature(result.to_geojson(hecate::Action::None)).to_string()
+        };
+
         if sink.write(format!("{}\n", result).as_bytes()).is_err() {
             panic!("Failed to write to output stream");
         }
@@ -157,7 +164,7 @@ fn output(receive: crossbeam::Receiver<String>, mut sink: impl Write) {
     }
 }
 
-fn exact_batch(min_id: i64, max_id: i64, conn: postgres::Connection, tx: crossbeam::Sender<String>) {
+fn exact_batch(is_hecate: bool, min_id: i64, max_id: i64, conn: postgres::Connection, tx: crossbeam::Sender<Address>) {
     let exact_dups = match pg::Cursor::new(conn, format!(r#"
         SELECT
             JSON_Build_Object(
@@ -258,7 +265,12 @@ fn exact_batch(min_id: i64, max_id: i64, conn: postgres::Connection, tx: crossbe
             continue;
         }
 
-        tx.send(String::from("I AM OUTPUT")).unwrap();
+        // TODO support hecate/non-hecate distinction
+        if is_hecate {
+            tx.send(feat).unwrap();
+        } else {
+            tx.send(feat).unwrap();
+        }
     }
 
     println!("DONE");

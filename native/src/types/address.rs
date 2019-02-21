@@ -2,7 +2,7 @@ use postgis::ewkb::AsEwkbPoint;
 use postgis::ewkb::EwkbWrite;
 use regex::{Regex, RegexSet};
 
-use crate::{Context, Names, Name};
+use crate::{Context, Names, Name, hecate};
 
 /// A representation of a single Address
 #[derive(Debug)]
@@ -193,9 +193,11 @@ impl Address {
         Ok(())
     }
 
+    ///
     ///Return a PG Copyable String of the feature
     ///
     ///name, number, source, props, geom
+    ///
     pub fn to_tsv(self) -> String {
         let geom = postgis::ewkb::Point::new(self.geom[0], self.geom[1], Some(4326)).as_ewkb().to_hex_ewkb();
 
@@ -212,6 +214,46 @@ impl Address {
             props = serde_json::value::Value::from(self.props),
             geom = geom
         )
+    }
+
+
+    ///
+    /// Outputs Hecate Compatible GeoJSON feature,
+    /// omitting PT2ITP specific properties
+    ///
+    pub fn to_geojson(self, action: hecate::Action) -> geojson::Feature {
+        let mut members: serde_json::map::Map<String, serde_json::Value> = serde_json::map::Map::new();
+
+        match action {
+            hecate::Action::Create => {
+                members.insert(String::from("action"), serde_json::value::Value::String("create".to_string()));
+            },
+            hecate::Action::Modify => {
+                members.insert(String::from("action"), serde_json::value::Value::String("modify".to_string()));
+            },
+            hecate::Action::Delete => {
+                members.insert(String::from("action"), serde_json::value::Value::String("delete".to_string()));
+            },
+            hecate::Action::Restore => {
+                members.insert(String::from("action"), serde_json::value::Value::String("restore".to_string()));
+            },
+            _ => ()
+        };
+
+        geojson::Feature {
+            id: match self.id {
+                None => None,
+                Some(id) => Some(geojson::feature::Id::Number(serde_json::Number::from(id)))
+            },
+            bbox: None,
+            geometry: Some(geojson::Geometry {
+                bbox: None,
+                value: geojson::Value::Point(self.geom),
+                foreign_members: None
+            }),
+            properties: Some(self.props),
+            foreign_members: Some(members)
+        }
     }
 }
 

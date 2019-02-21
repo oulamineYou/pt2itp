@@ -4,6 +4,7 @@ mod polygon;
 
 mod name;
 mod context;
+pub mod hecate;
 
 pub use self::address::Address;
 pub use self::network::Network;

@@ -28,6 +28,7 @@ pub use self::types::Address;
 pub use self::types::Network;
 pub use self::types::Polygon;
 
+pub use self::types::hecate;
 pub use self::types::Context;
 pub use self::text::Tokens;
 
