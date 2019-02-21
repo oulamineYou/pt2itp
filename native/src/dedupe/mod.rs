@@ -174,7 +174,7 @@ fn exact_batch(is_hecate: bool, min_id: i64, max_id: i64, conn: postgres::Connec
                     'source', a.source,
                     'output', a.output,
                     'props', a.props,
-                    'geom', ST_AsGeoJSON(a.geom)::TEXT
+                    'geom', ST_AsGeoJSON(ST_Force2D(a.geom))::TEXT
                 ),
                 'proximal', (
                     SELECT
@@ -186,7 +186,7 @@ fn exact_batch(is_hecate: bool, min_id: i64, max_id: i64, conn: postgres::Connec
                             'source', source,
                             'output', output,
                             'props', props,
-                            'geom', ST_AsGeoJSON(geom)::TEXT
+                            'geom', ST_AsGeoJSON(ST_Force2D(geom))::TEXT
                         ))
                     FROM
                         address
@@ -259,7 +259,7 @@ fn exact_batch(is_hecate: bool, min_id: i64, max_id: i64, conn: postgres::Connec
         // the dup_feat will only be processed if the lowest ID in the match falls within
         // the min_id/max_id that the given thread is processing
         //
-        if dup_feats[0].id.unwrap() < min_id || dup_feats[0].id.unwrap() > max_id {
+        if dup_feats[0].id.unwrap() < feat.id.unwrap() || dup_feats[0].id.unwrap() < min_id || dup_feats[0].id.unwrap() > max_id {
             continue;
         }
 

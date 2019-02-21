@@ -7,7 +7,7 @@ test('dedupe (dataset)', (t) => {
     try {
         fs.unlinkSync('/tmp/dedupeout.geojson');
     } catch (err) {
-        console.error('ok - no tmp files to clear');
+        console.log('ok - no tmp files to clear');
     }
 
     t.doesNotThrow(() => {
@@ -44,6 +44,68 @@ test('dedupe (dataset)', (t) => {
         '5', '6'    // ID 5 & 6 should be output - duplicate street/geom - 123 vs 123a for number
     ], 'output ids as expected');
 
+    t.deepEquals(output[1], {
+        id: 1,
+        type: 'Feature',
+        properties: {
+        
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [ -77.4818462133408, 37.5005295201296 ]
+        }
+    }, 'feature 1');
+
+    t.deepEquals(output[3], {
+        id: 3,
+        type: 'Feature',
+        properties: {
+
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [ -77.4825543165207, 37.5002699129026 ]
+        }
+    }, 'feature 3');
+
+    t.deepEquals(output[4], {
+        id: 4,
+        type: 'Feature',
+        properties: {
+
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [ -77.4819427728653, 37.4995634362065 ]
+        }
+    }, 'feature 4');
+
+    t.deepEquals(output[5], {
+        id: 5,
+        type: 'Feature',
+        properties: {
+
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [ -77.4813687801361, 37.4999975371368 ]
+        }
+
+    }, 'feature 5');
+
+    t.deepEquals(output[6], {
+        id: 6,
+        type: 'Feature',
+        properties: {
+
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [ -77.4813687801361, 37.4999975371368 ]
+        }
+
+    }, 'feature 6');
+
     t.end();
 });
 
@@ -51,7 +113,7 @@ test('dedupe (hecate)', (t) => {
     try {
         fs.unlinkSync('/tmp/dedupeout.geojson');
     } catch (err) {
-        console.error('ok - no tmp files to clear');
+        console.log('ok - no tmp files to clear');
     }
 
     t.doesNotThrow(() => {
@@ -66,7 +128,7 @@ test('dedupe (hecate)', (t) => {
                 region: 'dc'
             }
         });
-    });
+    }, 'dedupe runs without err');
 
     t.end();
 });
