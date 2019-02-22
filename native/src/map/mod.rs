@@ -132,7 +132,13 @@ pub fn import_net(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let network = pg::Network::new();
     network.create(&conn);
-    network.input(&conn, NetStream::new(GeoStream::new(args.input), context, args.errors));
+
+    Parallel::stream(
+        format!("postgres://postgres@localhost:5432/{}", &args.db),
+        NetStream::new(GeoStream::new(args.input), context, args.errors),
+        pg::Tables::Network
+    );
+
     if args.seq {
         network.seq_id(&conn);
     }
