@@ -97,9 +97,11 @@ pub fn import_addr(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     address.create(&conn);
 
     Parallel::stream(
+        args.errors,
         format!("postgres://postgres@localhost:5432/{}", &args.db),
-        AddrStream::new(GeoStream::new(args.input), context, args.errors),
-        pg::Tables::Address
+        GeoStream::new(args.input),
+        pg::Tables::Address,
+        context
     );
 
     if args.seq {
@@ -134,9 +136,11 @@ pub fn import_net(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     network.create(&conn);
 
     Parallel::stream(
+        args.errors,
         format!("postgres://postgres@localhost:5432/{}", &args.db),
-        NetStream::new(GeoStream::new(args.input), context, args.errors),
-        pg::Tables::Network
+        GeoStream::new(args.input),
+        pg::Tables::Network,
+        context
     );
 
     if args.seq {

@@ -70,7 +70,8 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     address.create(&conn);
 
     // TODO fix
-    //address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
+    /*
+    address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
 
     if !is_hecate {
         // Hecate Addresses will already have ids present
@@ -89,6 +90,7 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         },
         None => ()
     };
+    */
 
     let count = address.count(&conn);
     let cpus = num_cpus::get() as i64;

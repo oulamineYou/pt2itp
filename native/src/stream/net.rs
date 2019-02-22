@@ -1,15 +1,14 @@
 use std::convert::From;
 use std::iter::Iterator;
-use std::io::{Write, BufWriter};
-use std::fs::File;
-use crate::types::ToPG;
+use std::io::Write;
+use std::fs::{File, OpenOptions};
 
-use crate::{stream::geo::GeoStream, Network, Context};
+use crate::{Network, Context};
 
 pub struct NetStream<T: Iterator> {
     context: Context,
     input: T,
-    errors: Option<BufWriter<File>>
+    errors: Option<File>
 }
 
 impl<T: Iterator> NetStream<T> {
@@ -19,7 +18,7 @@ impl<T: Iterator> NetStream<T> {
             input: input,
             errors: match errors {
                 None => None,
-                Some(path) => Some(BufWriter::new(File::create(path).unwrap()))
+                Some(path) => Some(OpenOptions::new().create(true).append(true).open(path).unwrap())
             }
         }
     }

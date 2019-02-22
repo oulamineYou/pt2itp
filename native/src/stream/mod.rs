@@ -1,8 +1,7 @@
 use std::thread;
-use crate::pg;
+use crate::{pg, Context};
 use crate::pg::Table;
 use crate::types::ToPG;
-use std::marker::Send;
 use postgres::{Connection, TlsMode};
 
 pub mod addr;
@@ -16,25 +15,25 @@ pub use self::net::NetStream;
 pub use self::addr::AddrStream;
 
 ///
-/// The Passthrough stream consumes any stream type whos
+/// The PGPassthrough stream consumes any stream type whos
 /// items implement the ToPG Trait, providing iteration
 /// and the Read trait into a PG Table
 ///
-pub struct Passthrough<T: Iterator> {
+pub struct PGPassthrough<T: Iterator> {
     input: T,
     buffer: Option<Vec<u8>> //Used by Read impl for storing partial features
 }
 
-impl<T: Iterator> Passthrough<T> {
+impl<T: Iterator> PGPassthrough<T> {
     pub fn new(input: T) -> Self {
-        Passthrough {
+        PGPassthrough {
             buffer: None,
             input: input
         }
     }
 }
 
-impl<T: Iterator> Iterator for Passthrough<T>
+impl<T: Iterator> Iterator for PGPassthrough<T>
 where
     T::Item: ToPG
 {
@@ -45,7 +44,7 @@ where
     }
 }
 
-impl<T: Iterator> std::io::Read for Passthrough<T>
+impl<T: Iterator> std::io::Read for PGPassthrough<T>
 where
     <T as std::iter::Iterator>::Item: ToPG
 {
@@ -88,43 +87,44 @@ where
     }
 }
 
-pub struct Parallel<S: Iterator, ITEM: ToPG + Send> {
-    item: ITEM,
+pub struct Parallel<S: Iterator> {
     stream: S
 }
 
-impl<S: Iterator, ITEM: ToPG + Send + 'static> Parallel<S, ITEM>
+impl<S: Iterator> Parallel<S>
 where
-    S: Iterator<Item=ITEM>
+    S: Iterator<Item=geojson::GeoJson>
 {
-    pub fn stream(conn: String, stream: S, table: pg::Tables) {
-        let (tx, rx) = crossbeam::channel::bounded(10000);
+    pub fn stream(errors: Option<String>, conn: String, stream: S, table: pg::Tables, context: Context) {
+        let (geo_tx, geo_rx) = crossbeam::channel::bounded(10000);
 
         let cpus = num_cpus::get();
         let mut web = Vec::new();
 
         for cpu in 0..cpus {
             let db_conn = conn.clone();
-            let rx_n = rx.clone();
+            let geo_rx_n = geo_rx.clone();
             let table_n = table.clone();
+            let errors_n = errors.clone();
+            let context_n = context.clone();
 
             let strand = match thread::Builder::new().name(format!("Parallel #{}", &cpu)).spawn(move || {
                 let conn = Connection::connect(db_conn.as_str(), TlsMode::None).unwrap();
 
-                let rx_iter = rx_n.iter();
+                let geo_rx_iter = geo_rx_n.iter();
 
                 match table_n {
                     pg::Tables::Address => {
                         let table = pg::Address::new();
-                        table.input(&conn, Passthrough::new(rx_iter));
+                        table.input(&conn, PGPassthrough::new(AddrStream::new(geo_rx_iter, context_n, errors_n)));
                     },
                     pg::Tables::Network => {
                         let table = pg::Network::new();
-                        table.input(&conn, Passthrough::new(rx_iter));
+                        table.input(&conn, PGPassthrough::new(NetStream::new(geo_rx_iter, context_n, errors_n)));
                     },
                     pg::Tables::Polygon(name) => {
                         let table = pg::Polygon::new(name);
-                        table.input(&conn, Passthrough::new(rx_iter));
+                        table.input(&conn, PGPassthrough::new(PolyStream::new(geo_rx_iter, errors_n)));
                     }
                 }
             }) {
@@ -136,10 +136,10 @@ where
         }
 
         for feat in stream {
-            tx.send(feat).unwrap();
+            geo_tx.send(feat).unwrap();
         }
 
-        drop(tx);
+        drop(geo_tx);
 
         for strand in web {
             strand.join().unwrap();

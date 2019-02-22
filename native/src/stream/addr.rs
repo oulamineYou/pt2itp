@@ -1,8 +1,7 @@
 use std::convert::From;
 use std::iter::Iterator;
-use std::io::{Write, BufWriter};
-use std::fs::File;
-use crate::types::ToPG;
+use std::io::Write;
+use std::fs::{File, OpenOptions};
 
 use crate::{Address, Context};
 
@@ -13,7 +12,7 @@ use crate::{Address, Context};
 pub struct AddrStream<T: Iterator> {
     context: Context,
     input: T,
-    errors: Option<BufWriter<File>>
+    errors: Option<File>
 }
 
 impl<T: Iterator> AddrStream<T> {
@@ -23,7 +22,7 @@ impl<T: Iterator> AddrStream<T> {
             input: input,
             errors: match errors {
                 None => None,
-                Some(path) => Some(BufWriter::new(File::create(path).unwrap()))
+                Some(path) => Some(OpenOptions::new().create(true).append(true).open(path).unwrap())
             }
         }
     }
