@@ -2,6 +2,7 @@ use std::convert::From;
 use std::iter::Iterator;
 use std::io::{Write, BufWriter};
 use std::fs::File;
+use crate::types::ToPG;
 
 use crate::{stream::geo::GeoStream, Network, Context};
 
