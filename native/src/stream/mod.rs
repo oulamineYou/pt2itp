@@ -2,6 +2,7 @@ use std::thread;
 use crate::pg::Table;
 use crate::types::ToPG;
 use std::marker::Send;
+use postgres::{Connection, TlsMode};
 
 pub mod addr;
 pub mod geo;
@@ -10,16 +11,27 @@ pub mod poly;
 
 pub use self::poly::PolyStream;
 pub use self::geo::GeoStream;
-pub use self::addr::AddrStream;
 pub use self::net::NetStream;
 
-pub struct Parallel<T: Table, S: Iterator, ITEM: ToPG + Send> {
+pub use self::addr::AddrStream;
+pub use self::addr::AddrPassthrough;
+
+///
+/// Take a Stream function and provide
+/// postgres Read implementations
+///
+pub struct Passthrough<T: Iterator> {
+    input: T,
+    buffer: Option<Vec<u8>> //Used by Read impl for storing partial features
+}
+
+pub struct Parallel<T: Table + Send, S: Iterator, ITEM: ToPG + Send> {
     item: ITEM,
     stream: S,
     table: T
 }
 
-impl<T: Table, S: Iterator, ITEM: ToPG + Send + 'static> Parallel<T, S, ITEM>
+impl<T: Table + Send, S: Iterator, ITEM: ToPG + Send + 'static> Parallel<T, S, ITEM>
 where
     S: Iterator<Item=ITEM>
 {
@@ -34,10 +46,9 @@ where
             let rx_n = rx.clone();
 
             let strand = match thread::Builder::new().name(format!("Parallel #{}", &cpu)).spawn(move || {
-                let item: ITEM = rx_n.recv().unwrap();
+                let conn = Connection::connect(db_conn.as_str(), TlsMode::None).unwrap();
 
-                println!("{}", item.to_tsv());
-                
+                //table.input(&conn, AddrPassthrough::new(rx_n.recv().into_iter()));
             }) {
                 Ok(strand) => strand,
                 Err(err) => panic!("Parallel Thread Creation Error: {}", err.to_string())

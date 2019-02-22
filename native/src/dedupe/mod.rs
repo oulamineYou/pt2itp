@@ -68,7 +68,9 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let address = pg::Address::new();
     address.create(&conn);
-    address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
+
+    // TODO fix
+    //address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
 
     if !is_hecate {
         // Hecate Addresses will already have ids present
