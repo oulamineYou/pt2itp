@@ -4,6 +4,13 @@ use std::io::Read;
 use std::mem;
 use serde_json::Value;
 
+#[derive(Clone)]
+pub enum Tables {
+    Address,
+    Network,
+    Polygon(String)
+}
+
 pub trait Table {
     fn create(&self, conn: &Connection);
     fn count(&self, conn: &Connection) -> i64;
@@ -99,6 +106,7 @@ impl Table for Polygon {
     }
 }
 
+#[derive(Clone)]
 pub struct Address ();
 
 impl Address {

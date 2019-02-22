@@ -98,8 +98,8 @@ pub fn import_addr(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     Parallel::stream(
         format!("postgres://postgres@localhost:5432/{}", &args.db),
-        pg::Address::new(),
-        AddrStream::new(GeoStream::new(args.input), context, args.errors)
+        AddrStream::new(GeoStream::new(args.input), context, args.errors),
+        pg::Tables::Address
     );
 
     if args.seq {
