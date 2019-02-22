@@ -111,19 +111,20 @@ where
             let strand = match thread::Builder::new().name(format!("Parallel #{}", &cpu)).spawn(move || {
                 let conn = Connection::connect(db_conn.as_str(), TlsMode::None).unwrap();
 
+                let rx_iter = rx_n.iter();
+
                 match table_n {
                     pg::Tables::Address => {
                         let table = pg::Address::new();
-                        table.input(&conn, Passthrough::new(rx_n.recv().into_iter()));
+                        table.input(&conn, Passthrough::new(rx_iter));
                     },
                     pg::Tables::Network => {
                         let table = pg::Network::new();
-                        table.input(&conn, Passthrough::new(rx_n.recv().into_iter()));
-
+                        table.input(&conn, Passthrough::new(rx_iter));
                     },
                     pg::Tables::Polygon(name) => {
                         let table = pg::Polygon::new(name);
-                        table.input(&conn, Passthrough::new(rx_n.recv().into_iter()));
+                        table.input(&conn, Passthrough::new(rx_iter));
                     }
                 }
             }) {
