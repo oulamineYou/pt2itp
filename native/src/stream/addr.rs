@@ -11,7 +11,7 @@ use crate::{Address, Context};
 /// producing an iterator of Address objects
 ///
 pub struct AddrStream<T: Iterator> {
-    context: Option<Context>,
+    context: Context,
     input: T,
     errors: Option<BufWriter<File>>
 }
@@ -19,7 +19,7 @@ pub struct AddrStream<T: Iterator> {
 impl<T: Iterator> AddrStream<T> {
     pub fn new(input: T, context: Context, errors: Option<String>) -> Self {
         AddrStream {
-            context: Some(context),
+            context: context,
             input: input,
             errors: match errors {
                 None => None,
@@ -40,7 +40,7 @@ where
 
         while next.is_err() {
             next = match self.input.next() {
-                Some(potential) => match Address::new(potential, &self.context.as_ref().unwrap()) {
+                Some(potential) => match Address::new(potential, &self.context) {
                     Ok(potential) => Ok(potential),
                     Err(err) => match self.errors {
                         None => Err(err),
