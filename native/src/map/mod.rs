@@ -10,6 +10,7 @@ use neon::prelude::*;
 use super::stream::GeoStream;
 use super::stream::AddrStream;
 use super::stream::NetStream;
+use super::stream::Parallel;
 
 use super::pg;
 use super::pg::Table;
@@ -94,7 +95,13 @@ pub fn import_addr(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let address = pg::Address::new();
     address.create(&conn);
-    address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, args.errors));
+
+    Parallel::stream(
+        format!("postgres://postgres@localhost:5432/{}", &args.db),
+        pg::Address::new(),
+        AddrStream::new(GeoStream::new(args.input), context, args.errors)
+    );
+
     if args.seq {
         address.seq_id(&conn);
     }

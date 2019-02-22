@@ -1,6 +1,5 @@
 use std::thread;
 use crate::pg::Table;
-use std::io::Read;
 use crate::types::ToPG;
 use std::marker::Send;
 
