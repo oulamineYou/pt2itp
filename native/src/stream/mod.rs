@@ -139,6 +139,8 @@ where
             tx.send(feat).unwrap();
         }
 
+        drop(tx);
+
         for strand in web {
             strand.join().unwrap();
         }
