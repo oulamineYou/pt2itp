@@ -10,6 +10,11 @@
 
 ## Version History
 
+## v19.9.0
+
+- :tada: Add `--warn` flag for writing warnings to a file
+- :rocket: Add run times to each step
+
 ## v19.8.0
 
 - :rocket: Refactor orphan query for performance
