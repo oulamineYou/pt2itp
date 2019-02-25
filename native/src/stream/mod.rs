@@ -96,7 +96,7 @@ where
     S: Iterator<Item=geojson::GeoJson>
 {
     pub fn stream(errors: Option<String>, conn: String, stream: S, table: pg::Tables, context: Context) {
-        let (geo_tx, geo_rx) = crossbeam::channel::bounded(10000);
+        let (geo_tx, geo_rx) = crossbeam::channel::unbounded();
 
         let cpus = num_cpus::get();
         let mut web = Vec::new();
