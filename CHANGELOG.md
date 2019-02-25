@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v19.8.0
+
+- :rocket: Refactor orphan query for performance
+
 ## v19.7.0
 
 - :tada: Add basic `dedupe` mode
