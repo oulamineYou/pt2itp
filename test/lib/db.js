@@ -1,9 +1,13 @@
 const pg = require('pg');
 
+/**
+ * Wipe/Reset test database
+ * @param test {Object} Tape test object
+ */
 function init(test) {
     test('Database Reset', (t) => {
         let pool = new pg.Pool({
-            max: 10, 
+            max: 10,
             user: 'postgres',
             database: 'postgres',
             idleTimeoutMillis: 30000
@@ -49,9 +53,13 @@ function init(test) {
     });
 }
 
+/**
+ * Get a standard postgres test pool
+ * @returns Object Postgres pool
+ */
 function get() {
     return new pg.Pool({
-        max: 10, 
+        max: 10,
         user: 'postgres',
         database: 'pt_test',
         idleTimeoutMillis: 30000
