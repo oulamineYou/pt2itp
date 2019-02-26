@@ -9,6 +9,21 @@ function init(test) {
             idleTimeoutMillis: 30000
         });
 
+        t.test('Close Connections', (q) => {
+            pool.query(`
+                SELECT
+                    pg_terminate_backend(pg_stat_activity.pid)
+                FROM
+                    pg_stat_activity
+                WHERE
+                    pg_stat_activity.datname = 'pt_test'
+                    AND pid <> pg_backend_pid();
+            `, (err) => {
+                q.error(err, 'connections closed');
+                q.end();
+            });
+        });
+
         t.test('Drop Database', (q) => {
             pool.query(`
                 DROP DATABASE IF EXISTS pt_test;
