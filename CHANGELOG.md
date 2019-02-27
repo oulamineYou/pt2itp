@@ -10,6 +10,24 @@
 
 ## Version History
 
+## v19.10.1
+
+- :white_check_mark: Add database cleaning in between all tests
+
+## v19.10.0
+
+- :rocket: Optimize cluster match for speedier execution
+- :rocket: Optimize split for speedier execution
+
+## v19.9.0
+
+- :tada: Add `--warn` flag for writing warnings to a file
+- :rocket: Add run times to each step
+
+## v19.8.0
+
+- :rocket: Refactor orphan query for performance
+
 ## v19.7.0
 
 - :tada: Add basic `dedupe` mode
