@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v19.10.1
+
+- :white_check_mark: Add database cleaning in between all tests
+
 ## v19.10.0
 
 - :rocket: Optimize cluster match for speedier execution
