@@ -3,6 +3,9 @@ const test = require('tape');
 const dedupe = require('../index').dedupe;
 const ReadLine = require('n-readlines');
 
+const db = require('./lib/db');
+db.init(test);
+
 test('dedupe (dataset)', (t) => {
     try {
         fs.unlinkSync('/tmp/dedupeout.geojson');
