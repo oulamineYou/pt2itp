@@ -4,11 +4,10 @@ use std::io::Write;
 use std::fs::OpenOptions;
 use std::fs::File;
 
-use crate::{stream::geo::GeoStream, Polygon};
+use crate::Polygon;
 
 pub struct PolyStream<T: Iterator> {
     input: T,
-    buffer: Option<Vec<u8>>, //Used by Read impl for storing partial features
     errors: Option<File>
 }
 
@@ -16,7 +15,6 @@ impl<T: Iterator> PolyStream<T> {
     pub fn new(input: T, errors: Option<String>) -> Self {
         PolyStream {
             input: input,
-            buffer: None,
             errors: match errors {
                 None => None,
                 Some(path) => Some(OpenOptions::new().create(true).append(true).open(path).unwrap())

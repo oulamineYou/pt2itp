@@ -8,8 +8,6 @@ use crate::Tokens;
 use neon::prelude::*;
 
 use super::stream::GeoStream;
-use super::stream::AddrStream;
-use super::stream::NetStream;
 use super::stream::Parallel;
 
 use super::pg;
