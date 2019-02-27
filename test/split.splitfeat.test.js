@@ -115,7 +115,10 @@ test('SplitFeat - from db', (t) => {
 
             pg_optimize();
 
-            q.end();
+            Split.prepare(pool, (err, res) => {
+                q.error(err);
+                q.end();
+            });
         });
     });
 

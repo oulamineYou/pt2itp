@@ -10,6 +10,11 @@
 
 ## Version History
 
+## v19.10.0
+
+- :rocket: Optimize cluster match for speedier execution
+- :rocket: Optimize split for speedier execution
+
 ## v19.9.0
 
 - :tada: Add `--warn` flag for writing warnings to a file
