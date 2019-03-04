@@ -12,7 +12,7 @@ use super::stream::AddrStream;
 use super::stream::NetStream;
 
 use super::pg;
-use super::pg::Table;
+use super::pg::{Table, InputTable};
 
 pub fn pg_init(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let db = match cx.argument_opt(0) {

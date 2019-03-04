@@ -14,7 +14,7 @@ use crate::{
 };
 
 use super::pg;
-use super::pg::Table;
+use super::pg::{Table, InputTable};
 
 #[derive(Serialize, Deserialize, Debug)]
 struct DedupeArgs {
