@@ -43,6 +43,9 @@ register_module!(mut m, {
     m.export_function("import_addr", map::import_addr)?;
     m.export_function("import_net", map::import_net)?;
 
+    m.export_function("cluster_addr", map::cluster_addr)?;
+    m.export_function("cluster_net", map::cluster_net)?;
+
     m.export_function("convert", convert::convert)?;
     m.export_function("stats", stats::stats)?;
     m.export_function("dedupe", dedupe::dedupe)?;

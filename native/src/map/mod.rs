@@ -133,3 +133,11 @@ pub fn import_net(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     Ok(cx.boolean(true))
 }
+
+pub fn cluster_addr(mut cx: FunctionContext) -> JsResult<JsBoolean> {
+    Ok(cx.boolean(true))
+}
+
+pub fn cluster_net(mut cx: FunctionContext) -> JsResult<JsBoolean> {
+    Ok(cx.boolean(true))
+}
