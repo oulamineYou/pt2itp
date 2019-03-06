@@ -140,7 +140,7 @@ pub fn cluster_addr(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         None => String::from("pt_test")
     };
 
-    let orphan = match cx.argument_opt(0) {
+    let orphan = match cx.argument_opt(1) {
         Some(arg) => arg.downcast::<JsBoolean>().or_throw(&mut cx)?.value(),
         None => false
     };
@@ -160,7 +160,7 @@ pub fn cluster_net(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         None => String::from("pt_test")
     };
 
-    let orphan = match cx.argument_opt(0) {
+    let orphan = match cx.argument_opt(1) {
         Some(arg) => arg.downcast::<JsBoolean>().or_throw(&mut cx)?.value(),
         None => false
     };
