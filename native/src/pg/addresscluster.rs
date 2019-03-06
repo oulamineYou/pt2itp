@@ -35,7 +35,7 @@ impl AddressCluster {
             conn.execute(r#"
                 INSERT INTO address_cluster (name, geom, netid)
                     SELECT
-                        JSON_Agg(a.names||('{ "freq": '::TEXT||ST_NPoints(geom)||'}')::JSONB ORDER BY ST_NPoi
+                        JSON_Agg(a.names||('{ "freq": '::TEXT||ST_NPoints(geom)||'}')::JSONB ORDER BY ST_NPoints(geom) DESC),
                         ST_Multi(ST_CollectionExtract(ST_Collect(a.geom), 1)) AS geom,
                         a.netid
                     FROM (
