@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v19.10.3
+
+- :bug: Fix postgres pool closure bug
+
 ## v19.10.2
 
 - :bug: Allow String street names in conflate
