@@ -29,7 +29,7 @@ test('Init db', (t) => {
         pool.query(`
             BEGIN;
             DELETE FROM address_cluster;
-            INSERT INTO address_cluster (id, name) VALUES
+            INSERT INTO address_cluster (id, names) VALUES
                 (1, '[{ "tokenized": "akoko st", "tokenless": "akoko", "display": "Akoko Street" }, { "tokenized": "akoko rd", "tokenless": "akoko", "display": "Akoko Rd" }]'),
                 (2, '[{ "tokenized": "wong ho ln", "tokenless": "wong ho", "display": "Wong Ho Lane" }]'),
                 (3, '[{ "tokenized": "pier 1", "tokenless": "pier 1", "display": "Pier 1" }]'),
@@ -48,7 +48,7 @@ test('Init db', (t) => {
         pool.query(`
             BEGIN;
             DELETE FROM network_cluster;
-            INSERT INTO network_cluster (id, address, name) VALUES
+            INSERT INTO network_cluster (id, address, names) VALUES
                 (1, 1, '[{ "tokenized": "akoko st", "tokenless": "akoko", "display": "Akoko Street" }]'),
                 (2, 2, '[{ "tokenized": "wong ho ln", "tokenless": "wong ho", "display": "Wong Ho Lane" }]'),
                 (3, 3, '[{ "tokenized": "pier 1", "tokenless": "pier 1", "display": "Pier 1" }]'),
