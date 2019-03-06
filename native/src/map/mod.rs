@@ -148,6 +148,7 @@ pub fn cluster_addr(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db).as_str(), TlsMode::None).unwrap();
 
     let cluster = pg::AddressCluster::new(orphan);
+    cluster.create(&conn);
     cluster.generate(&conn);
     cluster.index(&conn);
 
@@ -168,6 +169,7 @@ pub fn cluster_net(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &db).as_str(), TlsMode::None).unwrap();
 
     let cluster = pg::NetworkCluster::new(orphan);
+    cluster.create(&conn);
     cluster.generate(&conn);
     cluster.index(&conn);
 
