@@ -7,13 +7,18 @@ use serde_json::Value;
 pub mod address;
 pub mod addresscluster;
 pub mod network;
+pub mod networkcluster;
 pub mod polygon;
+pub mod intersections;
 
 pub use self::address::Address;
 pub use self::addresscluster::AddressCluster;
 
 pub use self::network::Network;
+pub use self::networkcluster::NetworkCluster;
+
 pub use self::polygon::Polygon;
+pub use self::intersections::Intersections;
 
 pub trait Table {
     fn create(&self, conn: &Connection);
