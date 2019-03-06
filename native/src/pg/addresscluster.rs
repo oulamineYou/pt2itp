@@ -3,10 +3,10 @@ use super::Table;
 
 pub struct AddressCluster {
     orphan: bool
-};
+}
 
 impl AddressCluster {
-    pub fn new(orphan) -> Self {
+    pub fn new(orphan: bool) -> Self {
         AddressCluster {
             orphan: orphan
         }
@@ -15,7 +15,7 @@ impl AddressCluster {
     ///
     /// Cluster address points
     ///
-    pub fn generate(&self) {
+    pub fn generate(&self, conn: &postgres::Connection) {
         if self.orphan {
             conn.execute(r#"
                 INSERT INTO address_orphan_cluster (name, geom)
@@ -127,18 +127,18 @@ impl Table for AddressCluster {
 
         conn.execute(format!("
             CREATE INDEX IF NOT EXISTS {table}_idx ON {table} (id);
-        ", table = &table), &[]).unwrap();
+        ", table = &table).as_str(), &[]).unwrap();
 
         conn.execute(format!("
             CREATE INDEX IF NOT EXISTS {table}_gix ON {table} USING GIST (geom);
-        ", table = table), &[]).unwrap();
+        ", table = table).as_str(), &[]).unwrap();
 
         conn.execute(format!("
             CLUSTER {table} USING {table}_gix;
-        ", table = table), &[]).unwrap();
+        ", table = table).as_str(), &[]).unwrap();
 
         conn.execute(format!("
             ANALYZE {table};
-        ", table = table), &[]).unwrap();
+        ", table = table).as_str(), &[]).unwrap();
     }
 }
