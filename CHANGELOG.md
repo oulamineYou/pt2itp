@@ -10,6 +10,14 @@
 
 ## Version History
 
+## v19.10.3
+
+- :bug: Fix postgres pool closure bug
+
+## v19.10.2
+
+- :bug: Allow String street names in conflate
+
 ## v19.10.1
 
 - :white_check_mark: Add database cleaning in between all tests
