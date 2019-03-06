@@ -18,7 +18,7 @@ impl AddressCluster {
     pub fn generate(&self, conn: &postgres::Connection) {
         if self.orphan {
             conn.execute(r#"
-                INSERT INTO address_orphan_cluster (name, geom)
+                INSERT INTO address_orphan_cluster (names, geom)
                     SELECT
                         addr.names,
                         ST_Multi(ST_CollectionExtract(addr.geom, 1)) AS geom
@@ -33,7 +33,7 @@ impl AddressCluster {
             "#, &[]).unwrap();
         } else {
             conn.execute(r#"
-                INSERT INTO address_cluster (name, geom, netid)
+                INSERT INTO address_cluster (names, geom, netid)
                     SELECT
                         JSON_Agg(a.names||('{ "freq": '::TEXT||ST_NPoints(geom)||'}')::JSONB ORDER BY ST_NPoints(geom) DESC),
                         ST_Multi(ST_CollectionExtract(ST_Collect(a.geom), 1)) AS geom,

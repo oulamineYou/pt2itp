@@ -82,15 +82,15 @@ impl NetworkCluster {
 
             conn.execute(r#"
             UPDATE network_cluster
-                SET name = final.name
+                SET names = final.names
                 FROM (
                     SELECT
                         joined.id,
-                        json_agg(joined.name) AS name
+                        json_agg(joined.names) AS names
                     FROM (
                         SELECT DISTINCT
                             nc.id,
-                            jsonb_array_elements(n.names) AS name
+                            jsonb_array_elements(n.names) AS names
                         FROM
                             (
                                 SELECT
@@ -158,7 +158,7 @@ impl Table for NetworkCluster {
             conn.execute(r#"
                 CREATE UNLOGGED TABLE network_cluster (
                     id SERIAL,
-                    name JSONB,
+                    names JSONB,
                     geom GEOMETRY(GEOMETRYZ, 4326),
                     address BIGINT,
                     source_ids BIGINT[]

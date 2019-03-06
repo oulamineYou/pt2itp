@@ -17,8 +17,8 @@ impl Intersections {
                 SELECT
                     a.id,
                     b.id,
-                    a.name AS a_street,
-                    b.name AS b_street,
+                    a.names AS a_street,
+                    b.names AS b_street,
                     ST_PointOnSurface(ST_Intersection(a.geom, b.geom)) AS geom
                 FROM
                     network_cluster AS a,
