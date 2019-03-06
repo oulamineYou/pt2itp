@@ -1,4 +1,5 @@
 const pg = require('pg');
+const pg_init = require('../../native/index.node').pg_init;
 
 /**
  * Wipe/Reset test database
@@ -48,6 +49,9 @@ function init(test) {
 
         t.test('Close Pool', (q) => {
             pool.end();
+
+            pg_init();
+
             q.end();
         });
     });

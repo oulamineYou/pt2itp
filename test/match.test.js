@@ -8,19 +8,11 @@ const pg_init = require('../native/index.node').pg_init;
 const pg_optimize = require('../native/index.node').pg_optimize;
 
 const db = require('./lib/db');
+
 db.init(test);
 
 const pool = db.get();
 const index = new Index(pool);
-
-test('Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
 
 test('Match', (t) => {
     const popQ = new Queue(1);
@@ -100,14 +92,7 @@ test('Match', (t) => {
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
+db.init(test);
 
 test('end connection', (t) => {
     pool.end();

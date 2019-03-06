@@ -28,6 +28,21 @@ pub fn pg_init(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     address.create(&conn);
     network.create(&conn);
 
+    let networkcluster = pg::NetworkCluster::new(false);
+    let addresscluster = pg::AddressCluster::new(false);
+
+    networkcluster.create(&conn);
+    addresscluster.create(&conn);
+
+    let networkcluster = pg::NetworkCluster::new(true);
+    let addresscluster = pg::AddressCluster::new(true);
+
+    networkcluster.create(&conn);
+    addresscluster.create(&conn);
+
+    let intersections = pg::Intersections::new();
+    intersections.create(&conn);
+
     Ok(cx.boolean(true))
 }
 

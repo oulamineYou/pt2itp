@@ -13,7 +13,7 @@ impl NetworkCluster {
     }
 
     ///
-    /// Cluster address points
+    /// Cluster network linestrings
     ///
     pub fn generate(&self, conn: &postgres::Connection) {
         if self.orphan {
@@ -146,7 +146,7 @@ impl Table for NetworkCluster {
                 CREATE UNLOGGED TABLE network_orphan_cluster (
                     ID SERIAL,
                     names JSONB,
-                    geom GEOMETRY(MULTILINEZ, 4326),
+                    geom GEOMETRY(MULTILINESTRINGZ, 4326),
                     props JSONB
                 )
             "#, &[]).unwrap();
@@ -164,14 +164,13 @@ impl Table for NetworkCluster {
                     source_ids BIGINT[]
                 )
             "#, &[]).unwrap();
-
         }
     }
 
     fn count(&self, conn: &Connection) -> i64 {
         let table = match self.orphan {
-            true => String::from("address_orphan_cluster"),
-            false => String::from("address_cluster")
+            true => String::from("network_orphan_cluster"),
+            false => String::from("network_cluster")
         };
 
         match conn.query(format!("
@@ -187,8 +186,8 @@ impl Table for NetworkCluster {
 
     fn index(&self, conn: &Connection) {
         let table = match self.orphan {
-            true => String::from("address_orphan_cluster"),
-            false => String::from("address_cluster")
+            true => String::from("network_orphan_cluster"),
+            false => String::from("network_cluster")
         };
 
         conn.execute(format!("

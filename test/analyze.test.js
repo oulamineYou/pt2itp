@@ -8,9 +8,9 @@ const tmp = require('tmp');
 const test = require('tape');
 const Queue = require('d3-queue').queue;
 const Cluster = require('../lib/map/cluster');
-const Index = require('../lib/map/index');
 
 const db = require('./lib/db');
+
 db.init(test);
 
 const pool = new pg.Pool({
@@ -21,14 +21,6 @@ const pool = new pg.Pool({
 });
 
 const cluster = new Cluster({ pool: pool });
-const index = new Index(pool);
-
-test('Drop/Init Database', (t) => {
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
 
 test('Init db', (t) => {
     const popQ = new Queue(1);

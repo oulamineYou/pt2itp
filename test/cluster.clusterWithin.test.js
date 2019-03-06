@@ -9,6 +9,7 @@ const pg = require('pg');
 const Queue = require('d3-queue').queue;
 
 const db = require('./lib/db');
+
 db.init(test);
 
 const pool = new pg.Pool({
@@ -20,15 +21,6 @@ const pool = new pg.Pool({
 
 const index = new Index(pool);
 const cluster = new Cluster({ pool: pool });
-
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
 
 test('Points are clustered on netid', (t) => {
     const popQ = new Queue(1);
@@ -75,14 +67,7 @@ test('Points are clustered on netid', (t) => {
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
+db.init(test);
 
 test('LineStrings far away should not be clustered', (t) => {
     const popQ = new Queue(1);
@@ -133,14 +118,7 @@ test('LineStrings far away should not be clustered', (t) => {
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
+db.init(test);
 
 test('LinesStrings should be clustered', (t) => {
     const popQ = new Queue(1);
@@ -189,16 +167,9 @@ test('LinesStrings should be clustered', (t) => {
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
+db.init(test);
 
 test('end connection', (t) => {
     pool.end();
-     t.end();
+    t.end();
 });

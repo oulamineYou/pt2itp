@@ -9,6 +9,7 @@ const pg = require('pg');
 const Queue = require('d3-queue').queue;
 
 const db = require('./lib/db');
+
 db.init(test);
 
 const pool = new pg.Pool({
@@ -20,15 +21,6 @@ const pool = new pg.Pool({
 
 const cluster = new Cluster({ pool: pool });
 const index = new Index(pool);
-
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
 
 test('cluster.address', (t) => {
     const popQ = new Queue(1);
@@ -89,14 +81,7 @@ test('cluster.address', (t) => {
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err, 'no errors');
-        t.end();
-    });
-});
+db.init(test);
 
 test('cluster.address - order synonyms by address count', (t) => {
     const popQ = new Queue(1);
@@ -167,14 +152,7 @@ test('cluster.address - order synonyms by address count', (t) => {
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err, 'no errors');
-        t.end();
-    });
-});
+db.init(test);
 
 test('cluster.network', (t) => {
     const popQ = new Queue(1);
@@ -261,14 +239,7 @@ test('cluster.network', (t) => {
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err, 'no errors');
-        t.end();
-    });
-});
+db.init(test);
 
 test('end connection', (t) => {
     pool.end();
