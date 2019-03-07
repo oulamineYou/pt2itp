@@ -1,6 +1,9 @@
 const Orphan = require('../lib/map/orphan');
 const Post = require('../lib/map/post');
-const pg_optimize = require('../native/index.node').pg_optimize;
+const {
+    pg_optimize,
+    cluster_addr
+} = require('../native/index.node');
 const pg = require('pg');
 const test = require('tape');
 
@@ -45,6 +48,8 @@ test('orphan.address', (t) => {
 
     // call orphan.address
     popQ.defer((done) => {
+        cluster_addr('pt_test', true);
+
         orphan.address((err) => {
             t.error(err);
             return done();

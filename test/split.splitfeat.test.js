@@ -29,7 +29,7 @@ test('SplitFeat - from db', (t) => {
             );
 
             INSERT INTO address_cluster (
-                names
+                names,
                 geom
             ) VALUES (
                 '[{ "display": "DULANEY VALLEY ROAD", "tokenized": "dulaney vly rd", "tokenless": "dulaney" }]',
