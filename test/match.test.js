@@ -3,7 +3,6 @@ const match = require('../lib/map/match');
 const test = require('tape');
 const pg = require('pg');
 const Queue = require('d3-queue').queue;
-const Index = require('../lib/map/index');
 const pg_init = require('../native/index.node').pg_init;
 const pg_optimize = require('../native/index.node').pg_optimize;
 
@@ -11,10 +10,8 @@ const db = require('./lib/db');
 
 db.init(test);
 
-const pool = db.get();
-const index = new Index(pool);
-
 test('Match', (t) => {
+    const pool = db.get();
     const popQ = new Queue(1);
 
     //POPULATE NETWORK_CLUSTER
@@ -88,14 +85,12 @@ test('Match', (t) => {
 
     popQ.await((err) => {
         t.error(err);
-        t.end();
+
+        pool.end(() => {
+            match.kill();
+            t.end();
+        });
     });
 });
 
 db.init(test);
-
-test('end connection', (t) => {
-    pool.end();
-    match.kill();
-    t.end();
-});
