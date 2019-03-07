@@ -54,13 +54,13 @@ test('orphan.address', (t) => {
     // check address_orphan_cluster
     popQ.defer((done) => {
         pool.query(`
-            SELECT name FROM address_orphan_cluster ORDER BY name;
+            SELECT names FROM address_orphan_cluster ORDER BY names;
         `, (err, res) => {
             t.error(err);
 
             t.equals(res.rows.length, 2, 'ok - correct number of orphans');
-            t.deepEquals(res.rows[0], { name: [ { display: 'Fake Avenue', tokenized: 'fake av', tokenless: 'fake' } ] }, 'ok - Fake Ave orphaned');
-            t.deepEquals(res.rows[1], { name: [ { display: 'Main Street', tokenized: 'main st', tokenless: 'main' } ] }, 'ok - Main St orphaned');
+            t.deepEquals(res.rows[0], { names: [ { display: 'Fake Avenue', tokenized: 'fake av', tokenless: 'fake' } ] }, 'ok - Fake Ave orphaned');
+            t.deepEquals(res.rows[1], { names: [ { display: 'Main Street', tokenized: 'main st', tokenless: 'main' } ] }, 'ok - Main St orphaned');
             return done();
         });
     });
