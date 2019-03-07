@@ -1,6 +1,13 @@
 mod diacritics;
 mod tokens;
 
+//
+// A note on fn names:
+// - Functions that determine the type of a string should be prefixed with `is_`
+// - Functions that operate on Strings should be prefixed with `str_`
+// - Functions that generate Name synonyms should be prefixed with `syn_`
+//
+
 pub use self::diacritics::diacritics;
 pub use self::tokens::Tokens;
 
@@ -8,12 +15,43 @@ use std::collections::HashMap;
 use regex::{Regex, RegexSet};
 use crate::{Name, Context};
 
-//
-// A note on fn names:
-// - Functions that determine the type of a string should be prefixed with `is_`
-// - Functions that operate on Strings should be prefixed with `str_`
-// - Functions that generate Name synonyms should be prefixed with `syn_`
-//
+///
+/// Return the Levenshtein distance between two strings
+///
+fn distance<T>(a: &T, b: &T) -> usize
+    where T: ToString
+{
+    let v1: Vec<char> = a.to_string().chars().collect();
+    let v2: Vec<char> = b.to_string().chars().collect();
+    let v1len = v1.len();
+    let v2len = v2.len();
+
+    // Early exit if one of the strings is empty
+    if v1len == 0 { return v2len; }
+    if v2len == 0 { return v1len; }
+
+    fn min3<T: Ord>(v1: T, v2: T, v3: T) -> T{
+        std::cmp::min(v1, std::cmp::min(v2, v3))
+    }
+
+    fn delta(x: char, y: char) -> usize {
+        if x == y { 0 } else { 1 }
+    }
+
+    let mut column: Vec<usize> = (0..v1len+1).collect();
+
+    for x in 1..v2len+1 {
+        column[0] = x;
+        let mut lastdiag = x-1;
+        for y in 1..v1len+1 {
+            let olddiag = column[y];
+            column[y] = min3(column[y] + 1, column[y-1] + 1, lastdiag + delta(v1[y-1], v2[x-1]));
+            lastdiag = olddiag;
+        }
+    }
+
+    column[v1len]
+}
 
 ///
 /// Detects if the name looks like a driveway
@@ -381,6 +419,32 @@ mod tests {
     use crate::{Name, Context, Tokens};
 
     #[test]
+    fn test_distance() {
+        assert_eq!(distance(&String::from("a"), &String::from("b")), 1);
+        assert_eq!(distance(&String::from("ab"), &String::from("ac")), 1);
+        assert_eq!(distance(&String::from("ac"), &String::from("bc")), 1);
+        assert_eq!(distance(&String::from("abc"), &String::from("axc")), 1);
+        assert_eq!(distance(&String::from("xabxcdxxefxgx"), &String::from("1ab2cd34ef5g6")), 6);
+
+        assert_eq!(distance(&String::from("xabxcdxxefxgx"), &String::from("abcdefg")), 6);
+        assert_eq!(distance(&String::from("javawasneat"), &String::from("scalaisgreat")), 7);
+        assert_eq!(distance(&String::from("example"), &String::from("samples")), 3);
+        assert_eq!(distance(&String::from("forward"), &String::from("drawrof")), 6);
+        assert_eq!(distance(&String::from("sturgeon"), &String::from("urgently")), 6 );
+        assert_eq!(distance(&String::from("levenshtein"), &String::from("frankenstein")), 6 );
+        assert_eq!(distance(&String::from("distance"), &String::from("difference")), 5 );
+        assert_eq!(distance(&String::from("distance"), &String::from("eistancd")), 2 );
+
+        assert_eq!(distance(&String::from("你好世界"), &String::from("你好")), 2);
+        assert_eq!(distance(&String::from("因為我是中國人所以我會說中文"), &String::from("因為我是英國人所以我會說英文")), 2);
+
+        assert_eq!(distance(
+            &String::from("Morbi interdum ultricies neque varius condimentum. Donec volutpat turpis interdum metus ultricies vulputate. Duis ultricies rhoncus sapien, sit amet fermentum risus imperdiet vitae. Ut et lectus"),
+            &String::from("Duis erat dolor, cursus in tincidunt a, lobortis in odio. Cras magna sem, pharetra et iaculis quis, faucibus quis tellus. Suspendisse dapibus sapien in justo cursus")
+        ), 143);
+    }
+
+    #[test]
     fn test_is_drivethrough() {
         let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
 
@@ -424,7 +488,7 @@ mod tests {
     #[test]
     fn test_syn_us_cr() {
         let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
-        
+
         assert_eq!(syn_us_cr(&Name::new(String::from(""), 0, &context), &context), vec![]);
 
         let results = vec![
@@ -460,7 +524,7 @@ mod tests {
     #[test]
     fn test_syn_us_hwy() {
         let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
-        
+
         assert_eq!(syn_us_hwy(&Name::new(String::from(""), 0, &context), &context), vec![]);
 
         let results = vec![

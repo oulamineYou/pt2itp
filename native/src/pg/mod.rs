@@ -5,19 +5,34 @@ use std::mem;
 use serde_json::Value;
 
 pub mod address;
+pub mod addresscluster;
 pub mod network;
+pub mod networkcluster;
 pub mod polygon;
+pub mod intersections;
 
 pub use self::address::Address;
+pub use self::addresscluster::AddressCluster;
+
 pub use self::network::Network;
+pub use self::networkcluster::NetworkCluster;
+
 pub use self::polygon::Polygon;
+pub use self::intersections::Intersections;
 
 pub trait Table {
     fn create(&self, conn: &Connection);
     fn count(&self, conn: &Connection) -> i64;
+    fn index(&self, conn: &Connection);
+}
+
+///
+/// Tables which are designed to accecpt tabular input via a Read trait
+/// will implement the InputTable Property
+///
+pub trait InputTable {
     fn input(&self, conn: &Connection, data: impl Read);
     fn seq_id(&self, conn: &Connection);
-    fn index(&self, conn: &Connection);
 }
 
 ///

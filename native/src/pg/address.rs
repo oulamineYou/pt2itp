@@ -1,6 +1,6 @@
 use postgres::{Connection};
 use std::io::Read;
-use super::Table;
+use super::{Table, InputTable};
 
 pub struct Address ();
 
@@ -47,6 +47,33 @@ impl Table for Address {
         }
     }
 
+    fn index(&self, conn: &Connection) {
+        conn.execute(r#"
+            ALTER TABLE address
+                ALTER COLUMN geom
+                TYPE GEOMETRY(POINTZ, 4326)
+                USING ST_SetSRID(ST_MakePoint(ST_X(geom), ST_Y(geom), COALESCE(id::FLOAT, 0)), 4326);
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            CREATE INDEX address_idx ON address (id);
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            CREATE INDEX address_gix ON address USING GIST (geom);
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            CLUSTER address USING address_idx;
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            ANALYZE address;
+        "#, &[]).unwrap();
+    }
+}
+
+impl InputTable for Address {
     fn input(&self, conn: &Connection, mut data: impl Read) {
         let stmt = conn.prepare(format!(r#"
             COPY address (
@@ -83,31 +110,6 @@ impl Table for Address {
         conn.execute(r#"
             UPDATE address
                 SET id = nextval('address_seq');
-        "#, &[]).unwrap();
-    }
-
-    fn index(&self, conn: &Connection) {
-        conn.execute(r#"
-            ALTER TABLE address
-                ALTER COLUMN geom
-                TYPE GEOMETRY(POINTZ, 4326)
-                USING ST_SetSRID(ST_MakePoint(ST_X(geom), ST_Y(geom), COALESCE(id::FLOAT, 0)), 4326);
-        "#, &[]).unwrap();
-
-        conn.execute(r#"
-            CREATE INDEX address_idx ON address (id);
-        "#, &[]).unwrap();
-
-        conn.execute(r#"
-            CREATE INDEX address_gix ON address USING GIST (geom);
-        "#, &[]).unwrap();
-
-        conn.execute(r#"
-            CLUSTER address USING address_idx;
-        "#, &[]).unwrap();
-
-        conn.execute(r#"
-            ANALYZE address;
         "#, &[]).unwrap();
     }
 }
