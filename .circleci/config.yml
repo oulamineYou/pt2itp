@@ -37,7 +37,7 @@ jobs:
 
             - run:
                 name: "Yarn Install"
-                command: PATH="$HOME/.cargo/bin:$PATH" yarn install
+                command: PATH="$HOME/.cargo/bin:$PATH" yarn build && yarn install
             - run:
                 name: "Yarn Lint"
                 command: "yarn run lint"
