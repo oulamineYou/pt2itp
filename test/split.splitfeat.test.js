@@ -12,30 +12,14 @@ const pg_init = require('../native/index.node').pg_init;
 const pg_optimize = require('../native/index.node').pg_optimize;
 
 test('SplitFeat - from db', (t) => {
-    const pool = new pg.Pool({
-        max: 10,
-        user: 'postgres',
-        database: 'pt_test',
-        idleTimeoutMillis: 30000
-    });
-
-    t.test('SplitFeat - from db - create tables', (q) => {
-        const index = new Index(pool);
-
-        pg_init();
-
-        index.init((err) => {
-            q.error(err);
-            q.end();
-        });
-    });
+    const pool = db.get();
 
     t.test('SplitFeat - from db - populate', (q) => {
         pool.query(`
             BEGIN;
 
             INSERT INTO network_cluster (
-                name,
+                names,
                 address,
                 geom
             ) VALUES (
@@ -45,7 +29,7 @@ test('SplitFeat - from db', (t) => {
             );
 
             INSERT INTO address_cluster (
-                name,
+                names
                 geom
             ) VALUES (
                 '[{ "display": "DULANEY VALLEY ROAD", "tokenized": "dulaney vly rd", "tokenless": "dulaney" }]',
@@ -195,9 +179,12 @@ test('SplitFeat - from db', (t) => {
     });
 
     t.test('SplitFeat - from db - close connection', (q) => {
-        pool.end();
-        q.end();
+        pool.end(() => {
+            q.end();
+        });
     });
 
     t.end();
 });
+
+db.init(test);
