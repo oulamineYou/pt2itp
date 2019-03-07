@@ -1,21 +1,12 @@
 const Orphan = require('../lib/map/orphan');
 const Post = require('../lib/map/post');
-const Index = require('../lib/map/index');
-const pg_init = require('../native/index.node').pg_init;
 const pg_optimize = require('../native/index.node').pg_optimize;
-const Cluster = require('../lib/map/cluster');
 const pg = require('pg');
 const test = require('tape');
 
 const db = require('./lib/db');
-db.init(test);
 
-const pool = new pg.Pool({
-    max: 10,
-    user: 'postgres',
-    database: 'pt_test',
-    idleTimeoutMillis: 30000
-});
+db.init(test);
 
 const fs = require('fs');
 const path = require('path');
@@ -23,19 +14,9 @@ const Queue = require('d3-queue').queue;
 const readline = require('readline');
 const output = fs.createWriteStream(path.resolve(__dirname, '../test/fixtures/orphan-output.geojson'));
 
-const index = new Index(pool);
-const cluster = new Cluster({ pool: pool });
-
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
-
 test('orphan.address', (t) => {
+    const pool = db.get();
+
     const post = new Post();
     const orphan = new Orphan(pool, {
         props: [ 'accuracy' ]
@@ -87,16 +68,14 @@ test('orphan.address', (t) => {
     popQ.await((err) => {
         t.error(err);
         output.end();
-        t.end();
+
+        pool.end(() => {
+            t.end();
+        });
     });
 });
 
-test('Drop/Init Database', (t) => {
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
+db.init(test);
 
 test('orphan output', (t) => {
     let counter = 0;
@@ -124,7 +103,4 @@ test('orphan output', (t) => {
     });
 });
 
-test('end connection', (t) => {
-    pool.end();
-    t.end();
-});
+db.init(test);
