@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v19.11.0
+
+- :rocket: Move table management into native code to standardize access functions
+
 ## v19.10.3
 
 - :bug: Fix postgres pool closure bug
