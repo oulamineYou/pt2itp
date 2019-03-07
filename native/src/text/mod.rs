@@ -1,6 +1,13 @@
 mod diacritics;
 mod tokens;
 
+//
+// A note on fn names:
+// - Functions that determine the type of a string should be prefixed with `is_`
+// - Functions that operate on Strings should be prefixed with `str_`
+// - Functions that generate Name synonyms should be prefixed with `syn_`
+//
+
 pub use self::diacritics::diacritics;
 pub use self::tokens::Tokens;
 
@@ -8,6 +15,9 @@ use std::collections::HashMap;
 use regex::{Regex, RegexSet};
 use crate::{Name, Context};
 
+///
+/// Return the Levenshtein distance between two strings
+///
 fn distance<T>(a: &T, b: &T) -> usize
     where T: ToString
 {
@@ -29,27 +39,19 @@ fn distance<T>(a: &T, b: &T) -> usize
     }
 
     let mut column: Vec<usize> = (0..v1len+1).collect();
+
     for x in 1..v2len+1 {
         column[0] = x;
         let mut lastdiag = x-1;
         for y in 1..v1len+1 {
             let olddiag = column[y];
-            column[y] = min3(column[y] + 1,
-                             column[y-1] + 1,
-                             lastdiag + delta(v1[y-1], v2[x-1]));
+            column[y] = min3(column[y] + 1, column[y-1] + 1, lastdiag + delta(v1[y-1], v2[x-1]));
             lastdiag = olddiag;
         }
     }
 
     column[v1len]
 }
-
-//
-// A note on fn names:
-// - Functions that determine the type of a string should be prefixed with `is_`
-// - Functions that operate on Strings should be prefixed with `str_`
-// - Functions that generate Name synonyms should be prefixed with `syn_`
-//
 
 ///
 /// Detects if the name looks like a driveway
