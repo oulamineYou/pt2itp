@@ -374,7 +374,7 @@ test('explode#split - basic', (t) => {
     t.end();
 });
 
-test.only('explode#split - intersections', (t) => {
+test('explode#split - intersections', (t) => {
     const explode = new Explode();
 
     let res = explode.split({
