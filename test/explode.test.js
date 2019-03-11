@@ -374,7 +374,7 @@ test('explode#split - basic', (t) => {
     t.end();
 });
 
-test('explode#split - intersections', (t) => {
+test.only('explode#split - intersections', (t) => {
     const explode = new Explode();
 
     let res = explode.split({
@@ -401,12 +401,53 @@ test('explode#split - intersections', (t) => {
 
     res = turf.truncate(res);
 
-    if (process.env.UPDATE) {
-        fs.writeFileSync(__dirname + '/fixtures/explode-halfthedup.json', JSON.stringify(res, null, 4));
-        t.fail('had to update fixture');
-    }
+    t.deepEquals(res, {
+        "type": "FeatureCollection",
+        "features": [{
+            "type":"Feature",
+            "properties":{},
+            "geometry":{
+                "type":"LineString",
+                "coordinates":[
+                    [-77.023977,38.909227],
+                    [-77.023977,38.908584],
+                    [-77.023977,38.908584]
+                ]
+            }
+        },{
+            "type":"Feature",
+            "properties":{},
+            "geometry":{
+                "type":"LineString",
+                "coordinates":[
+                    [-77.023977,38.908584],
+                    [-77.023956,38.907231],
+                    [-77.023956,38.907231]
+                ]}
+        },{
+            "type":"Feature",
+            "properties":{},
+            "geometry":{
+                "type":"LineString",
+                "coordinates":[
+                    [-77.023956,38.907231],
+                    [-77.023977,38.905637]
+                ]
+            }},{
+                "type":"Feature",
+                "properties":{},
+                "geometry":{
+                    "type":"LineString",
+                    "coordinates":[
+                        [-77.023977,38.905637],
+                        [-77.023977,38.905637],
+                        [-77.023977,38.90481]
+                    ]
+                }
+            }
+        ]
+    });
 
-    t.deepEquals(res, require('./fixtures/explode-halfthedup.json'));
     t.end();
 });
 
