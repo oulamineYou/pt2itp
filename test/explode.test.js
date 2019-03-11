@@ -348,7 +348,7 @@ test('explode', (t) => {
     t.end();
 });
 
-test('explode#split', (t) => {
+test('explode#split - basic', (t) => {
     const explode = new Explode();
 
     let res = explode.split({
@@ -362,6 +362,42 @@ test('explode#split', (t) => {
             }
         }]
     });
+
+    res = turf.truncate(res);
+
+    if (process.env.UPDATE) {
+        fs.writeFileSync(__dirname + '/fixtures/explode-halfthedup.json', JSON.stringify(res, null, 4));
+        t.fail('had to update fixture');
+    }
+
+    t.deepEquals(res, require('./fixtures/explode-halfthedup.json'));
+    t.end();
+});
+
+test('explode#split - intersections', (t) => {
+    const explode = new Explode();
+
+    let res = explode.split({
+        type: 'FeatureCollection',
+        features: [{
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: [
+                    [ -77.0239770412445, 38.90922666550309 ],
+                    [ -77.0239770412445, 38.90858382361865 ],
+                    [ -77.02395558357237, 38.90723133207435 ],
+                    [ -77.0239770412445, 38.90563669474575 ],
+                    [ -77.0239770412445, 38.904810140883924 ]
+                ]
+            }
+        }]
+    }, [
+        turf.point([ -77.0239770412445, 38.90858382361865 ]),
+        turf.point([ -77.02395558357237, 38.90723133207435 ]),
+        turf.point([ -77.0239770412445, 38.90563669474575 ]),
+    ]);
 
     res = turf.truncate(res);
 
