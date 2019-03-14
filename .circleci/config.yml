@@ -37,7 +37,7 @@ jobs:
 
             - run:
                 name: "Install Neon"
-                command: "yarn global add neon"
+                command: "yarn global add neon-cli"
             - run:
                 name: "Yarn Install"
                 command: PATH="$HOME/.cargo/bin:$(yarn global bin)/:$PATH" yarn build && yarn install
