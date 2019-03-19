@@ -78,6 +78,13 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     address.index(&conn);
 
+    // The exact duplicate code uses address_clusters as a processing unit
+    // for duplicate addresses
+    let cluster = pg::AddressCluster::new(true);
+    cluster.create(&conn);
+    cluster.generate(&conn);
+    cluster.index(&conn);
+
     match args.buildings {
         Some(buildings) => {
             let polygon = pg::Polygon::new(String::from("buildings"));
