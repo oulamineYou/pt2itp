@@ -276,7 +276,41 @@ test('Post: Props', (t) => {
             }
         },
         geometry: {}
-    }, 'Null & Undefined values are treated identically');
+    }, 'Null values are included if needed to override a top level property');
+
+    opts.args.props = [ 'override:postcode' ];
+    t.deepEquals(post({
+        type: 'Feature',
+        properties: {
+            address_props: [{
+                'override:postcode': '20002'
+            },{
+                'override:postcode': '20002'
+            },{
+                'override:postcode': '20002'
+            },{
+                'override:postcode': null
+            },{
+                'override:postcode': null
+            },{
+                'override:postcode': undefined
+            }]
+        },
+        geometry: { }
+    }, opts), {
+        type: 'Feature',
+        properties: {
+            'override:postcode': '20002',
+            'carmen:addressprops': {
+                'override:postcode': {
+                    3: null,
+                    4: null,
+                    5: null
+                }
+            }
+        },
+        geometry: {}
+    }, 'Undefined values are treated as null in carmen:addressprops');
 
     t.end();
 });
