@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v19.12.0
+
+- :rocket: Tighten expectations around `null` & `undefined` values in property passthrough
+
 ## v19.11.0
 
 - :rocket: Move table management into native code to standardize access functions
