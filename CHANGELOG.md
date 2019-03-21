@@ -10,7 +10,11 @@
 
 ## Version History
 
-### v19.12.0
+## v19.13.0
+
+- :bug: Ensure `carmen:addressprops` order is retained through `sort` and `dedupe-address`
+
+## v19.12.0
 
 - :rocket: Tighten expectations around `null` & `undefined` values in property passthrough
 
