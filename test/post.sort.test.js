@@ -21,7 +21,8 @@ test('Post: Sort', (t) => {
         }
     }), {
         properties: {
-            'carmen:addressnumber': [ [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] ]
+            'carmen:addressnumber': [ [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] ],
+            address_props: [{},{},{},{},{},{},{},{},{},{}]
         },
         geometry: {
             geometries: [{
@@ -41,7 +42,70 @@ test('Post: Sort', (t) => {
         }
     }), {
         properties: {
-            'carmen:addressnumber': [ null, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] ]
+            'carmen:addressnumber': [ null, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] ],
+            address_props: [{},{},{},{},{},{},{},{},{},{}]
+        },
+        geometry: {
+            geometries: [null, {
+                coordinates: [[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10]]
+            }]
+        }
+    });
+
+    t.deepEquals(post({
+        properties: {
+            'carmen:addressnumber': [null, [10,9,8,7,6,5,4,3,2,1]],
+            address_props: [{
+                number: 10,
+            },{
+                number: 9,
+            },{
+                number: 8,
+            },{
+                number: 7,
+            },{
+                number: 6,
+            },{
+                number: 5,
+            },{
+                number: 4,
+            },{
+                number: 3,
+            },{
+                number: 2,
+            },{
+                number: 1
+            }]
+        },
+        geometry: {
+            geometries: [null, {
+                coordinates: [[10,10],[9,9],[8,8],[7,7],[6,6],[5,5],[4,4],[3,3],[2,2],[1,1]]
+            }]
+        }
+    }), {
+        properties: {
+            'carmen:addressnumber': [ null, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] ],
+            address_props: [{
+                number: 1
+            },{
+                number: 2
+            },{
+                number: 3
+            },{
+                number: 4
+            },{
+                number: 5
+            },{
+                number: 6
+            },{
+                number: 7
+            },{
+                number: 8
+            },{
+                number: 9
+            },{
+                number: 10
+            }]
         },
         geometry: {
             geometries: [null, {
