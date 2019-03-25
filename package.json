@@ -65,7 +65,7 @@
     "nyc": "^13.0.1",
     "tape": "^4.7.0",
     "tape-spawn": "^1.4.2",
-    "tmp": "0.0.33"
+    "tmp": "0.1.0"
   },
   "eslintConfig": {
     "parserOptions": {
