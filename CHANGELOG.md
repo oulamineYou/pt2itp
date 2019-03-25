@@ -10,6 +10,10 @@
 
 ## Version History
 
+## v19.13.1
+
+- :bug: Ensure cross match doesn't fail on empty batches
+
 ## v19.13.0
 
 - :bug: Ensure `carmen:addressprops` order is retained through `sort` and `dedupe-address`
