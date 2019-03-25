@@ -10,6 +10,9 @@
 
 ## Version History
 
+## v19.13.2
+- :rocket: adding support for Russian address numbers, including Korpus and Stroenie
+
 ## v19.13.1
 
 - :bug: Ensure cross match doesn't fail on empty batches
