@@ -10,7 +10,7 @@
 
 ## Version History
 
-## v19.13.2
+## v19.14.0
 
 - :rocket: adding support for Russian address numbers, including Korpus and Stroenie
 
