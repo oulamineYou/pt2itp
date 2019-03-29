@@ -23,6 +23,7 @@ pub mod map;
 pub mod convert;
 pub mod stats;
 pub mod dedupe;
+pub mod classify;
 
 pub use self::types::Address;
 pub use self::types::Network;
