@@ -1,15 +1,13 @@
 use std::convert::From;
 use postgres::{Connection, TlsMode};
 use std::collections::HashMap;
-use std::thread;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 
 use neon::prelude::*;
 
 use crate::{
-    Address,
-    types::hecate,
+    Tokens,
     stream::{GeoStream, AddrStream, PolyStream}
 };
 
@@ -30,7 +28,7 @@ impl ClassifyArgs {
     pub fn new() -> Self {
         ClassifyArgs {
             db: String::from("dedupe"),
-            hecate: false,
+            hecate: None,
             buildings: None,
             parcels: None,
             input: None,
@@ -52,11 +50,23 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         }
     };
 
+    let is_hecate = match args.hecate {
+        Some(is_hecate) => is_hecate,
+        None => false
+    };
+
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
     let address = pg::Address::new();
     address.create(&conn);
-    address.input(&conn, AddrStream::new(GeoStream::new(args.input), context, None));
+    address.input(
+        &conn,
+        AddrStream::new(
+            GeoStream::new(args.input),
+            crate::Context::new(String::from("xx"), None, Tokens::new(HashMap::new())),
+            None
+        )
+    );
 
     if !is_hecate {
         // Hecate Addresses will already have ids present
