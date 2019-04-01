@@ -171,6 +171,7 @@ if (require.main === module) {
     }
 } else {
     module.exports = {
+        classify: require('./native/index.node').dedupe,
         dedupe: require('./native/index.node').dedupe,
         stat: require('./native/index.node').stats,
         convert: require('./native/index.node').convert,

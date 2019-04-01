@@ -1,8 +1,6 @@
 use std::convert::From;
 use postgres::{Connection, TlsMode};
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::{BufWriter, Write};
 
 use neon::prelude::*;
 

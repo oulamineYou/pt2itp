@@ -49,6 +49,7 @@ register_module!(mut m, {
 
     m.export_function("intersections", map::intersections)?;
 
+    m.export_function("classify", classify::classify)?;
     m.export_function("convert", convert::convert)?;
     m.export_function("stats", stats::stats)?;
     m.export_function("dedupe", dedupe::dedupe)?;

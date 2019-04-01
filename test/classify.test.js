@@ -16,9 +16,10 @@ test('classify (dataset)', (t) => {
     t.doesNotThrow(() => {
         classify({
             db: 'pt_test',
-            hecate: false,
             input: './test/fixtures/classify.geojson',
-            output: '/tmp/classifyout.geojson'
+            output: '/tmp/classifyout.geojson',
+            parcels: './test/fixtures/classify_parcels.geojson',
+            buildings: './test/fixtures/classify_buildings.geojson'
         });
     }, 'classify runs without err');
 
