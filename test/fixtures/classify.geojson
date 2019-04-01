@@ -4,4 +4,4 @@
 { "type": "Feature", "properties": { "expected": "rooftop" }, "geometry": { "type": "Point", "coordinates": [ -79.37687784433365, 38.83444894803227 ] } }
 { "type": "Feature", "properties": { "expected": "rooftop" }, "geometry": { "type": "Point", "coordinates": [ -79.37685638666153, 38.83437791055815 ] } }
 { "type": "Feature", "properties": { "expected": "parcel" }, "geometry": { "type": "Point", "coordinates": [ -79.37747597694396, 38.834173155089026 ] } }
-{ "type": "Feature", "properties": { "expected": "parcel" }, "geometry": { "type": "Point", "coordinates": [ -79.37661230564117, 38.833663353198624 ] } }
+{ "type": "Feature", "properties": { "expected": "parcel" }, "geometry": { "type": "Point", "coordinates": [ -79.37653049826622, 38.83364977154083 ] } }
