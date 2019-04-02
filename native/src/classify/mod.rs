@@ -74,25 +74,50 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     address.index(&conn);
 
+    let buildings = pg::Polygon::new(String::from("buildings"));
+    buildings.create(&conn);
     match args.buildings {
-        Some(buildings) => {
-            let polygon = pg::Polygon::new(String::from("buildings"));
-            polygon.create(&conn);
-            polygon.input(&conn, PolyStream::new(GeoStream::new(Some(buildings)), None));
-            polygon.index(&conn);
+        Some(buildings_in) => {
+            buildings.input(&conn, PolyStream::new(GeoStream::new(Some(buildings_in)), None));
+            buildings.index(&conn);
         },
         None => ()
     };
 
+    let parcels = pg::Polygon::new(String::from("parcels"));
+    parcels.create(&conn);
     match args.parcels {
-        Some(parcels) => {
-            let polygon = pg::Polygon::new(String::from("parcels"));
-            polygon.create(&conn);
-            polygon.input(&conn, PolyStream::new(GeoStream::new(Some(parcels)), None));
-            polygon.index(&conn);
+        Some(parcels_in) => {
+            parcels.input(&conn, PolyStream::new(GeoStream::new(Some(parcels_in)), None));
+            parcels.index(&conn);
         },
         None => ()
     };
+
+    conn.execute("
+        ALTER TABLE address
+            ADD COLUMN accuracy TEXT
+    ", &[]).unwrap();
+
+    conn.execute("
+        UPDATE address
+            SET
+                accuracy = 'rooftop'
+            FROM
+                buildings
+            WHERE
+                ST_Intersects(address.geom, buildings.geom)
+    ", &[]).unwrap();
+
+    conn.execute("
+        ALTER TABLE parcels
+            ADD COLUMN centroid GEOMETRY(POINT, 4326)
+    ", &[]).unwrap();
+
+    conn.execute("
+        UPDATE parcels
+            SET point = ST_PointOnSurface(parcels.geom)
+    ", &[]).unwrap();
 
     Ok(cx.boolean(true))
 }
