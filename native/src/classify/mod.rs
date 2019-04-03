@@ -130,10 +130,30 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             SET centroid = ST_PointOnSurface(parcels.geom)
     ", &[]).unwrap();
 
+    conn.execute("
+        UPDATE address
+            SET
+                accuracy = 'parcel'
+            FROM
+                parcels
+            WHERE
+                accuracy IS NULL
+                AND ST_Distance(address.geom, parcels.centroid) < 0.0001
+    ", &[]).unwrap();
+
+
+    conn.execute("
+        UPDATE address
+            SET
+                accuracy = 'point'
+            WHERE
+                accuracy IS NULL
+    ", &[]).unwrap();
+
     let modified = match is_hecate {
         true => {
             pg::Cursor::new(conn, format!(r#"
-                SELECT 
+                SELECT
                     JSON_Build_Object(
                         'id', id,
                         'type', 'Feature',
@@ -146,7 +166,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         },
         false => {
             pg::Cursor::new(conn, format!(r#"
-                SELECT 
+                SELECT
                     JSON_Build_Object(
                         'id', id,
                         'type', 'Feature',
@@ -164,7 +184,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             Some(feat) => feat,
             None => panic!("Ouput feature must be valid GeoJSON")
         };
-        
+
         if output.write(feat.to_string().as_bytes()).is_err() {
             panic!("Failed to write to output stream");
         }
@@ -173,6 +193,6 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     if output.flush().is_err() {
         panic!("Failed to flush output stream");
     }
-    
+
     Ok(cx.boolean(true))
 }
