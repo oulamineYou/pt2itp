@@ -1,6 +1,6 @@
 use postgres::{Connection, TlsMode};
 use std::{
-    io::BufWriter,
+    io::{Write, BufWriter},
     collections::HashMap,
     fs::File,
     convert::From
@@ -56,7 +56,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         None => false
     };
 
-    let output = match args.output {
+    let mut output = match args.output {
         None => panic!("Output file required"),
         Some(output) => match File::create(output) {
             Ok(outfile) => BufWriter::new(outfile),
@@ -130,7 +130,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             SET centroid = ST_PointOnSurface(parcels.geom)
     ", &[]).unwrap();
 
-    let modified_cursor = match is_hecate {
+    let modified = match is_hecate {
         true => {
             pg::Cursor::new(conn, format!(r#"
                 SELECT 
@@ -158,6 +158,21 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             "#)).unwrap()
         }
     };
+
+    for feat in modified {
+        let feat: &serde_json::Value = match feat.get(0) {
+            Some(feat) => feat,
+            None => panic!("Ouput feature must be valid GeoJSON")
+        };
+        
+        if output.write(feat.to_string().as_bytes()).is_err() {
+            panic!("Failed to write to output stream");
+        }
+    }
+
+    if output.flush().is_err() {
+        panic!("Failed to flush output stream");
+    }
     
     Ok(cx.boolean(true))
 }
