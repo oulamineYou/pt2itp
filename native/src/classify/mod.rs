@@ -1,16 +1,19 @@
-use std::convert::From;
 use postgres::{Connection, TlsMode};
-use std::collections::HashMap;
+use std::{
+    io::BufWriter,
+    collections::HashMap,
+    fs::File,
+    convert::From
+};
 
 use neon::prelude::*;
 
 use crate::{
+    pg,
+    pg::{Table, InputTable},
     Tokens,
     stream::{GeoStream, AddrStream, PolyStream}
 };
-
-use super::pg;
-use super::pg::{Table, InputTable};
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ClassifyArgs {
@@ -51,6 +54,14 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let is_hecate = match args.hecate {
         Some(is_hecate) => is_hecate,
         None => false
+    };
+
+    let output = match args.output {
+        None => panic!("Output file required"),
+        Some(output) => match File::create(output) {
+            Ok(outfile) => BufWriter::new(outfile),
+            Err(err) => panic!("Unable to write to output file: {}", err)
+        }
     };
 
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
@@ -116,8 +127,37 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     conn.execute("
         UPDATE parcels
-            SET point = ST_PointOnSurface(parcels.geom)
+            SET centroid = ST_PointOnSurface(parcels.geom)
     ", &[]).unwrap();
 
+    let modified_cursor = match is_hecate {
+        true => {
+            pg::Cursor::new(conn, format!(r#"
+                SELECT 
+                    JSON_Build_Object(
+                        'id', id,
+                        'type', 'Feature',
+                        'properties', props,
+                        'geometry', ST_AsGeoJSON(geom)::JSON
+                    )
+                FROM
+                    address
+            "#)).unwrap()
+        },
+        false => {
+            pg::Cursor::new(conn, format!(r#"
+                SELECT 
+                    JSON_Build_Object(
+                        'id', id,
+                        'type', 'Feature',
+                        'properties', props,
+                        'geometry', ST_AsGeoJSON(geom)::JSON
+                    )
+                FROM
+                    address
+            "#)).unwrap()
+        }
+    };
+    
     Ok(cx.boolean(true))
 }
