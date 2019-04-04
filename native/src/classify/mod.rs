@@ -152,19 +152,45 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let modified = match is_hecate {
         true => {
+            conn.execute(r#"
+                UPDATE address
+                    SET
+                        accuracy = NULL
+                    WHERE
+                        accuracy = props->>'accuracy'
+            "#, &[]).unwrap();
+
+            conn.execute(r#"
+                UPDATE address
+                    SET
+                        props = props::JSONB || JSON_Build_Object('accuracy', accuracy)::JSONB
+                    WHERE
+                        accuracy IS NOT NULL
+            "#, &[]).unwrap();
+
             pg::Cursor::new(conn, format!(r#"
                 SELECT
                     JSON_Build_Object(
                         'id', id,
                         'type', 'Feature',
+                        'action', 'modify',
+                        'version', version,
                         'properties', props,
                         'geometry', ST_AsGeoJSON(ST_Force2D(geom))::JSON
                     )
                 FROM
                     address
+                WHERE
+                    accuracy IS NOT NULL
             "#)).unwrap()
         },
         false => {
+            conn.execute(r#"
+                UPDATE address
+                    SET
+                        props = props::JSONB || JSON_Build_Object('accuracy', accuracy)::JSONB
+            "#, &[]).unwrap();
+
             pg::Cursor::new(conn, format!(r#"
                 SELECT
                     JSON_Build_Object(
