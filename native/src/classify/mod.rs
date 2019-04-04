@@ -158,7 +158,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                         'id', id,
                         'type', 'Feature',
                         'properties', props,
-                        'geometry', ST_AsGeoJSON(geom)::JSON
+                        'geometry', ST_AsGeoJSON(ST_Force2D(geom))::JSON
                     )
                 FROM
                     address
@@ -171,7 +171,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                         'id', id,
                         'type', 'Feature',
                         'properties', props,
-                        'geometry', ST_AsGeoJSON(geom)::JSON
+                        'geometry', ST_AsGeoJSON(ST_Force2D(geom))::JSON
                     )
                 FROM
                     address
@@ -182,7 +182,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     for feat in modified {
         let feat: &serde_json::Value = match feat.get(0) {
             Some(feat) => feat,
-            None => panic!("Ouput feature must be valid GeoJSON")
+            None => panic!("Ouput feature must be valid JSON")
         };
 
         if output.write(feat.to_string().as_bytes()).is_err() {

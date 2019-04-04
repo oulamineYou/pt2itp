@@ -5,3 +5,5 @@
 { "type": "Feature", "properties": { "number": 5, "street": "Main St", "expected": "rooftop" }, "geometry": { "type": "Point", "coordinates": [ -79.37685638666153, 38.83437791055815 ] } }
 { "type": "Feature", "properties": { "number": 6, "street": "Main St", "expected": "parcel" }, "geometry": { "type": "Point", "coordinates": [ -79.37747597694396, 38.834173155089026 ] } }
 { "type": "Feature", "properties": { "number": 7, "street": "Main St", "expected": "parcel" }, "geometry": { "type": "Point", "coordinates": [ -79.37653049826622, 38.83364977154083 ] } }
+{ "type": "Feature", "properties": { "number": 8, "street": "Main St", "expected": "point" }, "geometry": { "type": "Point", "coordinates": [ -79.4051456451416, 38.83910592657033] } }
+{ "type": "Feature", "properties": { "number": 9, "street": "Main St", "expected": "point" }, "geometry": { "type": "Point", "coordinates": [ -79.40548896789551, 38.83442596532783 ] } }
