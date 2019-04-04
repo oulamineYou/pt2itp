@@ -48,6 +48,7 @@ test('classify (hecate)', (t) => {
     t.doesNotThrow(() => {
         classify({
             db: 'pt_test',
+            hecate: true,
             input: './test/fixtures/classify_hecate.geojson',
             output: '/tmp/classifyout.geojson',
             parcels: './test/fixtures/classify_parcels.geojson',
@@ -69,36 +70,25 @@ test('classify (hecate)', (t) => {
         output[line.id] = line;
     }
 
-    t.deepEquals(output[0], {
+    t.deepEquals(output[0], undefined);
 
-    });
-    t.deepEquals(output[1], {
+    t.deepEquals(output[1].properties.accuracy, output[1].properties.expected);
 
-    });
-    t.deepEquals(output[2], {
+    t.deepEquals(output[2], undefined);
 
-    });
-    t.deepEquals(output[3], {
+    t.deepEquals(output[3].properties.accuracy, output[3].properties.expected);
 
-    });
-    t.deepEquals(output[4], {
+    t.deepEquals(output[4].properties.accuracy, output[4].properties.expected);
 
-    });
-    t.deepEquals(output[5], {
+    t.deepEquals(output[5].properties.accuracy, output[5].properties.expected);
 
-    });
-    t.deepEquals(output[6], {
+    t.deepEquals(output[6], undefined);
 
-    });
-    t.deepEquals(output[7], {
+    t.deepEquals(output[7].properties.accuracy, output[7].properties.expected);
 
-    });
-    t.deepEquals(output[8], {
+    t.deepEquals(output[8].properties.accuracy, output[8].properties.expected);
 
-    });
-    t.deepEquals(output[9], {
-
-    });
+    t.deepEquals(output[9].properties.accuracy, output[9].properties.expected);
 
     t.end();
 });
