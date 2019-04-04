@@ -180,12 +180,8 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     };
 
     for feat in modified {
-        let feat: &serde_json::Value = match feat.get(0) {
-            Some(feat) => feat,
-            None => panic!("Ouput feature must be valid JSON")
-        };
-
-        if output.write(feat.to_string().as_bytes()).is_err() {
+        let feat = format!("{}\n", feat.to_string());
+        if output.write(feat.as_bytes()).is_err() {
             panic!("Failed to write to output stream");
         }
     }

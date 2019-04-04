@@ -34,10 +34,9 @@ test('classify (dataset)', (t) => {
     while (line = rl.next()) {
         line = JSON.parse(line);
 
-        output[line.id] = line;
+        t.equals(line.properties.expected === line.properties.accuracy);
     }
 
-    console.error(output);
     t.deepEquals(output[0]);
 
     t.end();
