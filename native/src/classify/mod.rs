@@ -28,7 +28,7 @@ struct ClassifyArgs {
 impl ClassifyArgs {
     pub fn new() -> Self {
         ClassifyArgs {
-            db: String::from("dedupe"),
+            db: String::from("classify"),
             hecate: None,
             buildings: None,
             parcels: None,
