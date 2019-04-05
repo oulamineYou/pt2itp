@@ -1,7 +1,10 @@
 const Cluster = require('../lib/map/cluster');
 const Index = require('../lib/map/index');
-const pg_init = require('../native/index.node').pg_init;
 const pg_optimize = require('../native/index.node').pg_optimize;
+const {
+    cluster_addr,
+    cluster_net
+} = require('../native/index.node');
 
 const test = require('tape');
 const fs = require('fs');
@@ -9,29 +12,13 @@ const pg = require('pg');
 const Queue = require('d3-queue').queue;
 
 const db = require('./lib/db');
+
 db.init(test);
-
-const pool = new pg.Pool({
-    max: 10,
-    user: 'postgres',
-    database: 'pt_test',
-    idleTimeoutMillis: 30000
-});
-
-const index = new Index(pool);
-const cluster = new Cluster({ pool: pool });
-
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
 
 test('Points are clustered on netid', (t) => {
     const popQ = new Queue(1);
+
+    const pool = db.get();
 
     //POPULATE ADDRESS
     popQ.defer((done) => {
@@ -50,10 +37,9 @@ test('Points are clustered on netid', (t) => {
     });
 
     popQ.defer((done) => {
-        cluster.address((err) => {
-            t.error(err);
-            return done();
-        });
+        cluster_addr('pt_test');
+
+        done();
     });
 
     popQ.await((err) => {
@@ -62,29 +48,26 @@ test('Points are clustered on netid', (t) => {
         pool.query(`
             SELECT
                 ST_AsGeoJSON(geom)::JSON AS geom,
-                name
+                names
             FROM
                 address_cluster;
         `, (err, res) => {
             t.error(err);
             t.deepEquals(res.rows[0].geom, { type: 'MultiPoint', coordinates: [[9.50523376464844,47.1301843316134,1],[9.52342987060547,47.1307974609776,2]]});
-            t.deepEquals(res.rows[0].name, [ { freq: 2, display: 'Main Street', tokenized: 'main st', tokenless: 'main' } ]);
+            t.deepEquals(res.rows[0].names, [ { freq: 2, display: 'Main Street', tokenized: 'main st', tokenless: 'main' } ]);
 
-            t.end();
+            pool.end(() => {
+                t.end();
+            });
         });
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
+db.init(test);
 
 test('LineStrings far away should not be clustered', (t) => {
+    const pool = db.get();
+
     const popQ = new Queue(1);
 
     //POPULATE NETWORK
@@ -104,10 +87,9 @@ test('LineStrings far away should not be clustered', (t) => {
     });
 
     popQ.defer((done) => {
-        cluster.network((err) => {
-            t.error(err);
-            return done();
-        });
+        cluster_net('pt_test');
+
+        done();
     });
 
     popQ.await((err) => {
@@ -116,7 +98,7 @@ test('LineStrings far away should not be clustered', (t) => {
         pool.query(`
             SELECT
                 ST_AsGeoJSON(geom)::JSON as geom,
-                name
+                names
             FROM
                 network_cluster
             ORDER BY
@@ -124,25 +106,22 @@ test('LineStrings far away should not be clustered', (t) => {
         `, (err, res) => {
             t.error(err);
             t.deepEquals(res.rows[0].geom, { type: 'MultiLineString', coordinates: [ [ [ 9.50514793395996, 47.1302719219553 ], [ 9.50094223022461, 47.1302719219553 ] ] ] })
-            t.deepEquals(res.rows[0].name, [{ freq: 1, display: 'Main Street', tokenized: 'main st', tokeneless: 'main' }]);
+            t.deepEquals(res.rows[0].names, [{ freq: 1, display: 'Main Street', tokenized: 'main st', tokeneless: 'main' }]);
 
             t.deepEquals(res.rows[1].geom, { type: 'MultiLineString', coordinates: [ [ [ 9.52342987060547, 47.1308412556617 ], [ 9.52707767486572, 47.1309142467218 ] ] ] })
-            t.deepEquals(res.rows[1].name, [{ freq: 1, display: 'Main Street', tokenized: 'main st', tokeneless: 'main' }]);
-            t.end();
+            t.deepEquals(res.rows[1].names, [{ freq: 1, display: 'Main Street', tokenized: 'main st', tokeneless: 'main' }]);
+
+            pool.end(() => {
+                t.end();
+            });
         });
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
+db.init(test);
 
 test('LinesStrings should be clustered', (t) => {
+    const pool = db.get();
     const popQ = new Queue(1);
 
     //POPULATE ADDRESS
@@ -162,10 +141,8 @@ test('LinesStrings should be clustered', (t) => {
     });
 
     popQ.defer((done) => {
-        cluster.network((err) => {
-            t.error(err);
-            return done();
-        });
+        cluster_net('pt_test');
+        done();
     });
 
     popQ.await((err) => {
@@ -174,7 +151,7 @@ test('LinesStrings should be clustered', (t) => {
         pool.query(`
             SELECT
                 ST_AsGeoJSON(geom)::JSON as geom,
-                name
+                names
             FROM
                 network_cluster
             ORDER BY
@@ -183,22 +160,12 @@ test('LinesStrings should be clustered', (t) => {
             t.error(err);
 
             t.deepEquals(res.rows[0].geom, { type: 'MultiLineString', coordinates: [ [ [ 9.5167350769043, 47.1327681860613 ], [ 9.51982498168945, 47.132870369815 ] ], [ [ 9.51399922370911, 47.1326951975457 ], [ 9.51251864433289, 47.1326951975457 ] ] ] });
-            t.deepEquals(res.rows[0].name, [{ freq: 1, display: 'Main Street', tokenized: 'main st', tokeneless: 'main' }]);
-            t.end();
+            t.deepEquals(res.rows[0].names, [{ freq: 1, display: 'Main Street', tokenized: 'main st', tokeneless: 'main' }]);
+            pool.end(() => {
+                t.end();
+            });
         });
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
-
-test('end connection', (t) => {
-    pool.end();
-     t.end();
-});
+db.init(test);

@@ -8,9 +8,9 @@ const tmp = require('tmp');
 const test = require('tape');
 const Queue = require('d3-queue').queue;
 const Cluster = require('../lib/map/cluster');
-const Index = require('../lib/map/index');
 
 const db = require('./lib/db');
+
 db.init(test);
 
 const pool = new pg.Pool({
@@ -21,14 +21,6 @@ const pool = new pg.Pool({
 });
 
 const cluster = new Cluster({ pool: pool });
-const index = new Index(pool);
-
-test('Drop/Init Database', (t) => {
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
 
 test('Init db', (t) => {
     const popQ = new Queue(1);
@@ -37,7 +29,7 @@ test('Init db', (t) => {
         pool.query(`
             BEGIN;
             DELETE FROM address_cluster;
-            INSERT INTO address_cluster (id, name) VALUES
+            INSERT INTO address_cluster (id, names) VALUES
                 (1, '[{ "tokenized": "akoko st", "tokenless": "akoko", "display": "Akoko Street" }, { "tokenized": "akoko rd", "tokenless": "akoko", "display": "Akoko Rd" }]'),
                 (2, '[{ "tokenized": "wong ho ln", "tokenless": "wong ho", "display": "Wong Ho Lane" }]'),
                 (3, '[{ "tokenized": "pier 1", "tokenless": "pier 1", "display": "Pier 1" }]'),
@@ -56,7 +48,7 @@ test('Init db', (t) => {
         pool.query(`
             BEGIN;
             DELETE FROM network_cluster;
-            INSERT INTO network_cluster (id, address, name) VALUES
+            INSERT INTO network_cluster (id, address, names) VALUES
                 (1, 1, '[{ "tokenized": "akoko st", "tokenless": "akoko", "display": "Akoko Street" }]'),
                 (2, 2, '[{ "tokenized": "wong ho ln", "tokenless": "wong ho", "display": "Wong Ho Lane" }]'),
                 (3, 3, '[{ "tokenized": "pier 1", "tokenless": "pier 1", "display": "Pier 1" }]'),

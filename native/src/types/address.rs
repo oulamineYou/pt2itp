@@ -199,7 +199,8 @@ impl Address {
                 r"^\d+[a-z]?$",
                 r"^(\d+)-(\d+)[a-z]?$",
                 r"^(\d+)([nsew])(\d+)[a-z]?$",
-                r"^([nesw])(\d+)([nesw]\d+)?$"
+                r"^([nesw])(\d+)([nesw]\d+)?$",
+                r"^\d+(к\d+)?(с\d+)?$"
             ]).unwrap();
         }
 

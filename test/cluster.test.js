@@ -1,7 +1,9 @@
 const Cluster = require('../lib/map/cluster');
-const Index = require('../lib/map/index');
-const pg_init = require('../native/index.node').pg_init;
 const pg_optimize = require('../native/index.node').pg_optimize;
+const {
+    cluster_net,
+    cluster_addr
+} = require('../native/index.node');
 
 const test = require('tape');
 const fs = require('fs');
@@ -9,28 +11,11 @@ const pg = require('pg');
 const Queue = require('d3-queue').queue;
 
 const db = require('./lib/db');
+
 db.init(test);
 
-const pool = new pg.Pool({
-    max: 10,
-    user: 'postgres',
-    database: 'pt_test',
-    idleTimeoutMillis: 30000
-});
-
-const cluster = new Cluster({ pool: pool });
-const index = new Index(pool);
-
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err);
-        t.end();
-    });
-});
-
 test('cluster.address', (t) => {
+    const pool = db.get();
     const popQ = new Queue(1);
 
     //POPULATE ADDRESS
@@ -56,16 +41,15 @@ test('cluster.address', (t) => {
     });
 
     popQ.defer((done) => {
-        cluster.address((err) => {
-            t.error(err, 'no errors');
-            return done();
-        });
+        cluster_addr('pt_test');
+
+        done();
     });
 
     popQ.defer((done) => {
         pool.query(`
             SELECT
-                name,
+                names,
                 ST_AsGeoJSON(geom)::JSON AS geom
             FROM
                 address_cluster
@@ -75,9 +59,9 @@ test('cluster.address', (t) => {
             t.error(err, 'no errors');
 
             t.equals(res.rows.length, 3);
-            t.deepEquals(res.rows[0], { geom: { type: "MultiPoint","coordinates":[[-85.25390625,52.9089020477703,5]]}, name: [{ freq: 1, tokenized: 'fake av', tokenless: 'fake', display: 'Fake Avenue' }] });
-            t.deepEquals(res.rows[1], { geom: {"type":"MultiPoint","coordinates":[[-105.46875,56.3652501368561,3],[-105.46875,56.3652501368561,4]]}, name: [{ freq: 2, tokenized: 'main st', tokenless: 'main', display: 'Main Street' }] });
-            t.deepEquals(res.rows[2], { geom: { coordinates: [ [ -66.97265625, 43.9611906389202, 1 ], [ -66.97265625, 43.9611906389202, 2 ], [ -66.97265625, 43.9611906389202, 6 ] ], type: 'MultiPoint' }, name: [{ freq: 3, tokenized: 'main st', tokenless: 'main', display: 'Main Street' }] });
+            t.deepEquals(res.rows[0], { geom: { type: "MultiPoint","coordinates":[[-85.25390625,52.9089020477703,5]]}, names: [{ freq: 1, tokenized: 'fake av', tokenless: 'fake', display: 'Fake Avenue' }] });
+            t.deepEquals(res.rows[1], { geom: {"type":"MultiPoint","coordinates":[[-105.46875,56.3652501368561,3],[-105.46875,56.3652501368561,4]]}, names: [{ freq: 2, tokenized: 'main st', tokenless: 'main', display: 'Main Street' }] });
+            t.deepEquals(res.rows[2], { geom: { coordinates: [ [ -66.97265625, 43.9611906389202, 1 ], [ -66.97265625, 43.9611906389202, 2 ], [ -66.97265625, 43.9611906389202, 6 ] ], type: 'MultiPoint' }, names: [{ freq: 3, tokenized: 'main st', tokenless: 'main', display: 'Main Street' }] });
 
             return done();
         });
@@ -85,20 +69,17 @@ test('cluster.address', (t) => {
 
     popQ.await((err) => {
         t.error(err, 'no errors');
-        t.end();
+
+        pool.end(() => {
+            t.end();
+        });
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err, 'no errors');
-        t.end();
-    });
-});
+db.init(test);
 
 test('cluster.address - order synonyms by address count', (t) => {
+    const pool = db.get();
     const popQ = new Queue(1);
 
     popQ.defer((done) => {
@@ -124,10 +105,8 @@ test('cluster.address - order synonyms by address count', (t) => {
     });
 
     popQ.defer((done) => {
-        cluster.address((err) => {
-            t.error(err, 'no errors');
-            return done();
-        });
+        cluster_addr('pt_test');
+        done();
     });
 
     popQ.defer((done) => {
@@ -135,7 +114,7 @@ test('cluster.address - order synonyms by address count', (t) => {
         pool.query(`
             SELECT
                 id,
-                name
+                names
             FROM
                 address_cluster
             ORDER BY
@@ -145,7 +124,7 @@ test('cluster.address - order synonyms by address count', (t) => {
 
             t.equals(res.rows.length, 1, 'one address cluster');
 
-            t.deepEquals(res.rows[0].name, [{
+            t.deepEquals(res.rows[0].names, [{
                 display: 'R Street NW',
                 tokenized: 'r st nw',
                 tokenless: 'r',
@@ -163,20 +142,16 @@ test('cluster.address - order synonyms by address count', (t) => {
 
     popQ.await((err) => {
         t.error(err, 'no errors');
-        t.end();
+        pool.end(() => {
+            t.end();
+        });
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err, 'no errors');
-        t.end();
-    });
-});
+db.init(test);
 
 test('cluster.network', (t) => {
+    const pool = db.get();
     const popQ = new Queue(1);
 
     //POPULATE NETWORK
@@ -198,17 +173,15 @@ test('cluster.network', (t) => {
     });
 
     popQ.defer((done) => {
-        cluster.network((err) => {
-            t.error(err, 'no errors');
-            return done();
-        });
+        cluster_net('pt_test');
+        done();
     });
 
     popQ.defer((done) => {
         pool.query(`
             SELECT
                 id,
-                name,
+                names,
                 ST_AsGeoJSON(geom)::JSON AS geom,
                 source_ids
             FROM
@@ -222,7 +195,7 @@ test('cluster.network', (t) => {
 
             t.deepEquals(res.rows[0], {
                 id: 1,
-                name: [{
+                names: [{
                     freq: 1,
                     tokenized: 'main st',
                     tokenless: 'main',
@@ -241,7 +214,7 @@ test('cluster.network', (t) => {
                     type: 'MultiLineString',
                     coordinates: [ [ [ -113.501172065735, 53.5513741378592 ], [ -113.501129150391, 53.5483654932333 ] ], [ [ -113.501000404358, 53.5483654932333 ], [ -113.501043319702, 53.5461471182574 ] ] ],
                 },
-                name: [{
+                names: [{
                     freq: 1,
                     display: 'Main Street',
                     tokenized: 'main st',
@@ -257,20 +230,10 @@ test('cluster.network', (t) => {
 
     popQ.await((err) => {
         t.error(err, 'no errors');
-        t.end();
+        pool.end(() => {
+            t.end();
+        });
     });
 });
 
-test('Drop/Init Database', (t) => {
-    pg_init();
-
-    index.init((err, res) => {
-        t.error(err, 'no errors');
-        t.end();
-    });
-});
-
-test('end connection', (t) => {
-    pool.end();
-    t.end();
-});
+db.init(test);

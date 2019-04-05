@@ -1,6 +1,6 @@
 use postgres::{Connection};
 use std::io::Read;
-use super::Table;
+use super::{Table, InputTable};
 
 ///
 /// Polygon table are special in that they don't make assumptions about the underlying
@@ -49,6 +49,18 @@ impl Table for Polygon {
         }
     }
 
+    fn index(&self, conn: &Connection) {
+        conn.execute(format!(r#"
+            CREATE INDEX {name}_idx ON {name} (id);
+        "#, name = &self.name).as_str(), &[]).unwrap();
+
+        conn.execute(format!(r#"
+            CREATE INDEX {name}_gix ON {name} USING GIST (geom);
+        "#, name = &self.name).as_str(), &[]).unwrap();
+    }
+}
+
+impl InputTable for Polygon {
     fn input(&self, conn: &Connection, mut data: impl Read) {
         let stmt = conn.prepare(format!(r#"
             COPY {} (
@@ -75,16 +87,6 @@ impl Table for Polygon {
         conn.execute(format!(r#"
             UPDATE {name}
                 SET id = nextval('{name}_seq');
-        "#, name = &self.name).as_str(), &[]).unwrap();
-    }
-
-    fn index(&self, conn: &Connection) {
-        conn.execute(format!(r#"
-            CREATE INDEX {name}_idx ON {name} (id);
-        "#, name = &self.name).as_str(), &[]).unwrap();
-
-        conn.execute(format!(r#"
-            CREATE INDEX {name}_gix ON {name} USING GIST (geom);
         "#, name = &self.name).as_str(), &[]).unwrap();
     }
 }

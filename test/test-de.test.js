@@ -1,4 +1,3 @@
-const Index = require('../lib/map/index');
 const worker = require('../lib/map');
 const exec = require('child_process').exec;
 const fs = require('fs');
@@ -17,24 +16,6 @@ const abbr = path.resolve(__dirname, '../node_modules/@mapbox/geocoder-abbreviat
 
 const db = require('./lib/db');
 db.init(test);
-
-
-const pool = new pg.Pool({
-    max: 10,
-    user: 'postgres',
-    database: database,
-    idleTimeoutMillis: 30000
-});
-
-// step 1: pt2itp map
-const index = new Index(pool);
-
-test('Drop/init de database', (t) => {
-    index.init((err, res) => {
-        t.ifError(err);
-        t.end();
-    });
-});
 
 // loads address and network data into postgres
 test('load address and network de files', (t) => {
@@ -100,9 +81,4 @@ test('Run test mode', (t) => {
             t.end();
         });
     });
-});
-
-test('end connection', (t) => {
-   pool.end();
-   t.end();
 });

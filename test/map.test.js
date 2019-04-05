@@ -6,8 +6,8 @@ const test = require('tape');
 const path = require('path');
 const fs = require('fs');
 const pg = require('pg');
-
 const db = require('./lib/db');
+
 db.init(test);
 
 test('map - in-address error', (t) => {
@@ -18,6 +18,8 @@ test('map - in-address error', (t) => {
     });
 });
 
+db.init(test);
+
 test('map - in-network error', (t) => {
     worker({
         'in-address': path.resolve(__dirname, './fixtures/sg-address.geojson')
@@ -26,6 +28,8 @@ test('map - in-network error', (t) => {
         t.end();
     });
 });
+
+db.init(test);
 
 test('map - output error', (t) => {
     worker({
@@ -37,6 +41,8 @@ test('map - output error', (t) => {
     });
 });
 
+db.init(test);
+
 test('map - db error', (t) => {
     worker({
         'in-address': path.resolve(__dirname, './fixtures/sg-address.geojson'),
@@ -47,6 +53,8 @@ test('map - db error', (t) => {
         t.end();
     });
 });
+
+db.init(test);
 
 test.skip('map - cardinal clustering', (t) => {
     worker({
@@ -99,22 +107,7 @@ test.skip('map - cardinal clustering', (t) => {
     });
 });
 
-test('drop cardinal database', (t) => {
-    let pool = new pg.Pool({
-        max: 10,
-        user: 'postgres',
-        database: 'pt_test',
-        idleTimeoutMillis: 30000
-    });
-
-    const index = new Index(pool);
-    index.init((err, res) => {
-        t.error(err);
-        pool.end();
-        t.end();
-    });
-
-});
+db.init(test);
 
 test('map - good run', (t) => {
 
@@ -197,19 +190,4 @@ test('map - good run', (t) => {
     });
 });
 
-test('drop good-run database', (t) => {
-    let pool = new pg.Pool({
-        max: 10,
-        user: 'postgres',
-        database: 'pt_test',
-        idleTimeoutMillis: 30000
-    });
-
-    const index = new Index(pool);
-    index.init((err, res) => {
-        t.error(err);
-        pool.end();
-        t.end();
-    });
-
-});
+db.init(test);

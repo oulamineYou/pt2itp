@@ -1,6 +1,6 @@
 use postgres::{Connection};
 use std::io::Read;
-use super::Table;
+use super::{Table, InputTable};
 
 pub struct Network ();
 
@@ -43,6 +43,34 @@ impl Table for Network {
         }
     }
 
+
+    fn index(&self, conn: &Connection) {
+        conn.execute(r#"
+            ALTER TABLE network
+                ALTER COLUMN geom
+                TYPE GEOMETRY(MULTILINESTRINGZ, 4326)
+                USING ST_GEomFromEWKT(Regexp_Replace(ST_AsEWKT(geom)::TEXT, '(?<=\d)(?=[,)])', ' '||id, 'g'))
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            CREATE INDEX network_idx ON network (id);
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            CREATE INDEX network_gix ON network USING GIST (geom);
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            CLUSTER network USING network_idx;
+        "#, &[]).unwrap();
+
+        conn.execute(r#"
+            ANALYZE network;
+        "#, &[]).unwrap();
+    }
+}
+
+impl InputTable for Network {
     fn input(&self, conn: &Connection, mut data: impl Read) {
         let stmt = conn.prepare(format!(r#"
             COPY network (
@@ -78,28 +106,4 @@ impl Table for Network {
         "#, &[]).unwrap();
     }
 
-    fn index(&self, conn: &Connection) {
-        conn.execute(r#"
-            ALTER TABLE network
-                ALTER COLUMN geom
-                TYPE GEOMETRY(MULTILINESTRINGZ, 4326)
-                USING ST_GEomFromEWKT(Regexp_Replace(ST_AsEWKT(geom)::TEXT, '(?<=\d)(?=[,)])', ' '||id, 'g'))
-        "#, &[]).unwrap();
-
-        conn.execute(r#"
-            CREATE INDEX network_idx ON network (id);
-        "#, &[]).unwrap();
-
-        conn.execute(r#"
-            CREATE INDEX network_gix ON network USING GIST (geom);
-        "#, &[]).unwrap();
-
-        conn.execute(r#"
-            CLUSTER network USING network_idx;
-        "#, &[]).unwrap();
-
-        conn.execute(r#"
-            ANALYZE network;
-        "#, &[]).unwrap();
-    }
 }
