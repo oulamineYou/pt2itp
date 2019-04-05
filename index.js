@@ -156,7 +156,7 @@ if (require.main === module) {
                 process.exit(1);
             }
 
-            require('./native/index.node').dedupe({
+            require('./native/index.node').classify({
                 buildings: classify_arg.buildings,
                 parcels: classify_arg.parcels,
                 input: classify_arg.input,
