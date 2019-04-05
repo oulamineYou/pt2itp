@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v19.15.1
+
+- :bug: Use `classify` module in external `classify` API
+
 ### v19.15.0
 
 - :tada: Add `classify` mode
