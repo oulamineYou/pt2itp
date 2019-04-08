@@ -144,8 +144,8 @@ pub fn syn_ca_french(name: &Name, context: &Context) -> Vec<Name> {
     let mut syns = Vec::new();
 
     if
-        STANDALONE.is_match(name.tokenized.as_str())
-        && !ELIMINATOR.is_match(name.tokenized.as_str())
+        STANDALONE.is_match(&*name.tokenized)
+        && !ELIMINATOR.is_match(&*name.tokenized)
     {
         let basic = STANDALONE.replace(&*name.tokenized, "").to_string();
 
@@ -532,12 +532,16 @@ mod tests {
 
         assert_eq!(syn_ca_french(&Name::new(String::from(""), 0, &context), &context), vec![]);
 
-        assert_eq!(syn_ca_hwy(&Name::new(String::from("101"), 0, &context), &context), results);
-        assert_eq!(syn_ca_hwy(&Name::new(String::from("ON-101"), 0, &context), &context), results);
-        assert_eq!(syn_ca_hwy(&Name::new(String::from("Kings's Highway 101"), 0, &context), &context), results);
-        assert_eq!(syn_ca_hwy(&Name::new(String::from("Highway 101"), 0, &context), &context), results);
-        assert_eq!(syn_ca_hwy(&Name::new(String::from("Route 101"), 0, &context), &context), results);
-        assert_eq!(syn_ca_hwy(&Name::new(String::from("Ontario Highway 101"), 0, &context), &context), results);
+        // Successful Replacements
+        assert_eq!(syn_ca_french(&Name::new(String::from("r principale"), 0, &context), &context), vec![
+            Name::new(String::from("principale"), -1, &context)
+        ]);
+
+        // Ignored Replacements
+        assert_eq!(syn_ca_french(&Name::new(String::from("r des peupliers"), 0, &context), &context), vec![ ]);
+        assert_eq!(syn_ca_french(&Name::new(String::from("ch des hauteurs"), 0, &context), &context), vec![ ]);
+        assert_eq!(syn_ca_french(&Name::new(String::from("r du blizzard"), 0, &context), &context), vec![ ]);
+        assert_eq!(syn_ca_french(&Name::new(String::from("bd de lhotel de vl"), 0, &context), &context), vec![ ]);
     }
 
     #[test]
