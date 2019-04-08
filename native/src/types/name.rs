@@ -20,10 +20,9 @@ pub struct Names {
 
 impl Names {
     pub fn new(mut names: Vec<Name>, context: &Context) -> Self {
+        let mut synonyms: Vec<Name> = Vec::new();
+
         if context.country == String::from("us") {
-
-            let mut synonyms: Vec<Name> = Vec::new();
-
             for name in names.iter_mut() {
                 name.display = text::str_remove_octo(&name.display);
 
@@ -33,8 +32,6 @@ impl Names {
                 synonyms.append(&mut text::syn_us_hwy(&name, &context));
                 synonyms.append(&mut text::syn_us_cr(&name, &context));
             }
-
-            names.append(&mut synonyms);
         } else if context.country == String::from("ca") {
             let mut synonyms: Vec<Name> = Vec::new();
 
@@ -47,9 +44,9 @@ impl Names {
                     synonyms.append(&mut text::syn_ca_french(&name, &context));
                 }
             }
-
-            names.append(&mut synonyms);
         }
+
+        names.append(&mut synonyms);
 
         Names {
             names: names
