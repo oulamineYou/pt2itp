@@ -42,6 +42,10 @@ impl Names {
                 name.display = text::str_remove_octo(&name.display);
 
                 synonyms.append(&mut text::syn_ca_hwy(&name, &context));
+
+                if context.region.is_some() && context.region.as_ref().unwrap() == "qc" {
+                    synonyms.append(&mut text::syn_ca_french(&name, &context));
+                }
             }
 
             names.append(&mut synonyms);
