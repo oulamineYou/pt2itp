@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v19.16.0
+
+- :rocket: Split LineStrings by intersection, then by max distance before generating ITP
+
 ### v19.15.1
 
 - :bug: Use `classify` module in external `classify` API
