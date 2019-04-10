@@ -77,6 +77,11 @@ impl InputTable for Polygon {
         "#, &self.name).as_str()).unwrap();
 
         stmt.copy_in(&[], &mut data).unwrap();
+
+        conn.execute(format!(r#"
+            UPDATE {name}
+                SET geom = ST_CollectionExtract(ST_MakeValid(geom), 3)
+        "#, name = &self.name).as_str(), &[]).unwrap();
     }
 
     fn seq_id(&self, conn: &Connection) {
