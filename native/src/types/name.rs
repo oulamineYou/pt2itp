@@ -22,7 +22,7 @@ impl Names {
     pub fn new(mut names: Vec<Name>, context: &Context) -> Self {
         let mut synonyms: Vec<Name> = Vec::new();
 
-        if context.country == String::from("us") {
+        if context.country == String::from("US") {
             for name in names.iter_mut() {
                 name.display = text::str_remove_octo(&name.display);
 
@@ -32,7 +32,7 @@ impl Names {
                 synonyms.append(&mut text::syn_us_hwy(&name, &context));
                 synonyms.append(&mut text::syn_us_cr(&name, &context));
             }
-        } else if context.country == String::from("ca") {
+        } else if context.country == String::from("CA") {
             let mut synonyms: Vec<Name> = Vec::new();
 
             for name in names.iter_mut() {
@@ -40,7 +40,7 @@ impl Names {
 
                 synonyms.append(&mut text::syn_ca_hwy(&name, &context));
 
-                if context.region.is_some() && context.region.as_ref().unwrap() == "qc" {
+                if context.region.is_some() && context.region.as_ref().unwrap() == "QC" {
                     synonyms.append(&mut text::syn_ca_french(&name, &context));
                 }
             }
