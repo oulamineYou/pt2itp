@@ -92,3 +92,27 @@ test('classify (hecate)', (t) => {
 
     t.end();
 });
+
+test('classify (escaping)', (t) => {
+    try {
+        fs.unlinkSync('/tmp/classifyout.geojson');
+    } catch (err) {
+        console.log('ok - no tmp files to clear');
+    }
+
+    t.doesNotThrow(() => {
+        classify({
+            db: 'pt_test',
+            hecate: true,
+            input: './test/fixtures/classify_hecate.geojson',
+            output: '/tmp/classifyout.geojson',
+            parcels: './test/fixtures/classify_parcels_escaping.geojson',
+        });
+    }, 'classify runs without err');
+
+    t.doesNotThrow(() => {
+        fs.accessSync('/tmp/classifyout.geojson');
+    }, 'output exists');
+
+    t.end();
+});

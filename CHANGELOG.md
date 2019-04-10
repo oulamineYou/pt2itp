@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v19.16.1
+
+- :bug: Adjust PG Copy settings for Polygon file to avoid erroring on correctly escaped JSON
+
 ### v19.16.0
 
 - :rocket: Split LineStrings by intersection, then by max distance before generating ITP
