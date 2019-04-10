@@ -68,8 +68,12 @@ impl InputTable for Polygon {
                 geom
             )
             FROM STDIN
-            WITH
-                NULL AS ''
+            WITH (
+                FORMAT CSV,
+                NULL '',
+                DELIMITER E'\t',
+                QUOTE E'\b'
+            )
         "#, &self.name).as_str()).unwrap();
 
         stmt.copy_in(&[], &mut data).unwrap();
