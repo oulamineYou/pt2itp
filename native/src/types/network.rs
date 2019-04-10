@@ -8,7 +8,7 @@ use crate::{Context, text, Names};
 pub struct Network {
     /// An optional identifier for the network
     pub id: Option<i64>,
-    
+
     /// Vector of all street name synonyms
     pub names: super::Names,
 
@@ -34,8 +34,9 @@ impl Network {
             None => { return Err(String::from("Feature has no properties")); }
         };
 
-        let source = match props.remove(&String::from("source")) {
+        let source = match props.get(&String::from("source")) {
             Some(source) => {
+                let source = source.clone();
                 if source.is_string() {
                     String::from(source.as_str().unwrap())
                 } else {
@@ -54,7 +55,17 @@ impl Network {
             None => { return Err(String::from("Network must have geometry")); }
         };
 
-        let mut names = Names::from_value(props.remove(&String::from("street")), &context)?;
+
+        let street = match props.remove(&String::from("street")) {
+            Some(street) => {
+                props.insert(String::from("street"), street.clone());
+
+                Some(street)
+            },
+            None => None
+        };
+
+        let mut names = Names::from_value(street, &context)?;
 
         names.set_source(String::from("network"));
 

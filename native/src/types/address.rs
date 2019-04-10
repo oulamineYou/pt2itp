@@ -77,7 +77,16 @@ impl Address {
             None => { return Err(String::from("Addresses must have geometry")); }
         };
 
-        let mut names = Names::from_value(props.remove(&String::from("street")), &context)?;
+        let street = match props.remove(&String::from("street")) {
+            Some(street) => {
+                props.insert(String::from("street"), street.clone());
+
+                Some(street)
+            },
+            None => None
+        };
+
+        let mut names = Names::from_value(street, &context)?;
 
         names.set_source(String::from("address"));
 
@@ -110,8 +119,10 @@ impl Address {
             _ => { return Err(String::from("Address::from_row value must be JSON Object")); }
         };
 
-        let names: Names = match value.remove(&String::from("names")) {
+        let names: Names = match value.get(&String::from("names")) {
             Some(names) => {
+                let names = names.clone();
+
                 let names: Vec<Name> = match serde_json::from_value(names) {
                     Ok(names) => names,
                     Err(err) => { return Err(format!("Names Conversion Error: {}", err.to_string())); }
@@ -277,8 +288,8 @@ fn get_id(map: &mut serde_json::Map<String, serde_json::Value>) -> Result<Option
 }
 
 fn get_number(map: &mut serde_json::Map<String, serde_json::Value>) -> Result<String, String> {
-    match map.remove(&String::from("number")) {
-        Some(number) => match number {
+    match map.get(&String::from("number")) {
+        Some(number) => match number.clone() {
             serde_json::value::Value::Number(num) => {
                 Ok(String::from(num.to_string()))
             },
@@ -302,8 +313,8 @@ fn get_version(map: &mut serde_json::Map<String, serde_json::Value>) -> Result<i
 }
 
 fn get_source(map: &mut serde_json::Map<String, serde_json::Value>) -> Result<String, String> {
-    match map.remove(&String::from("source")) {
-        Some(source) => match source {
+    match map.get(&String::from("source")) {
+        Some(source) => match source.clone() {
             serde_json::value::Value::String(source) => Ok(source),
             _ => Ok(String::from(""))
         },
