@@ -138,7 +138,7 @@ pub fn syn_ca_french(name: &Name, context: &Context) -> Vec<Name> {
     lazy_static! {
         static ref STANDALONE: Regex = Regex::new(r"^(r|ch|av|bd)\s").unwrap();
 
-        static ref ELIMINATOR: Regex = Regex::new(r"^(r|ch|av|bd)\s(du|des|de)").unwrap();
+        static ref ELIMINATOR: Regex = Regex::new(r"^(r|ch|av|bd)\s(du|des|de)\s").unwrap();
     }
 
     let mut syns = Vec::new();

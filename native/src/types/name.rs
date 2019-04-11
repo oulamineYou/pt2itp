@@ -33,8 +33,6 @@ impl Names {
                 synonyms.append(&mut text::syn_us_cr(&name, &context));
             }
         } else if context.country == String::from("CA") {
-            let mut synonyms: Vec<Name> = Vec::new();
-
             for name in names.iter_mut() {
                 name.display = text::str_remove_octo(&name.display);
 
