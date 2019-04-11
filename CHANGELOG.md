@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v19.17.0
+
+- :rocket: Ensure original names are retained in `props` value
+
 ### v19.16.1
 
 - :bug: Adjust PG Copy settings for Polygon file to avoid erroring on correctly escaped JSON
