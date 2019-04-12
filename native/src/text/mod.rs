@@ -131,6 +131,32 @@ pub fn syn_number_suffix(name: &Name, context: &Context) -> Vec<Name> {
 }
 
 ///
+/// In Quebec is it common to be able to search for simple street names by their street name
+/// alone. This creates less desirable synonyms for these cases
+///
+pub fn syn_ca_french(name: &Name, context: &Context) -> Vec<Name> {
+    lazy_static! {
+        static ref STANDALONE: Regex = Regex::new(r"^(r|ch|av|bd)\s").unwrap();
+
+        static ref ELIMINATOR: Regex = Regex::new(r"^(r|ch|av|bd)\s(du|des|de)\s").unwrap();
+    }
+
+    let mut syns = Vec::new();
+
+    if
+        STANDALONE.is_match(&*name.tokenized)
+        && !ELIMINATOR.is_match(&*name.tokenized)
+    {
+        let basic = STANDALONE.replace(&*name.tokenized, "").to_string();
+
+        syns.push(Name::new(basic, -1, &context));
+    }
+
+
+    syns
+}
+
+///
 /// Adds Synonyms to names like "Highway 123 => NS-123, Nova Scotia Highway 123
 ///
 pub fn syn_ca_hwy(name: &Name, context: &Context) -> Vec<Name> {
@@ -498,6 +524,24 @@ mod tests {
 
         assert_eq!(syn_us_cr(&Name::new(String::from("County Road 123"), 0, &context), &context), results);
         assert_eq!(syn_us_cr(&Name::new(String::from("CR 123"), 0, &context), &context), results);
+    }
+
+    #[test]
+    fn test_syn_ca_french() {
+        let context = Context::new(String::from("ca"), Some(String::from("qc")), Tokens::new(HashMap::new()));
+
+        assert_eq!(syn_ca_french(&Name::new(String::from(""), 0, &context), &context), vec![]);
+
+        // Successful Replacements
+        assert_eq!(syn_ca_french(&Name::new(String::from("r principale"), 0, &context), &context), vec![
+            Name::new(String::from("principale"), -1, &context)
+        ]);
+
+        // Ignored Replacements
+        assert_eq!(syn_ca_french(&Name::new(String::from("r des peupliers"), 0, &context), &context), vec![ ]);
+        assert_eq!(syn_ca_french(&Name::new(String::from("ch des hauteurs"), 0, &context), &context), vec![ ]);
+        assert_eq!(syn_ca_french(&Name::new(String::from("r du blizzard"), 0, &context), &context), vec![ ]);
+        assert_eq!(syn_ca_french(&Name::new(String::from("bd de lhotel de vl"), 0, &context), &context), vec![ ]);
     }
 
     #[test]
