@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v19.18.0
+
+- :rocket: Add quebec synonyms (remove street type) for better user experience
+
 ### v19.17.0
 
 - :rocket: Ensure original names are retained in `props` value
