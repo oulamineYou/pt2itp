@@ -76,11 +76,13 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             None
         )
     );
+    println!("ok - imported addresses");
 
     if !is_hecate {
         // Hecate Addresses will already have ids present
         // If not hecate, create sequential ids for processing
         address.seq_id(&conn);
+        println!("ok - generated seq id for addresses");
     }
 
     address.index(&conn);
@@ -91,6 +93,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         Some(buildings_in) => {
             buildings.input(&conn, PolyStream::new(GeoStream::new(Some(buildings_in)), None));
             buildings.index(&conn);
+            println!("ok - imported buildings");
         },
         None => ()
     };
@@ -101,6 +104,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         Some(parcels_in) => {
             parcels.input(&conn, PolyStream::new(GeoStream::new(Some(parcels_in)), None));
             parcels.index(&conn);
+            println!("ok - imported parcels");
         },
         None => ()
     };
@@ -119,6 +123,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             WHERE
                 ST_Intersects(address.geom, buildings.geom)
     ", &[]).unwrap();
+    println!("ok - calculated accuracy: building");
 
     conn.execute("
         ALTER TABLE parcels
@@ -129,6 +134,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         UPDATE parcels
             SET centroid = ST_PointOnSurface(parcels.geom)
     ", &[]).unwrap();
+    println!("ok - calculated parcel centroids");
 
     conn.execute("
         UPDATE address
@@ -140,7 +146,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 accuracy IS NULL
                 AND ST_Distance(address.geom, parcels.centroid) < 0.0001
     ", &[]).unwrap();
-
+    println!("ok - calculated accuracy: parcel");
 
     conn.execute("
         UPDATE address
@@ -149,6 +155,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             WHERE
                 accuracy IS NULL
     ", &[]).unwrap();
+    println!("ok - calculated accuracy: point");
 
     let modified = match is_hecate {
         true => {
@@ -167,6 +174,8 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                     WHERE
                         accuracy IS NOT NULL
             "#, &[]).unwrap();
+
+            println!("ok - outputting hecate addresses");
 
             pg::Cursor::new(conn, format!(r#"
                 SELECT
@@ -190,6 +199,8 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                     SET
                         props = props::JSONB || JSON_Build_Object('accuracy', accuracy)::JSONB
             "#, &[]).unwrap();
+
+            println!("ok - outputting addresses");
 
             pg::Cursor::new(conn, format!(r#"
                 SELECT
