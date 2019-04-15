@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v19.18.1
+
+- :rocket: Add logging for `classify` mode
+
 ### v19.18.0
 
 - :rocket: Add quebec synonyms (remove street type) for better user experience
