@@ -54,10 +54,7 @@ pub fn dedupe(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         }
     };
 
-    let is_hecate = match args.hecate {
-        Some(is_hecate) => is_hecate,
-        None => false
-    };
+    let is_hecate = args.hecate.unwrap_or(false);
 
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 

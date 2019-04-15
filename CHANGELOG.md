@@ -10,287 +10,331 @@
 
 ## Version History
 
-## v19.11.0
+### v19.18.1
+
+- :rocket: Add logging for `classify` mode
+
+### v19.18.0
+
+- :rocket: Add quebec synonyms (remove street type) for better user experience
+
+### v19.17.0
+
+- :rocket: Ensure original names are retained in `props` value
+
+### v19.16.1
+
+- :bug: Adjust PG Copy settings for Polygon file to avoid erroring on correctly escaped JSON
+
+### v19.16.0
+
+- :rocket: Split LineStrings by intersection, then by max distance before generating ITP
+
+### v19.15.1
+
+- :bug: Use `classify` module in external `classify` API
+
+### v19.15.0
+
+- :tada: Add `classify` mode
+
+### v19.14.0
+
+- :rocket: adding support for Russian address numbers, including Korpus and Stroenie
+
+### v19.13.1
+
+- :bug: Ensure cross match doesn't fail on empty batches
+
+### v19.13.0
+
+- :bug: Ensure `carmen:addressprops` order is retained through `sort` and `dedupe-address`
+
+### v19.12.0
+
+- :rocket: Tighten expectations around `null` & `undefined` values in property passthrough
+
+### v19.11.0
 
 - :rocket: Move table management into native code to standardize access functions
 
-## v19.10.3
+### v19.10.3
 
 - :bug: Fix postgres pool closure bug
 
-## v19.10.2
+### v19.10.2
 
 - :bug: Allow String street names in conflate
 
-## v19.10.1
+### v19.10.1
 
 - :white_check_mark: Add database cleaning in between all tests
 
-## v19.10.0
+### v19.10.0
 
 - :rocket: Optimize cluster match for speedier execution
 - :rocket: Optimize split for speedier execution
 
-## v19.9.0
+### v19.9.0
 
 - :tada: Add `--warn` flag for writing warnings to a file
 - :rocket: Add run times to each step
 
-## v19.8.0
+### v19.8.0
 
 - :rocket: Refactor orphan query for performance
 
-## v19.7.0
+### v19.7.0
 
 - :tada: Add basic `dedupe` mode
 
-## v19.6.5
+### v19.6.5
 
 - :bug: Ensure adding Z coordinate to addresses doesn't nullify geom
 
-## v19.6.4
+### v19.6.4
 
 - :rocket: Use `FORMAT CSV` for importing JSON data
 
-## v19.6.3
+### v19.6.3
 
 - :rocket: Remove `\n` and `\` from display names
 
-## v19.6.2
+### v19.6.2
 
 - :rocket: Remove `"` char from display names
 
-## v19.6.1
+### v19.6.1
 
 - :rocket: Set internal split parallelism to 1
 
-## v19.6.0
+### v19.6.0
 
 - :bug: Fix network generation bug on postgres import
 
-## v19.5.0
+### v19.5.0
 
 - :rocket: Rewrite ingestion pipeline to use rust ingester for increased speed
 
-## v19.4.0
+### v19.4.0
 
 - :rocket: Add intersection stats support
 
-## v19.3.0
+### v19.3.0
 
 - :rocket: Update `osmiunm` expectations
 
-## v19.2.0
+### v19.2.0
 
 - :rocket: Update to latest carmen intersection format
 
-## v19.1.0
+### v19.1.0
 
 - :rocket: Don't permutate cardinals for streets with both pre&post cardinals
 
-## v19.0.0
+### v19.0.0
 
 - :tada: Rewrite `stats` module to use `GeoStream` rust module & expose far more stats
 
-## v18.2.1
+### v18.2.1
 
 - :bug: Ensure z coordinate is removed from `MultiPoint` geoms
 
-## v18.2.0
+### v18.2.0
 
 - :tada: Add `--props` arg to `map` mode to allow properties to be output in resultant geojson
 
-## v18.1.0
+### v18.1.0
 
 - :tada: Store binaries on github with node-pre-gyp
 
-## v18.0.0
+### v18.0.0
 
 - :rocket: Faster `convert` mode written in Rust
 
-## v17.4.3
+### v17.4.3
 
 - :bug: Use `inputs` dir in conflate mode
 
-## v17.4.2
+### v17.4.2
 
 - :arrow_up: update carmen dep
 
-## v17.4.1
+### v17.4.1
 
 - :rocket: Add `accuracy: intersection` to intersection output
 
-## v17.4.0
+### v17.4.0
 
 - :rocket: Allow properties to be propogated through to the interpolization module, removing the `Units` encode/decode
 
-## v17.3.0
+### v17.3.0
 
 - :tada: Add intersection support
 
-## v17.2.1
+### v17.2.1
 
 - :arrow_up: Documentation & carmen to latest versions
 
-## v17.2.0
+### v17.2.0
 
 - :tada: Add ability to store generic props from address inputs
 - :rocket: Directory structure is cleaned up, with util not being a dumping ground for `map` mode
 
-## v17.1.6
+### v17.1.6
 
 - :arrow_up: Update to latest geocoder-abbreviations for basic russian support
 
-## v17.1.5
+### v17.1.5
 
 - :arrow_up: `csv-stringify@5`
 
-## v17.1.4
+### v17.1.4
 
 - :arrow_up: `carmen@26.6.0`
 
-## v17.1.3
+### v17.1.3
 
 - :arrow_up: Update to latest geocoder-abbreviations for basic polish support
 
-## v17.1.2
+### v17.1.2
 
 - :arrow_up: Update carmen & all deps to latest versions
 
-## v17.1.1
+### v17.1.1
 
 - :arrow_up: Update carmen & all deps to latest versions
 
-## v17.1.0
+### v17.1.0
 
 - :bug: Improve synonym surfacing in network clustering, avoiding unrelated synonyms being
   pulled into clusters with the same primary name
 
-## v17.0.2
+### v17.0.2
 
 - :arrow_up: Avoid security advisory by updating to latest `lodash`
 
-## v17.0.1
+### v17.0.1
 
 - :arrow_up: `carmen@25.0.1` & `eslint@5.x`
 
-## v17.0.0
+### v17.0.0
 
 - :arrow_up: Update base node verison to 8 - dropping support for 4 & 6
 - :arrow_up: Update to carmen@25 - fuzzy search!
 - :white_check_mark: Tie `testcsv` into `test` indexes so indexes are rebuilt with every run
 
-## v16.6.2
+### v16.6.2
 
 - :rocket: Add german language drive in filters
 
-## v16.6.1
+### v16.6.1
 
 - :rocket: Add more countries to `drive-in` filter
 
-## v16.6.0
+### v16.6.0
 
 - :rocket: Expose PT2ITP as a library
 
-## v16.5.1
+### v16.5.1
 
 - :arrow_up: Update eslint & documentationjs
 
-## v16.5.0
+### v16.5.0
 
 - :rocket: Rewrite `cluster#break` to handle multiple address changes in a given segment
 
-## v16.4.4
+### v16.4.4
 
 - :arrow_up: Add romanian language tokens
 
-## v16.4.3
+### v16.4.3
 
 - :rocket: Expand scope of filtered drive throughs
 
-## v16.4.2
+### v16.4.2
 
 - :rocket: Filter out Drive In roads
 
-## v16.4.0
+### v16.4.0
 
 - :rocket: `conflate` mode - Buffers modifed features to the database, before iterating through them, collapsing duplicates and finally outputting.
 
-## v16.3.0
+### v16.3.0
 
 - :tada: Add `version` property to known features in `conflate` mode
 
-## v16.2.1
+### v16.2.1
 
 - :bug: `conflate` modify features should push potential name
 
-## v16.2.0
+### v16.2.0
 
 - :rocket: Switch to sync. filled, parallel queued conflate compare
 - :bug: conflate mode could crash on small or large conflate ops
 
-## v16.1.4
+### v16.1.4
 
 - :bug: Due to the way `readline` calls the `close` event, a small number of features would
   fail to be processed before the callback. This fixes this bug.
 
-## v16.1.3
+### v16.1.3
 
 - :bug: error output would be printed to stderr instead of specified file in `conflate` mode
 
-## v16.1.2
+### v16.1.2
 
 - :bug: `Type` property was missing from created feats in `conflate` mode
 
-## v16.1.1
+### v16.1.1
 
 - :bug: Ensure empty objects aren't output on errors when using `clean` mode
 
-## v16.1.0
+### v16.1.0
 
 - :tada: Add `conflate` mode which will conflate a new dataset against an existing
 - :white_check_mark: Add a bunch of tests for `help` mode to increase test coverage
 
-## v16.0.3
+### v16.0.3
 
 - :arrow_up: `csv-stringify@3.x`
 
-## v16.0.2
+### v16.0.2
 
 - :arrow_up: `carmen@24.3.1` & Update other misc deps
 
-## v16.0.1
+### v16.0.1
 
 - :bug: `MultiPoint` geometries could potentially have an empty coord array leading to `post/centre` failing to calculate
 - :rocket: `interpolize` module no longer needs access to `posts` array
 - :pencil2: ASCII beautiful drawing in README
 
-## v16.0.0
+### v16.0.0
 
 - :rocket: `number` property of `address` table is now the raw unencoded address number
 - :rocket: `encoded` property of `address` table stores the encoded address number used for the `Z` prop of the Point Geom.
 - :tada: Add support for `Unit` formats when encoding non-standard addresses.
 - :rocket: Re-Architect folder structure to put modes under `lib/` and all utilities in their own separate folders
 
-## v15.6.1
+### v15.6.1
 
 - :arrow_up: carmen@24.2.10
 - :bug: handle non-string values in geocoder_tokens submitted to testcsv
 
-## v15.6.0
+### v15.6.0
 
 - :rocket: Add support for Waukesha County, WI county style addresses: `W350N5337` or `N453`
 
-## v15.5.0
+### v15.5.0
 
 - :arrow_up: Update all deps
 - :tada: Add `clean` mode to allow easier testing/standardizing of address data
 
-## v15.4.1
+### v15.4.1
 
 - :arrow_up: `documentationjs@6.x`
 
-## v15.4.0
+### v15.4.0
 
 - :rocket: Adds support for several different variations of Canadian Highway names
 - :white_check_mark: Add Assoc. tests

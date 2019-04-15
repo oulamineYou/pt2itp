@@ -54,7 +54,8 @@ test('dedupe (dataset)', (t) => {
             names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
             number: '123',
             source: 'openaddresses',
-            random: 'property'
+            random: 'property',
+            street: 'Main St'
         },
         geometry: {
             type: 'Point',
@@ -68,7 +69,8 @@ test('dedupe (dataset)', (t) => {
         properties: {
             names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
             number: '123',
-            source: 'random'
+            source: 'random',
+            street: 'Main St'
         },
         geometry: {
             type: 'Point',
@@ -80,9 +82,10 @@ test('dedupe (dataset)', (t) => {
         id: 4,
         type: 'Feature',
         properties: {
-             names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
             number: '123',
-            source: 'random'
+            source: 'random',
+            street: 'Main St'
         },
         geometry: {
             type: 'Point',
@@ -96,7 +99,8 @@ test('dedupe (dataset)', (t) => {
         properties: {
             names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
             number: '123',
-            source: 'openaddresses'
+            source: 'openaddresses',
+            street: 'Main St'
         },
         geometry: {
             type: 'Point',
@@ -110,7 +114,8 @@ test('dedupe (dataset)', (t) => {
         properties: {
             names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
             number: '123a',
-            source: 'rando'
+            source: 'rando',
+            street: 'Main St'
         },
         geometry: {
             type: 'Point',
@@ -171,7 +176,8 @@ test('dedupe (hecate)', (t) => {
         properties: {
             names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
             number: '123',
-            source: 'random'
+            source: 'random',
+            street: 'Main St'
         },
         geometry: {
             type: 'Point',
@@ -188,7 +194,8 @@ test('dedupe (hecate)', (t) => {
             names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
             number: '123',
             source: 'openaddresses',
-            random: 'property'
+            random: 'property',
+            street: 'Main St'
         },
         geometry: {
             type: 'Point',
@@ -205,7 +212,8 @@ test('dedupe (hecate)', (t) => {
             names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
             number: '123',
             source: 'openaddresses',
-            random: 'property'
+            random: 'property',
+            street: 'Main St'
         },
         geometry: {
             type: 'Point',

@@ -201,5 +201,116 @@ test('Post: Props', (t) => {
         geometry: { }
     }, 'Multiple conflicting props w/ undesired props');
 
+    opts.args.props = [ 'override:postcode' ];
+    t.deepEquals(post({
+        type: 'Feature',
+        properties: {
+            address_props: [{
+                'override:postcode': null
+            },{
+                'override:postcode': null
+            },{
+                'override:postcode': null
+            },{
+                'override:postcode': null
+            },{
+                'override:postcode': null
+            }]
+        },
+        geometry: { }
+    }, opts), {
+        type: 'Feature',
+        properties: { },
+        geometry: { }
+    }, 'All null values are omitted entirely');
+
+    opts.args.props = [ 'override:postcode' ];
+    t.deepEquals(post({
+        type: 'Feature',
+        properties: {
+            address_props: [{
+                'override:postcode': undefined
+            },{
+                'override:postcode': undefined
+            },{
+                'override:postcode': null
+            },{
+                'override:postcode': null
+            },{
+                'override:postcode': null
+            }]
+        },
+        geometry: { }
+    }, opts), {
+        type: 'Feature',
+        properties: { },
+        geometry: { }
+    }, 'Null & Undefined values are treated identically');
+
+    opts.args.props = [ 'override:postcode' ];
+    t.deepEquals(post({
+        type: 'Feature',
+        properties: {
+            address_props: [{
+                'override:postcode': '20002'
+            },{
+                'override:postcode': '20002'
+            },{
+                'override:postcode': '20002'
+            },{
+                'override:postcode': null
+            },{
+                'override:postcode': null
+            }]
+        },
+        geometry: { }
+    }, opts), {
+        type: 'Feature',
+        properties: {
+            'override:postcode': '20002',
+            'carmen:addressprops': {
+                'override:postcode': {
+                    3: null,
+                    4: null
+                }
+            }
+        },
+        geometry: {}
+    }, 'Null values are included if needed to override a top level property');
+
+    opts.args.props = [ 'override:postcode' ];
+    t.deepEquals(post({
+        type: 'Feature',
+        properties: {
+            address_props: [{
+                'override:postcode': '20002'
+            },{
+                'override:postcode': '20002'
+            },{
+                'override:postcode': '20002'
+            },{
+                'override:postcode': null
+            },{
+                'override:postcode': null
+            },{
+                'override:postcode': undefined
+            }]
+        },
+        geometry: { }
+    }, opts), {
+        type: 'Feature',
+        properties: {
+            'override:postcode': '20002',
+            'carmen:addressprops': {
+                'override:postcode': {
+                    3: null,
+                    4: null,
+                    5: null
+                }
+            }
+        },
+        geometry: {}
+    }, 'Undefined values are treated as null in carmen:addressprops');
+
     t.end();
 });

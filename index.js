@@ -132,12 +132,48 @@ if (require.main === module) {
             });
 
             break;
+        case ('classify'):
+            let classify_arg = require('minimist')(process.argv, {
+                string: [ 'buildings', 'parcels', 'input', 'output', 'db' ],
+                boolean: [ 'hecate' ],
+                alias: {
+                    database: 'db',
+                    buildings: 'building',
+                    parcels: 'parcel'
+                }
+            });
+
+            if (!classify_arg.db) {
+                console.error('--db <DATABASE> argument required');
+                process.exit(1);
+            } else if (!classify_arg.input) {
+                console.error('--input <FILE> argument required');
+                process.exit(1);
+            } else if (!classify_arg.output) {
+                console.error('--output <FILE> argument required');
+                process.exit(1);
+            } else if (!classify_arg.parcels && !classify_arg.buildings) {
+                console.error('at least 1 of --buildings or --parcels arguments required');
+                process.exit(1);
+            }
+
+            require('./native/index.node').classify({
+                buildings: classify_arg.buildings,
+                parcels: classify_arg.parcels,
+                input: classify_arg.input,
+                output: classify_arg.output,
+                db: classify_arg.db,
+                hecate: classify_arg.hecate
+            });
+
+            break;
         default:
             help(argv);
             break;
     }
 } else {
     module.exports = {
+        classify: require('./native/index.node').classify,
         dedupe: require('./native/index.node').dedupe,
         stat: require('./native/index.node').stats,
         convert: require('./native/index.node').convert,
