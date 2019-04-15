@@ -135,6 +135,7 @@ if (require.main === module) {
         case ('classify'):
             let classify_arg = require('minimist')(process.argv, {
                 string: [ 'buildings', 'parcels', 'input', 'output', 'db' ],
+                boolean: [ 'hecate' ],
                 alias: {
                     database: 'db',
                     buildings: 'building',
@@ -161,7 +162,8 @@ if (require.main === module) {
                 parcels: classify_arg.parcels,
                 input: classify_arg.input,
                 output: classify_arg.output,
-                db: classify_arg.db
+                db: classify_arg.db,
+                hecate: classify_arg.hecate
             });
 
             break;

@@ -51,10 +51,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         }
     };
 
-    let is_hecate = match args.hecate {
-        Some(is_hecate) => is_hecate,
-        None => false
-    };
+    let is_hecate = args.hecate.unwrap_or(false);
 
     let mut output = match args.output {
         None => panic!("Output file required"),
