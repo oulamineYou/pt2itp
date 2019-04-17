@@ -64,14 +64,45 @@ test('Post: Discard Bad Orphans', (t) => {
     t.deepEquals(post({
         properties: {
             'carmen:addressnumber': [[1]],
+            'carmen:text': '1234',
+        }
+    }), {
+        properties: {
+            'carmen:addressnumber': [[1]],
+            'carmen:text': '1234',
+        }
+    });
+
+
+    t.deepEquals(post({
+        properties: {
+            'carmen:addressnumber': [[1]],
             'carmen:text': 'Main St',
-            postcode: '20002'
+            address_props: ''
         }
     }), {
         properties: {
             'carmen:addressnumber': [[1]],
             'carmen:text': 'Main St',
-            postcode: '20002'
+            address_props: ''
+        }
+    });
+
+    t.deepEquals(post({
+        properties: {
+            'carmen:addressnumber': [[1]],
+            'carmen:text': 'Main St',
+            address_props: [{
+                'override:postcode': '20002'
+            }]
+        }
+    }), {
+        properties: {
+            'carmen:addressnumber': [[1]],
+            'carmen:text': 'Main St',
+            address_props: [{
+                'override:postcode': '20002'
+            }]
         }
     });
 
@@ -79,7 +110,9 @@ test('Post: Discard Bad Orphans', (t) => {
         properties: {
             'carmen:addressnumber': [[1]],
             'carmen:text': '1234',
-            postcode: '20002'
+            address_props: [{
+                'override:postcode': '20002'
+            }]
         }
     }), false);
 
@@ -87,7 +120,9 @@ test('Post: Discard Bad Orphans', (t) => {
         properties: {
             'carmen:addressnumber': [[1]],
             'carmen:text': '_%^$*—',
-            postcode: '20002'
+            address_props: [{
+                'override:postcode': '20002'
+            }]
         }
     }), false);
 
@@ -95,6 +130,25 @@ test('Post: Discard Bad Orphans', (t) => {
         properties: {
             'carmen:addressnumber': [[1]],
             'carmen:text': 'Main St',
+            address_props: []
+        }
+    }), false);
+
+    t.deepEquals(post({
+        properties: {
+            'carmen:addressnumber': [[1]],
+            'carmen:text': 'Main St',
+            address_props: [{}]
+        }
+    }), false);
+
+    t.deepEquals(post({
+        properties: {
+            'carmen:addressnumber': [[1]],
+            'carmen:text': 'Main St',
+            address_props: [{
+                'override:postcode': null
+            }]
         }
     }), false);
 
