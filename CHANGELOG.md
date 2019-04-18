@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v19.19.0
+
+- :tada: Add `discard-bad-orphan` optional post script
+
 ### v19.18.1
 
 - :rocket: Add logging for `classify` mode
