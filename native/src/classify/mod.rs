@@ -141,7 +141,7 @@ pub fn classify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 parcels
             WHERE
                 accuracy IS NULL
-                AND ST_Distance(address.geom, parcels.centroid) < 0.0001
+                AND ST_DWithin(address.geom, parcels.centroid, 0.0001)
     ", &[]).unwrap();
     println!("ok - calculated accuracy: parcel");
 
