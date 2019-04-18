@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v19.19.2
+
+- :bug: Ensure discard-bad-orphan is run after props post
+
 ### v19.19.1
 
 - :bug: Switch to `ST_DWithin` from `ST_Distance`
