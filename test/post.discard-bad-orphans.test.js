@@ -61,48 +61,27 @@ test('Post: Discard Bad Orphans', (t) => {
         }
     });
 
-    t.deepEquals(post({
-        properties: {
-            'carmen:addressnumber': [[1]],
-            'carmen:text': '1234',
-        }
-    }), {
-        properties: {
-            'carmen:addressnumber': [[1]],
-            'carmen:text': '1234',
-        }
-    });
-
+    t.throws(() => {
+        post({
+            properties: {
+                'carmen:addressnumber': [[1]],
+                'carmen:text': 'Main St',
+                address_props: []
+            }
+        })
+    }, /discard-bad-orphans must be run after the props post script/);
 
     t.deepEquals(post({
         properties: {
             'carmen:addressnumber': [[1]],
             'carmen:text': 'Main St',
-            address_props: ''
+            'override:postcode': '20002'
         }
     }), {
         properties: {
             'carmen:addressnumber': [[1]],
             'carmen:text': 'Main St',
-            address_props: ''
-        }
-    });
-
-    t.deepEquals(post({
-        properties: {
-            'carmen:addressnumber': [[1]],
-            'carmen:text': 'Main St',
-            address_props: [{
-                'override:postcode': '20002'
-            }]
-        }
-    }), {
-        properties: {
-            'carmen:addressnumber': [[1]],
-            'carmen:text': 'Main St',
-            address_props: [{
-                'override:postcode': '20002'
-            }]
+            'override:postcode': '20002'
         }
     });
 
@@ -110,9 +89,7 @@ test('Post: Discard Bad Orphans', (t) => {
         properties: {
             'carmen:addressnumber': [[1]],
             'carmen:text': '1234',
-            address_props: [{
-                'override:postcode': '20002'
-            }]
+            'override:postcode': '20002'
         }
     }), false);
 
@@ -120,9 +97,7 @@ test('Post: Discard Bad Orphans', (t) => {
         properties: {
             'carmen:addressnumber': [[1]],
             'carmen:text': '_%^$*—',
-            address_props: [{
-                'override:postcode': '20002'
-            }]
+            'override:postcode': '20002'
         }
     }), false);
 
@@ -130,7 +105,6 @@ test('Post: Discard Bad Orphans', (t) => {
         properties: {
             'carmen:addressnumber': [[1]],
             'carmen:text': 'Main St',
-            address_props: []
         }
     }), false);
 
@@ -138,17 +112,7 @@ test('Post: Discard Bad Orphans', (t) => {
         properties: {
             'carmen:addressnumber': [[1]],
             'carmen:text': 'Main St',
-            address_props: [{}]
-        }
-    }), false);
-
-    t.deepEquals(post({
-        properties: {
-            'carmen:addressnumber': [[1]],
-            'carmen:text': 'Main St',
-            address_props: [{
-                'override:postcode': null
-            }]
+            'override:postcode': null
         }
     }), false);
 
