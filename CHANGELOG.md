@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v19.19.1
+
+- :bug: Switch to `ST_DWithin` from `ST_Distance`
+
 ### v19.19.0
 
 - :tada: Add `discard-bad-orphan` optional post script
