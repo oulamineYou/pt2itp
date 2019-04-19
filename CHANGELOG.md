@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v20.0.0
+
+- :rocket: `Node 10` is now the default/required version for binaries
+- :arrow_up: Update `nyc`, `documentation`, `tmp` to latest versions
+
 ### v19.19.2
 
 - :bug: Ensure discard-bad-orphan is run after props post
