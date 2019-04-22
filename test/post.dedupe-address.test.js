@@ -1,3 +1,5 @@
+'use strict';
+
 const post = require('../lib/post/dedupe-address').post;
 const test = require('tape');
 
@@ -32,17 +34,17 @@ test('Post: Dedupe', (t) => {
 
     t.deepEquals(post({
         properties: {
-            'carmen:addressnumber': [[ 1 ]]
+            'carmen:addressnumber': [[1]]
         }
     }), {
         properties: {
-            'carmen:addressnumber': [[ 1 ]]
+            'carmen:addressnumber': [[1]]
         }
     });
 
     t.deepEquals(post({
         properties: {
-            'carmen:addressnumber': [[ 1, 2, 3, 4 ]]
+            'carmen:addressnumber': [[1, 2, 3, 4]]
         }
     }), {
         properties: {
@@ -52,17 +54,17 @@ test('Post: Dedupe', (t) => {
 
     t.deepEquals(post({
         properties: {
-            'carmen:addressnumber': [[ 1, 2, 3, 4, 1, 2, 3, 4 ]]
+            'carmen:addressnumber': [[1, 2, 3, 4, 1, 2, 3, 4]]
         }
     }), {
         properties: {
-            'carmen:addressnumber': [[ 1, 2, 3, 4, 1, 2, 3, 4 ]]
+            'carmen:addressnumber': [[1, 2, 3, 4, 1, 2, 3, 4]]
         }
     });
 
     t.deepEquals(post({
         properties: {
-            'carmen:addressnumber': [[ 1 ]]
+            'carmen:addressnumber': [[1]]
         },
         geometry: {
             geometries: [{
@@ -83,7 +85,7 @@ test('Post: Dedupe', (t) => {
 
     t.deepEquals(post({
         properties: {
-            'carmen:addressnumber': [[ 1, 2, 3, 4 ]]
+            'carmen:addressnumber': [[1, 2, 3, 4]]
         },
         geometry: {
             geometries: [{
@@ -92,28 +94,7 @@ test('Post: Dedupe', (t) => {
         }
     }), {
         properties: {
-            'carmen:addressnumber': [[ 1, 2, 3, 4 ]],
-            address_props: [ {}, {}, {}, {} ]
-        },
-        geometry: {
-            geometries: [{
-                coordinates: [[1,1], [2,2], [3,3], [4,4]]
-            }]
-        }
-    });
-
-    t.deepEquals(post({
-        properties: {
-            'carmen:addressnumber': [[ 1, 2, 3, 4, 1, 2, 3, 4 ]]
-        },
-        geometry: {
-            geometries: [{
-                coordinates: [[1,1], [2,2], [3,3], [4,4], [1,1], [2,2], [3,3], [4,4]]
-            }]
-        }
-    }), {
-        properties: {
-            'carmen:addressnumber': [[ 1, 2, 3, 4 ]],
+            'carmen:addressnumber': [[1, 2, 3, 4]],
             address_props: [{}, {}, {}, {}]
         },
         geometry: {
@@ -125,7 +106,28 @@ test('Post: Dedupe', (t) => {
 
     t.deepEquals(post({
         properties: {
-            'carmen:addressnumber': [[ 1, 2, 3, 4, 1, 2, 3, 4 ]],
+            'carmen:addressnumber': [[1, 2, 3, 4, 1, 2, 3, 4]]
+        },
+        geometry: {
+            geometries: [{
+                coordinates: [[1,1], [2,2], [3,3], [4,4], [1,1], [2,2], [3,3], [4,4]]
+            }]
+        }
+    }), {
+        properties: {
+            'carmen:addressnumber': [[1, 2, 3, 4]],
+            address_props: [{}, {}, {}, {}]
+        },
+        geometry: {
+            geometries: [{
+                coordinates: [[1,1], [2,2], [3,3], [4,4]]
+            }]
+        }
+    });
+
+    t.deepEquals(post({
+        properties: {
+            'carmen:addressnumber': [[1, 2, 3, 4, 1, 2, 3, 4]],
             address_props: [{
                 element: 0
             },{
@@ -151,7 +153,7 @@ test('Post: Dedupe', (t) => {
         }
     }), {
         properties: {
-            'carmen:addressnumber': [[ 1, 2, 3, 4 ]],
+            'carmen:addressnumber': [[1, 2, 3, 4]],
             address_props: [{
                 element: 0
             }, {

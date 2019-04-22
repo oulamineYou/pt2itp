@@ -1,3 +1,5 @@
+'use strict';
+
 const analyser = require('../lib/analyze');
 const freqDist = require('./fixtures/analyze.freqDist.js');
 const comparison = require('./fixtures/analyze.comparison.js');
@@ -7,7 +9,6 @@ const fs = require('fs');
 const tmp = require('tmp');
 const test = require('tape');
 const Queue = require('d3-queue').queue;
-const Cluster = require('../lib/map/cluster');
 
 const db = require('./lib/db');
 
@@ -19,8 +20,6 @@ const pool = new pg.Pool({
     database: 'pt_test',
     idleTimeoutMillis: 3000
 });
-
-const cluster = new Cluster({ pool: pool });
 
 test('Init db', (t) => {
     const popQ = new Queue(1);
@@ -38,7 +37,7 @@ test('Init db', (t) => {
                 (6, '[{ "tokenized": "elm way", "tokenless": "elm", "display": "Elm Way" }]'),
                 (7, '[{ "tokenized": "evergreen tr", "tokenless": "evergreen", "display": "Evergreen Terrace" }]');
             COMMIT;
-        `, (err, res) => {
+        `, (err) => {
             t.error(err);
             return done();
         });
@@ -58,7 +57,7 @@ test('Init db', (t) => {
                 (7, 7, '[{ "tokenized": "lonely st", "tokenless": "lonely", "display": "Lonely Street" }]');
 
             COMMIT;
-        `, (err, res) => {
+        `, (err) => {
             t.error(err);
             return done();
         });
@@ -76,7 +75,7 @@ test('Results from extractTextField', (t) => {
         t.error(err);
         t.deepEquals(
             data,
-            ['Akoko Street', 'Akoko Rd', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St' ],
+            ['Akoko Street', 'Akoko Rd', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St'],
             'extracted text is correct'
         );
         t.end();
@@ -84,14 +83,14 @@ test('Results from extractTextField', (t) => {
 });
 
 test('format data from text extraction', (t) => {
-    let fixture = [ { name: [{ display: 'Akoko Street' }] }, { name: [{ display: 'Akala Lane' }] }, { name: [{ display: 'Dreier Street' }] }];
-    let expected = analyser.formatData(fixture);
-    t.deepEquals(expected, [ 'Akoko Street', 'Akala Lane', 'Dreier Street' ], 'Data formatted correctly');
+    const fixture = [{ name: [{ display: 'Akoko Street' }] }, { name: [{ display: 'Akala Lane' }] }, { name: [{ display: 'Dreier Street' }] }];
+    const expected = analyser.formatData(fixture);
+    t.deepEquals(expected, ['Akoko Street', 'Akala Lane', 'Dreier Street'], 'Data formatted correctly');
     t.end();
 });
 
 test('frequencyDistribution check', (t) => {
-    let fixtures = [ 'Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St', 'Canal St', 'Lonely Street'];
+    const fixtures = ['Akoko Street', 'Wong Ho Lane', 'Pier 1', 'Main St', 'Fake St', 'Canal St', 'Lonely Street'];
     analyser.frequencyDistributionMunger(fixtures, (err, data) => {
         t.deepEquals([...data.score_ngrams('likelihoodRatio')], freqDist.network_bigram, 'expected frequency distribution');
         t.end();
@@ -116,16 +115,16 @@ function testOutputs(type, t) {
      * @param {function} cb - callback
      */
     function checkCSV(order, type, tempFileNamePrefix, t, cb) {
-        let tmpOutput = `${tempFileNamePrefix}-${order}.csv`;
+        const tmpOutput = `${tempFileNamePrefix}-${order}.csv`;
 
-        let fixturePath = path.resolve(__dirname, `./fixtures/analyze.${type}-${order}.csv`);
+        const fixturePath = path.resolve(__dirname, `./fixtures/analyze.${type}-${order}.csv`);
         if (process.env.UPDATE) {
             fs.createReadStream(tmpOutput)
                 .pipe(fs.createWriteStream(fixturePath));
             t.fail(`updated ${type} ${order} fixture ${fixturePath}`);
         } else {
-            let expected = fs.readFileSync(fixturePath).toString();
-            let actual = fs.readFileSync(tmpOutput).toString();
+            const expected = fs.readFileSync(fixturePath).toString();
+            const actual = fs.readFileSync(tmpOutput).toString();
             t.deepEqual(actual, expected, `${type} ${order} output is as expected`);
         }
         return cb();
@@ -140,13 +139,13 @@ function testOutputs(type, t) {
      * @param {function} cb - callback
      */
     function checkTable(order, type, t, cb) {
-        let q=`SELECT * FROM ${type}_${order}s;`;
+        const q = `SELECT * FROM ${type}_${order}s;`;
         pool.query(q, (err, res) => {
             t.error(err);
-            let results = [];
+            const results = [];
 
-            for (let j=0;j<res.rows.length;j++) {
-                //d = res.rows[j]
+            for (let j = 0; j < res.rows.length; j++) {
+                // d = res.rows[j]
                 results.push(res.rows[j]);
             }
             if (results.length <= 0) {
@@ -157,16 +156,16 @@ function testOutputs(type, t) {
         });
     }
 
-    let popQ = new Queue(1);
+    const popQ = new Queue(1);
 
-    let tempFileNamePrefix = tmp.tmpNameSync();
+    const tempFileNamePrefix = tmp.tmpNameSync();
     analyser(
-        {cc: 'test', type: type, limit: 100, output: tempFileNamePrefix},
+        { cc: 'test', type: type, limit: 100, output: tempFileNamePrefix },
         (err) => {
             t.error(err);
-            let orders = ['bigram', 'unigram'];
-            for (let j=0;j<orders.length;j++) {
-                let order = orders[j];
+            const orders = ['bigram', 'unigram'];
+            for (let j = 0; j < orders.length; j++) {
+                const order = orders[j];
                 popQ.defer(checkCSV, order, type, tempFileNamePrefix, t);
                 popQ.defer(checkTable, order, type, t);
             }
@@ -197,16 +196,16 @@ test('analyze.js comparison', (t) => {
      * @param {function} cb - callback
      */
     function checkCSV(order, type, tempFileNamePrefix, t, cb) {
-        let tmpOutput = `${tempFileNamePrefix}-${type}-${order}.csv`;
+        const tmpOutput = `${tempFileNamePrefix}-${type}-${order}.csv`;
 
-        let fixturePath = path.resolve(__dirname, `./fixtures/analyze.significant-${type}-${order}s.csv`);
+        const fixturePath = path.resolve(__dirname, `./fixtures/analyze.significant-${type}-${order}s.csv`);
         if (process.env.UPDATE) {
             fs.createReadStream(tmpOutput)
                 .pipe(fs.createWriteStream(fixturePath));
             t.fail(`updated ${type} ${order} fixture ${fixturePath}`);
         } else {
-            let expected = fs.readFileSync(fixturePath).toString();
-            let actual = fs.readFileSync(tmpOutput).toString();
+            const expected = fs.readFileSync(fixturePath).toString();
+            const actual = fs.readFileSync(tmpOutput).toString();
             t.deepEqual(actual, expected, `${type} ${order} output is as expected`);
         }
         return cb();
@@ -220,13 +219,13 @@ test('analyze.js comparison', (t) => {
      * @param {function} cb - callback
      */
     function checkComparison(order, t, cb) {
-        let q=`SELECT * FROM ${order}_comparison;`;
+        const q = `SELECT * FROM ${order}_comparison;`;
         pool.query(q, (err, res) => {
             t.error(err);
-            let results = [];
+            const results = [];
 
-            for (let j=0;j<res.rows.length;j++) {
-                //d = res.rows[j]
+            for (let j = 0; j < res.rows.length; j++) {
+                // d = res.rows[j]
                 results.push(res.rows[j]);
             }
             if (results.length <= 0) {
@@ -237,19 +236,19 @@ test('analyze.js comparison', (t) => {
         });
     }
 
-    let popQ = new Queue(1);
-    let tempFileNamePrefix = tmp.tmpNameSync();
+    const popQ = new Queue(1);
+    const tempFileNamePrefix = tmp.tmpNameSync();
     analyser(
-        {cc: 'test', compare: true, output: tempFileNamePrefix},
+        { cc: 'test', compare: true, output: tempFileNamePrefix },
         (err) => {
             if (err) throw err;
-            let orders = ['bigram', 'unigram'];
-            for (let j=0;j<orders.length;j++) {
-                let order = orders[j];
+            const orders = ['bigram', 'unigram'];
+            for (let j = 0; j < orders.length; j++) {
+                const order = orders[j];
                 popQ.defer(checkComparison, order, t);
-                let types = ['network', 'address'];
-                for (let k=0; k<types.length; k++) {
-                    let type = types[k];
+                const types = ['network', 'address'];
+                for (let k = 0; k < types.length; k++) {
+                    const type = types[k];
                     popQ.defer(checkCSV, order, type, tempFileNamePrefix, t);
                 }
             }

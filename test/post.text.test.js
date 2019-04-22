@@ -1,9 +1,11 @@
+'use strict';
+
 const post = require('../lib/post/text').post;
 const test = require('tape');
 
 const args = {
     label: require('../lib/label/titlecase')()
-}
+};
 
 test('Post: Text', (t) => {
     t.deepEquals(post(), undefined, 'return unprocessable 1');
@@ -31,7 +33,7 @@ test('Post: Text', (t) => {
             'carmen:text': [
                 { freq: 12, display: 'Main Street', tokenized: 'main st' },
                 { freq: 2, display: 'Some Other St', tokenized: 'some other st' },
-                { display: 'Main Street', tokenized: 'main st' },
+                { display: 'Main Street', tokenized: 'main st' }
             ],
             'carmen:text_xx': [
                 { display: 'Spring Rd', tokenized: 'spring rd' },

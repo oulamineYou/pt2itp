@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 const test = require('tape');
 const dedupe = require('../index').dedupe;
@@ -34,11 +36,12 @@ test('dedupe (dataset)', (t) => {
     const rl = new ReadLine('/tmp/dedupeout.geojson');
 
     const output = {};
-
-    while (line = rl.next()) {
+    let line = rl.next();
+    while (line) {
         line = JSON.parse(line);
 
         output[line.id] = line;
+        line = rl.next();
     }
 
     t.deepEquals(Object.keys(output), [
@@ -51,7 +54,7 @@ test('dedupe (dataset)', (t) => {
         id: 1,
         type: 'Feature',
         properties: {
-            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            names: [{ display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' }],
             number: '123',
             source: 'openaddresses',
             random: 'property',
@@ -59,7 +62,7 @@ test('dedupe (dataset)', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -77.4818462133408, 37.5005295201296 ]
+            coordinates: [-77.4818462133408, 37.5005295201296]
         }
     }, 'feature 1');
 
@@ -67,14 +70,14 @@ test('dedupe (dataset)', (t) => {
         id: 3,
         type: 'Feature',
         properties: {
-            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            names: [{ display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' }],
             number: '123',
             source: 'random',
             street: 'Main St'
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -77.4825543165207, 37.5002699129026 ]
+            coordinates: [-77.4825543165207, 37.5002699129026]
         }
     }, 'feature 3');
 
@@ -82,14 +85,14 @@ test('dedupe (dataset)', (t) => {
         id: 4,
         type: 'Feature',
         properties: {
-            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            names: [{ display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' }],
             number: '123',
             source: 'random',
             street: 'Main St'
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -77.4819427728653, 37.4995634362065 ]
+            coordinates: [-77.4819427728653, 37.4995634362065]
         }
     }, 'feature 4');
 
@@ -97,14 +100,14 @@ test('dedupe (dataset)', (t) => {
         id: 5,
         type: 'Feature',
         properties: {
-            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            names: [{ display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' }],
             number: '123',
             source: 'openaddresses',
             street: 'Main St'
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -77.4813687801361, 37.4999975371368 ]
+            coordinates: [-77.4813687801361, 37.4999975371368]
         }
     }, 'feature 5');
 
@@ -112,14 +115,14 @@ test('dedupe (dataset)', (t) => {
         id: 6,
         type: 'Feature',
         properties: {
-            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            names: [{ display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' }],
             number: '123a',
             source: 'rando',
             street: 'Main St'
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -77.4813687801361, 37.4999975371368 ]
+            coordinates: [-77.4813687801361, 37.4999975371368]
         }
 
     }, 'feature 6');
@@ -156,16 +159,18 @@ test('dedupe (hecate)', (t) => {
 
     const output = {};
 
-    while (line = rl.next()) {
+    let line = rl.next();
+    while (line) {
         line = JSON.parse(line);
 
         output[line.id] = line;
+        line = rl.next();
     }
 
     t.deepEquals(Object.keys(output), [
-        '2', '7', '8', // ID 2,7 & 8 should be deleted (leaving 1) (duplicate geom/number/street)
-                        // ID 3 & 4 should be ignored - duplicate number/street but not geom
-                        // ID 5 & 6 should be ignored - duplicate street/geom - 123 vs 123a for number
+        '2', '7', '8' // ID 2,7 & 8 should be deleted (leaving 1) (duplicate geom/number/street)
+        // ID 3 & 4 should be ignored - duplicate number/street but not geom
+        // ID 5 & 6 should be ignored - duplicate street/geom - 123 vs 123a for number
     ], 'output ids as expected');
 
     t.deepEquals(output[2], {
@@ -174,14 +179,14 @@ test('dedupe (hecate)', (t) => {
         type: 'Feature',
         action: 'delete',
         properties: {
-            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            names: [{ display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' }],
             number: '123',
             source: 'random',
             street: 'Main St'
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -77.4818462133408, 37.5005295201296 ]
+            coordinates: [-77.4818462133408, 37.5005295201296]
         }
     }, 'feature 2');
 
@@ -191,7 +196,7 @@ test('dedupe (hecate)', (t) => {
         type: 'Feature',
         action: 'delete',
         properties: {
-            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            names: [{ display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' }],
             number: '123',
             source: 'openaddresses',
             random: 'property',
@@ -199,7 +204,7 @@ test('dedupe (hecate)', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -77.4818462133408, 37.5005295201296 ]
+            coordinates: [-77.4818462133408, 37.5005295201296]
         }
     }, 'feature 7');
 
@@ -209,7 +214,7 @@ test('dedupe (hecate)', (t) => {
         type: 'Feature',
         action: 'delete',
         properties: {
-            names: [ { display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' } ],
+            names: [{ display: 'Main St', freq: 1, priority: 0, source: 'address', tokenized: 'main st', tokenless: 'main st' }],
             number: '123',
             source: 'openaddresses',
             random: 'property',
@@ -217,7 +222,7 @@ test('dedupe (hecate)', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -77.4818462133408, 37.5005295201296 ]
+            coordinates: [-77.4818462133408, 37.5005295201296]
         }
     }, 'feature 8');
 

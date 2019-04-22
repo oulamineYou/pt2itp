@@ -1,3 +1,5 @@
+'use strict';
+
 const worker = require('../lib/map');
 const exec = require('child_process').exec;
 const fs = require('fs');
@@ -6,7 +8,6 @@ const spawn = require('tape-spawn');
 const csv = require('fast-csv');
 const test = require('tape');
 const path = require('path');
-const pg = require('pg');
 
 const database = 'pt_test';
 const carmenIndex = '/tmp/test-ri.mbtiles';
@@ -25,7 +26,7 @@ test('load address and network files', (t) => {
         debug: true,
         db: database,
         tokens: 'en'
-    }, (err, res) => {
+    }, (err) => {
         t.ifError(err);
         t.end();
     });
@@ -33,7 +34,7 @@ test('load address and network files', (t) => {
 
 // make sure to delete /tmp/test-ri.* before running indexer
 test('clean up any previous database files', (t) => {
-    exec('rm -rf /tmp/test-ri.*', (err, stdout, stderr) => {
+    exec('rm -rf /tmp/test-ri.*', (err) => {
         t.ifError(err);
         if (fs.existsSync('/tmp/test-ri.mbtiles')) {
             t.equal(fs.existsSync('/tmp/test-ri.mbtiles'), false, 'cleans up test-ri.mbtiles');
@@ -45,7 +46,7 @@ test('clean up any previous database files', (t) => {
 // step 2: create index file for test mode
 // cat <geojson> | carmen-index --config=${config} --index=${carmenIndex}
 test('create index from geojson', (t) => {
-    exec(`cat /tmp/itp.geojson | ${__dirname}/../node_modules/.bin/carmen-index --config=${config} --index=${carmenIndex}`, (err, stdout, stderr) => {
+    exec(`cat /tmp/itp.geojson | ${__dirname}/../node_modules/.bin/carmen-index --config=${config} --index=${carmenIndex}`, (err) => {
         t.ifError(err);
         t.equal(fs.existsSync('/tmp/test-ri.mbtiles'), true, 'creates test-ri.mbtiles');
         t.end();
@@ -55,33 +56,32 @@ test('create index from geojson', (t) => {
 test('query from new index', (t) => {
     exec(`${__dirname}/../node_modules/.bin/carmen --query "5 Greenview Rd" ${carmenIndex} | grep "1.00 5 Greenview Rd" | tr -d '\n'`, (err, res) => {
         t.ifError(err);
-        t.equal(res.split(',')[0], "- 1.00 5 Greenview Rd", 'Finds 5 Greenview Rd');
+        t.equal(res.split(',')[0], '- 1.00 5 Greenview Rd', 'Finds 5 Greenview Rd');
         t.end();
     });
 });
 
 // step 3: run test mode against the built index
 test('test', (t) => {
-    exec(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output} --tokens en`, (err, stdout, stderr) => {
+    exec(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output} --tokens en`, () => {
         t.test('Return correct error messages in csv', (t) => {
-            let csvErrs = [];
-            let queryResults;
+            const csvErrs = [];
 
             csv.fromPath(output, { headers: true })
-            .on('data', (data) => {
-                csvErrs.push(data);
-            }).on('end', () => {
-                t.equal(csvErrs.length, 1);
-                t.equal(csvErrs.filter(ele => ele['addr text'] === 'greeeeeenview')[0].error, 'NAME MISMATCH (SOFT)');
-                t.end();
-            });
+                .on('data', (data) => {
+                    csvErrs.push(data);
+                }).on('end', () => {
+                    t.equal(csvErrs.length, 1);
+                    t.equal(csvErrs.filter((ele) => ele['addr text'] === 'greeeeeenview')[0].error, 'NAME MISMATCH (SOFT)');
+                    t.end();
+                });
         });
     });
 });
 
 test('testcsv', (t) => {
     t.test('Return correct std.err message', (t) => {
-        let st = spawn(t, `${__dirname}/../index.js testcsv --index ${carmenIndex} --input ${path.resolve(__dirname, './fixtures/test-ri/address.csv')} --output '/tmp/testcsv-ri.err' --config ${config}`);
+        const st = spawn(t, `${__dirname}/../index.js testcsv --index ${carmenIndex} --input ${path.resolve(__dirname, './fixtures/test-ri/address.csv')} --output '/tmp/testcsv-ri.err' --config ${config}`);
         st.stderr.match(`
             ERROR TYPE                   COUNT
             -----------------------------------------------------------------------------------
@@ -99,17 +99,17 @@ test('testcsv', (t) => {
     });
 
     t.test('Return correct error messages in csv', (t) => {
-        let csvErrs = [];
+        const csvErrs = [];
 
-        csv.fromPath('/tmp/testcsv-ri.err', {headers: true})
-        .on('data', (data) => { csvErrs.push(data); })
-        .on('end', () => {
-            t.equal(csvErrs.length, 9);
-            t.equal(csvErrs.filter(ele => ele.query === '26 Greenview Rd')[0].error, 'DIST');
-            t.equal(csvErrs.filter(ele => ele.query === '31 Greenview Rd')[0].error, 'DIST');
-            t.equal(csvErrs.filter(ele => ele.query === '34 grn vw rd')[0].error, 'NO RESULTS');
-            t.equal(csvErrs.filter(ele => ele.query === '40 Greeeeeenview Rd')[0].error, 'DIST');
-            t.end();
-        });
+        csv.fromPath('/tmp/testcsv-ri.err', { headers: true })
+            .on('data', (data) => { csvErrs.push(data); })
+            .on('end', () => {
+                t.equal(csvErrs.length, 9);
+                t.equal(csvErrs.filter((ele) => ele.query === '26 Greenview Rd')[0].error, 'DIST');
+                t.equal(csvErrs.filter((ele) => ele.query === '31 Greenview Rd')[0].error, 'DIST');
+                t.equal(csvErrs.filter((ele) => ele.query === '34 grn vw rd')[0].error, 'NO RESULTS');
+                t.equal(csvErrs.filter((ele) => ele.query === '40 Greeeeeenview Rd')[0].error, 'DIST');
+                t.end();
+            });
     });
 });

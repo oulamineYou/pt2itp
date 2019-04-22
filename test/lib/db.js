@@ -1,3 +1,5 @@
+'use strict';
+
 const pg = require('pg');
 const pg_init = require('../../native/index.node').pg_init;
 
@@ -7,7 +9,7 @@ const pg_init = require('../../native/index.node').pg_init;
  */
 function init(test) {
     test('Database Reset', (t) => {
-        let pool = new pg.Pool({
+        const pool = new pg.Pool({
             max: 10,
             user: 'postgres',
             database: 'postgres',
@@ -68,7 +70,7 @@ function get() {
         database: 'pt_test',
         idleTimeoutMillis: 30000
     });
-};
+}
 
 module.exports = {
     init: init,

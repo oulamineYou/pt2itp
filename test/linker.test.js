@@ -1,3 +1,5 @@
+'use strict';
+
 const linker = require('../lib/map/linker');
 const test = require('tape');
 
@@ -32,63 +34,63 @@ test('Passing Linker Matches', (t) => {
             { id: 1, name: { display: 'Main Street', tokenized: 'main st' } }
         ]),
         [{ id: 1, name: { display: 'Main Street', tokenized: 'main st' }, score: 100 }],
-    'basic match');
+        'basic match');
 
     t.deepEquals(
         linker([{ display: 'Main Street', tokenized: 'main st' }], [
-            { id: 1, name: { display: 'Maim Street', tokenized: 'maim st' } },
+            { id: 1, name: { display: 'Maim Street', tokenized: 'maim st' } }
         ]),
         [{ id: 1, name: { display: 'Maim Street', tokenized: 'maim st' }, score: 85.71428571428572 }],
-    'close match');
+        'close match');
 
     t.deepEquals(
         linker([{ display: '1st Street West', tokenized: '1st st west' }], [
-            { id: 1, name: { display: '2nd Street West', tokenized: '2nd st west' } },
+            { id: 1, name: { display: '2nd Street West', tokenized: '2nd st west' } }
         ]),
         false,
-    'no match numeric simple (2nd)');
+        'no match numeric simple (2nd)');
 
     t.deepEquals(
         linker([{ display: '1st Street West', tokenized: '1st st west' }], [
-            { id: 1, name: { display: '3rd Street West', tokenized: '3rd st west' } },
+            { id: 1, name: { display: '3rd Street West', tokenized: '3rd st west' } }
         ]),
         false,
-    'no match numeric simple (3rd)');
+        'no match numeric simple (3rd)');
 
     t.deepEquals(
         linker([{ display: '1st Street West', tokenized: '1st st west' }], [
-            { id: 1, name: { display: '4th Street West', tokenized: '4th st west' } },
+            { id: 1, name: { display: '4th Street West', tokenized: '4th st west' } }
         ]),
         false,
-    'no match numeric simple (4th)');
+        'no match numeric simple (4th)');
 
     t.deepEquals(
         linker([{ display: '11th Street West', tokenized: '11th st west' }], [
-            { id: 1, name: { display: '21st Street West', tokenized: '21st st west' } },
+            { id: 1, name: { display: '21st Street West', tokenized: '21st st west' } }
         ]),
         false,
-    'no match numeric simple (21st)');
+        'no match numeric simple (21st)');
 
     t.deepEquals(
         linker([{ display: 'US Route 50 East', tokenized: 'us route 50 east' }], [
-            { id: 1, name: { display: 'US Route 50 West', tokenized: 'us route 50 west' } },
+            { id: 1, name: { display: 'US Route 50 West', tokenized: 'us route 50 west' } }
         ]),
         [{ id: 1, name: { display: 'US Route 50 West', tokenized: 'us route 50 west' }, score: 95.3125 }],
-    'Numbers match - cardinals don\'t');
+        'Numbers match - cardinals don\'t');
 
     t.deepEquals(
         linker([{ display: 'US Route 60 East', tokenized: 'us route 50 east' }], [
-            { id: 1, name: { display: 'US Route 51 West', tokenized: 'us route 51 west' } },
+            { id: 1, name: { display: 'US Route 51 West', tokenized: 'us route 51 west' } }
         ]),
         false,
-    'Number mismatch fail');
+        'Number mismatch fail');
 
     t.deepEquals(
         linker([{ display: '11th Street West', tokenized: '11th st west' }], [
-            { id: 1, name: { display: '11th Avenue West', tokenized: '11th av west' } },
+            { id: 1, name: { display: '11th Avenue West', tokenized: '11th av west' } }
         ]),
-        [ { id: 1, name: { display: '11th Avenue West', tokenized: '11th av west' }, score: 94.44444444444444 } ],
-    'match numeric simple (type mismatch)');
+        [{ id: 1, name: { display: '11th Avenue West', tokenized: '11th av west' }, score: 94.44444444444444 }],
+        'match numeric simple (type mismatch)');
 
     t.deepEquals(
         linker([{ display: 'Main Street', tokenized: 'main st' }], [
@@ -98,7 +100,7 @@ test('Passing Linker Matches', (t) => {
             { id: 4, name: { display: 'Main Drive', tokenized: 'main dr' } }
         ]),
         [{ id: 1, name: { display: 'Main Street', tokenized: 'main st' }, score: 100 }],
-    'diff suff');
+        'diff suff');
 
     t.deepEquals(
         linker([{ display: 'Main Street', tokenized: 'main st' }], [
@@ -108,15 +110,15 @@ test('Passing Linker Matches', (t) => {
             { id: 4, name: { display: 'Maim Street', tokenized: 'maim st' } }
         ]),
         [{ id: 1, name: { display: 'Main Street', tokenized: 'main st' }, score: 100 }],
-    'diff name');
+        'diff name');
 
     t.deepEquals(
         linker([{ display: 'Ola Avenue', tokenized: 'ola ave', tokenless: 'ola' }], [
-            { id: 1, name: { display: 'Ola', tokenized: 'ola', tokenless: 'ola'} },
+            { id: 1, name: { display: 'Ola', tokenized: 'ola', tokenless: 'ola' } },
             { id: 2, name: { display: 'Ola Avg' , tokenized: 'ola avg', tokenless: 'ola avg' } }
         ]),
         [{ id: 1, name: { display: 'Ola', tokenized: 'ola', tokenless: 'ola' }, score: 80 }],
-    'short names, tokens deweighted');
+        'short names, tokens deweighted');
 
     t.deepEquals(
         linker([{ tokenized: 'ave st', tokenless: '', display: 'Avenue Street' }], [
@@ -124,7 +126,7 @@ test('Passing Linker Matches', (t) => {
             { id: 2, name: { tokenized: 'avenida', tokenless: 'avenida' } }
         ]),
         [{ id: 1, name: { tokenized: 'ave', tokenless: '', display: 'Avenue' }, score: 77.77777777777777 }],
-    'all-token scenario (e.g. avenue street)');
+        'all-token scenario (e.g. avenue street)');
 
     t.deepEquals(
         linker([{ tokenized: 'ave st', tokenless: '', display: 'Avenue Street' }], [
@@ -136,7 +138,7 @@ test('Passing Linker Matches', (t) => {
             { id: 1, name: { tokenized: 'ave', tokenless: '', display: 'Avenue' }, score: 77.77777777777777 },
             { id: 2, name: { tokenized: 'ave', tokenless: '', display: 'Avenue' }, score: 77.77777777777777 }
         ],
-    'multiple winners (exact match)');
+        'multiple winners (exact match)');
 
     t.deepEquals(
         linker([{ tokenized: 'main st west', tokenless: 'main' }], [
@@ -144,15 +146,15 @@ test('Passing Linker Matches', (t) => {
             { id: 2, name: { tokenized: 'main av', tokenless: 'main', display: 'Main Avenue' } },
             { id: 3, name: { tokenized: 'main st', tokenless: 'main', display: 'Main Street' } }
         ]),
-        [ { id: 3, name: { tokenized: 'main st', tokenless: 'main', display: 'Main Street' }, score: 86.84210526315789 }, ],
-    'Very Close Matches w/ tokenless');
+        [{ id: 3, name: { tokenized: 'main st', tokenless: 'main', display: 'Main Street' }, score: 86.84210526315789 }],
+        'Very Close Matches w/ tokenless');
 
     t.deepEquals(
         linker([{ display: 'Lake Street West', tokenized: 'lk ts w', tokenless: '' }], [
             { id: 1, name: { tokenized: 'w lk st', tokenless: '', display: 'West Lake Street' } }
         ]),
-        [ { id: 1, name: { tokenized: 'w lk st', tokenless: '', display: 'West Lake Street' }, score: 90.47619047619048 }, ],
-    'Match w/o tokenless');
+        [{ id: 1, name: { tokenized: 'w lk st', tokenless: '', display: 'West Lake Street' }, score: 90.47619047619048 }],
+        'Match w/o tokenless');
 
     t.deepEquals(
         linker([{ tokenized: 'main st', tokenless: '', display: 'Main Street' }], [
@@ -162,9 +164,9 @@ test('Passing Linker Matches', (t) => {
         ]),
         [
             { id: 1, name: { tokenized: 'maim st', tokenless: 'maim', display: 'Maim Street' }, score: 85.71428571428572 },
-            { id: 2, name: { tokenized: 'maim st', tokenless: 'maim', display: 'Maim Street'}, score: 85.71428571428572 }
+            { id: 2, name: { tokenized: 'maim st', tokenless: 'maim', display: 'Maim Street' }, score: 85.71428571428572 }
         ],
-    'multiple winners (score codepath)');
+        'multiple winners (score codepath)');
 
     t.deepEquals(
         linker([{ tokenized: 's st nw', display: 'S STREET NW', tokenless: null }], [
@@ -173,22 +175,22 @@ test('Passing Linker Matches', (t) => {
             { id: 862, name: { tokenized: 's st ne', display: 'S STREET NE', tokenless: '' } },
             { id: 388, name: { tokenized: 'bates st nw', display: 'BATES STREET NW', tokenless: 'bates' } }
         ]),
-        [ { id: 863, name: { tokenized: 's st nw', display: 'S STREET NW', tokenless: '' }, score: 100 } ],
-    'single winner w/ null tokenless');
+        [{ id: 863, name: { tokenized: 's st nw', display: 'S STREET NW', tokenless: '' }, score: 100 }],
+        'single winner w/ null tokenless');
 
     t.deepEquals(
         linker([{ tokenized: 'w main st', display: 'West Main Street', tokenless: 'main' }], [
             { id: 388, name: { tokenized: 'w st st', display: 'West Saint Street', tokenless: '' } }
         ]),
         false,
-    'close tokenized');
+        'close tokenized');
 
     t.deepEquals(
         linker([{ tokenized: 'w st st', display: 'West Saint Street', tokenless: '' }], [
             { id: 388, name: { tokenized: 'w main st', display: 'West Main Street', tokenless: 'main' } }
         ]),
         false,
-    'close tokenized reverse');
+        'close tokenized reverse');
 
     t.deepEquals(
         linker([{ tokenized: 's st nw', display: 'S STREET NW', tokenless: null }], [
@@ -235,8 +237,8 @@ test('Passing Linker Matches', (t) => {
             { id: 565, name: { tokenized: '2nd st nw', display: '2nd Street Northwest', tokenless: null } },
             { id: 2402, name: { tokenized: 'thomas st nw', display: 'Thomas Street Northwest', tokenless: 'thomas' } }
         ]),
-        [ { id: 863, name: { tokenized: 's st nw', display: 'S STREET NW', tokenless: '' }, score: 100 } ],
-    'Ensure short circuiting never beats an exact match');
+        [{ id: 863, name: { tokenized: 's st nw', display: 'S STREET NW', tokenless: '' }, score: 100 }],
+        'Ensure short circuiting never beats an exact match');
     t.end();
 });
 
@@ -246,7 +248,7 @@ test('Failing Linker Matches', (t) => {
             { id: 1, name: { display: 'Anne Boulevard', tokenized: 'anne blvd' } }
         ]),
         false,
-    'basic fail');
+        'basic fail');
 
     t.end();
 });
