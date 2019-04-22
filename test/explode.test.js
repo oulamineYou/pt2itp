@@ -1,3 +1,5 @@
+'use strict';
+
 const turf = require('@turf/turf');
 const test = require('tape');
 const fs = require('fs');
@@ -13,18 +15,18 @@ test('explode', (t) => {
         const explode = new Explode();
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [1,1]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [1,1]
                 }
             }]
-        }).features[0].geometry.coordinates, [ 1, 1 ] , 'Non joinstrings are ignored');
+        }).features[0].geometry.coordinates, [1, 1] , 'Non joinstrings are ignored');
 
-        q.end()
+        q.end();
     });
 
     t.test('explode', (q) => {
@@ -33,16 +35,16 @@ test('explode', (t) => {
         });
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[0,0],[0,1]], [[0,1],[1,1]]]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[0,0],[0,1]], [[0,1],[1,1]]]
                 }
             }]
-        }).features[0].geometry.coordinates, [ [ 0, 0 ], [ 0, 1 ], [ 1, 1 ] ], '90 deg angle');
+        }).features[0].geometry.coordinates, [[0, 0], [0, 1], [1, 1]], '90 deg angle');
 
         q.end();
     });
@@ -53,16 +55,16 @@ test('explode', (t) => {
         });
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[0,0],[0,1]], [[0,1],[1,1]]]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[0,0],[0,1]], [[0,1],[1,1]]]
                 }
             }]
-        }).features[0].geometry.coordinates, [ [ 0, 0 ], [ 0, 1 ] ], '90 deg angle cutoff');
+        }).features[0].geometry.coordinates, [[0, 0], [0, 1]], '90 deg angle cutoff');
 
         q.end();
     });
@@ -71,16 +73,16 @@ test('explode', (t) => {
         const explode = new Explode();
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[0,0],[1,1]]]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[0,0],[1,1]]]
                 }
             }]
-        }).features[0].geometry.coordinates, [ [ 0, 0 ], [ 1, 1 ] ] , '-1->');
+        }).features[0].geometry.coordinates, [[0, 0], [1, 1]] , '-1->');
 
         q.end();
     });
@@ -89,16 +91,16 @@ test('explode', (t) => {
         const explode = new Explode();
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[-1,-1],[0,0]],[[0,0],[1,1]]]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[-1,-1],[0,0]],[[0,0],[1,1]]]
                 }
             }]
-        }).features[0].geometry.coordinates, [[-1,-1,], [0,0], [1,1]], '-1-> -2->');
+        }).features[0].geometry.coordinates, [[-1,-1], [0,0], [1,1]], '-1-> -2->');
 
         q.end();
     });
@@ -107,16 +109,16 @@ test('explode', (t) => {
         const explode = new Explode();
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[0,0],[1,1]], [[-1,-1],[0,0]]]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[0,0],[1,1]], [[-1,-1],[0,0]]]
                 }
             }]
-        }).features[0].geometry.coordinates, [[-1,-1,], [0,0], [1,1]], '-2-> -1->');
+        }).features[0].geometry.coordinates, [[-1,-1], [0,0], [1,1]], '-2-> -1->');
 
         q.end();
     });
@@ -125,16 +127,16 @@ test('explode', (t) => {
         const explode = new Explode();
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[-1,-1],[0,0]],[[1,1],[0,0]]]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[-1,-1],[0,0]],[[1,1],[0,0]]]
                 }
             }]
-        }).features[0].geometry.coordinates, [[-1,-1,], [0,0], [1,1]], '-1-> <-2-');
+        }).features[0].geometry.coordinates, [[-1,-1], [0,0], [1,1]], '-1-> <-2-');
 
         q.end();
     });
@@ -143,16 +145,16 @@ test('explode', (t) => {
         const explode = new Explode();
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[1,1],[0,0]], [[-1,-1],[0,0]]]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[1,1],[0,0]], [[-1,-1],[0,0]]]
                 }
             }]
-        }).features[0].geometry.coordinates, [[1,1],[0,0],[-1,-1 ]], '-2-> <-1-');
+        }).features[0].geometry.coordinates, [[1,1],[0,0],[-1,-1]], '-2-> <-1-');
 
         q.end();
     });
@@ -161,16 +163,16 @@ test('explode', (t) => {
         const explode = new Explode();
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[-1,-1],[0,0]],[[2,2], [1,1]],[[0,0],[1,1]], [[3,3], [2,2]]]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[-1,-1],[0,0]],[[2,2], [1,1]],[[0,0],[1,1]], [[3,3], [2,2]]]
                 }
             }]
-        }).features[0].geometry.coordinates, [[-1,-1,], [0,0], [1,1],[2,2],[3,3]], '-1-> -3-> <-2- <-4-');
+        }).features[0].geometry.coordinates, [[-1,-1], [0,0], [1,1],[2,2],[3,3]], '-1-> -3-> <-2- <-4-');
 
         q.end();
     });
@@ -179,16 +181,16 @@ test('explode', (t) => {
         const explode = new Explode();
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[3,3], [2,2]], [[4,4], [3,3]]]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[3,3], [2,2]], [[4,4], [3,3]]]
                 }
             }]
-        }).features[0].geometry.coordinates, [ [ 4, 4 ], [ 3, 3 ], [ 2, 2 ] ], '<-1- <-2-');
+        }).features[0].geometry.coordinates, [[4, 4], [3, 3], [2, 2]], '<-1- <-2-');
 
         q.end();
     });
@@ -196,19 +198,19 @@ test('explode', (t) => {
     t.test('explode', (q) => {
         const explode = new Explode();
 
-        let res = explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[4,4],[3,3]], [[3,3],[2,2]]]
+        const res = explode.join({
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[4,4],[3,3]], [[3,3],[2,2]]]
                 }
             }]
         });
         q.pass('<-2- <-1-');
-        q.deepEquals(res.features[0].geometry.coordinates, [ [ 4, 4 ], [ 3, 3 ], [ 2, 2 ] ]);
+        q.deepEquals(res.features[0].geometry.coordinates, [[4, 4], [3, 3], [2, 2]]);
         q.deepEquals(res.features.length, 1);
         q.end();
     });
@@ -216,45 +218,45 @@ test('explode', (t) => {
     t.test('explode', (q) => {
         const explode = new Explode();
 
-        let res = explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[-1,-1],[0,0]],[[3,3], [2,2]],[[0,0],[1,1]], [[4,4], [3,3]]]
+        const res = explode.join({
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[-1,-1],[0,0]],[[3,3], [2,2]],[[0,0],[1,1]], [[4,4], [3,3]]]
                 }
             }]
         });
 
         q.ok(true, '-1-> -3->   <-2- <-4-');
-        q.deepEquals(res.features[0].geometry.coordinates, [ [ -1, -1 ], [ 0, 0 ], [ 1, 1 ] ]);
-        q.deepEquals(res.features[1].geometry.coordinates, [ [ 4, 4 ], [ 3, 3 ], [ 2, 2 ]]);
+        q.deepEquals(res.features[0].geometry.coordinates, [[-1, -1], [0, 0], [1, 1]]);
+        q.deepEquals(res.features[1].geometry.coordinates, [[4, 4], [3, 3], [2, 2]]);
         q.deepEquals(res.features.length, 2);
         q.end();
     });
 
-    //Don't connect where divided highways meet or else you can get odds and evens on the same side
+    // Don't connect where divided highways meet or else you can get odds and evens on the same side
     t.test('explode', (q) => {
         const explode = new Explode();
 
-        let res = explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
-                        [ [ -66.15374565124512, 45.24081084565751 ], [ -66.15177154541016, 45.23967766228492 ], [ -66.15009784698486, 45.23816671596496 ], [ -66.14908933639526, 45.236489518498345 ], [ -66.14827394485474, 45.23441939571161 ] ],
-                        [ [ -66.15344524383545, 45.241203677284545 ], [ -66.15202903747559, 45.24032735684951 ], [ -66.15102052688599, 45.23963233447991 ], [ -66.14992618560791, 45.23855956587336 ], [ -66.14919662475586, 45.23730545858455 ], [ -66.1483383178711, 45.23499359791086 ], [ -66.14827394485474, 45.23441939571161 ] ]
+        const res = explode.join({
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [
+                        [[-66.15374565124512, 45.24081084565751], [-66.15177154541016, 45.23967766228492], [-66.15009784698486, 45.23816671596496], [-66.14908933639526, 45.236489518498345], [-66.14827394485474, 45.23441939571161]],
+                        [[-66.15344524383545, 45.241203677284545], [-66.15202903747559, 45.24032735684951], [-66.15102052688599, 45.23963233447991], [-66.14992618560791, 45.23855956587336], [-66.14919662475586, 45.23730545858455], [-66.1483383178711, 45.23499359791086], [-66.14827394485474, 45.23441939571161]]
                     ]
                 }
             }]
         });
-        q.deepEquals(res.features[0].geometry.coordinates, [ [ -66.15374565124512, 45.24081084565751 ], [ -66.15177154541016, 45.23967766228492 ], [ -66.15009784698486, 45.23816671596496 ], [ -66.14908933639526, 45.236489518498345 ], [ -66.14827394485474, 45.23441939571161 ] ]);
-        q.deepEquals(res.features[1].geometry.coordinates, [ [ -66.15344524383545, 45.241203677284545 ], [ -66.15202903747559, 45.24032735684951 ], [ -66.15102052688599, 45.23963233447991 ], [ -66.14992618560791, 45.23855956587336 ], [ -66.14919662475586, 45.23730545858455 ], [ -66.1483383178711, 45.23499359791086 ], [ -66.14827394485474, 45.23441939571161 ] ]);
+        q.deepEquals(res.features[0].geometry.coordinates, [[-66.15374565124512, 45.24081084565751], [-66.15177154541016, 45.23967766228492], [-66.15009784698486, 45.23816671596496], [-66.14908933639526, 45.236489518498345], [-66.14827394485474, 45.23441939571161]]);
+        q.deepEquals(res.features[1].geometry.coordinates, [[-66.15344524383545, 45.241203677284545], [-66.15202903747559, 45.24032735684951], [-66.15102052688599, 45.23963233447991], [-66.14992618560791, 45.23855956587336], [-66.14919662475586, 45.23730545858455], [-66.1483383178711, 45.23499359791086], [-66.14827394485474, 45.23441939571161]]);
         q.deepEquals(res.features.length, 2);
         q.end();
     });
@@ -265,16 +267,16 @@ test('explode', (t) => {
         });
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[0,0],[1,1]],[[0,0],[-1,-1]]]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[0,0],[1,1]],[[0,0],[-1,-1]]]
                 }
             }]
-        }).features[0].geometry.coordinates, [[-1,-1,], [0,0], [1,1]], '<-2- -1->');
+        }).features[0].geometry.coordinates, [[-1,-1], [0,0], [1,1]], '<-2- -1->');
 
         q.end();
     });
@@ -285,16 +287,16 @@ test('explode', (t) => {
         });
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [[[0,0],[-1,-1]],[[0,0],[1,1]]]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [[[0,0],[-1,-1]],[[0,0],[1,1]]]
                 }
             }]
-        }).features[0].geometry.coordinates, [[1,1,], [0,0], [-1,-1]], '<-1- -2->');
+        }).features[0].geometry.coordinates, [[1,1], [0,0], [-1,-1]], '<-1- -2->');
 
         q.end();
     });
@@ -303,44 +305,44 @@ test('explode', (t) => {
         const explode = new Explode();
 
         q.deepEquals(explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
-                        [ [ -75.49416303634644, 39.78758228335605 ], [ -75.49162030220032, 39.78959385734031 ] ],
-                        [ [ -75.49162030220032, 39.78959385734031 ], [ -75.49128770828247, 39.78975873784561 ] ]
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [
+                        [[-75.49416303634644, 39.78758228335605], [-75.49162030220032, 39.78959385734031]],
+                        [[-75.49162030220032, 39.78959385734031], [-75.49128770828247, 39.78975873784561]]
                     ]
                 }
             }]
-        }).features[0].geometry.coordinates, [ [ -75.49416303634644, 39.78758228335605 ], [ -75.49162030220032, 39.78959385734031 ], [ -75.49128770828247, 39.78975873784561 ] ], '-1-> -2-> (real world)');
+        }).features[0].geometry.coordinates, [[-75.49416303634644, 39.78758228335605], [-75.49162030220032, 39.78959385734031], [-75.49128770828247, 39.78975873784561]], '-1-> -2-> (real world)');
 
         q.end();
     });
 
-    //Don't connect segements that will create a self intersecting geometry
+    // Don't connect segements that will create a self intersecting geometry
     t.test('explode', (q) => {
         const explode = new Explode();
 
-        let res = explode.join({
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
-                        [ [ -75.49405574798584, 39.78426800449771 ], [ -75.49497842788695, 39.78532331459258 ], [ -75.49482822418213, 39.78603234197182 ], [ -75.49418449401855, 39.786972204212276 ], [ -75.49416303634644, 39.78758228335605 ], [ -75.49162030220032, 39.78959385734031 ] ],
-                        [ [ -75.49162030220032, 39.78959385734031 ], [ -75.49128770828247, 39.78975873784561 ], [ -75.49092292785645, 39.78970927373552 ], [ -75.49080491065979, 39.78933829177609 ], [ -75.49094438552856, 39.78882715779947 ], [ -75.49254298210144, 39.787524573398436 ], [ -75.49360513687134, 39.78587569701685 ], [ -75.49556851387024, 39.78637860850151 ] ]
+        const res = explode.join({
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'MultiLineString',
+                    'coordinates': [
+                        [[-75.49405574798584, 39.78426800449771], [-75.49497842788695, 39.78532331459258], [-75.49482822418213, 39.78603234197182], [-75.49418449401855, 39.786972204212276], [-75.49416303634644, 39.78758228335605], [-75.49162030220032, 39.78959385734031]],
+                        [[-75.49162030220032, 39.78959385734031], [-75.49128770828247, 39.78975873784561], [-75.49092292785645, 39.78970927373552], [-75.49080491065979, 39.78933829177609], [-75.49094438552856, 39.78882715779947], [-75.49254298210144, 39.787524573398436], [-75.49360513687134, 39.78587569701685], [-75.49556851387024, 39.78637860850151]]
                     ]
                 }
             }]
         });
 
-        q.deepEquals(res.features[0].geometry.coordinates, [ [ -75.49405574798584, 39.78426800449771 ], [ -75.49497842788695, 39.78532331459258 ], [ -75.49482822418213, 39.78603234197182 ], [ -75.49418449401855, 39.786972204212276 ], [ -75.49416303634644, 39.78758228335605 ], [ -75.49162030220032, 39.78959385734031 ] ]);
-        q.deepEquals(res.features[1].geometry.coordinates, [ [ -75.49162030220032, 39.78959385734031 ], [ -75.49128770828247, 39.78975873784561 ], [ -75.49092292785645, 39.78970927373552 ], [ -75.49080491065979, 39.78933829177609 ], [ -75.49094438552856, 39.78882715779947 ], [ -75.49254298210144, 39.787524573398436 ], [ -75.49360513687134, 39.78587569701685 ], [ -75.49556851387024, 39.78637860850151 ] ]);
+        q.deepEquals(res.features[0].geometry.coordinates, [[-75.49405574798584, 39.78426800449771], [-75.49497842788695, 39.78532331459258], [-75.49482822418213, 39.78603234197182], [-75.49418449401855, 39.786972204212276], [-75.49416303634644, 39.78758228335605], [-75.49162030220032, 39.78959385734031]]);
+        q.deepEquals(res.features[1].geometry.coordinates, [[-75.49162030220032, 39.78959385734031], [-75.49128770828247, 39.78975873784561], [-75.49092292785645, 39.78970927373552], [-75.49080491065979, 39.78933829177609], [-75.49094438552856, 39.78882715779947], [-75.49254298210144, 39.787524573398436], [-75.49360513687134, 39.78587569701685], [-75.49556851387024, 39.78637860850151]]);
         q.deepEquals(res.features.length, 2);
         q.end();
     });
@@ -358,7 +360,7 @@ test('explode#split - basic', (t) => {
             properties: {},
             geometry: {
                 type: 'LineString',
-                coordinates: [[ -72.52744674682617, 45.900282732840324 ], [ -72.65018463134764, 45.79816953017265 ]]
+                coordinates: [[-72.52744674682617, 45.900282732840324], [-72.65018463134764, 45.79816953017265]]
             }
         }]
     });
@@ -385,66 +387,66 @@ test('explode#split - intersections', (t) => {
             geometry: {
                 type: 'LineString',
                 coordinates: [
-                    [ -77.0239770412445, 38.90922666550309 ],
-                    [ -77.0239770412445, 38.90858382361865 ],
-                    [ -77.02395558357237, 38.90723133207435 ],
-                    [ -77.0239770412445, 38.90563669474575 ],
-                    [ -77.0239770412445, 38.904810140883924 ]
+                    [-77.0239770412445, 38.90922666550309],
+                    [-77.0239770412445, 38.90858382361865],
+                    [-77.02395558357237, 38.90723133207435],
+                    [-77.0239770412445, 38.90563669474575],
+                    [-77.0239770412445, 38.904810140883924]
                 ]
             }
         }]
     }, [
-        turf.point([ -77.0239770412445, 38.90858382361865 ]),
-        turf.point([ -77.02395558357237, 38.90723133207435 ]),
-        turf.point([ -77.0239770412445, 38.90563669474575 ]),
+        turf.point([-77.0239770412445, 38.90858382361865]),
+        turf.point([-77.02395558357237, 38.90723133207435]),
+        turf.point([-77.0239770412445, 38.90563669474575])
     ]);
 
     res = turf.truncate(res);
 
     t.deepEquals(res, {
-        "type": "FeatureCollection",
-        "features": [{
-            "type":"Feature",
-            "properties":{},
-            "geometry":{
-                "type":"LineString",
-                "coordinates":[
+        'type': 'FeatureCollection',
+        'features': [{
+            'type':'Feature',
+            'properties':{},
+            'geometry':{
+                'type':'LineString',
+                'coordinates':[
                     [-77.023977,38.909227],
                     [-77.023977,38.908584],
                     [-77.023977,38.908584]
                 ]
             }
         },{
-            "type":"Feature",
-            "properties":{},
-            "geometry":{
-                "type":"LineString",
-                "coordinates":[
+            'type':'Feature',
+            'properties':{},
+            'geometry':{
+                'type':'LineString',
+                'coordinates':[
                     [-77.023977,38.908584],
                     [-77.023956,38.907231],
                     [-77.023956,38.907231]
-                ]}
+                ] }
         },{
-            "type":"Feature",
-            "properties":{},
-            "geometry":{
-                "type":"LineString",
-                "coordinates":[
+            'type':'Feature',
+            'properties':{},
+            'geometry':{
+                'type':'LineString',
+                'coordinates':[
                     [-77.023956,38.907231],
                     [-77.023977,38.905637]
                 ]
-            }},{
-                "type":"Feature",
-                "properties":{},
-                "geometry":{
-                    "type":"LineString",
-                    "coordinates":[
-                        [-77.023977,38.905637],
-                        [-77.023977,38.905637],
-                        [-77.023977,38.90481]
-                    ]
-                }
+            } },{
+            'type':'Feature',
+            'properties':{},
+            'geometry':{
+                'type':'LineString',
+                'coordinates':[
+                    [-77.023977,38.905637],
+                    [-77.023977,38.905637],
+                    [-77.023977,38.90481]
+                ]
             }
+        }
         ]
     });
 
@@ -457,15 +459,15 @@ test('explode#dedupeBorks', (t) => {
     });
 
     t.deepEquals(explode.join({
-        "type": "FeatureCollection",
-        "features": [{
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
-                "type": "MultiLineString",
-                "coordinates": [
-                    [ [0,1], [1,0] ],
-                    [ [1,1], [1,1] ]
+        'type': 'FeatureCollection',
+        'features': [{
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+                'type': 'MultiLineString',
+                'coordinates': [
+                    [[0,1], [1,0]],
+                    [[1,1], [1,1]]
                 ]
             }
         }]
@@ -494,9 +496,9 @@ test('explode#sortStreets', (t) => {
     t.test('explode#sortStreets - Basic - NonMultiFirst', (q) => {
         const explode = new Explode();
 
-        let strs = [
-            { id: 1, "type": "Feature", "properties": {}, "geometry": { "type": "LineString", "coordinates": [ [ -46.7578125, 37.71859032558816 ], [ -31.289062500000004, 37.71859032558816 ] ] } },
-            { id: 2, "type": "Feature", "properties": {}, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ -74.1796875, 22.268764039073968 ], [ 65.7421875, 24.5271348225978 ] ] ] } }
+        const strs = [
+            { id: 1, 'type': 'Feature', 'properties': {}, 'geometry': { 'type': 'LineString', 'coordinates': [[-46.7578125, 37.71859032558816], [-31.289062500000004, 37.71859032558816]] } },
+            { id: 2, 'type': 'Feature', 'properties': {}, 'geometry': { 'type': 'MultiLineString', 'coordinates': [[[-74.1796875, 22.268764039073968], [65.7421875, 24.5271348225978]]] } }
         ];
 
         strs.sort(explode.sortStreets);
@@ -510,9 +512,9 @@ test('explode#sortStreets', (t) => {
     t.test('explode#sortStreets - Basic - NonMultiFirst', (q) => {
         const explode = new Explode();
 
-        let strs = [
-            { id: 1, "type": "Feature", "properties": {}, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ -74.1796875, 22.268764039073968 ], [ 65.7421875, 24.5271348225978 ] ] ] } },
-            { id: 2, "type": "Feature", "properties": {}, "geometry": { "type": "LineString", "coordinates": [ [ -46.7578125, 37.71859032558816 ], [ -31.289062500000004, 37.71859032558816 ] ] } }
+        const strs = [
+            { id: 1, 'type': 'Feature', 'properties': {}, 'geometry': { 'type': 'MultiLineString', 'coordinates': [[[-74.1796875, 22.268764039073968], [65.7421875, 24.5271348225978]]] } },
+            { id: 2, 'type': 'Feature', 'properties': {}, 'geometry': { 'type': 'LineString', 'coordinates': [[-46.7578125, 37.71859032558816], [-31.289062500000004, 37.71859032558816]] } }
         ];
 
         strs.sort(explode.sortStreets);
@@ -526,9 +528,9 @@ test('explode#sortStreets', (t) => {
     t.test('explode#sortStreets - Basic', (q) => {
         const explode = new Explode();
 
-        let strs = [
-            { id: 1, "type": "Feature", "properties": {}, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ -46.7578125, 37.71859032558816 ], [ -31.289062500000004, 37.71859032558816 ] ] ] } }, //Shorter Line
-            { id: 2, "type": "Feature", "properties": {}, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ -74.1796875, 22.268764039073968 ], [ 65.7421875, 24.5271348225978 ] ] ] } } //Longer Line
+        const strs = [
+            { id: 1, 'type': 'Feature', 'properties': {}, 'geometry': { 'type': 'MultiLineString', 'coordinates': [[[-46.7578125, 37.71859032558816], [-31.289062500000004, 37.71859032558816]]] } }, // Shorter Line
+            { id: 2, 'type': 'Feature', 'properties': {}, 'geometry': { 'type': 'MultiLineString', 'coordinates': [[[-74.1796875, 22.268764039073968], [65.7421875, 24.5271348225978]]] } } // Longer Line
         ];
 
         strs.sort(explode.sortStreets);
@@ -542,9 +544,9 @@ test('explode#sortStreets', (t) => {
     t.test('explode#sortStreets - Basic - allready sorted', (q) => {
         const explode = new Explode();
 
-        let strs = [
-            { id: 1, "type": "Feature", "properties": {}, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ -74.1796875, 22.268764039073968 ], [ 65.7421875, 24.5271348225978 ] ] ] } }, //Longer Line
-            { id: 2, "type": "Feature", "properties": {}, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ -46.7578125, 37.71859032558816 ], [ -31.289062500000004, 37.71859032558816 ] ] ] } } //Shorter Line
+        const strs = [
+            { id: 1, 'type': 'Feature', 'properties': {}, 'geometry': { 'type': 'MultiLineString', 'coordinates': [[[-74.1796875, 22.268764039073968], [65.7421875, 24.5271348225978]]] } }, // Longer Line
+            { id: 2, 'type': 'Feature', 'properties': {}, 'geometry': { 'type': 'MultiLineString', 'coordinates': [[[-46.7578125, 37.71859032558816], [-31.289062500000004, 37.71859032558816]]] } } // Shorter Line
         ];
 
         strs.sort(explode.sortStreets);

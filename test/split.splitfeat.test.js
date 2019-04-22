@@ -1,14 +1,11 @@
-const fs = require('fs');
+'use strict';
+
 const test = require('tape');
-const pg = require('pg');
 const { Split, SplitFeat } = require('../lib/map/split');
-const Index = require('../lib/map/index');
-const turf = require('@turf/turf');
 
 const db = require('./lib/db');
 db.init(test);
 
-const pg_init = require('../native/index.node').pg_init;
 const pg_optimize = require('../native/index.node').pg_optimize;
 
 test('SplitFeat - from db', (t) => {
@@ -99,7 +96,7 @@ test('SplitFeat - from db', (t) => {
 
             pg_optimize();
 
-            Split.prepare(pool, (err, res) => {
+            Split.prepare(pool, (err) => {
                 q.error(err);
                 q.end();
             });
@@ -127,12 +124,12 @@ test('SplitFeat - from db', (t) => {
             q.equals(feat.id, 1, 'network_cluster id retained');
 
             q.deepEquals(feat.address.coordinates, [
-                [ -76.554825, 39.460839, 1 ],
-                [ -76.567178, 39.462854, 2 ],
-                [ -76.597763, 39.442952, 3 ],
-                [ -76.597381, 39.438022, 4 ],
-                [ -76.599005, 39.431047, 5 ],
-                [ -76.599332, 39.415862, 6 ]
+                [-76.554825, 39.460839, 1],
+                [-76.567178, 39.462854, 2],
+                [-76.597763, 39.442952, 3],
+                [-76.597381, 39.438022, 4],
+                [-76.599005, 39.431047, 5],
+                [-76.599332, 39.415862, 6]
             ], 'address coordinates contain id');
 
             q.deepEquals(feat.props, {

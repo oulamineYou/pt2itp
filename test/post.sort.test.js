@@ -1,3 +1,5 @@
+'use strict';
+
 const post = require('../lib/post/sort').post;
 const test = require('tape');
 
@@ -21,7 +23,7 @@ test('Post: Sort', (t) => {
         }
     }), {
         properties: {
-            'carmen:addressnumber': [ [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] ],
+            'carmen:addressnumber': [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
             address_props: [{},{},{},{},{},{},{},{},{},{}]
         },
         geometry: {
@@ -42,7 +44,7 @@ test('Post: Sort', (t) => {
         }
     }), {
         properties: {
-            'carmen:addressnumber': [ null, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] ],
+            'carmen:addressnumber': [null, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
             address_props: [{},{},{},{},{},{},{},{},{},{}]
         },
         geometry: {
@@ -56,23 +58,23 @@ test('Post: Sort', (t) => {
         properties: {
             'carmen:addressnumber': [null, [10,9,8,7,6,5,4,3,2,1]],
             address_props: [{
-                number: 10,
+                number: 10
             },{
-                number: 9,
+                number: 9
             },{
-                number: 8,
+                number: 8
             },{
-                number: 7,
+                number: 7
             },{
-                number: 6,
+                number: 6
             },{
-                number: 5,
+                number: 5
             },{
-                number: 4,
+                number: 4
             },{
-                number: 3,
+                number: 3
             },{
-                number: 2,
+                number: 2
             },{
                 number: 1
             }]
@@ -84,7 +86,7 @@ test('Post: Sort', (t) => {
         }
     }), {
         properties: {
-            'carmen:addressnumber': [ null, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] ],
+            'carmen:addressnumber': [null, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
             address_props: [{
                 number: 1
             },{

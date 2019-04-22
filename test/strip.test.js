@@ -1,3 +1,5 @@
+'use strict';
+
 const strip = require('../lib/strip');
 const test = require('tape');
 const path = require('path');
@@ -17,7 +19,7 @@ test('Strip - Address Points', (t) => {
     }, (err) => {
         t.error(err);
 
-        let res = require(path.resolve(os.tmpdir(), 'strip-test.json'));
+        const res = require(path.resolve(os.tmpdir(), 'strip-test.json'));
 
         t.equals(res.type, 'Feature');
 

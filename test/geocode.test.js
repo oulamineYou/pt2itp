@@ -1,3 +1,5 @@
+'use strict';
+
 const test = require('tape');
 
 const geocode = require('../lib/util/geocode');
@@ -7,7 +9,7 @@ const db = require('./lib/db');
 db.init(test);
 
 test('geocode#isPass', (t) => {
-    let query = [
+    const query = [
         '200 Broadway',
         [-71.308992,41.495267],
         {
@@ -30,7 +32,7 @@ test('geocode#isPass', (t) => {
 
             t.end();
         }
-    ]
+    ];
 
     geocode.isPass(...query);
 });

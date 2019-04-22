@@ -1,3 +1,5 @@
+'use strict';
+
 const post = require('../lib/post/id').post;
 const test = require('tape');
 

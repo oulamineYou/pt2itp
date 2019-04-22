@@ -1,3 +1,5 @@
+'use strict';
+
 const convert = require('../native/index.node').convert;
 const test = require('tape');
 const path = require('path');
@@ -12,7 +14,7 @@ test('Convert - FeatureCollection', (t) => {
         output: String(path.resolve(os.tmpdir(), 'convert.FeatureCollection.json'))
     });
 
-    let res = require(path.resolve(os.tmpdir(), 'convert.FeatureCollection.json'));
+    const res = require(path.resolve(os.tmpdir(), 'convert.FeatureCollection.json'));
 
     t.equals(res.type, 'FeatureCollection');
     t.equals(res.features.length, 24);
@@ -30,7 +32,7 @@ test('Convert - Feature', (t) => {
         output: path.resolve(os.tmpdir(), 'convert.Feature.json')
     });
 
-    let res = require(path.resolve(os.tmpdir(), 'convert.Feature.json'));
+    const res = require(path.resolve(os.tmpdir(), 'convert.Feature.json'));
 
     t.equals(res.type, 'FeatureCollection');
     t.equals(res.features.length, 10);
@@ -48,7 +50,7 @@ test('Convert - Raw', (t) => {
         output: path.resolve(os.tmpdir(), 'convert.Raw.json')
     });
 
-    let res = require(os.tmpdir() + '/' + 'convert.Raw.json');
+    const res = require(os.tmpdir() + '/' + 'convert.Raw.json');
 
     t.equals(res.type, 'FeatureCollection');
     t.equals(res.features.length, 10);
@@ -66,7 +68,7 @@ test('Convert - Raw With Record Separator', (t) => {
         output: path.resolve(os.tmpdir(), 'convert.RawWithRecordSeparator.json')
     });
 
-    let res = require(os.tmpdir() + '/' + 'convert.RawWithRecordSeparator.json');
+    const res = require(os.tmpdir() + '/' + 'convert.RawWithRecordSeparator.json');
 
     t.equals(res.type, 'FeatureCollection');
     t.equals(res.features.length, 10);

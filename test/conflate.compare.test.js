@@ -1,6 +1,6 @@
-const fs = require('fs');
+'use strict';
+
 const test = require('tape');
-const path = require('path');
 const Compare = require('../lib/conflate/compare');
 
 const db = require('./lib/db');
@@ -17,7 +17,7 @@ test('conflate/compare - compare', (t) => {
     });
 
     t.test('conflate/compare - compare - no rows', (q) => {
-        let res = compare.compare({
+        const res = compare.compare({
             type: 'Feature',
             properties: {
                 street: [{
@@ -31,7 +31,7 @@ test('conflate/compare - compare', (t) => {
                 type: 'Point',
                 coordinates: [0,0]
             }
-        }, [ ]);
+        }, []);
 
         q.deepEquals(res, {
             action: 'create',
@@ -54,7 +54,7 @@ test('conflate/compare - compare', (t) => {
     });
 
     t.test('conflate/compare - compare - No Match', (q) => {
-        let res = compare.compare({
+        const res = compare.compare({
             type: 'Feature',
             properties: {
                 street: [{
@@ -112,7 +112,7 @@ test('conflate/compare - compare', (t) => {
     });
 
     t.test('conflate/compare - compare - Simple Match', (q) => {
-        let res = compare.compare({
+        const res = compare.compare({
             type: 'Feature',
             properties: {
                 street: [{
@@ -156,7 +156,7 @@ test('conflate/compare - compare', (t) => {
     });
 
     t.test('conflate/compare - compare - Simple Match - disqualified due to distance', (q) => {
-        let res = compare.compare({
+        const res = compare.compare({
             type: 'Feature',
             properties: {
                 street: [{
@@ -216,7 +216,7 @@ test('conflate/compare - compare', (t) => {
     });
 
     t.test('conflate/compare - compare - Simple Modify', (q) => {
-        let res = compare.compare({
+        const res = compare.compare({
             type: 'Feature',
             properties: {
                 street: [{

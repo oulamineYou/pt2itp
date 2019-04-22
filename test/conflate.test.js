@@ -1,3 +1,5 @@
+'use strict';
+
 const ReadLine = require('n-readlines');
 const worker = require('../lib/conflate');
 
@@ -25,7 +27,7 @@ test('Compare', (t) => {
         'error-persistent': '/tmp/error-persistent',
         tokens: 'en',
         db: 'pt_test'
-    }, (err, res) => {
+    }, (err) => {
         t.error(err);
 
         const rl = new ReadLine('/tmp/output.geojson');
@@ -42,7 +44,7 @@ test('Compare', (t) => {
             },
             geometry: {
                 type: 'Point',
-                coordinates: [ -77.00080543756485, 38.89128752230519 ]
+                coordinates: [-77.00080543756485, 38.89128752230519]
             }
         });
 

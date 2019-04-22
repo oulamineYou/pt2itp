@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
+'use strict';
+
 const help = require('./lib/help');
 const settings = require('./package.json');
 
 if (require.main === module) {
-    let argv = require('minimist')(process.argv, {
+    const argv = require('minimist')(process.argv, {
         boolean: ['help', 'version'],
         alias: {
             'version': 'v',
@@ -48,18 +50,20 @@ if (require.main === module) {
             });
             break;
         case ('stat'):
-        case ('stats'):
-            let stat_arg = require('minimist')(process.argv, {
-                string: [ 'input' ]
+        case ('stats'): {
+            const stat_arg = require('minimist')(process.argv, {
+                string: ['input']
             });
 
-            let stats = require('./native/index.node').stats({
+            const stats = require('./native/index.node').stats({
                 input: stat_arg.input
             });
 
             console.log(JSON.stringify(stats));
 
             break;
+
+        }
         case ('test'):
             require('./lib/test')(process.argv, (err) => {
                 if (err) throw err;
@@ -88,9 +92,9 @@ if (require.main === module) {
                 process.exit(0);
             });
             break;
-        case ('convert'):
-            let convert_arg = require('minimist')(process.argv, {
-                string: [ 'input', 'output' ]
+        case ('convert'): {
+            const convert_arg = require('minimist')(process.argv, {
+                string: ['input', 'output']
             });
 
             require('./native/index.node').convert({
@@ -99,9 +103,10 @@ if (require.main === module) {
             });
 
             break;
-        case ('dedupe'):
-            let dedupe_arg = require('minimist')(process.argv, {
-                string: [ 'buildings', 'input', 'output', 'tokens', 'db', 'country', 'region' ],
+        }
+        case ('dedupe'): {
+            const dedupe_arg = require('minimist')(process.argv, {
+                string: ['buildings', 'input', 'output', 'tokens', 'db', 'country', 'region'],
                 boolean: ['hecate'],
                 alias: {
                     database: 'db'
@@ -111,8 +116,8 @@ if (require.main === module) {
             let context = undefined;
             if (dedupe_arg.country) {
                 context = {
-                    country: debug_arg.country,
-                    region: debug_arg.region
+                    country: dedupe_arg.country,
+                    region: dedupe_arg.region
                 };
             }
 
@@ -132,10 +137,11 @@ if (require.main === module) {
             });
 
             break;
-        case ('classify'):
-            let classify_arg = require('minimist')(process.argv, {
-                string: [ 'buildings', 'parcels', 'input', 'output', 'db' ],
-                boolean: [ 'hecate' ],
+        }
+        case ('classify'): {
+            const classify_arg = require('minimist')(process.argv, {
+                string: ['buildings', 'parcels', 'input', 'output', 'db'],
+                boolean: ['hecate'],
                 alias: {
                     database: 'db',
                     buildings: 'building',
@@ -167,6 +173,7 @@ if (require.main === module) {
             });
 
             break;
+        }
         default:
             help(argv);
             break;

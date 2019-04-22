@@ -1,6 +1,6 @@
 {
   "name": "pt2itp",
-  "version": "20.0.0",
+  "version": "21.0.0",
   "license": "BSD-2-Clause ",
   "description": "Attach interpolation values given a road network and address points",
   "main": "index.js",
@@ -70,54 +70,7 @@
     "tmp": "0.1.0"
   },
   "eslintConfig": {
-    "parserOptions": {
-      "ecmaVersion": 8
-    },
-    "rules": {
-      "require-jsdoc": [
-        "error",
-        {
-          "require": {
-            "FunctionDeclaration": true,
-            "MethodDefinition": false,
-            "ClassDeclaration": false,
-            "ArrowFunctionExpression": false
-          }
-        }
-      ],
-      "no-use-before-define": [
-        2,
-        "nofunc"
-      ],
-      "space-before-function-paren": [
-        2,
-        "never"
-      ],
-      "no-tabs": 2,
-      "space-in-parens": 2,
-      "space-before-blocks": 2,
-      "keyword-spacing": 2,
-      "comma-style": 2,
-      "no-lonely-if": 2,
-      "no-else-return": 0,
-      "new-cap": 2,
-      "no-empty": 2,
-      "no-trailing-spaces": 2,
-      "no-new": 2,
-      "no-multi-spaces": 2,
-      "brace-style": 0,
-      "quotes": 0,
-      "no-underscore-dangle": 0,
-      "curly": 0,
-      "no-constant-condition": 0,
-      "no-native-reassign": 0,
-      "no-shadow": 0,
-      "key-spacing": 0
-    },
-    "env": {
-      "node": true,
-      "es6": true
-    }
+    "extends": "@mapbox/eslint-config-geocoding"
   },
   "engines": {
     "node": ">= 10"

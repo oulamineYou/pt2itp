@@ -1,3 +1,5 @@
+'use strict';
+
 const post = require('../lib/post/discard-bad-orphans').post;
 const test = require('tape');
 
@@ -68,7 +70,7 @@ test('Post: Discard Bad Orphans', (t) => {
                 'carmen:text': 'Main St',
                 address_props: []
             }
-        })
+        });
     }, /discard-bad-orphans must be run after the props post script/);
 
     t.deepEquals(post({
@@ -104,7 +106,7 @@ test('Post: Discard Bad Orphans', (t) => {
     t.deepEquals(post({
         properties: {
             'carmen:addressnumber': [[1]],
-            'carmen:text': 'Main St',
+            'carmen:text': 'Main St'
         }
     }), false);
 

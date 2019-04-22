@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
     network_bigram: [
         { w1: 'akoko', w2: 'street', frequency: 1, likelihoodRatio: 4.575312081599279 },
