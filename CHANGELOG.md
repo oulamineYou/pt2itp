@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v21.0.0
+
+- :rocket: Remove support for `skip-import` option in `map` mode
+- :rocket: Use @mapbox/eslin t-config-geocoding eslint config
+
 ### v20.0.0
 
 - :rocket: `Node 10` is now the default/required version for binaries
