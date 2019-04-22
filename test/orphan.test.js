@@ -1,10 +1,10 @@
+'use strict';
+
 const Orphan = require('../lib/map/orphan');
-const Post = require('../lib/map/post');
 const {
     pg_optimize,
     cluster_addr
 } = require('../native/index.node');
-const pg = require('pg');
 const test = require('tape');
 
 const db = require('./lib/db');
@@ -20,9 +20,8 @@ const output = fs.createWriteStream(path.resolve(__dirname, '../test/fixtures/or
 test('orphan.address', (t) => {
     const pool = db.get();
 
-    const post = new Post();
     const orphan = new Orphan(pool, {
-        props: [ 'accuracy' ]
+        props: ['accuracy']
     }, output);
     const popQ = new Queue(1);
 
@@ -37,7 +36,7 @@ test('orphan.address', (t) => {
             INSERT INTO address (names, number, geom, netid, props) VALUES ('[{ "tokenized": "fake av", "tokenless": "fake", "display": "Fake Avenue" }]', 5, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-85.25390625,52.908902047770255] }'), 4326), NULL, '{ "accuracy": "building" }');
             INSERT INTO address (names, number, geom, netid, props) VALUES ('[{ "tokenized": "main st se", "tokenless": "main", "display": "Main Street SE" }]', 6, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024] }'), 4326), 1, '{ "accuracy": "parcel" }');
             COMMIT;
-        `, (err, res) => {
+        `, (err) => {
             t.error(err, 'ok - added addresses to table');
 
             pg_optimize();
@@ -64,8 +63,8 @@ test('orphan.address', (t) => {
             t.error(err);
 
             t.equals(res.rows.length, 2, 'ok - correct number of orphans');
-            t.deepEquals(res.rows[0], { names: [ { display: 'Fake Avenue', tokenized: 'fake av', tokenless: 'fake' } ] }, 'ok - Fake Ave orphaned');
-            t.deepEquals(res.rows[1], { names: [ { display: 'Main Street', tokenized: 'main st', tokenless: 'main' } ] }, 'ok - Main St orphaned');
+            t.deepEquals(res.rows[0], { names: [{ display: 'Fake Avenue', tokenized: 'fake av', tokenless: 'fake' }] }, 'ok - Fake Ave orphaned');
+            t.deepEquals(res.rows[1], { names: [{ display: 'Main Street', tokenized: 'main st', tokenless: 'main' }] }, 'ok - Main St orphaned');
             return done();
         });
     });
@@ -90,14 +89,14 @@ test('orphan output', (t) => {
     };
 
     const rl = readline.createInterface({
-        input : fs.createReadStream(path.resolve(__dirname, '../test/fixtures/orphan-output.geojson')),
-    })
+        input : fs.createReadStream(path.resolve(__dirname, '../test/fixtures/orphan-output.geojson'))
+    });
     rl.on('line', (line) => {
         if (!line) return;
         counter++;
-        let feat = JSON.parse(line);
+        const feat = JSON.parse(line);
 
-        t.deepEquals(feat.properties["carmen:addressnumber"], orphans[feat.properties["carmen:text"]], 'ok - orphan has correct addresses');
+        t.deepEquals(feat.properties['carmen:addressnumber'], orphans[feat.properties['carmen:text']], 'ok - orphan has correct addresses');
 
         t.ok(feat.properties.accuracy);
     });

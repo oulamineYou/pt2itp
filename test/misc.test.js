@@ -1,3 +1,5 @@
+'use strict';
+
 const test = require('tape');
 const Misc = require('../lib/util/misc');
 const misc = new Misc();
@@ -56,6 +58,6 @@ test('misc.hasDupAddressWithin', (t) => {
     t.equals(Misc.hasDupAddressWithin([1, 2], [[0,0], [0,0]]), false);
     t.equals(Misc.hasDupAddressWithin([1, 1], [[0,0], [0,0]]), false);
     t.equals(Misc.hasDupAddressWithin([1, 1], [[0,0], [1,1]]), 1);
-    t.equals(Misc.hasDupAddressWithin([1, 2, 1], [[0,0], [1,1], [1,1]]), false); //NOTE: Assumes ordered input!
+    t.equals(Misc.hasDupAddressWithin([1, 2, 1], [[0,0], [1,1], [1,1]]), false); // NOTE: Assumes ordered input!
     t.end();
 });

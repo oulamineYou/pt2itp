@@ -1,10 +1,12 @@
+'use strict';
+
 const post = require('../lib/post/props').post;
 const test = require('tape');
 
 test('Post: Props', (t) => {
     t.equals(post(), undefined);
 
-    let opts = { args: { props: [] } };
+    const opts = { args: { props: [] } };
 
     t.deepEquals(post({
         type: 'Feature',
@@ -201,7 +203,7 @@ test('Post: Props', (t) => {
         geometry: { }
     }, 'Multiple conflicting props w/ undesired props');
 
-    opts.args.props = [ 'override:postcode' ];
+    opts.args.props = ['override:postcode'];
     t.deepEquals(post({
         type: 'Feature',
         properties: {
@@ -224,7 +226,7 @@ test('Post: Props', (t) => {
         geometry: { }
     }, 'All null values are omitted entirely');
 
-    opts.args.props = [ 'override:postcode' ];
+    opts.args.props = ['override:postcode'];
     t.deepEquals(post({
         type: 'Feature',
         properties: {
@@ -247,7 +249,7 @@ test('Post: Props', (t) => {
         geometry: { }
     }, 'Null & Undefined values are treated identically');
 
-    opts.args.props = [ 'override:postcode' ];
+    opts.args.props = ['override:postcode'];
     t.deepEquals(post({
         type: 'Feature',
         properties: {
@@ -278,7 +280,7 @@ test('Post: Props', (t) => {
         geometry: {}
     }, 'Null values are included if needed to override a top level property');
 
-    opts.args.props = [ 'override:postcode' ];
+    opts.args.props = ['override:postcode'];
     t.deepEquals(post({
         type: 'Feature',
         properties: {

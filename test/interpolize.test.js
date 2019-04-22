@@ -1,5 +1,6 @@
+'use strict';
+
 const interpolize = require('../lib/map/interpolize');
-const turf = require('@turf/turf');
 const test = require('tape');
 const fs = require('fs');
 
@@ -56,13 +57,13 @@ test('Raise High', (t) => {
 
 test('ITP Sort', (t) => {
     t.test('ITP Sort: Basic', (q) => {
-        let feats = [
+        const feats = [
             { id: 2, properties: { 'carmen:lfromhn': 22 } },
             { id: 4, properties: { 'carmen:lfromhn': 1423 } },
             { id: 1, properties: { 'carmen:lfromhn': 3 } },
             { id: 5, properties: { 'carmen:lfromhn': 4362 } },
             { id: 3, properties: { 'carmen:lfromhn': 43 } }
-        ]
+        ];
 
         feats.sort(interpolize.itpSort);
 
@@ -76,13 +77,13 @@ test('ITP Sort', (t) => {
     });
 
     t.test('ITP Sort: Nulls Last', (q) => {
-        let feats = [
+        const feats = [
             { id: 1, properties: { 'carmen:lfromhn': 22 } },
             { id: 2, properties: { 'carmen:lfromhn': 1423 } },
             { id: 5, properties: { } },
             { id: 3, properties: { 'carmen:lfromhn': 4362 } },
             { id: 4, properties: { } }
-        ]
+        ];
 
         feats.sort(interpolize.itpSort);
 
@@ -98,19 +99,19 @@ test('ITP Sort', (t) => {
 
 test('lsb', (t) => {
     t.test('lsb forward', (q) => {
-        let lsb = interpolize.lsb(
+        const lsb = interpolize.lsb(
             [-79.37625288963318,38.83449282408381],
             [-79.37467575073241,38.83594698648804]
-        )
+        );
         q.equal(lsb, 1);
         q.end();
     });
 
     t.test('lsb reverse', (q) => {
-        let lsb = interpolize.lsb(
+        const lsb = interpolize.lsb(
             [-79.37467575073241,38.83594698648804],
             [-79.37625288963318,38.83449282408381]
-        )
+        );
         q.equal(lsb, 1);
         q.end();
     });
@@ -118,29 +119,29 @@ test('lsb', (t) => {
 });
 
 test('segments', (t) => {
-    let seg = interpolize.segment(
+    const seg = interpolize.segment(
         {
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
-                "type": "LineString",
-                "coordinates": [ [ -77.00275003910065, 38.963765608971286 ], [ -77.00335085391998, 38.963765608971286 ], [ -77.00378805398941, 38.9637697800411 ] ]
-              }
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+                'type': 'LineString',
+                'coordinates': [[-77.00275003910065, 38.963765608971286], [-77.00335085391998, 38.963765608971286], [-77.00378805398941, 38.9637697800411]]
+            }
         },
         0.01,
         'kilometers'
-    )
-    t.deepEquals(seg, [ [ -77.00275003910065, 38.963765608971286 ], [ -77.00335085391998, 38.963765608971286 ] ]);
+    );
+    t.deepEquals(seg, [[-77.00275003910065, 38.963765608971286], [-77.00335085391998, 38.963765608971286]]);
     t.end();
 });
 
 test('Interpolize', (t) => {
-    let segs = [{
+    const segs = [{
         network: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "LineString",
+                type: 'LineString',
                 coordinates: [
                     [-77.21062123775481,39.17687343078357],
                     [-77.21064805984497,39.1773849237293]
@@ -148,10 +149,10 @@ test('Interpolize', (t) => {
             }
         },
         address: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "MultiPoint",
+                type: 'MultiPoint',
                 coordinates: [
                     [-77.21054881811142,39.1769482836422],
                     [-77.21056759357452,39.17731007133552],
@@ -161,14 +162,14 @@ test('Interpolize', (t) => {
             }
         },
         number:  [
-            { number: "8", output: true, props: {} },
-            { number: "10", output: true, props: {} },
-            { number: "9", output: true, props: {} },
-            { number:"11", output: true, props: {} }
+            { number: '8', output: true, props: {} },
+            { number: '10', output: true, props: {} },
+            { number: '9', output: true, props: {} },
+            { number:'11', output: true, props: {} }
         ]
     }];
 
-    let res = interpolize(segs);
+    const res = interpolize(segs);
 
     delete res.id;
 
@@ -177,12 +178,12 @@ test('Interpolize', (t) => {
     t.deepEquals(res.properties, {
         address_props: [{}, {}, {}, {}],
         'carmen:rangetype':'tiger',
-        'carmen:parityl':[ ['O'], null],
-        'carmen:lfromhn':[ [1] , null],
-        'carmen:ltohn':  [ [21], null],
+        'carmen:parityl':[['O'], null],
+        'carmen:lfromhn':[[1] , null],
+        'carmen:ltohn':  [[21], null],
         'carmen:parityr':[['E'], null],
-        'carmen:rfromhn':[ [0], null],
-        'carmen:rtohn':  [ [20] ,null],
+        'carmen:rfromhn':[[0], null],
+        'carmen:rtohn':  [[20] ,null],
         'carmen:addressnumber':[null,['8','10','9','11']],
         'carmen:intersections': []
     }, 'has expected properties');
@@ -195,10 +196,10 @@ test('Interpolize', (t) => {
         },{
             type: 'MultiPoint',
             coordinates: [
-                [ -77.21054881811142, 39.1769482836422 ],
-                [ -77.21056759357452, 39.17731007133552 ],
-                [ -77.2107258439064, 39.176966996844406 ],
-                [ -77.21077680587769, 39.177320467506085 ]
+                [-77.21054881811142, 39.1769482836422],
+                [-77.21056759357452, 39.17731007133552],
+                [-77.2107258439064, 39.176966996844406],
+                [-77.21077680587769, 39.177320467506085]
             ]
         }]
     }, 'has expected geometry');
@@ -216,13 +217,13 @@ test('Interpolize', (t) => {
  * two unique clusters
  */
 test('Interpolize - Continious network - unique address duplicate num', (t) => {
-    let segs = [{
+    const segs = [{
         network: {
             type: 'Feature',
             properties: {},
             geometry: {
                 type: 'LineString',
-                coordinates: [[ -72.52744674682617, 45.900282732840324 ], [ -72.65018463134764, 45.79816953017265 ]]
+                coordinates: [[-72.52744674682617, 45.900282732840324], [-72.65018463134764, 45.79816953017265]]
             }
         },
         address: {
@@ -231,33 +232,33 @@ test('Interpolize - Continious network - unique address duplicate num', (t) => {
             geometry: {
                 type: 'MultiPoint',
                 coordinates: [
-                    [ -72.65104293823242, 45.80846108136044 ],
-                    [ -72.64297485351562, 45.80810210576385 ],
-                    [ -72.6416015625, 45.81372579098662 ],
-                    [ -72.63490676879883, 45.81587939239973 ],
+                    [-72.65104293823242, 45.80846108136044],
+                    [-72.64297485351562, 45.80810210576385],
+                    [-72.6416015625, 45.81372579098662],
+                    [-72.63490676879883, 45.81587939239973],
 
-                    [ -72.55027770996094, 45.886423557648435 ],
-                    [ -72.54547119140625, 45.8909640131969 ],
-                    [ -72.53094434738159, 45.8986550563925 ],
-                    [ -72.52995729446411, 45.89973022416613 ],
-                    [ -72.52869129180908, 45.90050672127712 ]
+                    [-72.55027770996094, 45.886423557648435],
+                    [-72.54547119140625, 45.8909640131969],
+                    [-72.53094434738159, 45.8986550563925],
+                    [-72.52995729446411, 45.89973022416613],
+                    [-72.52869129180908, 45.90050672127712]
                 ]
             }
         },
         number:  [
-            { number: "2", output: true, props: {} },
-            { number: "4", output: true, props: {} },
-            { number: "6", output: true, props: {} },
-            { number:"8", output: true, props: {} },
-            { number: "4", output: true, props: {} },
-            { number: "6", output: true, props: {} },
-            { number: "8", output: true, props: {} },
-            { number: "10", output: true, props: {} },
-            { number: "12", output: true, props: {} }
+            { number: '2', output: true, props: {} },
+            { number: '4', output: true, props: {} },
+            { number: '6', output: true, props: {} },
+            { number:'8', output: true, props: {} },
+            { number: '4', output: true, props: {} },
+            { number: '6', output: true, props: {} },
+            { number: '8', output: true, props: {} },
+            { number: '10', output: true, props: {} },
+            { number: '12', output: true, props: {} }
         ]
     }];
 
-    let res = interpolize(segs, { debug: true });
+    const res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -279,13 +280,13 @@ test('Interpolize - Continious network - unique address duplicate num', (t) => {
  * two unique clusters
  */
 test('Interpolize - Continious network - unique address duplicate num - different order', (t) => {
-    let segs = [{
+    const segs = [{
         network: {
             type: 'Feature',
             properties: {},
             geometry: {
                 type: 'LineString',
-                coordinates: [[ -72.52744674682617, 45.900282732840324 ], [ -72.65018463134764, 45.79816953017265 ]]
+                coordinates: [[-72.52744674682617, 45.900282732840324], [-72.65018463134764, 45.79816953017265]]
             }
         },
         address: {
@@ -294,33 +295,33 @@ test('Interpolize - Continious network - unique address duplicate num - differen
             geometry: {
                 type: 'MultiPoint',
                 coordinates: [
-                    [ -72.65104293823242, 45.80846108136044 ],
-                    [ -72.64297485351562, 45.80810210576385 ],
-                    [ -72.6416015625, 45.81372579098662 ],
-                    [ -72.63490676879883, 45.81587939239973 ],
+                    [-72.65104293823242, 45.80846108136044],
+                    [-72.64297485351562, 45.80810210576385],
+                    [-72.6416015625, 45.81372579098662],
+                    [-72.63490676879883, 45.81587939239973],
 
-                    [ -72.55027770996094, 45.886423557648435 ],
-                    [ -72.54547119140625, 45.8909640131969 ],
-                    [ -72.53094434738159, 45.8986550563925 ],
-                    [ -72.52995729446411, 45.89973022416613 ],
-                    [ -72.52869129180908, 45.90050672127712 ]
+                    [-72.55027770996094, 45.886423557648435],
+                    [-72.54547119140625, 45.8909640131969],
+                    [-72.53094434738159, 45.8986550563925],
+                    [-72.52995729446411, 45.89973022416613],
+                    [-72.52869129180908, 45.90050672127712]
                 ]
             }
         },
         number:  [
-            { number: "2", output: true, props: {} },
-            { number: "4", output: true, props: {} },
-            { number: "6", output: true, props: {} },
-            { number:"8", output: true, props: {} },
-            { number: "10", output: true, props: {} },
-            { number: "8", output: true, props: {} },
-            { number: "6", output: true, props: {} },
-            { number: "4", output: true, props: {} },
-            { number: "2", output: true, props: {} }
+            { number: '2', output: true, props: {} },
+            { number: '4', output: true, props: {} },
+            { number: '6', output: true, props: {} },
+            { number:'8', output: true, props: {} },
+            { number: '10', output: true, props: {} },
+            { number: '8', output: true, props: {} },
+            { number: '6', output: true, props: {} },
+            { number: '4', output: true, props: {} },
+            { number: '2', output: true, props: {} }
         ]
     }];
 
-    let res = interpolize(segs, { debug: true });
+    const res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -342,13 +343,13 @@ test('Interpolize - Continious network - unique address duplicate num - differen
  * We retain the address point but don't use it to calculate the ITP
  */
 test('Interpolize - Ignore addresses above (average * 5) away from line', (t) => {
-    let segs = [{
+    const segs = [{
         network: {
             type: 'Feature',
             properties: {},
             geometry: {
                 type: 'LineString',
-                coordinates: [ [ -64.27054524421692, 44.54747368148878 ], [ -64.26584601402283, 44.548261225872096 ] ]
+                coordinates: [[-64.27054524421692, 44.54747368148878], [-64.26584601402283, 44.548261225872096]]
             }
         },
         address: {
@@ -366,15 +367,15 @@ test('Interpolize - Ignore addresses above (average * 5) away from line', (t) =>
             }
         },
         number:  [
-            { number: "8", output: true, props: {} },
-            { number: "10", output: true, props: {} },
-            { number: "12", output: true, props: {} },
-            { number:"14", output: true, props: {} },
-            { number: "16000", output: true, props: {} }
+            { number: '8', output: true, props: {} },
+            { number: '10', output: true, props: {} },
+            { number: '12', output: true, props: {} },
+            { number:'14', output: true, props: {} },
+            { number: '16000', output: true, props: {} }
         ]
     }];
 
-    let res = interpolize(segs, { debug: true });
+    const res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -387,12 +388,12 @@ test('Interpolize - Ignore addresses above (average * 5) away from line', (t) =>
 });
 
 test('Interpolize - Addr past line end', (t) => {
-    let segs = [{
+    const segs = [{
         network: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "LineString",
+                type: 'LineString',
                 coordinates: [
                     [-77.21062123775481,39.17687343078357],
                     [-77.21064805984497,39.1773849237293]
@@ -400,31 +401,31 @@ test('Interpolize - Addr past line end', (t) => {
             }
         },
         address: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "MultiPoint",
+                type: 'MultiPoint',
                 coordinates: [
                     [-77.21054881811142,39.1769482836422],
                     [-77.21056759357452,39.17731007133552],
                     [-77.2107258439064,39.176966996844406],
                     [-77.21077680587769,39.177320467506085],
-                    [ -77.21077412366867,39.17755334132392],
-                    [ -77.21056491136551,39.17757413359157 ]
+                    [-77.21077412366867,39.17755334132392],
+                    [-77.21056491136551,39.17757413359157]
                 ]
             }
         },
         number:  [
-            { number: "8", output: true, props: {} },
-            { number: "10", output: true, props: {} },
-            { number: "9", output: true, props: {} },
-            { number:"11", output: true, props: {} },
-            { number: "13", output: true, props: {} },
-            { number: "12", output: true, props: {} }
+            { number: '8', output: true, props: {} },
+            { number: '10', output: true, props: {} },
+            { number: '9', output: true, props: {} },
+            { number:'11', output: true, props: {} },
+            { number: '13', output: true, props: {} },
+            { number: '12', output: true, props: {} }
         ]
     }];
 
-    let res = interpolize(segs, { debug: true });
+    const res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -437,12 +438,12 @@ test('Interpolize - Addr past line end', (t) => {
 });
 
 test('Interpolize - Addr past line end - opposite', (t) => {
-    let segs = [{
+    const segs = [{
         network: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "LineString",
+                type: 'LineString',
                 coordinates: [
                     [-77.21062123775481,39.17687343078357],
                     [-77.21064805984497,39.1773849237293]
@@ -450,31 +451,31 @@ test('Interpolize - Addr past line end - opposite', (t) => {
             }
         },
         address: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "MultiPoint",
+                type: 'MultiPoint',
                 coordinates: [
                     [-77.21054881811142,39.1769482836422],
                     [-77.21056759357452,39.17731007133552],
                     [-77.2107258439064,39.176966996844406],
                     [-77.21077680587769,39.177320467506085],
                     [-77.21078217029572, 39.17767393639073],
-                    [ -77.21056491136551,39.17757413359157 ]
+                    [-77.21056491136551,39.17757413359157]
                 ]
             }
         },
         number:  [
-            { number: "8", output: true, props: {} },
-            { number: "10", output: true, props: {} },
-            { number: "9", output: true, props: {} },
-            { number:"11", output: true, props: {} },
-            { number: "13", output: true, props: {} },
-            { number: "12", output: true, props: {} }
+            { number: '8', output: true, props: {} },
+            { number: '10', output: true, props: {} },
+            { number: '9', output: true, props: {} },
+            { number:'11', output: true, props: {} },
+            { number: '13', output: true, props: {} },
+            { number: '12', output: true, props: {} }
         ]
     }];
 
-    let res = interpolize(segs, { debug: true });
+    const res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -487,41 +488,41 @@ test('Interpolize - Addr past line end - opposite', (t) => {
 });
 
 test('Interpolize - Addr past line end - bend', (t) => {
-    let segs = [{
+    const segs = [{
         network: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "LineString",
+                type: 'LineString',
                 coordinates: [
-                    [ -77.21002042293549, 39.17696283835544 ],
-                    [ -77.20934987068176, 39.17688382701869 ],
-                    [ -77.20870077610016, 39.177050166571725 ]
+                    [-77.21002042293549, 39.17696283835544],
+                    [-77.20934987068176, 39.17688382701869],
+                    [-77.20870077610016, 39.177050166571725]
                 ]
             }
         },
         address: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "MultiPoint",
+                type: 'MultiPoint',
                 coordinates: [
-                    [ -77.20983803272247, 39.17702937414912 ],
-                    [ -77.20847547054291, 39.177740471511456 ],
-                    [ -77.20990777015686, 39.17674659659119 ],
-                    [ -77.20825552940369, 39.1777238377372 ]
+                    [-77.20983803272247, 39.17702937414912],
+                    [-77.20847547054291, 39.177740471511456],
+                    [-77.20990777015686, 39.17674659659119],
+                    [-77.20825552940369, 39.1777238377372]
                 ]
             }
         },
         number:  [
-            { number: "2", output: true, props: {} },
-            { number: "4", output: true, props: {} },
-            { number: "1", output: true, props: {} },
-            { number:"3", output: true, props: {} }
+            { number: '2', output: true, props: {} },
+            { number: '4', output: true, props: {} },
+            { number: '1', output: true, props: {} },
+            { number:'3', output: true, props: {} }
         ]
     }];
 
-    let res = interpolize(segs, { debug: true });
+    const res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -534,41 +535,41 @@ test('Interpolize - Addr past line end - bend', (t) => {
 });
 
 test('Interpolize - Addr past line end - bend - reverse', (t) => {
-    let segs = [{
+    const segs = [{
         network: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "LineString",
+                type: 'LineString',
                 coordinates: [
-                    [ -77.20870077610016, 39.177050166571725 ],
-                    [ -77.20934987068176, 39.17688382701869 ],
-                    [ -77.21002042293549, 39.17696283835544 ]
+                    [-77.20870077610016, 39.177050166571725],
+                    [-77.20934987068176, 39.17688382701869],
+                    [-77.21002042293549, 39.17696283835544]
                 ]
             }
         },
         address: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "MultiPoint",
+                type: 'MultiPoint',
                 coordinates: [
-                    [ -77.20983803272247, 39.17702937414912 ],
-                    [ -77.20847547054291, 39.177740471511456 ],
-                    [ -77.20990777015686, 39.17674659659119 ],
-                    [ -77.20825552940369, 39.1777238377372 ]
+                    [-77.20983803272247, 39.17702937414912],
+                    [-77.20847547054291, 39.177740471511456],
+                    [-77.20990777015686, 39.17674659659119],
+                    [-77.20825552940369, 39.1777238377372]
                 ]
             }
         },
         number:  [
-            { number: "2", output: true, props: {} },
-            { number: "4", output: true, props: {} },
-            { number: "1", output: true, props: {} },
-            { number:"3", output: true, props: {} }
+            { number: '2', output: true, props: {} },
+            { number: '4', output: true, props: {} },
+            { number: '1', output: true, props: {} },
+            { number:'3', output: true, props: {} }
         ]
     }];
 
-    let res = interpolize(segs, { debug: true });
+    const res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -588,24 +589,24 @@ test('Interpolize - Addr past line end - bend - reverse', (t) => {
  * . |
  */
 test('Interpolize - Hooked Road', (t) => {
-    let segs = [{
+    const segs = [{
         network: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "LineString",
+                type: 'LineString',
                 coordinates: [
-                    [ -77.19249486923218, 39.090421398604306 ],
-                    [ -77.19209790229797, 39.09155388949448 ],
-                    [ -77.19150245189667, 39.091428983303274 ]
+                    [-77.19249486923218, 39.090421398604306],
+                    [-77.19209790229797, 39.09155388949448],
+                    [-77.19150245189667, 39.091428983303274]
                 ]
             }
         },
         address: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "MultiPoint",
+                type: 'MultiPoint',
                 coordinates: [
                     [-77.19264507293701,39.090575451742545],
                     [-77.19256460666656,39.09079612186787],
@@ -622,21 +623,21 @@ test('Interpolize - Hooked Road', (t) => {
             }
         },
         number:  [
-            { number: "2", output: true, props: {} },
-            { number: "4", output: true, props: {} },
-            { number: "6", output: true, props: {}},
-            { number: "8", output: true, props: {} },
-            { number: "10", output: true, props: {} },
-            { number: "12", output: true, props: {} },
-            { number: "1", output: true, props: {} },
-            { number: "3", output: true, props: {} },
-            { number: "5", output: true, props: {} },
-            { number: "7", output: true, props: {} },
-            { number: "9", output: true, props: {} }
+            { number: '2', output: true, props: {} },
+            { number: '4', output: true, props: {} },
+            { number: '6', output: true, props: {} },
+            { number: '8', output: true, props: {} },
+            { number: '10', output: true, props: {} },
+            { number: '12', output: true, props: {} },
+            { number: '1', output: true, props: {} },
+            { number: '3', output: true, props: {} },
+            { number: '5', output: true, props: {} },
+            { number: '7', output: true, props: {} },
+            { number: '9', output: true, props: {} }
         ]
     }];
 
-    let res = interpolize(segs, { debug: true });
+    const res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -650,22 +651,22 @@ test('Interpolize - Hooked Road', (t) => {
 });
 
 test('Interpolize - No address cluster', (t) => {
-    let segs = [{
+    const segs = [{
         network: {
-            type: "Feature",
+            type: 'Feature',
             properties: { },
             geometry: {
-                type: "LineString",
+                type: 'LineString',
                 coordinates: [
-                    [ -77.19249486923218, 39.090421398604306 ],
-                    [ -77.19209790229797, 39.09155388949448 ],
-                    [ -77.19150245189667, 39.091428983303274 ]
+                    [-77.19249486923218, 39.090421398604306],
+                    [-77.19209790229797, 39.09155388949448],
+                    [-77.19150245189667, 39.091428983303274]
                 ]
             }
         }
     }];
 
-    let res = interpolize(segs);
+    const res = interpolize(segs);
     delete res.id;
 
     if (process.env.UPDATE) {

@@ -1,19 +1,20 @@
+'use strict';
+
 const collocation = require('../lib/analyze/collocation');
 const FrequencyDistribution = collocation.FrequencyDistribution;
 const BiGramCollocationTable = collocation.BiGramCollocationTable;
 const TriGramCollocationTable = collocation.TriGramCollocationTable;
 const test = require('tape');
-const fs = require('fs');
 
-const testArray = ["the", "cat", "chased", "the", "mouse"];
-const testEntries = [["the", 2], ["cat", 1], ["chased", 1], ["mouse", 1]];
+const testArray = ['the', 'cat', 'chased', 'the', 'mouse'];
+const testEntries = [['the', 2], ['cat', 1], ['chased', 1], ['mouse', 1]];
 const testMap = new Map(testEntries);
 
 const db = require('./lib/db');
 db.init(test);
 
 test('FrequencyDistribution.arrayToCounts', (t) => {
-    freqDist = new FrequencyDistribution();
+    const freqDist = new FrequencyDistribution();
     t.deepEqual(
         freqDist.arrayToCounts(testArray),
         testMap
@@ -57,7 +58,7 @@ test('FrequencyDistribution key functions', (t) => {
         'makeKey(Array)'
     );
 
-    const testObject = {a:2, b: ['a','b',3], c: { c1: 2, c2: "two", c3: ['x', 'y', 26.5] }, d: 'dee'};
+    const testObject = { a:2, b: ['a','b',3], c: { c1: 2, c2: 'two', c3: ['x', 'y', 26.5] }, d: 'dee' };
     const stringifiedTestObject = '{"a":2,"b":["a","b",3],"c":{"c1":2,"c2":"two","c3":["x","y",26.5]},"d":"dee"}';
 
     t.deepEqual(
@@ -98,44 +99,44 @@ test('FrequencyDistribution API', (t) => {
 
 
 const testTokens = [
-    "the", "cat", "chased", "the", "mouse",
-    "and", "then", "a", "dog", "chased", "the", "cat"
+    'the', 'cat', 'chased', 'the', 'mouse',
+    'and', 'then', 'a', 'dog', 'chased', 'the', 'cat'
 ];
 
 const expectedUniGramCounts = new Map([
-    [ 'the', 3 ],
-    [ 'cat', 2 ],
-    [ 'chased', 2 ],
-    [ 'mouse', 1 ],
-    [ 'and', 1 ],
-    [ 'then', 1 ],
-    [ 'a', 1 ],
-    [ 'dog', 1 ]
+    ['the', 3],
+    ['cat', 2],
+    ['chased', 2],
+    ['mouse', 1],
+    ['and', 1],
+    ['then', 1],
+    ['a', 1],
+    ['dog', 1]
 ]);
 
 const expectedBiGramCounts = new Map([
-    [ 'the|cat', 2 ],
-    [ 'cat|chased', 1 ],
-    [ 'chased|the', 2 ],
-    [ 'the|mouse', 1 ],
-    [ 'mouse|and', 1 ],
-    [ 'and|then', 1 ],
-    [ 'then|a', 1 ],
-    [ 'a|dog', 1 ],
-    [ 'dog|chased', 1 ]
+    ['the|cat', 2],
+    ['cat|chased', 1],
+    ['chased|the', 2],
+    ['the|mouse', 1],
+    ['mouse|and', 1],
+    ['and|then', 1],
+    ['then|a', 1],
+    ['a|dog', 1],
+    ['dog|chased', 1]
 ]);
 
 const expectedTriGramCounts = new Map([
-    [ 'the|cat|chased', 1 ],
-    [ 'cat|chased|the', 1 ],
-    [ 'chased|the|mouse', 1 ],
-    [ 'the|mouse|and', 1 ],
-    [ 'mouse|and|then', 1 ],
-    [ 'and|then|a', 1 ],
-    [ 'then|a|dog', 1 ],
-    [ 'a|dog|chased', 1 ],
-    [ 'dog|chased|the', 1 ],
-    [ 'chased|the|cat', 1 ],
+    ['the|cat|chased', 1],
+    ['cat|chased|the', 1],
+    ['chased|the|mouse', 1],
+    ['the|mouse|and', 1],
+    ['mouse|and|then', 1],
+    ['and|then|a', 1],
+    ['then|a|dog', 1],
+    ['a|dog|chased', 1],
+    ['dog|chased|the', 1],
+    ['chased|the|cat', 1]
 ]);
 
 
@@ -147,24 +148,24 @@ test('FrequencyDistribution stats', (t) => {
     t.deepEqual(freqDist.absoluteFrequency('the'), 2, 'absolute frequency of "the" sb 2');
     t.deepEqual(freqDist.relativeFrequency('the'), 0.4, 'relative frequency of "the" sb 2/5 = 0.4');
 
-    freqDist.update(["and", "then", "a"]);
+    freqDist.update(['and', 'then', 'a']);
     t.deepEqual(freqDist.absoluteFrequency('the'), 2, 'after update, still 2 "the"s');
     t.deepEqual(freqDist.relativeFrequency('the'), 0.25, 'after update, relative frequency is 2/8 = 0.25');
     t.deepEqual(freqDist.binCount(), 7, 'after update, bin count is 7');
 
-    freqDist.update(["dog", "chased", "the", "cat"]);
+    freqDist.update(['dog', 'chased', 'the', 'cat']);
     t.deepEqual(freqDist.absoluteFrequency('the'), 3, 'after next update, now 3 "the"s');
     t.deepEqual(freqDist.binCount(), 8, 'after next update, bin count is 8');
 
     const expectedCounts = new Map([
-        [ 'the', 3 ],
-        [ 'cat', 2 ],
-        [ 'chased', 2 ],
-        [ 'mouse', 1 ],
-        [ 'and', 1 ],
-        [ 'then', 1 ],
-        [ 'a', 1 ],
-        [ 'dog', 1 ]
+        ['the', 3],
+        ['cat', 2],
+        ['chased', 2],
+        ['mouse', 1],
+        ['and', 1],
+        ['then', 1],
+        ['a', 1],
+        ['dog', 1]
     ]);
 
     t.deepEqual(freqDist.frequencies, expectedCounts);
@@ -175,7 +176,7 @@ test('FrequencyDistribution stats', (t) => {
 
 test('BiGramCollocationTable', (t) => {
 
-    bigrams = new BiGramCollocationTable();
+    const bigrams = new BiGramCollocationTable();
 
     bigrams.update(testTokens);
 
@@ -195,7 +196,7 @@ test('BiGramCollocationTable', (t) => {
 
 test('TriGramCollocationTable', (t) => {
 
-    trigrams = new TriGramCollocationTable();
+    const trigrams = new TriGramCollocationTable();
 
     trigrams.update(testTokens);
 
@@ -224,10 +225,10 @@ test('Collocation Merges', (t) => {
     const testTokens_a = testTokens.slice(0,5);
     const testTokens_b = testTokens.slice(5);
 
-    bigram_a = new BiGramCollocationTable();
+    const bigram_a = new BiGramCollocationTable();
     bigram_a.update(testTokens_a);
 
-    bigram_b = new BiGramCollocationTable();
+    const bigram_b = new BiGramCollocationTable();
     bigram_b.update(testTokens_b);
 
     bigram_a.merge(bigram_b);
@@ -245,10 +246,10 @@ test('Collocation Merges', (t) => {
         'after merging two bigram tables, expected bigram frequencies'
     );
 
-    trigram_a = new TriGramCollocationTable();
+    const trigram_a = new TriGramCollocationTable();
     trigram_a.update(testTokens_a);
 
-    trigram_b = new TriGramCollocationTable();
+    const trigram_b = new TriGramCollocationTable();
     trigram_b.update(testTokens_b);
 
     trigram_a.merge(trigram_b);
@@ -288,13 +289,13 @@ test('BiGramCollocationTable Metrics', (t) => {
 
     t.deepEqual(
         bigrams.getContingency(['the', 'cat']),
-        [2, 0, 1, 9],
+        expectedContingency,
         'BiGramCollocationTable.getContingency'
     );
 
     t.deepEqual(
         bigrams.getExpectedFrequencies([2, 0, 1, 9]),
-        [ 0.5, 1.5, 2.5, 7.5],
+        [0.5, 1.5, 2.5, 7.5],
         'BiGramCollocationTable.getExpectedFrequencies'
     );
 
@@ -314,7 +315,7 @@ test('BiGramCollocationTable Metrics', (t) => {
         { w1: 'then', w2: 'a', frequency: 1, likelihoodRatio: 6.884063593347854 },
         { w1: 'a', w2: 'dog', frequency: 1, likelihoodRatio: 6.884063593347854 },
         { w1: 'dog', w2: 'chased', frequency: 1, likelihoodRatio: 4.1114748711080775 }
-    ]
+    ];
 
     t.deepEqual(
         [...bigrams.score_ngrams('likelihoodRatio')],

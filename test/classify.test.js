@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 const test = require('tape');
 const classify = require('../index').classify;
@@ -28,11 +30,12 @@ test('classify (dataset)', (t) => {
     }, 'output exists');
 
     const rl = new ReadLine('/tmp/classifyout.geojson');
-
-    while (line = rl.next()) {
+    let line = rl.next();
+    while (line) {
         line = JSON.parse(line);
 
         t.equals(line.properties.expected, line.properties.accuracy);
+        line = rl.next();
     }
 
     t.end();
@@ -63,11 +66,12 @@ test('classify (hecate)', (t) => {
     const rl = new ReadLine('/tmp/classifyout.geojson');
 
     const output = {};
-
-    while (line = rl.next()) {
+    let line = rl.next();
+    while (line) {
         line = JSON.parse(line);
 
         output[line.id] = line;
+        line = rl.next();
     }
 
     t.deepEquals(output[0], undefined);
@@ -85,7 +89,7 @@ test('classify (hecate)', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -79.3766257166862, 38.8341710657445 ]
+            coordinates: [-79.3766257166862, 38.8341710657445]
         }
     });
 
@@ -104,7 +108,7 @@ test('classify (hecate)', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -79.3770414590836, 38.8339495948735 ]
+            coordinates: [-79.3770414590836, 38.8339495948735]
         }
     });
 
@@ -121,7 +125,7 @@ test('classify (hecate)', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -79.3768778443336, 38.8344489480323 ]
+            coordinates: [-79.3768778443336, 38.8344489480323]
         }
     });
 
@@ -138,7 +142,7 @@ test('classify (hecate)', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -79.3768563866615, 38.8343779105582 ]
+            coordinates: [-79.3768563866615, 38.8343779105582]
         }
     });
 
@@ -157,7 +161,7 @@ test('classify (hecate)', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -79.3765304982662, 38.8336497715408 ]
+            coordinates: [-79.3765304982662, 38.8336497715408]
         }
     });
 
@@ -174,7 +178,7 @@ test('classify (hecate)', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -79.4051456451416, 38.8391059265703 ]
+            coordinates: [-79.4051456451416, 38.8391059265703]
         }
     });
 
@@ -191,7 +195,7 @@ test('classify (hecate)', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -79.4054889678955, 38.8344259653278 ]
+            coordinates: [-79.4054889678955, 38.8344259653278]
         }
     });
 
@@ -211,7 +215,7 @@ test('classify (escaping)', (t) => {
             hecate: true,
             input: './test/fixtures/classify_hecate.geojson',
             output: '/tmp/classifyout.geojson',
-            parcels: './test/fixtures/classify_parcels_escaping.geojson',
+            parcels: './test/fixtures/classify_parcels_escaping.geojson'
         });
     }, 'classify runs without err');
 

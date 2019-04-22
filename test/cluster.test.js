@@ -1,4 +1,5 @@
-const Cluster = require('../lib/map/cluster');
+'use strict';
+
 const pg_optimize = require('../native/index.node').pg_optimize;
 const {
     cluster_net,
@@ -6,8 +7,6 @@ const {
 } = require('../native/index.node');
 
 const test = require('tape');
-const fs = require('fs');
-const pg = require('pg');
 const Queue = require('d3-queue').queue;
 
 const db = require('./lib/db');
@@ -18,7 +17,7 @@ test('cluster.address', (t) => {
     const pool = db.get();
     const popQ = new Queue(1);
 
-    //POPULATE ADDRESS
+    // POPULATE ADDRESS
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
@@ -31,7 +30,7 @@ test('cluster.address', (t) => {
             INSERT INTO address (id, names, number, geom, netid) VALUES (6, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [-66.97265625,43.96119063892024] }'), 4326), 1);
 
             COMMIT;
-        `, (err, res) => {
+        `, (err) => {
             t.error(err, 'no errors');
 
             pg_optimize();
@@ -53,15 +52,15 @@ test('cluster.address', (t) => {
                 ST_AsGeoJSON(geom)::JSON AS geom
             FROM
                 address_cluster
-            ORDER BY 
+            ORDER BY
                 ST_NumGeometries(geom);
         `, (err, res) => {
             t.error(err, 'no errors');
 
             t.equals(res.rows.length, 3);
-            t.deepEquals(res.rows[0], { geom: { type: "MultiPoint","coordinates":[[-85.25390625,52.9089020477703,5]]}, names: [{ freq: 1, tokenized: 'fake av', tokenless: 'fake', display: 'Fake Avenue' }] });
-            t.deepEquals(res.rows[1], { geom: {"type":"MultiPoint","coordinates":[[-105.46875,56.3652501368561,3],[-105.46875,56.3652501368561,4]]}, names: [{ freq: 2, tokenized: 'main st', tokenless: 'main', display: 'Main Street' }] });
-            t.deepEquals(res.rows[2], { geom: { coordinates: [ [ -66.97265625, 43.9611906389202, 1 ], [ -66.97265625, 43.9611906389202, 2 ], [ -66.97265625, 43.9611906389202, 6 ] ], type: 'MultiPoint' }, names: [{ freq: 3, tokenized: 'main st', tokenless: 'main', display: 'Main Street' }] });
+            t.deepEquals(res.rows[0], { geom: { type: 'MultiPoint','coordinates':[[-85.25390625,52.9089020477703,5]] }, names: [{ freq: 1, tokenized: 'fake av', tokenless: 'fake', display: 'Fake Avenue' }] });
+            t.deepEquals(res.rows[1], { geom: { 'type':'MultiPoint','coordinates':[[-105.46875,56.3652501368561,3],[-105.46875,56.3652501368561,4]] }, names: [{ freq: 2, tokenized: 'main st', tokenless: 'main', display: 'Main Street' }] });
+            t.deepEquals(res.rows[2], { geom: { coordinates: [[-66.97265625, 43.9611906389202, 1], [-66.97265625, 43.9611906389202, 2], [-66.97265625, 43.9611906389202, 6]], type: 'MultiPoint' }, names: [{ freq: 3, tokenized: 'main st', tokenless: 'main', display: 'Main Street' }] });
 
             return done();
         });
@@ -95,7 +94,7 @@ test('cluster.address - order synonyms by address count', (t) => {
 
 
             COMMIT;
-        `, (err, res) => {
+        `, (err) => {
             t.error(err, 'no errors');
 
             pg_optimize();
@@ -154,7 +153,7 @@ test('cluster.network', (t) => {
     const pool = db.get();
     const popQ = new Queue(1);
 
-    //POPULATE NETWORK
+    // POPULATE NETWORK
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
@@ -163,7 +162,7 @@ test('cluster.network', (t) => {
             INSERT INTO network (names, geom) VALUES ('[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "MultiLineString", "coordinates": [ [ [ -113.50117206573485, 53.55137413785917 ], [ -113.50112915039062, 53.54836549323335 ] ] ]}'), 4326));
             INSERT INTO network (names, geom) VALUES ('[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street", "freq": 1 }]', ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "MultiLineString", "coordinates": [ [ [ -113.50100040435791, 53.54836549323335 ], [ -113.50104331970215, 53.54614711825744 ] ] ]}'), 4326));
             COMMIT;
-        `, (err, res) => {
+        `, (err) => {
             t.error(err, 'no errors');
 
             pg_optimize();
@@ -203,16 +202,16 @@ test('cluster.network', (t) => {
                 }],
                 geom: {
                     type: 'MultiLineString',
-                    coordinates: [ [ [ -66.0539031028748, 45.269616328423 ], [ -66.0544180870056, 45.2710358327684 ] ], [ [ -66.0543537139893, 45.2710056309179 ], [ -66.0549330711365, 45.2724553016121 ] ] ],
+                    coordinates: [[[-66.0539031028748, 45.269616328423], [-66.0544180870056, 45.2710358327684]], [[-66.0543537139893, 45.2710056309179], [-66.0549330711365, 45.2724553016121]]]
                 },
-                source_ids: [ '1', '2' ]
+                source_ids: ['1', '2']
             });
 
             t.deepEquals(res.rows[1], {
                 id: 2,
                 geom: {
                     type: 'MultiLineString',
-                    coordinates: [ [ [ -113.501172065735, 53.5513741378592 ], [ -113.501129150391, 53.5483654932333 ] ], [ [ -113.501000404358, 53.5483654932333 ], [ -113.501043319702, 53.5461471182574 ] ] ],
+                    coordinates: [[[-113.501172065735, 53.5513741378592], [-113.501129150391, 53.5483654932333]], [[-113.501000404358, 53.5483654932333], [-113.501043319702, 53.5461471182574]]]
                 },
                 names: [{
                     freq: 1,
@@ -220,7 +219,7 @@ test('cluster.network', (t) => {
                     tokenized: 'main st',
                     tokenless: 'main'
                 }],
-                source_ids: [ '3', '4' ]
+                source_ids: ['3', '4']
             });
 
 

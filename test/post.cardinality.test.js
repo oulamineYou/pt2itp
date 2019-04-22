@@ -1,3 +1,5 @@
+'use strict';
+
 const post = require('../lib/post/cardinality').post;
 const test = require('tape');
 
@@ -22,8 +24,8 @@ test('Post: Cardinality', (t) => {
 
     t.equals(f('South Main St,Fake St South'), 'South Main St,Fake St South,Main St South,Main St,South Fake St,Fake St');
 
-    //Random Sample From SG File
-    t.equals(f('TUAS SOUTH BOULEVARD'), 'TUAS SOUTH BOULEVARD'); //We don't handle this format atm
+    // Random Sample From SG File
+    t.equals(f('TUAS SOUTH BOULEVARD'), 'TUAS SOUTH BOULEVARD'); // We don't handle this format atm
     t.equals(f('JURONG WEST AVENUE'), 'JURONG WEST AVENUE');
 
     t.equals(f('ADMIRALTY ROAD EAST'), 'ADMIRALTY ROAD EAST,EAST ADMIRALTY ROAD,ADMIRALTY ROAD');
@@ -35,9 +37,9 @@ test('Post: Cardinality', (t) => {
     t.equals(f('TANJONG KATONG ROAD SOUTH'), 'TANJONG KATONG ROAD SOUTH,SOUTH TANJONG KATONG ROAD,TANJONG KATONG ROAD');
     t.equals(f('WEST COAST VIEW'), 'WEST COAST VIEW,COAST VIEW WEST,COAST VIEW');
 
-    //Never Exceed 10 Synonyms
-    t.equals(f('1,2,3,4,5,6,7,8,W 9,10,11').split(',').length, 11); //If it already has > 10 tokens ignore it
-    t.equals(f('W 1 ST,E 1 ST,N 1 ST,S 1 ST,NE 1 ST,SE 1 ST').split(',').length, 10); //Never exceed 10 tokens
+    // Never Exceed 10 Synonyms
+    t.equals(f('1,2,3,4,5,6,7,8,W 9,10,11').split(',').length, 11); // If it already has > 10 tokens ignore it
+    t.equals(f('W 1 ST,E 1 ST,N 1 ST,S 1 ST,NE 1 ST,SE 1 ST').split(',').length, 10); // Never exceed 10 tokens
 
     t.end();
 });

@@ -1,10 +1,11 @@
+'use strict';
+
 const stats = require('../native/index.node').stats;
 const test = require('tape');
 const path = require('path');
-const os = require('os');
 
 test('Stats - MultiPoint Orphan', (t) => {
-    let res = stats({
+    const res = stats({
         input: String(path.resolve(__dirname, 'fixtures/stats.orphan-mp'))
     });
 
@@ -22,7 +23,7 @@ test('Stats - MultiPoint Orphan', (t) => {
 });
 
 test('Stats - GeometryCollection Orphan', (t) => {
-    let res = stats({
+    const res = stats({
         input: String(path.resolve(__dirname, 'fixtures/stats.orphan'))
     });
 
@@ -40,7 +41,7 @@ test('Stats - GeometryCollection Orphan', (t) => {
 });
 
 test('Stats - MultiLine', (t) => {
-    let res = stats({
+    const res = stats({
         input: String(path.resolve(__dirname, 'fixtures/stats.orphan-double'))
     });
 
@@ -58,7 +59,7 @@ test('Stats - MultiLine', (t) => {
 });
 
 test('Stats - Cluster', (t) => {
-    let res = stats({
+    const res = stats({
         input: String(path.resolve(__dirname, 'fixtures/stats.cluster'))
     });
 
@@ -76,7 +77,7 @@ test('Stats - Cluster', (t) => {
 });
 
 test('Stats - Network Orphan', (t) => {
-    let res = stats({
+    const res = stats({
         input: String(path.resolve(__dirname, 'fixtures/stats.network'))
     });
 
@@ -94,7 +95,7 @@ test('Stats - Network Orphan', (t) => {
 });
 
 test('Stats - Invalid', (t) => {
-    let res = stats({
+    const res = stats({
         input: String(path.resolve(__dirname, 'fixtures/stats.invalid'))
     });
 
