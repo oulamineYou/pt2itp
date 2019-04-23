@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v21.0.1
+
+- :rocket: Clarify how `props` and `post` parameters are passed to `map` mode
+
 ### v21.0.0
 
 - :rocket: Remove support for `skip-import` option in `map` mode
