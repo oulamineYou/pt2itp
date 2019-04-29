@@ -1,50 +1,49 @@
-extern crate fancy_regex;
-extern crate regex;
-
-use fancy_regex::Regex;
-use fancy_regex::Captures;
-
+use fancy_regex::{Regex, Captures};
 use std::str;
-
 use memchr::memchr;
 
-fn replace(query: &str, re: Regex, replacer: &str) -> String {
-    let mut input = &query[..];
-    let mut output = String::new();
+pub trait ReplaceAll {
+    fn replace_all(&self, text: &str, rep: &str) -> String;
+}
 
-    if replacer.contains("$") {
-        while input.len() > 0 {
-            let result = re.captures(input).unwrap();
-            match result {
-                None => {
-                    output.push_str(&input);
-                    break;
-                },
-                Some(r) => {
-                    let pos = (r.pos(0).unwrap().0, r.pos(0).unwrap().1);
-                    output.push_str(&input[..pos.0]);
-                    expand_str(&r, &replacer, &mut output);
-                    input = &input[pos.1..];
+impl ReplaceAll for Regex {
+    fn replace_all(&self, text: &str, rep: &str) -> String {
+        let mut input = text;
+        let mut new = String::new();
+
+        if rep.contains("$") {
+            while input.len() > 0 {
+                match self.captures(input).unwrap() {
+                    None => {
+                        new.push_str(&input);
+                        break;
+                    },
+                    Some(m) => {
+                        let pos = (m.pos(0).unwrap().0, m.pos(0).unwrap().1);
+                        new.push_str(&input[..pos.0]);
+                        expand_str(&m, &rep, &mut new);
+                        input = &input[pos.1..];
+                    }
                 }
             }
         }
-    }
-    else {
-        while input.len() > 0 {
-            match re.find(input).unwrap() {
-                None => {
-                    output.push_str(&input);
-                    break;
-                },
-                Some(m) => {
-                    output.push_str(&input[..m.0]);
-                    output.push_str(&replacer);
-                    input = &input[m.1..];
+        else {
+            while input.len() > 0 {
+                match self.find(input).unwrap() {
+                    None => {
+                        new.push_str(&input);
+                        break;
+                    },
+                    Some(m) => {
+                        new.push_str(&input[..m.0]);
+                        new.push_str(&rep);
+                        input = &input[m.1..];
+                    }
                 }
             }
         }
+        new
     }
-    output
 }
 
 /// The following functions, structs, and enums are copied from the core Rust regex crate
@@ -166,15 +165,15 @@ mod tests {
 
     #[test]
     fn test_replace() {
-        assert_eq!(replace("foo! foo foo! foo", Regex::new("\\w+(?=!)").unwrap(), "bar"), "bar! foo bar! foo");
-        assert_eq!(replace("123 Main St apt #5", Regex::new("(?:apartment|apt|bldg|building|rm|room|unit) #?(?:[A-Z]|\\d+|[A-Z]\\d+|\\d+[A-Z]|\\d+-\\d+[A-Z]?)").unwrap(), ""), "123 Main St ");
-        assert_eq!(replace("123 Main St floor 5", Regex::new("(?:floor|fl) #?\\d{1,3}").unwrap(), ""), "123 Main St ");
-        assert_eq!(replace("123 Main St 5th floor", Regex::new("\\d{1,3}(?:st|nd|rd|th) (?:floor|fl)").unwrap(), ""), "123 Main St ");
-        assert_eq!(replace("1丁目 意思", Regex::new("[１1]丁目").unwrap(), "一丁目"), "一丁目 意思");
+        assert_eq!(Regex::new("\\w+(?=!)").unwrap().replace_all("foo! foo foo! foo", "bar"), "bar! foo bar! foo");
+        assert_eq!(Regex::new("(?:apartment|apt|bldg|building|rm|room|unit) #?(?:[A-Z]|\\d+|[A-Z]\\d+|\\d+[A-Z]|\\d+-\\d+[A-Z]?)").unwrap().replace_all("123 Main St apt #5", ""), "123 Main St ");
+        assert_eq!(Regex::new("(?:floor|fl) #?\\d{1,3}").unwrap().replace_all("123 Main St floor 5", ""), "123 Main St ");
+        assert_eq!(Regex::new("\\d{1,3}(?:st|nd|rd|th) (?:floor|fl)").unwrap().replace_all("123 Main St 5th floor", ""), "123 Main St ");
+        assert_eq!(Regex::new("[１1]丁目").unwrap().replace_all("1丁目 意思", "一丁目"), "一丁目 意思");
 
-        assert_eq!(replace("hi amanuensvagen hello", Regex::new("([a-z]+)vagen").unwrap(), "${1}v"), "hi amanuensv hello");
-        assert_eq!(replace("hi amanuensvagen hello gutenvagen", Regex::new("([a-z]+)vagen").unwrap(), "${1}v"), "hi amanuensv hello gutenv");
-        assert_eq!(replace("123 main st floor #5", Regex::new("((?!apartment|apt|bldg|building|rm|room|unit|fl|floor|ste|suite)[a-z]{2,}) # ?(?:[A-Z]|\\d+|[A-Z]\\d+|\\d+[A-Z]|\\d+-\\d+[A-Z]?)").unwrap(), "$1"), "123 main st floor");
-        assert_eq!(replace("wilhelmstraße 3", Regex::new("([^ ]+)(strasse|straße|str)").unwrap(), "$1 str"), "wilhelm str 3");
+        assert_eq!(Regex::new("([a-z]+)vagen").unwrap().replace_all("hi amanuensvagen hello", "${1}v"), "hi amanuensv hello");
+        assert_eq!(Regex::new("([a-z]+)vagen").unwrap().replace_all("hi amanuensvagen hello gutenvagen", "${1}v"), "hi amanuensv hello gutenv");
+        assert_eq!(Regex::new("((?!apartment|apt|bldg|building|rm|room|unit|fl|floor|ste|suite)[a-z]{2,}) # ?(?:[A-Z]|\\d+|[A-Z]\\d+|\\d+[A-Z]|\\d+-\\d+[A-Z]?)").unwrap().replace_all("123 main st floor #5", "$1"), "123 main st floor");
+        assert_eq!(Regex::new("([^ ]+)(strasse|straße|str)").unwrap().replace_all("wilhelmstraße 3", "$1 str"), "wilhelm str 3");
     }
 }
