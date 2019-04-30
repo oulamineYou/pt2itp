@@ -1,19 +1,19 @@
-use fancy_regex::{Regex, Captures};
+use fancy_regex::{Regex, Captures, Error};
 use std::str;
 use memchr::memchr;
 
 pub trait ReplaceAll {
-    fn replace_all(&self, text: &str, rep: &str) -> String;
+    fn replace_all(&self, text: &str, rep: &str) -> Result<String, Error>;
 }
 
 impl ReplaceAll for Regex {
-    fn replace_all(&self, text: &str, rep: &str) -> String {
+    fn replace_all(&self, text: &str, rep: &str) -> Result<String, Error> {
         let mut input = text;
         let mut new = String::new();
 
         if rep.contains("$") {
             while input.len() > 0 {
-                match self.captures(input).unwrap() {
+                match self.captures(input)? {
                     None => {
                         new.push_str(&input);
                         break;
@@ -29,7 +29,7 @@ impl ReplaceAll for Regex {
         }
         else {
             while input.len() > 0 {
-                match self.find(input).unwrap() {
+                match self.find(input)? {
                     None => {
                         new.push_str(&input);
                         break;
@@ -42,27 +42,20 @@ impl ReplaceAll for Regex {
                 }
             }
         }
-        new
+        Ok(new)
     }
 }
 
-/// The following functions, structs, and enums are copied from the core Rust regex crate
+/// The following functions, structs, and enums are derived from the core Rust regex crate
 /// They add capture group replacement functionality currently not supported by fancy-regex
 ///  License MIT
-
 
 /// A reference to a capture group in some text.
 ///
 /// e.g., `$2`, `$foo`, `${foo}`.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-enum Ref<'a> {
-    Named(&'a str),
-    Number(usize),
-}
-
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-struct CaptureRef<'a> {
-    cap: Ref<'a>,
+struct CaptureRef {
+    cap: usize,
     end: usize,
 }
 
@@ -84,7 +77,6 @@ fn expand_str(
             replacement = &replacement[2..];
             continue;
         }
-        debug_assert!(!replacement.is_empty());
         let cap_ref = match find_cap_ref(replacement) {
             Some(cap_ref) => cap_ref,
             None => {
@@ -94,13 +86,7 @@ fn expand_str(
             }
         };
         replacement = &replacement[cap_ref.end..];
-        match cap_ref.cap {
-            Ref::Number(i) => {
-                dst.push_str(
-                    caps.at(i).map(|m| m).unwrap_or(""));
-            }
-            _ => panic!("dependency fancy-regex does not supported named capture groups")
-        }
+        dst.push_str(caps.at(cap_ref.cap).map(|m| m).unwrap_or(""));
     }
     dst.push_str(replacement);
 }
@@ -117,14 +103,9 @@ fn find_cap_ref<T: ?Sized + AsRef<[u8]>>(
     if rep.len() <= 1 || rep[0] != b'$' {
         return None;
     }
-    let mut brace = false;
     i += 1;
-    if rep[i] == b'{' {
-        brace = true;
-        i += 1;
-    }
     let mut cap_end = i;
-    while rep.get(cap_end).map_or(false, is_valid_cap_letter) {
+    while rep.get(cap_end).map_or(false, is_valid_cap) {
         cap_end += 1;
     }
     if cap_end == i {
@@ -135,26 +116,23 @@ fn find_cap_ref<T: ?Sized + AsRef<[u8]>>(
     // check with either unsafe or by parsing the number straight from &[u8].
     let cap = str::from_utf8(&rep[i..cap_end])
                   .expect("valid UTF-8 capture name");
-    // println!("cap {:#?}, cap.parse {:#?}", cap, cap.parse::<u32>());
-    if brace {
-        if !rep.get(cap_end).map_or(false, |&b| b == b'}') {
-            return None;
-        }
-        cap_end += 1;
-    }
-    Some(CaptureRef {
-        cap: match cap.parse::<u32>() {
-            Ok(i) => Ref::Number(i as usize),
-            Err(_) => Ref::Named(cap),
+
+    match cap.parse::<u32>() {
+        Ok(i) => {
+            Some(CaptureRef {
+                cap: i as usize,
+                end: cap_end
+            })
         },
-        end: cap_end,
-    })
+        Err(_) => None
+    }
 }
 
 /// Returns true if and only if the given byte is allowed in a capture name.
-fn is_valid_cap_letter(b: &u8) -> bool {
+/// Modified to only support numbered capture groups
+fn is_valid_cap(b: &u8) -> bool {
     match *b {
-        b'0' ... b'9' | b'a' ... b'z' | b'A' ... b'Z' | b'_' => true,
+        b'0' ... b'9' => true,
         _ => false,
     }
 }
@@ -165,15 +143,54 @@ mod tests {
 
     #[test]
     fn test_replace() {
-        assert_eq!(Regex::new("\\w+(?=!)").unwrap().replace_all("foo! foo foo! foo", "bar"), "bar! foo bar! foo");
-        assert_eq!(Regex::new("(?:apartment|apt|bldg|building|rm|room|unit) #?(?:[A-Z]|\\d+|[A-Z]\\d+|\\d+[A-Z]|\\d+-\\d+[A-Z]?)").unwrap().replace_all("123 Main St apt #5", ""), "123 Main St ");
-        assert_eq!(Regex::new("(?:floor|fl) #?\\d{1,3}").unwrap().replace_all("123 Main St floor 5", ""), "123 Main St ");
-        assert_eq!(Regex::new("\\d{1,3}(?:st|nd|rd|th) (?:floor|fl)").unwrap().replace_all("123 Main St 5th floor", ""), "123 Main St ");
-        assert_eq!(Regex::new("[１1]丁目").unwrap().replace_all("1丁目 意思", "一丁目"), "一丁目 意思");
+        assert_eq!(Regex::new("(?:floor|fl) #?\\d{1,3}").unwrap().replace_all("123 main st", "").unwrap(), "123 main st");
+        assert_eq!(Regex::new("(?:apartment|apt|bldg|building|rm|room|unit) #?(?:[A-Z]|\\d+|[A-Z]\\d+|\\d+[A-Z]|\\d+-\\d+[A-Z]?)").unwrap().replace_all("123 main st apt #5 washington dc", "").unwrap(), "123 main st  washington dc");
+        assert_eq!(Regex::new("(?:floor|fl) #?\\d{1,3}").unwrap().replace_all("123 main st floor 5", "").unwrap(), "123 main st ");
+        assert_eq!(Regex::new("\\d{1,3}(?:st|nd|rd|th) (?:floor|fl)").unwrap().replace_all("5th floor", "").unwrap(), "");
+        assert_eq!(Regex::new("[１1]丁目").unwrap().replace_all("1丁目 意思", "一丁目").unwrap(), "一丁目 意思");
 
-        assert_eq!(Regex::new("([a-z]+)vagen").unwrap().replace_all("hi amanuensvagen hello", "${1}v"), "hi amanuensv hello");
-        assert_eq!(Regex::new("([a-z]+)vagen").unwrap().replace_all("hi amanuensvagen hello gutenvagen", "${1}v"), "hi amanuensv hello gutenv");
-        assert_eq!(Regex::new("((?!apartment|apt|bldg|building|rm|room|unit|fl|floor|ste|suite)[a-z]{2,}) # ?(?:[A-Z]|\\d+|[A-Z]\\d+|\\d+[A-Z]|\\d+-\\d+[A-Z]?)").unwrap().replace_all("123 main st floor #5", "$1"), "123 main st floor");
-        assert_eq!(Regex::new("([^ ]+)(strasse|straße|str)").unwrap().replace_all("wilhelmstraße 3", "$1 str"), "wilhelm str 3");
+        assert_eq!(Regex::new("([a-z]+)vagen").unwrap().replace_all("123 main st", "$1v").unwrap(), "123 main st");
+        assert_eq!(Regex::new("([a-z]+)vagen").unwrap().replace_all("amanuensvagen 5 stockholm sweden", "$1v").unwrap(), "amanuensv 5 stockholm sweden");
+        assert_eq!(Regex::new("([a-z]+)vagen").unwrap().replace_all("hi amanuensvagen hello gutenvagen", "$1v").unwrap(), "hi amanuensv hello gutenv");
+        // assert_eq!(Regex::new("((?!apartment|apt|bldg|building|rm|room|unit|fl|floor|ste|suite)[a-z]{2,}) # ?(?:[A-Z]|\\d+|[A-Z]\\d+|\\d+[A-Z]|\\d+-\\d+[A-Z]?)").unwrap().replace_all("123 main st floor #5 suite # 113", "$1").unwrap(), "123 main st floor suite");
+        assert_eq!(Regex::new("([^ ]+)(strasse|straße|str)").unwrap().replace_all("wilhelmstraße 3", "$1 str").unwrap(), "wilhelm str 3");
+        assert_eq!(Regex::new("(foo) (bar)").unwrap().replace_all("foo bar", "$2 $1").unwrap(), "bar foo");
     }
+
+    /// Tests from the core Rust regex crate
+    macro_rules! find {
+        ($name:ident, $text:expr) => {
+            #[test]
+            fn $name() {
+                assert_eq!(None, find_cap_ref($text));
+            }
+        };
+        ($name:ident, $text:expr, $capref:expr) => {
+            #[test]
+            fn $name() {
+                assert_eq!(Some($capref), find_cap_ref($text));
+            }
+        };
+    }
+
+    macro_rules! c {
+        ($name_or_number:expr, $pos:expr) => {
+            CaptureRef { cap: $name_or_number, end: $pos }
+        };
+    }
+
+    find!(find_cap_ref3, "$0", c!(0, 2));
+    find!(find_cap_ref4, "$5", c!(5, 2));
+    find!(find_cap_ref5, "$10", c!(10, 3));
+    find!(find_cap_ref6, "$42a");
+    find!(find_cap_ref7, "${42}a");
+    find!(find_cap_ref8, "${42");
+    find!(find_cap_ref9, "${42 ");
+    find!(find_cap_ref1, "$foo");
+    find!(find_cap_ref2, "${foo}");
+    find!(find_cap_ref10, " $0 ");
+    find!(find_cap_ref11, "$");
+    find!(find_cap_ref12, "$$");
+    find!(find_cap_ref13, " ");
+    find!(find_cap_ref14, "");
 }
