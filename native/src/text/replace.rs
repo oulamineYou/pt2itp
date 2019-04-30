@@ -151,8 +151,7 @@ mod tests {
 
         assert_eq!(Regex::new("([a-z]+)vagen").unwrap().replace_all("123 main st", "$1v").unwrap(), "123 main st");
         assert_eq!(Regex::new("([a-z]+)vagen").unwrap().replace_all("amanuensvagen 5 stockholm sweden", "$1v").unwrap(), "amanuensv 5 stockholm sweden");
-        assert_eq!(Regex::new("([a-z]+)vagen").unwrap().replace_all("hi amanuensvagen hello gutenvagen", "$1v").unwrap(), "hi amanuensv hello gutenv");
-        // assert_eq!(Regex::new("((?!apartment|apt|bldg|building|rm|room|unit|fl|floor|ste|suite)[a-z]{2,}) # ?(?:[A-Z]|\\d+|[A-Z]\\d+|\\d+[A-Z]|\\d+-\\d+[A-Z]?)").unwrap().replace_all("123 main st floor #5 suite # 113", "$1").unwrap(), "123 main st floor suite");
+        assert_eq!(Regex::new("([a-z]+)vagen").unwrap().replace_all("amanuensvagen 5 stockholm sweden gutenvagen", "$1v").unwrap(), "amanuensv 5 stockholm sweden gutenv");
         assert_eq!(Regex::new("([^ ]+)(strasse|straße|str)").unwrap().replace_all("wilhelmstraße 3", "$1 str").unwrap(), "wilhelm str 3");
         assert_eq!(Regex::new("(foo) (bar)").unwrap().replace_all("foo bar", "$2 $1").unwrap(), "bar foo");
     }
