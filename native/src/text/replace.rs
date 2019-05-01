@@ -13,21 +13,25 @@ impl ReplaceAll for Regex {
 
         if rep.contains("$") {
             while input.len() > 0 {
+                // captures finds the left-most first match in a string
                 match self.captures(input)? {
                     None => {
                         new.push_str(&input);
                         break;
                     },
                     Some(m) => {
+                        // capture group 0 always corresponds to the entire match
                         let pos = (m.pos(0).unwrap().0, m.pos(0).unwrap().1);
+                        // add the string up until the beginning of the match to the output
                         new.push_str(&input[..pos.0]);
+                        // add the capture group replacement to the output
                         expand_str(&m, &rep, &mut new);
+                        // set input to the original string from the end of the match and repeat
                         input = &input[pos.1..];
                     }
                 }
             }
-        }
-        else {
+        } else {
             while input.len() > 0 {
                 match self.find(input)? {
                     None => {
