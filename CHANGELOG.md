@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v21.0.4
+
+- :tada: Add support for regex replacements to fancy-regex dependency
+
 ### v21.0.3
 
 - :bug: Fix bug where addresses could lose their relationships with their geometry in orphan output
