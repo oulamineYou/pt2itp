@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v21.0.3
+
+- :bug: Fix bug where addresses could lose their relationships with their geometry in orphan output
+
 ### v21.0.2
 
 - :bug: More consistent behavior on args parsing (Array vs String)
