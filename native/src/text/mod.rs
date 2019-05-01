@@ -1,5 +1,6 @@
 mod diacritics;
 mod tokens;
+mod replace;
 
 //
 // A note on fn names:
