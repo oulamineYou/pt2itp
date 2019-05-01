@@ -5,7 +5,7 @@ use crate::text::Tokens;
 pub struct InputContext {
     pub country: Option<String>,
     pub region: Option<String>,
-    pub tokens: Option<Vec<Vec<String>>>
+    pub tokens: Option<Vec<String>>
 }
 
 #[derive(Debug, PartialEq)]
@@ -164,4 +164,3 @@ mod tests {
         assert_eq!(cntx.region_name(), Some(String::from("West Virginia")));
     }
 }
-
