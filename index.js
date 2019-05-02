@@ -104,6 +104,39 @@ if (require.main === module) {
 
             break;
         }
+        case ('conflate'): {
+            const conflate_arg = require('minimist')(process.argv, {
+                string: ['input', 'output', 'tokens', 'db', 'country', 'region'],
+                boolean: ['hecate'],
+                alias: {
+                    database: 'db'
+                }
+            });
+
+            let context = undefined;
+            if (conflate_arg.country) {
+                context = {
+                    country: conflate_arg.country,
+                    region: conflate_arg.region
+                };
+            }
+
+            if (!conflate_arg.db) {
+                console.error('--db <DATABASE> argument required');
+                process.exit(1);
+            }
+
+            require('./native/index.node').conflate({
+                input: dedupe_arg.input,
+                output: dedupe_arg.output,
+                tokens: dedupe_arg.tokens,
+                hecate: dedupe_arg.hecate,
+                context: context,
+                db: dedupe_arg.db
+            });
+
+            break;
+        }
         case ('dedupe'): {
             const dedupe_arg = require('minimist')(process.argv, {
                 string: ['buildings', 'input', 'output', 'tokens', 'db', 'country', 'region'],
@@ -181,6 +214,7 @@ if (require.main === module) {
 } else {
     module.exports = {
         classify: require('./native/index.node').classify,
+        conflate: require('./native/index.node').conflate,
         dedupe: require('./native/index.node').dedupe,
         stat: require('./native/index.node').stats,
         convert: require('./native/index.node').convert,
