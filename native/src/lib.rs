@@ -24,6 +24,7 @@ pub mod convert;
 pub mod stats;
 pub mod dedupe;
 pub mod classify;
+pub mod conflate;
 
 pub use self::types::Address;
 pub use self::types::Network;
