@@ -41,14 +41,6 @@ if (require.main === module) {
                 process.exit(0);
             });
             break;
-        case ('conflate'):
-            require('./lib/conflate')(process.argv, (err) => {
-                if (err) throw err;
-
-                console.log('ok - conflation complete');
-                process.exit(0);
-            });
-            break;
         case ('stat'):
         case ('stats'): {
             const stat_arg = require('minimist')(process.argv, {
