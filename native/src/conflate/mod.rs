@@ -63,11 +63,15 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         None => crate::Context::new(String::from(""), None, crate::Tokens::new(HashMap::new()))
     };
 
-    let address = pg::Address::new();
-    address.create(&conn);
-    address.input(&conn, AddrStream::new(GeoStream::new(args.in_address), context, None));
+    let pgaddress = pg::Address::new();
+    pgaddress.create(&conn);
+    pgaddress.input(&conn, AddrStream::new(GeoStream::new(args.in_persistent), context.clone(), args.error_persistent));
 
-    address.index(&conn);
+    pgaddress.index(&conn);
+
+    for addr in AddrStream::new(GeoStream::new(args.in_address), context.clone(), args.error_address) {
+
+    }
 
     Ok(cx.boolean(true))
 }
