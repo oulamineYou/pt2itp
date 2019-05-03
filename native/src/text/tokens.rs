@@ -1,7 +1,7 @@
 use regex::Regex;
 use super::diacritics;
 use std::collections::HashMap;
-use geocoder_abbreviations::{Token, BasicToken};
+use geocoder_abbreviations::{Token};
 
 #[derive(Debug, PartialEq)]
 pub struct Tokens {
@@ -20,10 +20,12 @@ impl Tokens {
         let mut map: HashMap<String, String> = HashMap::new();
 
         for language in import.keys() {
-            for token in import.get(language).unwrap() {
+            for group in import.get(language).unwrap() {
                 // if it's a simple, non regex token replacer
-                if let BasicToken::String(full) = &token.full {
-                    map.insert(diacritics(&full.to_lowercase()), diacritics(&token.canonical.to_lowercase()));
+                if !group.regex {
+                    for tk in &group.tokens {
+                        map.insert(diacritics(&tk.to_lowercase()), diacritics(&group.canonical.to_lowercase()));
+                    }
                 }
             }
         }
@@ -170,6 +172,26 @@ mod tests {
         assert_eq!(tokens.process(&String::from("foo barter")), (
             String::from("foo foo"),
             String::from("foo")
+        ));
+    }
+
+    #[test]
+    fn test_generate_tokens() {
+        let tokens = Tokens::generate(vec![String::from("en")]);
+
+        assert_eq!(tokens.process(&String::from("New Jersey Av NW")), (
+            String::from("new jersey av nw"),
+            String::from("new jersey")
+        ));
+
+        assert_eq!(tokens.process(&String::from("New Jersey Ave NW")), (
+            String::from("new jersey av nw"),
+            String::from("new jersey")
+        ));
+
+        assert_eq!(tokens.process(&String::from("New Jersey Avenue Northwest")), (
+            String::from("new jersey av nw"),
+            String::from("new jersey")
         ));
     }
 }
