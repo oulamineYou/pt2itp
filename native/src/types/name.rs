@@ -63,7 +63,7 @@ impl Names {
                 } else {
                     let names: Vec<InputName> = match serde_json::from_value(street) {
                         Ok(street) => street,
-                        _ => { return Err(String::from("Invalid Street Property")); }
+                        Err(err) => { return Err(format!("Invalid Street Property: {}", err)); }
                     };
 
                     let names: Vec<Name> = names.iter().map(|name| {
@@ -154,6 +154,7 @@ impl Name {
 
 #[cfg(test)]
 mod tests {
+    use serde_json::json;
     use super::*;
     use std::collections::HashMap;
     use crate::Tokens;
@@ -191,6 +192,20 @@ mod tests {
         ], &context);
 
         assert_eq!(names, names_sorted);
+    }
+
+    #[test]
+    fn test_names_from_value() {
+        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
+
+        let expected = Names::new(vec![Name::new(String::from("Main St NE"), 0, &context)], &context);
+
+        assert_eq!(Names::from_value(Some(json!("Main St NE")), &context).unwrap(), expected);
+
+        assert_eq!(Names::from_value(Some(json!([{
+            "display": "Main St NE",
+            "priority": 0
+        }])), &context).unwrap(), expected);
     }
 
     #[test]
