@@ -119,12 +119,12 @@ if (require.main === module) {
             }
 
             require('./native/index.node').conflate({
-                input: dedupe_arg.input,
-                output: dedupe_arg.output,
-                tokens: dedupe_arg.tokens,
-                hecate: dedupe_arg.hecate,
+                input: conflate_arg.input,
+                output: conflate_arg.output,
+                tokens: conflate_arg.tokens,
+                hecate: conflate_arg.hecate,
                 context: context,
-                db: dedupe_arg.db
+                db: conflate_arg.db
             });
 
             break;
