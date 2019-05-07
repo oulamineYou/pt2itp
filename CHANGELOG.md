@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v21.0.5
+
+- :white_check_mark: Add tests for `Names::from_value`
+
 ### v21.0.4
 
 - :tada: Add support for regex replacements to fancy-regex dependency
