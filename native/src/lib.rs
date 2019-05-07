@@ -10,6 +10,7 @@ extern crate geojson;
 extern crate regex;
 
 // Internal Helper Libraries
+pub mod util;
 pub mod stream;
 pub mod text;
 

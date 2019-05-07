@@ -19,7 +19,7 @@ use crate::{Name, Context};
 ///
 /// Return the Levenshtein distance between two strings
 ///
-fn distance<T>(a: &T, b: &T) -> usize
+pub fn distance<T>(a: &T, b: &T) -> usize
     where T: ToString
 {
     let v1: Vec<char> = a.to_string().chars().collect();
@@ -52,6 +52,52 @@ fn distance<T>(a: &T, b: &T) -> usize
     }
 
     column[v1len]
+}
+
+
+///
+/// Is the street a numbered street: ie 1st, 2nd, 3rd etc
+///
+pub fn isNumbered(name: &Name) -> Option<String> {
+    let tokens = name.tokenized.split(' ');
+
+    lazy_static! {
+        static ref NUMBERED: Regex = Regex::new(r"^(?P<num>([0-9]+)?(1st|2nd|3rd|[0-9]th))$").unwrap();
+    }
+
+    for token in tokens {
+        match NUMBERED.captures(token) {
+            Some(capture) => {
+                return Some(capture["num"].to_string());
+            }
+            None => ()
+        };
+    }
+
+    None
+}
+
+///
+/// Is the street a route type number
+/// ie: US Route 4
+///
+pub fn isRoutish(name: &Name) -> Option<String> {
+    let tokens = name.tokenized.split(' ');
+
+    lazy_static! {
+        static ref ROUTISH: Regex = Regex::new(r"^(?P<num>\d+)$").unwrap();
+    }
+
+    for token in tokens {
+        match ROUTISH.captures(token) {
+            Some(capture) => {
+                return Some(capture["num"].to_string());
+            }
+            None => ()
+        };
+    }
+
+    None
 }
 
 ///
