@@ -43,7 +43,7 @@ jobs:
                 command: PATH="$HOME/.cargo/bin:$(yarn global bin)/:$PATH" yarn build && yarn install
             - run:
                 name: "Cargo Test"
-                command: PATH="$HOME/.cargo/bin:$PATH" cargo test --release
+                command: PATH="$HOME/.cargo/bin:$PATH" cd native/ && cargo test --release
             - run:
                 name: "Yarn Lint"
                 command: "yarn run lint"
