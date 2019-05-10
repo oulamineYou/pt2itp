@@ -1058,6 +1058,16 @@
     d3-queue "~2.0.3"
     sqlite3 "4.x"
 
+"@mapbox/mbtiles@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/mbtiles/-/mbtiles-0.11.0.tgz#c42eaea5457c76ae43cd7e448c5c9f11d81f4de3"
+  integrity sha512-6eQVpgMG3lRMgptVfETiOGZI76SC3UCPOO4hoyHDyZVd20mRrS6Ncbr7ZAdIgSyfqCsI9pnvD+ZpeBzKSgpg6w==
+  dependencies:
+    "@mapbox/sphericalmercator" "~1.1.0"
+    "@mapbox/tiletype" "0.3.x"
+    d3-queue "~3.0.7"
+    sqlite3 "4.x"
+
 "@mapbox/node-fuzzy-phrase@0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@mapbox/node-fuzzy-phrase/-/node-fuzzy-phrase-0.2.0.tgz#0d8d1d4355584da6de2a28de8eea81ca73e53452"
@@ -3353,7 +3363,7 @@ d3-geo@1.7.1:
   dependencies:
     d3-array "1"
 
-d3-queue@3.0.x, d3-queue@^3.0.2, d3-queue@^3.0.7:
+d3-queue@3.0.x, d3-queue@^3.0.2, d3-queue@^3.0.7, d3-queue@~3.0.7:
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/d3-queue/-/d3-queue-3.0.7.tgz#c93a2e54b417c0959129d7d73f6cf7d4292e7618"
   integrity sha1-yTouVLQXwJWRKdfXP2z31Ckudhg=
