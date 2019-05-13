@@ -58,7 +58,7 @@ pub fn distance<T>(a: &T, b: &T) -> usize
 ///
 /// Is the street a numbered street: ie 1st, 2nd, 3rd etc
 ///
-pub fn isNumbered(name: &Name) -> Option<String> {
+pub fn is_numbered(name: &Name) -> Option<String> {
     let tokens = name.tokenized.split(' ');
 
     lazy_static! {
@@ -81,7 +81,7 @@ pub fn isNumbered(name: &Name) -> Option<String> {
 /// Is the street a route type number
 /// ie: US Route 4
 ///
-pub fn isRoutish(name: &Name) -> Option<String> {
+pub fn is_routish(name: &Name) -> Option<String> {
     let tokens = name.tokenized.split(' ');
 
     lazy_static! {
