@@ -854,4 +854,44 @@ mod tests {
             Some(String::from("351235th"))
         );
     }
+
+    #[test]
+    fn test_is_routish() {
+        let context = Context::new(String::from("us"), Some(String::from("PA")), Tokens::new(HashMap::new()));
+
+        assert_eq!(
+            is_routish(&Name::new(String::from("main st"), 0, &context)),
+            None
+        );
+
+        assert_eq!(
+            is_routish(&Name::new(String::from("1st st"), 0, &context)),
+            None
+        );
+
+        assert_eq!(
+            is_routish(&Name::new(String::from("351235th av"), 0, &context)),
+            None
+        );
+
+        assert_eq!(
+            is_routish(&Name::new(String::from("NC 124"), 0, &context)),
+            Some(String::from("124"))
+        );
+
+        assert_eq!(
+            is_routish(&Name::new(String::from("US Route 50 East"), 0, &context)),
+            Some(String::from("50"))
+        );
+
+        assert_eq!(
+            is_routish(&Name::new(String::from("321"), 0, &context)),
+            Some(String::from("321"))
+        );
+
+        assert_eq!(
+            is_routish(&Name::new(String::from("124 NC"), 0, &context)),
+            Some(String::from("124"))
+        );
+    }
 }
