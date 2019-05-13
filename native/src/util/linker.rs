@@ -7,7 +7,7 @@ use crate::types::Names;
 
 pub struct Link<'a> {
     pub id: &'a i64,
-    pub score: Vec<f64>,
+    pub maxscore: f64,
     pub names: &'a Names
 }
 
@@ -15,7 +15,7 @@ impl<'a> Link<'a> {
     pub fn new(id: &'a i64, names: &'a Names) -> Self {
         Link {
             id: id,
-            score: Vec::with_capacity(names.names.len()),
+            maxscore: 0.0,
             names: names
         }
     }
@@ -26,8 +26,6 @@ impl<'a> Link<'a> {
 /// Geometric proximity must be determined/filtered by the caller
 ///
 pub fn linker(primary: Link, mut potentials: Vec<Link>) -> Option<i64> {
-    let max_score = false;
-
     // Ensure exact matches are always returned before potential short-circuits
     for name in &primary.names.names {
         for potential in potentials.iter() {
@@ -104,11 +102,36 @@ pub fn linker(primary: Link, mut potentials: Vec<Link>) -> Option<i64> {
 
                 let score = 100.0 - (((2.0 * lev_score.unwrap()) / (potential_name.tokenized.len() as f64 + name.tokenized.len() as f64)) * 100.0);
 
-                potential.score.push(score);
-
+                if score > potential.maxscore {
+                    potential.maxscore = score;
+                }
             }
         }
     }
 
-    None
+    // Calculate max score (score must be > 70% for us to return any matches)
+    let mut max: Option<&Link> = None;
+    for potential in potentials.iter() {
+        match max {
+            None => {
+                max = Some(potential);
+            },
+            Some(current_max) => {
+                if potential.maxscore > current_max.maxscore {
+                    max = Some(potential);
+                }
+            }
+        };
+    }
+
+    match max {
+        Some(max) => {
+            if max.maxscore > 0.70 {
+                Some(*max.id)
+            } else {
+                None
+            }
+        },
+        None => None
+    }
 }
