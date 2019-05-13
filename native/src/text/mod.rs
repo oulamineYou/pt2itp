@@ -789,4 +789,69 @@ mod tests {
             String::from("RTe 1")
         );
     }
+
+    #[test]
+    fn test_is_numbered() {
+        let context = Context::new(String::from("us"), Some(String::from("PA")), Tokens::new(HashMap::new()));
+
+        assert_eq!(
+            is_numbered(&Name::new(String::from("main st"), 0, &context)),
+            None
+        );
+
+        assert_eq!(
+            is_numbered(&Name::new(String::from("1st st"), 0, &context)),
+            Some(String::from("1st"))
+        );
+
+        assert_eq!(
+            is_numbered(&Name::new(String::from("2nd st"), 0, &context)),
+            Some(String::from("2nd"))
+        );
+
+        assert_eq!(
+            is_numbered(&Name::new(String::from("west 2nd st"), 0, &context)),
+            Some(String::from("2nd"))
+        );
+
+        assert_eq!(
+            is_numbered(&Name::new(String::from("3rd st"), 0, &context)),
+            Some(String::from("3rd"))
+        );
+
+        assert_eq!(
+            is_numbered(&Name::new(String::from("4th st"), 0, &context)),
+            Some(String::from("4th"))
+        );
+
+        assert_eq!(
+            is_numbered(&Name::new(String::from("11th ave"), 0, &context)),
+            Some(String::from("11th"))
+        );
+
+        assert_eq!(
+            is_numbered(&Name::new(String::from("12th ave"), 0, &context)),
+            Some(String::from("12th"))
+        );
+
+        assert_eq!(
+            is_numbered(&Name::new(String::from("21st av"), 0, &context)),
+            Some(String::from("21st"))
+        );
+
+        assert_eq!(
+            is_numbered(&Name::new(String::from("32nd av"), 0, &context)),
+            Some(String::from("32nd"))
+        );
+
+        assert_eq!(
+            is_numbered(&Name::new(String::from("45th av"), 0, &context)),
+            Some(String::from("45th"))
+        );
+
+        assert_eq!(
+            is_numbered(&Name::new(String::from("351235th av"), 0, &context)),
+            Some(String::from("351235th"))
+        );
+    }
 }

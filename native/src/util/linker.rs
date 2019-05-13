@@ -135,3 +135,13 @@ pub fn linker(primary: Link, mut potentials: Vec<Link>) -> Option<i64> {
         None => None
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_linker() {
+
+    }
+}
