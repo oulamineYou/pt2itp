@@ -1,7 +1,7 @@
 use regex::Regex;
 use super::diacritics;
 use std::collections::HashMap;
-use geocoder_abbreviations::{Token};
+use geocoder_abbreviations::Token;
 
 #[derive(Debug, PartialEq)]
 pub struct Tokens {
