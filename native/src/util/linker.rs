@@ -161,9 +161,13 @@ mod tests {
     fn test_linker() {
         let mut tokens: HashMap<String, String> = HashMap::new();
         tokens.insert(String::from("street"), String::from("st"));
+        tokens.insert(String::from("st"), String::from("st"));
         tokens.insert(String::from("avenue"), String::from("ave"));
+        tokens.insert(String::from("ave"), String::from("ave"));
         tokens.insert(String::from("west"), String::from("w"));
         tokens.insert(String::from("east"), String::from("e"));
+        tokens.insert(String::from("w"), String::from("w"));
+        tokens.insert(String::from("e"), String::from("e"));
 
         let context = Context::new(String::from("us"), None, Tokens::new(tokens));
 
