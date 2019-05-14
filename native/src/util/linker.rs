@@ -141,7 +141,7 @@ pub fn linker(primary: Link, mut potentials: Vec<Link>) -> Option<LinkResult> {
 
     match max {
         Some(max) => {
-            if max.maxscore > 0.70 {
+            if max.maxscore > 70.0 {
                 Some(LinkResult::new(*max.id, (max.maxscore * 100.0).round() / 100.0))
             } else {
                 None
