@@ -160,12 +160,21 @@ mod tests {
     #[test]
     fn test_linker() {
         let mut tokens: HashMap<String, String> = HashMap::new();
+        tokens.insert(String::from("saint"), String::from("st"));
         tokens.insert(String::from("street"), String::from("st"));
         tokens.insert(String::from("st"), String::from("st"));
+        tokens.insert(String::from("lake"), String::from("lk"));
+        tokens.insert(String::from("lk"), String::from("lk"));
+        tokens.insert(String::from("road"), String::from("rd"));
+        tokens.insert(String::from("rd"), String::from("rd"));
         tokens.insert(String::from("avenue"), String::from("ave"));
         tokens.insert(String::from("ave"), String::from("ave"));
         tokens.insert(String::from("west"), String::from("w"));
         tokens.insert(String::from("east"), String::from("e"));
+        tokens.insert(String::from("south"), String::from("s"));
+        tokens.insert(String::from("northwest"), String::from("nw"));
+        tokens.insert(String::from("nw"), String::from("nw"));
+        tokens.insert(String::from("s"), String::from("s"));
         tokens.insert(String::from("w"), String::from("w"));
         tokens.insert(String::from("e"), String::from("e"));
 
@@ -269,6 +278,82 @@ mod tests {
             assert_eq!(linker(a, b), Some(LinkResult::new(2, 77.78)));
         }
 
+        {
+            let a_name = Names::new(vec![Name::new("Avenue Street", 0, &context)], &context);
+
+            let b_name1 = Names::new(vec![Name::new("Avenue", 0, &context)], &context);
+            let b_name2 = Names::new(vec![Name::new("Avenue", 0, &context)], &context);
+            let b_name3 = Names::new(vec![Name::new("Avenida", 0, &context)], &context);
+
+            let a = Link::new(&1, &a_name);
+            let b = vec![
+                Link::new(&2, &b_name1),
+                Link::new(&3, &b_name2),
+                Link::new(&4, &b_name3)
+            ];
+            assert_eq!(linker(a, b), Some(LinkResult::new(2, 77.78)));
+        }
+
+        {
+            let a_name = Names::new(vec![Name::new("Main Street West", 0, &context)], &context);
+
+            let b_name1 = Names::new(vec![Name::new("Main Road", 0, &context)], &context);
+            let b_name2 = Names::new(vec![Name::new("Main Avenue", 0, &context)], &context);
+            let b_name3 = Names::new(vec![Name::new("Main Street", 0, &context)], &context);
+
+            let a = Link::new(&1, &a_name);
+            let b = vec![
+                Link::new(&2, &b_name1),
+                Link::new(&3, &b_name2),
+                Link::new(&4, &b_name3)
+            ];
+            assert_eq!(linker(a, b), Some(LinkResult::new(4, 93.75)));
+        }
+
+        {
+            let a_name = Names::new(vec![Name::new("Lake Street West", 0, &context)], &context);
+
+            let b_name1 = Names::new(vec![Name::new("West Lake Street", 0, &context)], &context);
+
+            let a = Link::new(&1, &a_name);
+            let b = vec![Link::new(&2, &b_name1)];
+            assert_eq!(linker(a, b), Some(LinkResult::new(2, 85.71)));
+        }
+
+        {
+            let a_name = Names::new(vec![Name::new("Main Street", 0, &context)], &context);
+
+            let b_name1 = Names::new(vec![Name::new("Maim Street", 0, &context)], &context);
+            let b_name2 = Names::new(vec![Name::new("Maim Street", 0, &context)], &context);
+            let b_name3 = Names::new(vec![Name::new("Cross Street", 0, &context)], &context);
+
+            let a = Link::new(&1, &a_name);
+            let b = vec![
+                Link::new(&2, &b_name1),
+                Link::new(&3, &b_name2),
+                Link::new(&4, &b_name3)
+            ];
+            assert_eq!(linker(a, b), Some(LinkResult::new(2, 85.71)));
+        }
+
+        {
+            let a_name = Names::new(vec![Name::new("S Street NW", 0, &context)], &context);
+
+            let b_name1 = Names::new(vec![Name::new("P Street Northeast", 0, &context)], &context);
+            let b_name2 = Names::new(vec![Name::new("S Street NW", 0, &context)], &context);
+            let b_name3 = Names::new(vec![Name::new("S Street NE", 0, &context)], &context);
+            let b_name4 = Names::new(vec![Name::new("Bates Street NW", 0, &context)], &context);
+
+            let a = Link::new(&1, &a_name);
+            let b = vec![
+                Link::new(&2, &b_name1),
+                Link::new(&3, &b_name2),
+                Link::new(&4, &b_name3),
+                Link::new(&5, &b_name4)
+            ];
+            assert_eq!(linker(a, b), Some(LinkResult::new(3, 100.0)));
+        }
+
         // === Intentional Non-Matches ===
         // The following tests should *NOT* match one of the given potential matches
 
@@ -307,6 +392,14 @@ mod tests {
         {
             let a_name = Names::new(vec![Name::new("US Route 60 East", 0, &context)], &context);
             let b_name = Names::new(vec![Name::new("US Route 51 West", 0, &context)], &context);
+            let a = Link::new(&1, &a_name);
+            let b = vec![Link::new(&2, &b_name)];
+            assert_eq!(linker(a, b), None);
+        }
+
+        {
+            let a_name = Names::new(vec![Name::new("West Main Street", 0, &context)], &context);
+            let b_name = Names::new(vec![Name::new("West Saint Street", 0, &context)], &context);
             let a = Link::new(&1, &a_name);
             let b = vec![Link::new(&2, &b_name)];
             assert_eq!(linker(a, b), None);
