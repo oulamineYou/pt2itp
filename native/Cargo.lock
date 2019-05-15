@@ -267,7 +267,7 @@ dependencies = [
 [[package]]
 name = "geocoder-abbreviations"
 version = "0.1.0"
-source = "git+https://github.com/mapbox/geocoder-abbreviations?rev=rustify#c80f871161838d77f08976b2274c2de6ec101cdf"
+source = "git+https://github.com/mapbox/geocoder-abbreviations?rev=master#f25c4ecb67e9636fe4368fac42412d0ba3c8751f"
 dependencies = [
  "alphanumeric-sort 1.0.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "fancy-regex 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -507,7 +507,7 @@ version = "0.1.0"
 dependencies = [
  "crossbeam 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "fancy-regex 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "geocoder-abbreviations 0.1.0 (git+https://github.com/mapbox/geocoder-abbreviations?rev=rustify)",
+ "geocoder-abbreviations 0.1.0 (git+https://github.com/mapbox/geocoder-abbreviations?rev=master)",
  "geojson 0.14.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 1.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "memchr 2.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -851,7 +851,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum gcc 0.3.55 (registry+https://github.com/rust-lang/crates.io-index)" = "8f5f3913fa0bfe7ee1fd8248b6b9f42a5af4b9d65ec2dd2c3c26132b950ecfc2"
 "checksum generic-array 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ef25c5683767570c2bbd7deba372926a55eaae9982d7726ee2a1050239d45b9d"
 "checksum geo-types 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "05350aaba2e842c89fc8e1b2e74eefded6f2abe6ce5e0f5b9037c4b71c9b3598"
-"checksum geocoder-abbreviations 0.1.0 (git+https://github.com/mapbox/geocoder-abbreviations?rev=rustify)" = "<none>"
+"checksum geocoder-abbreviations 0.1.0 (git+https://github.com/mapbox/geocoder-abbreviations?rev=master)" = "<none>"
 "checksum geojson 0.14.0 (registry+https://github.com/rust-lang/crates.io-index)" = "8125b7b9f6b0e34d7a4fae7081f5c0d212da7580077259dd1c2c8c70700b85c0"
 "checksum hex 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d6a22814455d41612f41161581c2883c0c6a1c41852729b17d5ed88f01e153aa"
 "checksum hmac 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "44f3bdb08579d99d7dc761c0e266f13b5f2ab8c8c703b9fc9ef333cd8f48f55e"

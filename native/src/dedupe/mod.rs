@@ -23,7 +23,7 @@ struct DedupeArgs {
     buildings: Option<String>,
     input: Option<String>,
     output: Option<String>,
-    tokens: Option<String>,
+    languages: Option<String>,
     hecate: Option<bool>
 }
 
@@ -35,7 +35,7 @@ impl DedupeArgs {
             buildings: None,
             input: None,
             output: None,
-            tokens: None,
+            languages: None,
             hecate: None
         }
     }

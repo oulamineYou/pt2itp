@@ -15,8 +15,8 @@ impl Tokens {
         }
     }
 
-    pub fn generate(tokens: Vec<String>) -> Self {
-        let import: HashMap<String, Vec<Token>> = geocoder_abbreviations::config(tokens).unwrap();
+    pub fn generate(languages: Vec<String>) -> Self {
+        let import: HashMap<String, Vec<Token>> = geocoder_abbreviations::config(languages).unwrap();
         let mut map: HashMap<String, String> = HashMap::new();
 
         for language in import.keys() {

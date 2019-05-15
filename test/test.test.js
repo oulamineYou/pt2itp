@@ -25,7 +25,7 @@ test('load address and network files', (t) => {
         output: '/tmp/itp.geojson',
         debug: true,
         db: database,
-        tokens: 'en'
+        languages: 'en'
     }, (err) => {
         t.ifError(err);
         t.end();
@@ -63,7 +63,7 @@ test('query from new index', (t) => {
 
 // step 3: run test mode against the built index
 test('test', (t) => {
-    exec(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output} --tokens en`, () => {
+    exec(`${__dirname}/../index.js test --config=${config} --index=${carmenIndex} --db=${database} -o ${output} --languages en`, () => {
         t.test('Return correct error messages in csv', (t) => {
             const csvErrs = [];
 

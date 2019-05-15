@@ -5,7 +5,7 @@ use crate::text::Tokens;
 pub struct InputContext {
     pub country: Option<String>,
     pub region: Option<String>,
-    pub tokens: Option<Vec<String>>
+    pub languages: Option<Vec<String>>
 }
 
 #[derive(Debug, PartialEq)]
@@ -19,9 +19,9 @@ impl From<InputContext> for Context {
     fn from(input: InputContext) -> Self {
         let country = input.country.unwrap_or(String::from(""));
         let region = input.region;
-        let tokens = match input.tokens {
+        let tokens = match input.languages {
             None => Tokens::new(HashMap::new()),
-            Some(tokens) =>  Tokens::generate(tokens)
+            Some(languages) =>  Tokens::generate(languages)
         };
 
         Context::new(country, region, tokens)
