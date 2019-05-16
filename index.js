@@ -131,7 +131,7 @@ if (require.main === module) {
         }
         case ('dedupe'): {
             const dedupe_arg = require('minimist')(process.argv, {
-                string: ['buildings', 'input', 'output', 'tokens', 'db', 'country', 'region'],
+                string: ['buildings', 'input', 'output', 'languages', 'db', 'country', 'region'],
                 boolean: ['hecate'],
                 alias: {
                     database: 'db'
@@ -155,7 +155,7 @@ if (require.main === module) {
                 buildings: dedupe_arg.buildings,
                 input: dedupe_arg.input,
                 output: dedupe_arg.output,
-                tokens: dedupe_arg.tokens,
+                languages: dedupe_arg.languages,
                 hecate: dedupe_arg.hecate,
                 context: context,
                 db: dedupe_arg.db

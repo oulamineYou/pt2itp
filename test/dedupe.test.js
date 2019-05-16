@@ -143,7 +143,7 @@ test('dedupe (hecate)', (t) => {
             hecate: true,
             input: './test/fixtures/dedupe.geojson',
             output: '/tmp/dedupeout.geojson',
-            tokens: 'en',
+            languages: 'en',
             context: {
                 country: 'us',
                 region: 'dc'

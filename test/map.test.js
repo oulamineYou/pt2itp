@@ -126,7 +126,7 @@ test('map - good run', (t) => {
         output: '/tmp/itp.geojson',
         'error-network': '/tmp/error-network',
         'error-address': '/tmp/error-address',
-        tokens: 'en',
+        languages: 'en',
         debug: true,
         db: 'pt_test'
     }, (err) => {

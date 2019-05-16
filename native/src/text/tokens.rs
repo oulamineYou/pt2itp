@@ -1,6 +1,7 @@
 use regex::Regex;
 use super::diacritics;
 use std::collections::HashMap;
+use geocoder_abbreviations::Token;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Tokens {
@@ -14,30 +15,16 @@ impl Tokens {
         }
     }
 
-    pub fn generate(mut tokens: Vec<Vec<String>>) -> Self {
+    pub fn generate(languages: Vec<String>) -> Self {
+        let import: HashMap<String, Vec<Token>> = geocoder_abbreviations::config(languages).unwrap();
         let mut map: HashMap<String, String> = HashMap::new();
 
-        for group in tokens.iter_mut() {
-            if group.len() == 0 {
-                continue;
-            } else if group.len() == 1 {
-                map.insert(diacritics(&group[0].to_lowercase()), diacritics(&group[0].to_lowercase()));
-            } else {
-                group.sort_by(|a, b| {
-                    if a.len() > b.len() {
-                         std::cmp::Ordering::Greater
-                    } else if a.len() < b.len() {
-                         std::cmp::Ordering::Less
-                    } else {
-                         std::cmp::Ordering::Equal
-                    }
-                });
-
-                let master = diacritics(&group[0].to_lowercase());
-
-                for token in group.iter() {
-                    if token != &master {
-                        map.insert(diacritics(&token.to_lowercase()), master.clone());
+        for language in import.keys() {
+            for group in import.get(language).unwrap() {
+                // if it's a simple, non regex token replacer
+                if !group.regex {
+                    for tk in &group.tokens {
+                        map.insert(diacritics(&tk.to_lowercase()), diacritics(&group.canonical.to_lowercase()));
                     }
                 }
             }
@@ -185,6 +172,26 @@ mod tests {
         assert_eq!(tokens.process(&String::from("foo barter")), (
             String::from("foo foo"),
             String::from("foo")
+        ));
+    }
+
+    #[test]
+    fn test_generate_tokens() {
+        let tokens = Tokens::generate(vec![String::from("en")]);
+
+        assert_eq!(tokens.process(&String::from("New Jersey Av NW")), (
+            String::from("new jersey av nw"),
+            String::from("new jersey")
+        ));
+
+        assert_eq!(tokens.process(&String::from("New Jersey Ave NW")), (
+            String::from("new jersey av nw"),
+            String::from("new jersey")
+        ));
+
+        assert_eq!(tokens.process(&String::from("New Jersey Avenue Northwest")), (
+            String::from("new jersey av nw"),
+            String::from("new jersey")
         ));
     }
 }
