@@ -25,7 +25,7 @@ struct ConflateArgs {
     error_address: Option<String>,
     error_persistent: Option<String>,
     output: Option<String>,
-    tokens: Option<String>,
+    languages: Option<String>,
 }
 
 impl ConflateArgs {
@@ -38,7 +38,7 @@ impl ConflateArgs {
             error_address: None,
             error_persistent: None,
             output: None,
-            tokens: None
+            languages: None
         }
     }
 }

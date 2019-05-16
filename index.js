@@ -4,6 +4,7 @@
 
 const help = require('./lib/help');
 const settings = require('./package.json');
+const Context = require('./lib/util/context');
 
 if (require.main === module) {
     const argv = require('minimist')(process.argv, {
@@ -97,21 +98,14 @@ if (require.main === module) {
             break;
         }
         case ('conflate'): {
-            const conflate_arg = require('minimist')(process.argv, {
-                string: ['input', 'output', 'tokens', 'db', 'country', 'region'],
+            const conflate_arg = require('minimist')(process.argv, Context.args({
+                string: ['input', 'output', 'languages', 'db'],
                 boolean: ['hecate'],
                 alias: {
                     database: 'db'
                 }
-            });
+            }));
 
-            let context = undefined;
-            if (conflate_arg.country) {
-                context = {
-                    country: conflate_arg.country,
-                    region: conflate_arg.region
-                };
-            }
 
             if (!conflate_arg.db) {
                 console.error('--db <DATABASE> argument required');
@@ -121,9 +115,9 @@ if (require.main === module) {
             require('./native/index.node').conflate({
                 input: conflate_arg.input,
                 output: conflate_arg.output,
-                tokens: conflate_arg.tokens,
+                languages: conflate_arg.languages,
                 hecate: conflate_arg.hecate,
-                context: context,
+                context: new Context(conflate_arg).as_json(),
                 db: conflate_arg.db
             });
 
@@ -138,14 +132,6 @@ if (require.main === module) {
                 }
             });
 
-            let context = undefined;
-            if (dedupe_arg.country) {
-                context = {
-                    country: dedupe_arg.country,
-                    region: dedupe_arg.region
-                };
-            }
-
             if (!dedupe_arg.db) {
                 console.error('--db <DATABASE> argument required');
                 process.exit(1);
@@ -155,9 +141,8 @@ if (require.main === module) {
                 buildings: dedupe_arg.buildings,
                 input: dedupe_arg.input,
                 output: dedupe_arg.output,
-                languages: dedupe_arg.languages,
                 hecate: dedupe_arg.hecate,
-                context: context,
+                context: new Context(conflate_arg).as_json(),
                 db: dedupe_arg.db
             });
 
