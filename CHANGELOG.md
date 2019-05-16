@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v22.0.0
+
+- :rocket: Import geocoder-abbreviations tokens in Rust, rename `tokens` parameter to `languages`
+
 ### v21.0.5
 
 - :white_check_mark: Add tests for `Names::from_value`
