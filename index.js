@@ -142,7 +142,7 @@ if (require.main === module) {
                 input: dedupe_arg.input,
                 output: dedupe_arg.output,
                 hecate: dedupe_arg.hecate,
-                context: new Context(conflate_arg).as_json(),
+                context: new Context(dedupe_arg).as_json(),
                 db: dedupe_arg.db
             });
 
@@ -197,7 +197,6 @@ if (require.main === module) {
         convert: require('./native/index.node').convert,
         debug: require('./lib/debug'),
         map: require('./lib/map'),
-        conflate: require('./lib/conflate'),
         test: require('./lib/test'),
         testcsv: require('./lib/testcsv'),
         strip: require('./lib/strip'),
