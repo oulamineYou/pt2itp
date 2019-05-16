@@ -23,7 +23,7 @@ and generating the interpolation network.
 
 Basic Usage:
 ```
-./index.js map --in-network=<FILE.geojson> --in-address=<File.geojson> --output=<File.geojson> --tokens=en --db <DB>
+./index.js map --in-network=<FILE.geojson> --in-address=<File.geojson> --output=<File.geojson> --languages=en --db <DB>
 ```
 
 Full Options:

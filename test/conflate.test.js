@@ -25,7 +25,7 @@ test('Compare', (t) => {
         'in-address': path.resolve(__dirname, './fixtures/dc-new.geojson'),
         output: '/tmp/output.geojson',
         'error-persistent': '/tmp/error-persistent',
-        tokens: 'en',
+        languages: 'en',
         db: 'pt_test'
     }, (err) => {
         t.error(err);

@@ -24,7 +24,7 @@ test('load address and network de files', (t) => {
         output: '/tmp/itp-de.geojson',
         debug: true,
         db: database,
-        tokens: 'de'
+        languages: 'de'
     }, (err) => {
         t.ifError(err);
         t.end();
