@@ -11,13 +11,13 @@ pub struct Tokens {
 impl Tokens {
     pub fn new(tokens: HashMap<String, ParsedToken>) -> Self {
         Tokens {
-            tokens
+            tokens: tokens
         }
     }
 
     pub fn generate(languages: Vec<String>) -> Self {
         let import: HashMap<String, Vec<Token>> = geocoder_abbreviations::config(languages).unwrap();
-        let mut map: HashMap<String, String> = HashMap::new();
+        let mut map: HashMap<String, ParsedToken> = HashMap::new();
 
         for language in import.keys() {
             for group in import.get(language).unwrap() {
@@ -94,7 +94,7 @@ impl Tokens {
 
 /// Simplified struct from geocoder_abbreviations::Token
 /// @TODO replace with geocoder_abbreviations::Token when additional traits are derived
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct ParsedToken {
     canonical: String,
     token_type: Option<TokenType>
