@@ -109,7 +109,7 @@ impl ParsedToken {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Tokenized {
     pub token: String,
     pub token_type: Option<TokenType>
@@ -131,7 +131,7 @@ mod tests {
     fn concat(tokenized: Vec<Tokenized>) -> String {
         let tokens: Vec<String> = tokenized
             .into_iter()
-            .map(|x| x.token.to_string())
+            .map(|x| String::from(x.token))
             .collect();
         let token_string = tokens.join(" ").trim().to_string();
         token_string

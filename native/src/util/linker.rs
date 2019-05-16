@@ -1,9 +1,12 @@
 use crate::text::{
     distance,
     is_numbered,
-    is_routish
+    is_routish,
+    ParsedToken
 };
+
 use crate::types::Names;
+use geocoder_abbreviations::TokenType;
 
 pub struct Link<'a> {
     pub id: &'a i64,
@@ -41,25 +44,49 @@ impl LinkResult {
 /// Geometric proximity must be determined/filtered by the caller
 ///
 pub fn linker(primary: Link, mut potentials: Vec<Link>) -> Option<LinkResult> {
-    // Ensure exact matches are always returned before potential short-circuits
     for name in &primary.names.names {
-        for potential in potentials.iter() {
+        let atoks: Vec<String> = name.tokenized
+            .clone()
+            .into_iter()
+            .map(|x| String::from(x.token))
+            .collect();
+        let tokenized = String::from(atoks.join(" ").trim());
+
+        let tokenless: Vec<String> = name.tokenized
+            .clone()
+            .into_iter()
+            .filter(|x| x.token_type.is_none())
+            .map(|x| String::from(x.token))
+            .collect();
+        let tokenless = String::from(tokenless.join(" ").trim());
+
+        for potential in potentials.iter_mut() {
             for potential_name in &potential.names.names {
+
+                // Ensure exact matches are always returned before potential short-circuits
                 if name.tokenized == potential_name.tokenized {
                     return Some(LinkResult::new(*potential.id, 100.0));
                 }
-            }
-        }
-    }
 
-    for name in &primary.names.names {
-        for potential in potentials.iter_mut() {
-            for potential_name in &potential.names.names {
+                let mut ntoks: Vec<String> = potential_name.tokenized
+                    .clone()
+                    .into_iter()
+                    .map(|x| String::from(x.token))
+                    .collect();
+                let potential_tokenized = String::from(ntoks.join(" ").trim());
+
+                let potential_tokenless: Vec<String> = potential_name.tokenized
+                    .clone()
+                    .into_iter()
+                    .filter(|x| x.token_type.is_none())
+                    .map(|x| String::from(x.token))
+                    .collect();
+                let potential_tokenless = String::from(potential_tokenless.join(" ").trim());
 
                 // Don't bother considering if the tokenless forms don't share a starting letter
                 // this might require adjustment for countries with addresses that have leading tokens
                 // which aren't properly stripped from the token list
-                if potential_name.tokenless.len() > 0 && name.tokenless.len() > 0 && potential_name.tokenless[0..1] != name.tokenless[0..1] {
+                if potential_tokenless.len() > 0 && tokenless.len() > 0 && potential_tokenless[0..1] != tokenless[0..1] {
                     continue;
                 }
 
@@ -77,25 +104,18 @@ pub fn linker(primary: Link, mut potentials: Vec<Link>) -> Option<LinkResult> {
                 // Use a weighted average w/ the tokenless dist score if possible
                 let mut lev_score: Option<f64> = None;
 
-                if name.tokenless.len() > 0 && potential_name.tokenless.len() > 0 {
-                    lev_score = Some((0.25 * distance(&name.tokenized, &potential_name.tokenized) as f64) + (0.75 * distance(&name.tokenless, &potential_name.tokenless) as f64));
-                } else if (name.tokenless.len() > 0 && potential_name.tokenless.len() == 0) || (name.tokenless.len() == 0 && potential_name.tokenless.len() > 0) {
-                    lev_score = Some(distance(&name.tokenized, &potential_name.tokenized) as f64);
+                if tokenless.len() > 0 && potential_tokenless.len() > 0 {
+                    lev_score = Some((0.25 * distance(&tokenized, &potential_tokenized) as f64) + (0.75 * distance(&tokenless, &potential_tokenless) as f64));
+                } else if (tokenless.len() > 0 && potential_tokenless.len() == 0) || (tokenless.len() == 0 && potential_tokenless.len() > 0) {
+                    lev_score = Some(distance(&tokenized, &potential_tokenized) as f64);
                 } else {
-                    let mut ntoks: Vec<String> = potential_name.tokenized.split(' ').map(|split| {
-                        String::from(split)
-                    }).collect();
                     let ntoks_len = ntoks.len() as f64;
 
                     let mut a_match = 0;
 
-                    let atoks: Vec<String> = name.tokenized.split(' ').map(|split| {
-                        String::from(split)
-                    }).collect();
-
-                    for atok in atoks {
+                    for atok in &atoks {
                         // If there are dup tokens ensure they match a unique token ie Saint Street => st st != main st
-                        let ntok_index = &ntoks.iter().position(|r| r == &atok);
+                        let ntok_index = &ntoks.iter().position(|r| r == atok);
 
                         match ntok_index {
                             Some(index) => {
@@ -111,11 +131,11 @@ pub fn linker(primary: Link, mut potentials: Vec<Link>) -> Option<LinkResult> {
                     }
 
                     if lev_score.is_none() {
-                        lev_score = Some(distance(&name.tokenized, &potential_name.tokenized) as f64);
+                        lev_score = Some(distance(&tokenized, &potential_tokenized) as f64);
                     }
                 }
 
-                let score = 100.0 - (((2.0 * lev_score.unwrap()) / (potential_name.tokenized.len() as f64 + name.tokenized.len() as f64)) * 100.0);
+                let score = 100.0 - (((2.0 * lev_score.unwrap()) / (potential_tokenized.len() as f64 + tokenized.len() as f64)) * 100.0);
 
                 if score > potential.maxscore {
                     potential.maxscore = score;
@@ -159,24 +179,24 @@ mod tests {
 
     #[test]
     fn test_linker() {
-        let mut tokens: HashMap<String, String> = HashMap::new();
-        tokens.insert(String::from("saint"), String::from("st"));
-        tokens.insert(String::from("street"), String::from("st"));
-        tokens.insert(String::from("st"), String::from("st"));
-        tokens.insert(String::from("lake"), String::from("lk"));
-        tokens.insert(String::from("lk"), String::from("lk"));
-        tokens.insert(String::from("road"), String::from("rd"));
-        tokens.insert(String::from("rd"), String::from("rd"));
-        tokens.insert(String::from("avenue"), String::from("ave"));
-        tokens.insert(String::from("ave"), String::from("ave"));
-        tokens.insert(String::from("west"), String::from("w"));
-        tokens.insert(String::from("east"), String::from("e"));
-        tokens.insert(String::from("south"), String::from("s"));
-        tokens.insert(String::from("northwest"), String::from("nw"));
-        tokens.insert(String::from("nw"), String::from("nw"));
-        tokens.insert(String::from("s"), String::from("s"));
-        tokens.insert(String::from("w"), String::from("w"));
-        tokens.insert(String::from("e"), String::from("e"));
+        let mut tokens: HashMap<String, ParsedToken> = HashMap::new();
+        tokens.insert(String::from("saint"), ParsedToken::new(String::from("st"), None));
+        tokens.insert(String::from("street"), ParsedToken::new(String::from("st"), Some(TokenType::Way)));
+        tokens.insert(String::from("st"), ParsedToken::new(String::from("st"), Some(TokenType::Way)));
+        tokens.insert(String::from("lake"), ParsedToken::new(String::from("lk"), None));
+        tokens.insert(String::from("lk"), ParsedToken::new(String::from("lk"), None));
+        tokens.insert(String::from("road"), ParsedToken::new(String::from("rd"), Some(TokenType::Way)));
+        tokens.insert(String::from("rd"), ParsedToken::new(String::from("rd"), Some(TokenType::Way)));
+        tokens.insert(String::from("avenue"), ParsedToken::new(String::from("ave"), Some(TokenType::Way)));
+        tokens.insert(String::from("ave"), ParsedToken::new(String::from("ave"), Some(TokenType::Way)));
+        tokens.insert(String::from("west"), ParsedToken::new(String::from("w"), Some(TokenType::Cardinal)));
+        tokens.insert(String::from("east"), ParsedToken::new(String::from("e"), Some(TokenType::Cardinal)));
+        tokens.insert(String::from("south"), ParsedToken::new(String::from("s"), Some(TokenType::Cardinal)));
+        tokens.insert(String::from("northwest"), ParsedToken::new(String::from("nw"), Some(TokenType::Cardinal)));
+        tokens.insert(String::from("nw"), ParsedToken::new(String::from("nw"), Some(TokenType::Cardinal)));
+        tokens.insert(String::from("s"), ParsedToken::new(String::from("s"), Some(TokenType::Cardinal)));
+        tokens.insert(String::from("w"), ParsedToken::new(String::from("w"), Some(TokenType::Cardinal)));
+        tokens.insert(String::from("e"), ParsedToken::new(String::from("e"), Some(TokenType::Cardinal)));
 
         let context = Context::new(String::from("us"), None, Tokens::new(tokens));
 

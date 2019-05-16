@@ -12,6 +12,7 @@ mod replace;
 pub use self::diacritics::diacritics;
 pub use self::tokens::Tokens;
 pub use self::tokens::Tokenized;
+pub use self::tokens::ParsedToken;
 
 use std::collections::HashMap;
 use regex::{Regex, RegexSet};
@@ -60,14 +61,18 @@ pub fn distance<T>(a: &T, b: &T) -> usize
 /// Is the street a numbered street: ie 1st, 2nd, 3rd etc
 ///
 pub fn is_numbered(name: &Name) -> Option<String> {
-    let tokens = name.tokenized.split(' ');
+    let tokens: Vec<String> = name.tokenized
+        .clone()
+        .into_iter()
+        .map(|x| x.token.to_string())
+        .collect();
 
     lazy_static! {
         static ref NUMBERED: Regex = Regex::new(r"^(?P<num>([0-9]+)?(1st|2nd|3rd|[0-9]th))$").unwrap();
     }
 
     for token in tokens {
-        match NUMBERED.captures(token) {
+        match NUMBERED.captures(&token) {
             Some(capture) => {
                 return Some(capture["num"].to_string());
             }
@@ -83,14 +88,18 @@ pub fn is_numbered(name: &Name) -> Option<String> {
 /// ie: US Route 4
 ///
 pub fn is_routish(name: &Name) -> Option<String> {
-    let tokens = name.tokenized.split(' ');
+    let tokens: Vec<String> = name.tokenized
+        .clone()
+        .into_iter()
+        .map(|x| String::from(x.token))
+        .collect();
 
     lazy_static! {
         static ref ROUTISH: Regex = Regex::new(r"^(?P<num>\d+)$").unwrap();
     }
 
     for token in tokens {
-        match ROUTISH.captures(token) {
+        match ROUTISH.captures(&token) {
             Some(capture) => {
                 return Some(capture["num"].to_string());
             }
