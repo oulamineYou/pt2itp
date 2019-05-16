@@ -54,6 +54,12 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         }
     };
 
+    if args.in_persistent.is_none() {
+        panic!("in_persistent argument is required");
+    } else if args.in_address.is_none() {
+        panic!("in_address argument is required");
+    }
+
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
     let context = match args.context {
@@ -64,11 +70,10 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let pgaddress = pg::Address::new();
     pgaddress.create(&conn);
     pgaddress.input(&conn, AddrStream::new(GeoStream::new(args.in_persistent), context.clone(), args.error_persistent));
-
     pgaddress.index(&conn);
 
     for addr in AddrStream::new(GeoStream::new(args.in_address), context.clone(), args.error_address) {
-
+        println!("{:?}", addr);
     }
 
     Ok(cx.boolean(true))

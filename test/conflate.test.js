@@ -1,7 +1,7 @@
 'use strict';
 
 const ReadLine = require('n-readlines');
-const worker = require('../lib/conflate');
+const worker = require('../index').conflate;
 
 const test = require('tape');
 const path = require('path');
@@ -21,11 +21,15 @@ test('Compare', (t) => {
     }
 
     worker({
-        'in-persistent': path.resolve(__dirname, './fixtures/dc-persistent.geojson'),
-        'in-address': path.resolve(__dirname, './fixtures/dc-new.geojson'),
+        'in_persistent': path.resolve(__dirname, './fixtures/dc-persistent.geojson'),
+        'in_address': path.resolve(__dirname, './fixtures/dc-new.geojson'),
         output: '/tmp/output.geojson',
-        'error-persistent': '/tmp/error-persistent',
-        languages: 'en',
+        'error_persistent': '/tmp/error-persistent',
+        context: {
+            country: 'us',
+            region: 'dc',
+            languages: ['en'],
+        },
         db: 'pt_test'
     }, (err) => {
         t.error(err);
