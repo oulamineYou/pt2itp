@@ -11,6 +11,7 @@ mod replace;
 
 pub use self::diacritics::diacritics;
 pub use self::tokens::Tokens;
+pub use self::tokens::Tokenized;
 
 use std::collections::HashMap;
 use regex::{Regex, RegexSet};
@@ -182,23 +183,22 @@ pub fn syn_number_suffix(name: &Name, context: &Context) -> Vec<Name> {
 /// alone. This creates less desirable synonyms for these cases
 ///
 pub fn syn_ca_french(name: &Name, context: &Context) -> Vec<Name> {
-    lazy_static! {
-        static ref STANDALONE: Regex = Regex::new(r"^(r|ch|av|bd)\s").unwrap();
-
-        static ref ELIMINATOR: Regex = Regex::new(r"^(r|ch|av|bd)\s(du|des|de)\s").unwrap();
-    }
-
     let mut syns = Vec::new();
+    let standalone = vec![String::from("r"), String::from("ch"), String::from("av"), String::from("bd")];
+    let eliminator = vec![String::from("du"), String::from("des"), String::from("de")];
 
     if
-        STANDALONE.is_match(&*name.tokenized)
-        && !ELIMINATOR.is_match(&*name.tokenized)
+        standalone.contains(&name.tokenized[0].token)
+        && !eliminator.contains(&name.tokenized[1].token)
     {
-        let basic = STANDALONE.replace(&*name.tokenized, "").to_string();
+        let tokens: Vec<String> = name.tokenized[1..name.tokenized.len()]
+            .into_iter()
+            .map(|x| x.token.to_string())
+            .collect();
+        let basic = tokens.join(" ").trim().to_string();
 
         syns.push(Name::new(basic, -1, &context));
     }
-
 
     syns
 }

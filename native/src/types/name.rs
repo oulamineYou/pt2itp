@@ -1,4 +1,5 @@
 use crate::{Context, text};
+use crate::{Tokenized};
 
 ///
 /// InputName is only used internally to serialize a names array to the
@@ -115,11 +116,8 @@ pub struct Name {
     /// Geometry Type of a given name (network/address)
     pub source: String,
 
-    /// Abbreviated form of the name
-    pub tokenized: String,
-
-    /// All abbreviations removed form of the name
-    pub tokenless: String,
+    /// full token structure tokenless is derived from
+    pub tokenized: Vec<Tokenized>,
 
     /// Frequency of the given name
     pub freq: i64
@@ -136,7 +134,7 @@ impl Name {
     pub fn new(display: impl ToString, priority: i8, context: &Context) -> Self {
         let mut display = display.to_string();
 
-        let tokens = context.tokens.process(&display);
+        let tokenized = context.tokens.process(&display);
 
         display = display
             .replace(r#"""#, "")
@@ -147,8 +145,7 @@ impl Name {
             display: display,
             priority: priority,
             source: String::from(""),
-            tokenized: tokens.0,
-            tokenless: tokens.1,
+            tokenized: tokenized,
             freq: 1
         }
     }
@@ -169,8 +166,10 @@ mod tests {
             display: String::from("Main St NW"),
             priority: 0,
             source: String::from(""),
-            tokenized: String::from("main st nw"),
-            tokenless: String::from("main st nw"),
+            tokenized: vec![
+                Tokenized::new(String::from("main"), None),
+                Tokenized::new(String::from("st"), None),
+                Tokenized::new(String::from("nw"), None)],
             freq: 1
         });
     }
