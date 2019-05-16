@@ -8,6 +8,7 @@ use std::io::{BufWriter, Write};
 use neon::prelude::*;
 
 use crate::{
+    hecate,
     Address,
     types::hecate,
     stream::{GeoStream, AddrStream}
@@ -73,8 +74,34 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     pgaddress.index(&conn);
 
     for addr in AddrStream::new(GeoStream::new(args.in_address), context.clone(), args.error_address) {
-        println!("{:?}", addr);
+        conn.execute("
+            SELECT
+                names AS name,
+                json_build_object(
+                    'type', 'Feature',
+                    'version', p.version,
+                    'id', p.id,
+                    'properties', p.props,
+                    'names', p.names,
+                    'geometry', ST_AsGeoJSON(p.geom)::JSON
+                ) AS feat
+            FROM
+                address p
+            WHERE
+                p.number = $1
+                AND ST_DWithin(ST_SetSRID(ST_GeomFromGeoJSON($2), 4326), p.geom, 0.02);
+        ", &[ addr.properties.number, addr.geometry ]);
     }
 
     Ok(cx.boolean(true))
+}
+
+pub fn compare(potential: &Address, persistent: &mut Vec<Address>) -> hecate::Action {
+    // The address does not exist in the database and should be created
+    if persistent.len() == 0 {
+        return Create;
+    }
+
+    // Use geometry unit cutoff instead of the geographic postgis
+    
 }
