@@ -11,6 +11,8 @@ mod replace;
 
 pub use self::diacritics::diacritics;
 pub use self::tokens::Tokens;
+pub use self::tokens::Tokenized;
+pub use self::tokens::ParsedToken;
 
 use std::collections::HashMap;
 use regex::{Regex, RegexSet};
@@ -59,14 +61,17 @@ pub fn distance<T>(a: &T, b: &T) -> usize
 /// Is the street a numbered street: ie 1st, 2nd, 3rd etc
 ///
 pub fn is_numbered(name: &Name) -> Option<String> {
-    let tokens = name.tokenized.split(' ');
+    let tokens: Vec<String> = name.tokenized
+        .iter()
+        .map(|x| x.token.to_owned())
+        .collect();
 
     lazy_static! {
         static ref NUMBERED: Regex = Regex::new(r"^(?P<num>([0-9]+)?(1st|2nd|3rd|[0-9]th))$").unwrap();
     }
 
     for token in tokens {
-        match NUMBERED.captures(token) {
+        match NUMBERED.captures(&token) {
             Some(capture) => {
                 return Some(capture["num"].to_string());
             }
@@ -82,14 +87,17 @@ pub fn is_numbered(name: &Name) -> Option<String> {
 /// ie: US Route 4
 ///
 pub fn is_routish(name: &Name) -> Option<String> {
-    let tokens = name.tokenized.split(' ');
+    let tokens: Vec<String> = name.tokenized
+        .iter()
+        .map(|x| x.token.to_owned())
+        .collect();
 
     lazy_static! {
         static ref ROUTISH: Regex = Regex::new(r"^(?P<num>\d+)$").unwrap();
     }
 
     for token in tokens {
-        match ROUTISH.captures(token) {
+        match ROUTISH.captures(&token) {
             Some(capture) => {
                 return Some(capture["num"].to_string());
             }
@@ -182,23 +190,22 @@ pub fn syn_number_suffix(name: &Name, context: &Context) -> Vec<Name> {
 /// alone. This creates less desirable synonyms for these cases
 ///
 pub fn syn_ca_french(name: &Name, context: &Context) -> Vec<Name> {
-    lazy_static! {
-        static ref STANDALONE: Regex = Regex::new(r"^(r|ch|av|bd)\s").unwrap();
-
-        static ref ELIMINATOR: Regex = Regex::new(r"^(r|ch|av|bd)\s(du|des|de)\s").unwrap();
-    }
-
     let mut syns = Vec::new();
+    let standalone = vec![String::from("r"), String::from("ch"), String::from("av"), String::from("bd")];
+    let eliminator = vec![String::from("du"), String::from("des"), String::from("de")];
 
     if
-        STANDALONE.is_match(&*name.tokenized)
-        && !ELIMINATOR.is_match(&*name.tokenized)
+        standalone.contains(&name.tokenized[0].token)
+        && !eliminator.contains(&name.tokenized[1].token)
     {
-        let basic = STANDALONE.replace(&*name.tokenized, "").to_string();
+        let tokens: Vec<String> = name.tokenized[1..name.tokenized.len()]
+            .iter()
+            .map(|x| x.token.to_owned())
+            .collect();
+        let basic = tokens.join(" ").trim().to_string();
 
         syns.push(Name::new(basic, -1, &context));
     }
-
 
     syns
 }
