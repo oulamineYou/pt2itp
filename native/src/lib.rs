@@ -34,6 +34,7 @@ pub use self::types::Polygon;
 pub use self::types::hecate;
 pub use self::types::Context;
 pub use self::text::Tokens;
+pub use self::text::Tokenized;
 
 pub use self::types::Names;
 pub use self::types::Name;
