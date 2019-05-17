@@ -26,7 +26,7 @@ impl Tokens {
                     for tk in &group.tokens {
                         map.insert(
                             diacritics(&tk.to_lowercase()),
-                            ParsedToken::new(diacritics(&group.canonical.to_lowercase()), group.token_type.clone())
+                            ParsedToken::new(diacritics(&group.canonical.to_lowercase()), group.token_type.to_owned())
                         );
                     }
                 }
@@ -46,10 +46,10 @@ impl Tokens {
         for token in tokens {
             match self.tokens.get(&token) {
                 None => {
-                    tokenized.push(Tokenized::new(token.clone(), None));
+                    tokenized.push(Tokenized::new(token.to_owned(), None));
                 },
                 Some(t) => {
-                    tokenized.push(Tokenized::new(t.canonical.clone(), t.token_type.clone()));
+                    tokenized.push(Tokenized::new(t.canonical.to_owned(), t.token_type.to_owned()));
                 }
             };
         }
@@ -109,7 +109,7 @@ impl ParsedToken {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Tokenized {
     pub token: String,
     pub token_type: Option<TokenType>
@@ -128,12 +128,12 @@ impl Tokenized {
 mod tests {
     use super::*;
 
-    fn concat(tokenized: Vec<Tokenized>) -> String {
+    fn tokenized_string(tokenized: Vec<Tokenized>) -> String {
         let tokens: Vec<String> = tokenized
             .into_iter()
             .map(|x| String::from(x.token))
             .collect();
-        let token_string = tokens.join(" ").trim().to_string();
+        let token_string = String::from(tokens.join(" ").trim());
         token_string
     }
 
@@ -142,51 +142,51 @@ mod tests {
         let tokens = Tokens::new(HashMap::new());
 
         // diacritics are removed from latin text
-        assert_eq!(concat(tokens.process(&String::from("Hérê àrë søme wöřdš, including diacritics and puncatuation!"))), String::from("here are some words including diacritics and puncatuation"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("Hérê àrë søme wöřdš, including diacritics and puncatuation!"))), String::from("here are some words including diacritics and puncatuation"));
 
         // nothing happens to latin text
-        assert_eq!(concat(tokens.process(&String::from("Cranberries are low, creeping shrubs or vines up to 2 metres (7 ft)"))), String::from("cranberries are low creeping shrubs or vines up to 2 metres 7 ft"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("Cranberries are low, creeping shrubs or vines up to 2 metres (7 ft)"))), String::from("cranberries are low creeping shrubs or vines up to 2 metres 7 ft"));
 
         // nothing happens to Japanese text
-        assert_eq!(concat(tokens.process(&String::from("堪《たま》らん！」と片息《かたいき》になつて、喚《わめ》"))), String::from("堪《たま》らん！」と片息《かたいき》になつて、喚《わめ》"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("堪《たま》らん！」と片息《かたいき》になつて、喚《わめ》"))), String::from("堪《たま》らん！」と片息《かたいき》になつて、喚《わめ》"));
 
         // greek diacritics are removed and other characters stay the same
-        assert_eq!(concat(tokens.process(&String::from("άΆέΈήΉίΊόΌύΎ αΑεΕηΗιΙοΟυΥ"))), String::from("άάέέήήίίόόύύ ααεεηηιιοουυ"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("άΆέΈήΉίΊόΌύΎ αΑεΕηΗιΙοΟυΥ"))), String::from("άάέέήήίίόόύύ ααεεηηιιοουυ"));
 
         // cyrillic diacritics are removed and other characters stay the same
-        assert_eq!(concat(tokens.process(&String::from("ўЎёЁѐЀґҐйЙ уУеЕеЕгГиИ"))), String::from("ўўёёѐѐґґйй ууееееггии"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("ўЎёЁѐЀґҐйЙ уУеЕеЕгГиИ"))), String::from("ўўёёѐѐґґйй ууееееггии"));
     }
 
     #[test]
     fn test_tokenize() {
         let tokens = Tokens::new(HashMap::new());
 
-        assert_eq!(concat(tokens.process(&String::from(""))), String::from(""));
+        assert_eq!(tokenized_string(tokens.process(&String::from(""))), String::from(""));
 
-        assert_eq!(concat(tokens.process(&String::from("foo"))), String::from("foo"));
-        assert_eq!(concat(tokens.process(&String::from("foo bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo-bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo+bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo_bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo:bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo;bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo|bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo}bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo{bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo[bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo]bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo(bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo)bar"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo b.a.r"))), String::from("foo bar"));
-        assert_eq!(concat(tokens.process(&String::from("foo's bar"))), String::from("foos bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo"))), String::from("foo"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo-bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo+bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo_bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo:bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo;bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo|bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo}bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo{bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo[bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo]bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo(bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo)bar"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo b.a.r"))), String::from("foo bar"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("foo's bar"))), String::from("foos bar"));
 
-        assert_eq!(concat(tokens.process(&String::from("San José"))), String::from("san jose"));
-        assert_eq!(concat(tokens.process(&String::from("A Coruña"))), String::from("a coruna"));
-        assert_eq!(concat(tokens.process(&String::from("Chamonix-Mont-Blanc"))), String::from("chamonix mont blanc"));
-        assert_eq!(concat(tokens.process(&String::from("Rue d'Argout"))), String::from("rue dargout"));
-        assert_eq!(concat(tokens.process(&String::from("Hale’iwa Road"))), String::from("haleiwa road"));
-        assert_eq!(concat(tokens.process(&String::from("москва"))), String::from("москва"));
-        assert_eq!(concat(tokens.process(&String::from("京都市"))), String::from("京都市"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("San José"))), String::from("san jose"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("A Coruña"))), String::from("a coruna"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("Chamonix-Mont-Blanc"))), String::from("chamonix mont blanc"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("Rue d'Argout"))), String::from("rue dargout"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("Hale’iwa Road"))), String::from("haleiwa road"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("москва"))), String::from("москва"));
+        assert_eq!(tokenized_string(tokens.process(&String::from("京都市"))), String::from("京都市"));
     }
 
     #[test]

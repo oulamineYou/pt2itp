@@ -45,20 +45,8 @@ impl LinkResult {
 ///
 pub fn linker(primary: Link, mut potentials: Vec<Link>) -> Option<LinkResult> {
     for name in &primary.names.names {
-        let atoks: Vec<String> = name.tokenized
-            .clone()
-            .into_iter()
-            .map(|x| String::from(x.token))
-            .collect();
-        let tokenized = String::from(atoks.join(" ").trim());
-
-        let tokenless: Vec<String> = name.tokenized
-            .clone()
-            .into_iter()
-            .filter(|x| x.token_type.is_none())
-            .map(|x| String::from(x.token))
-            .collect();
-        let tokenless = String::from(tokenless.join(" ").trim());
+        let tokenized = name.tokenized_string();
+        let tokenless = name.tokenless_string();
 
         for potential in potentials.iter_mut() {
             for potential_name in &potential.names.names {
@@ -68,20 +56,8 @@ pub fn linker(primary: Link, mut potentials: Vec<Link>) -> Option<LinkResult> {
                     return Some(LinkResult::new(*potential.id, 100.0));
                 }
 
-                let mut ntoks: Vec<String> = potential_name.tokenized
-                    .clone()
-                    .into_iter()
-                    .map(|x| String::from(x.token))
-                    .collect();
-                let potential_tokenized = String::from(ntoks.join(" ").trim());
-
-                let potential_tokenless: Vec<String> = potential_name.tokenized
-                    .clone()
-                    .into_iter()
-                    .filter(|x| x.token_type.is_none())
-                    .map(|x| String::from(x.token))
-                    .collect();
-                let potential_tokenless = String::from(potential_tokenless.join(" ").trim());
+                let potential_tokenized = potential_name.tokenized_string();
+                let potential_tokenless = potential_name.tokenless_string();
 
                 // Don't bother considering if the tokenless forms don't share a starting letter
                 // this might require adjustment for countries with addresses that have leading tokens
@@ -109,9 +85,21 @@ pub fn linker(primary: Link, mut potentials: Vec<Link>) -> Option<LinkResult> {
                 } else if (tokenless.len() > 0 && potential_tokenless.len() == 0) || (tokenless.len() == 0 && potential_tokenless.len() > 0) {
                     lev_score = Some(distance(&tokenized, &potential_tokenized) as f64);
                 } else {
+
+                    let atoks: Vec<String> = name.tokenized
+                        .iter()
+                        .map(|x| x.token.to_owned())
+                        .collect();
+
+                    let mut ntoks: Vec<String> = potential_name.tokenized
+                        .iter()
+                        .map(|x| x.token.to_owned())
+                        .collect();
+
                     let ntoks_len = ntoks.len() as f64;
 
                     let mut a_match = 0;
+
 
                     for atok in &atoks {
                         // If there are dup tokens ensure they match a unique token ie Saint Street => st st != main st

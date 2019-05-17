@@ -62,9 +62,8 @@ pub fn distance<T>(a: &T, b: &T) -> usize
 ///
 pub fn is_numbered(name: &Name) -> Option<String> {
     let tokens: Vec<String> = name.tokenized
-        .clone()
-        .into_iter()
-        .map(|x| x.token.to_string())
+        .iter()
+        .map(|x| x.token.to_owned())
         .collect();
 
     lazy_static! {
@@ -89,9 +88,8 @@ pub fn is_numbered(name: &Name) -> Option<String> {
 ///
 pub fn is_routish(name: &Name) -> Option<String> {
     let tokens: Vec<String> = name.tokenized
-        .clone()
-        .into_iter()
-        .map(|x| String::from(x.token))
+        .iter()
+        .map(|x| x.token.to_owned())
         .collect();
 
     lazy_static! {
@@ -201,8 +199,8 @@ pub fn syn_ca_french(name: &Name, context: &Context) -> Vec<Name> {
         && !eliminator.contains(&name.tokenized[1].token)
     {
         let tokens: Vec<String> = name.tokenized[1..name.tokenized.len()]
-            .into_iter()
-            .map(|x| x.token.to_string())
+            .iter()
+            .map(|x| x.token.to_owned())
             .collect();
         let basic = tokens.join(" ").trim().to_string();
 

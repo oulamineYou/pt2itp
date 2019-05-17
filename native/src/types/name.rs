@@ -1,5 +1,5 @@
 use crate::{Context, text};
-use crate::{Tokenized};
+use crate::Tokenized;
 
 ///
 /// InputName is only used internally to serialize a names array to the
@@ -148,6 +148,27 @@ impl Name {
             tokenized: tokenized,
             freq: 1
         }
+    }
+
+    pub fn tokenized_string(&self) -> String {
+        let tokens: Vec<String> = self.tokenized
+            .iter()
+            .map(|x| x.token.to_owned())
+            .collect();
+        let tokenized = String::from(tokens.join(" ").trim());
+
+        tokenized
+    }
+
+    pub fn tokenless_string(&self) -> String {
+        let tokens: Vec<String> = self.tokenized
+            .iter()
+            .filter(|x| x.token_type.is_none())
+            .map(|x| x.token.to_owned())
+            .collect();
+        let tokenless = String::from(tokens.join(" ").trim());
+
+        tokenless
     }
 }
 
