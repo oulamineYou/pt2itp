@@ -9,13 +9,13 @@ use crate::types::Names;
 use geocoder_abbreviations::TokenType;
 
 pub struct Link<'a> {
-    pub id: &'a i64,
+    pub id: i64,
     pub maxscore: f64,
     pub names: &'a Names
 }
 
 impl<'a> Link<'a> {
-    pub fn new(id: &'a i64, names: &'a Names) -> Self {
+    pub fn new(id: i64, names: &'a Names) -> Self {
         Link {
             id: id,
             maxscore: 0.0,
@@ -53,7 +53,7 @@ pub fn linker(primary: Link, mut potentials: Vec<Link>) -> Option<LinkResult> {
 
                 // Ensure exact matches are always returned before potential short-circuits
                 if name.tokenized == potential_name.tokenized {
-                    return Some(LinkResult::new(*potential.id, 100.0));
+                    return Some(LinkResult::new(potential.id, 100.0));
                 }
 
                 let potential_tokenized = potential_name.tokenized_string();
@@ -150,7 +150,7 @@ pub fn linker(primary: Link, mut potentials: Vec<Link>) -> Option<LinkResult> {
     match max {
         Some(max) => {
             if max.maxscore > 70.0 {
-                Some(LinkResult::new(*max.id, (max.maxscore * 100.0).round() / 100.0))
+                Some(LinkResult::new(max.id, (max.maxscore * 100.0).round() / 100.0))
             } else {
                 None
             }

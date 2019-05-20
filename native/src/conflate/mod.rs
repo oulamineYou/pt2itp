@@ -10,6 +10,7 @@ use neon::prelude::*;
 use crate::{
     Address,
     hecate,
+    util::linker,
     stream::{GeoStream, AddrStream}
 };
 
@@ -111,6 +112,15 @@ pub fn compare(potential: &Address, persistents: &mut Vec<Address>) -> hecate::A
     }
 
     // Use geometry unit cutoff instead of the geographic postgis
+    // TODO
+
+    let potential_link = linker::Link::new(potential.id.unwrap(), &potential.names);
+
+    let persistent_links: Vec<linker::Link> = persistents.iter().map(|persistent| {
+        linker::Link::new(persistent.id.unwrap(), &persistent.names)
+    }).collect();
+
+    let link = linker::linker(potential_link, persistent_links);
 
     hecate::Action::None
 }
