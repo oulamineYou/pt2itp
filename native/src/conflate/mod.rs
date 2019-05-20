@@ -77,12 +77,14 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         let rows = conn.query("
             SELECT
                 json_build_object(
-                    'type', 'Feature',
-                    'version', p.version,
                     'id', p.id,
-                    'properties', p.props,
+                    'number', p.number,
+                    'version', p.version,
                     'names', p.names,
-                    'geometry', ST_AsGeoJSON(p.geom)::JSON
+                    'output', p.output,
+                    'source', p.source,
+                    'props', p.props,
+                    'geom', ST_AsGeoJSON(p.geom)::TEXT
                 )
             FROM
                 address p
@@ -98,7 +100,6 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             let paddr = Address::from_value(paddr).unwrap();
             persistents.push(paddr);
         }
-
         compare(&addr, &mut persistents);
     }
 
@@ -114,13 +115,18 @@ pub fn compare(potential: &Address, persistents: &mut Vec<Address>) -> hecate::A
     // Use geometry unit cutoff instead of the geographic postgis
     // TODO
 
-    let potential_link = linker::Link::new(potential.id.unwrap(), &potential.names);
+    let potential_link = linker::Link::new(0, &potential.names);
 
     let persistent_links: Vec<linker::Link> = persistents.iter().map(|persistent| {
         linker::Link::new(persistent.id.unwrap(), &persistent.names)
     }).collect();
 
-    let link = linker::linker(potential_link, persistent_links);
+    let link = match linker::linker(potential_link, persistent_links) {
+        Some(link) => link,
+        None => {
+            return hecate::Action::None;
+        }
+    };
 
     hecate::Action::None
 }
