@@ -76,6 +76,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     for addr in AddrStream::new(GeoStream::new(args.in_address), context.clone(), args.error_address) {
         let rows = conn.query("
             SELECT
+                ST_Distance(ST_SetSRID(ST_Point($2, $3), 4326), p.geom),
                 json_build_object(
                     'id', p.id,
                     'number', p.number,
@@ -90,30 +91,48 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 address p
             WHERE
                 p.number = $1
-                AND ST_DWithin(ST_SetSRID(ST_Point($2, $3), 4326), p.geom, 0.02);
+                AND ST_DWithin(ST_SetSRID(ST_Point($2, $3), 4326), p.geom, 0.01);
         ", &[ &addr.number, &addr.geom[0], &addr.geom[1] ]).unwrap();
 
         let mut persistents: Vec<Address> = Vec::with_capacity(rows.len());
 
         for row in rows.iter() {
-            let paddr: serde_json::Value = row.get(0);
+            let dist: f64 = row.get(0);
+            if dist > 0.5 {
+                continue
+            }
+
+            let paddr: serde_json::Value = row.get(1);
             let paddr = Address::from_value(paddr).unwrap();
             persistents.push(paddr);
         }
-        compare(&addr, &mut persistents);
+
+        match compare(&addr, &mut persistents) {
+            Some(link) => {
+
+            },
+            None => {
+
+            }
+        };
     }
 
     Ok(cx.boolean(true))
 }
 
-pub fn compare(potential: &Address, persistents: &mut Vec<Address>) -> hecate::Action {
+///
+/// Compare a given address against a list of proximal addresses
+///
+/// The function will return None if the address does not exist in the
+/// proximal set and should be considered a new address
+///
+/// The function will return Some(i64) if the address matches an existing address
+///
+pub fn compare(potential: &Address, persistents: &mut Vec<Address>) -> Option<i64> {
     // The address does not exist in the database and should be created
     if persistents.len() == 0 {
-        return hecate::Action::Create;
+        return None;
     }
-
-    // Use geometry unit cutoff instead of the geographic postgis
-    // TODO
 
     let potential_link = linker::Link::new(0, &potential.names);
 
@@ -121,12 +140,8 @@ pub fn compare(potential: &Address, persistents: &mut Vec<Address>) -> hecate::A
         linker::Link::new(persistent.id.unwrap(), &persistent.names)
     }).collect();
 
-    let link = match linker::linker(potential_link, persistent_links) {
-        Some(link) => link,
-        None => {
-            return hecate::Action::None;
-        }
-    };
-
-    hecate::Action::None
+    match linker::linker(potential_link, persistent_links) {
+        Some(link) => Some(link.id),
+        None => None
+    }
 }

@@ -26,8 +26,8 @@ impl<'a> Link<'a> {
 
 #[derive(Debug, PartialEq)]
 pub struct LinkResult {
-    id: i64,
-    score: f64
+    pub id: i64,
+    pub score: f64
 }
 
 impl LinkResult {
