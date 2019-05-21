@@ -256,6 +256,28 @@ mod tests {
     }
 
     #[test]
+    fn test_names_concat() {
+        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
+
+        let mut names = Names::new(vec![
+            Name::new(String::from("Highway 123"), -1, &context),
+        ], &context);
+
+        let mut names2 = Names::new(vec![
+            Name::new(String::from("Highway 123"), -1, &context),
+            Name::new(String::from("Highway 123"), -1, &context),
+        ], &context);
+
+        names.concat(names2);
+
+        let mut names_concat = Names::new(vec![
+            Name::new(String::from("Highway 123"), -1, &context),
+        ], &context);
+
+        assert_eq!(names, names_concat);
+    }
+
+    #[test]
     fn test_names_dedupe() {
         let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
 
@@ -266,12 +288,11 @@ mod tests {
 
         names.dedupe();
 
-        let names_sorted = Names::new(vec![
+        let names_deduped = Names::new(vec![
             Name::new(String::from("Highway 123"), -1, &context),
-            Name::new(String::from("Highway 123"), -1, &context)
         ], &context);
 
-        assert_eq!(names, names_sorted);
+        assert_eq!(names, names_deduped);
     }
 
     #[test]
