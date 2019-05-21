@@ -1,7 +1,6 @@
 use std::convert::From;
 use postgres::{Connection, TlsMode};
 use std::collections::HashMap;
-use std::thread;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use geojson::GeoJson;
@@ -154,9 +153,44 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 ]).unwrap();
             },
             None => {
-                output.write(GeoJson::Feature(addr.to_geojson(hecate::Action::Create)).to_string().as_bytes());
+                output.write(GeoJson::Feature(addr.to_geojson(hecate::Action::Create)).to_string().as_bytes()).unwrap();
             }
         };
+    }
+
+    let modifieds = pg::Cursor::new(conn, format!("
+        SELECT
+            json_build_object(
+                'id', id,
+                'type', 'Feature',
+                'action', 'modify',
+                'version', version,
+                'props', JSONB_AGG(props),
+                'geom', ST_AsGeoJSON(geom)
+            )
+        FROM
+            modified
+        GROUP BY
+            id,
+            version,
+            geom
+    ")).unwrap();
+
+    for mut modified in modifieds {
+        let modified_obj = modified.as_object_mut().unwrap();
+        let mut props = modified_obj.remove(&String::from("props")).unwrap();
+
+        if props.as_array().unwrap().len() == 1 {
+            let props = props.as_array_mut().unwrap().pop().unwrap();
+
+            modified_obj.insert(String::from("props"), props);
+        } else {
+
+        }
+
+        let modified = Address::from_value(modified).unwrap();
+
+        output.write(GeoJson::Feature(modified.to_geojson(hecate::Action::Modify)).to_string().as_bytes()).unwrap();
     }
 
     Ok(cx.boolean(true))

@@ -1,12 +1,10 @@
 use crate::text::{
     distance,
     is_numbered,
-    is_routish,
-    ParsedToken
+    is_routish
 };
 
 use crate::types::Names;
-use geocoder_abbreviations::TokenType;
 
 pub struct Link<'a> {
     pub id: i64,
