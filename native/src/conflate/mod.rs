@@ -127,11 +127,31 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
         match compare(&addr, &mut persistents) {
             Some(link) => {
+                let link: Vec<&Address> = persistents.iter().filter(|persistent| {
+                    if link == persistent.id.unwrap() {
+                        true
+                    } else {
+                        false
+                    }
+                }).collect();
+
+                if link.len() != 1 {
+                    panic!("Duplicate IDs are not allowed in input data");
+                }
+
+                let link = link[0];
+
                 conn.execute("
                     INSERT INTO modified (id, version, props, geom) VALUES (
-                        $1, $2, $3, $4
+                        $1, $2, $3, ST_SetSRID(ST_MakePoint($4, $5), 4326)
                     );
-                ", &[]).unwrap();
+                ", &[
+                    &link.id,
+                    &link.version,
+                    &serde_json::Value::from(link.props.clone()),
+                    &link.geom[0],
+                    &link.geom[1]
+                ]).unwrap();
             },
             None => {
                 output.write(GeoJson::Feature(addr.to_geojson(hecate::Action::Create)).to_string().as_bytes());
