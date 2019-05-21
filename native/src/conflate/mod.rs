@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use std::thread;
 use std::fs::File;
 use std::io::{BufWriter, Write};
+use geojson::GeoJson;
 
 use neon::prelude::*;
 
@@ -61,7 +62,24 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         panic!("in_address argument is required");
     }
 
+    let mut output = match args.output {
+        None => panic!("Output file required"),
+        Some(output) => match File::create(output) {
+            Ok(outfile) => BufWriter::new(outfile),
+            Err(err) => panic!("Unable to write to output file: {}", err)
+        }
+    };
+
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
+
+    conn.execute("
+         CREATE TABLE modified (
+            id: BIGINT,
+            version: BIGINT,
+            props: JSONB,
+            geom: GEOMETRY(Point, 4326)
+        );
+    ", &[]).unwrap();
 
     let context = match args.context {
         Some(context) => crate::Context::from(context),
@@ -109,10 +127,14 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
         match compare(&addr, &mut persistents) {
             Some(link) => {
-
+                conn.execute("
+                    INSERT INTO modified (id, version, props, geom) VALUES (
+                        $1, $2, $3, $4
+                    );
+                ", &[]).unwrap();
             },
             None => {
-
+                output.write(GeoJson::Feature(addr.to_geojson(hecate::Action::Create)).to_string().as_bytes());
             }
         };
     }
