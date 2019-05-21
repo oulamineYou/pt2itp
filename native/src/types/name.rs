@@ -86,7 +86,7 @@ impl Names {
     /// already exist on the original names object based on the
     /// tokenized version of the string.
     ///
-    pub fn concat(mut self, new_names: Names) {
+    pub fn concat(&mut self, new_names: Names) {
         self.names.extend(new_names.names);
         self.dedupe();
     }
@@ -95,20 +95,28 @@ impl Names {
     /// Dedupe a names object based on the tokenized
     /// version of each name
     ///
-    pub fn dedupe(mut self) {
+    pub fn dedupe(&mut self) {
         let mut tokenized: HashMap<String, _> = HashMap::new();
 
-        let mut new_names: Vec<Name> = Vec::new();
+        let mut old_names = Vec::with_capacity(self.names.len());
 
-        for name in self.names {
+        loop {
+            match self.names.pop() {
+                Some(name) => old_names.push(name),
+                None => {
+                    break;
+                }
+            }
+        }
+
+        for name in old_names {
             if tokenized.contains_key(&name.tokenized_string()) {
                 continue;
             }
 
             tokenized.insert(name.tokenized_string(), true);
-            new_names.push(name);
+            self.names.push(name);
         }
-        self.names = new_names;
     }
 
     ///
@@ -259,7 +267,7 @@ mod tests {
         names.dedupe();
 
         let names_sorted = Names::new(vec![
-            Name::new(String::from("Highway 123"), -1, &context)
+            Name::new(String::from("Highway 123"), -1, &context),
             Name::new(String::from("Highway 123"), -1, &context)
         ], &context);
 
