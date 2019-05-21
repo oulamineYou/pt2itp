@@ -111,7 +111,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 AND ST_DWithin(ST_SetSRID(ST_Point($2, $3), 4326), p.geom, 0.01);
         ", &[ &addr.number, &addr.geom[0], &addr.geom[1] ]).unwrap();
 
-        let mut persistents: Vec<Address> = Vec::with_capacity(rows.len());
+        let mut potentials: Vec<Address> = Vec::with_capacity(rows.len());
 
         for row in rows.iter() {
             let dist: f64 = row.get(0);
@@ -121,10 +121,10 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
             let paddr: serde_json::Value = row.get(1);
             let paddr = Address::from_value(paddr).unwrap();
-            persistents.push(paddr);
+            potentials.push(paddr);
         }
 
-        match compare(&addr, &mut persistents) {
+        match compare(&addr, &mut potentials) {
             Some(link) => {
                 let link: Vec<&Address> = persistents.iter().filter(|persistent| {
                     if link == persistent.id.unwrap() {
@@ -209,19 +209,19 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 ///
 /// The function will return Some(i64) if the address matches an existing address
 ///
-pub fn compare(potential: &Address, persistents: &mut Vec<Address>) -> Option<i64> {
+pub fn compare(primary: &Address, potentials: &mut Vec<Address>) -> Option<i64> {
     // The address does not exist in the database and should be created
-    if persistents.len() == 0 {
+    if potentials.len() == 0 {
         return None;
     }
 
-    let potential_link = linker::Link::new(0, &potential.names);
+    let primary_link = linker::Link::new(0, &primary.names);
 
-    let persistent_links: Vec<linker::Link> = persistents.iter().map(|persistent| {
-        linker::Link::new(persistent.id.unwrap(), &persistent.names)
+    let potential_links: Vec<linker::Link> = potentials.iter().map(|potential| {
+        linker::Link::new(potential.id.unwrap(), &potential.names)
     }).collect();
 
-    match linker::linker(potential_link, persistent_links) {
+    match linker::linker(primary_link, potential_links, true) {
         Some(link) => Some(link.id),
         None => None
     }

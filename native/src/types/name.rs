@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use crate::{Context, text};
 use crate::Tokenized;
+use geocoder_abbreviations::TokenType;
 
 ///
 /// InputName is only used internally to serialize a names array to the
@@ -209,6 +210,16 @@ impl Name {
 
         tokenless
     }
+
+    pub fn has_type(&self, token_type: Option<TokenType>) -> bool {
+        let tokens: Vec<&Tokenized> = self.tokenized
+            .iter()
+            .filter(|x| x.token_type == token_type)
+            .collect();
+
+        tokens.len() > 0
+    }
+
 }
 
 #[cfg(test)]
