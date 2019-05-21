@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use crate::{Context, text};
 use crate::Tokenized;
 
@@ -78,6 +79,36 @@ impl Names {
         };
 
         Ok(Names::new(names, &context))
+    }
+
+    ///
+    /// Take a second names object and add any synonyms that do not
+    /// already exist on the original names object based on the
+    /// tokenized version of the string.
+    ///
+    pub fn concat(mut self, new_names: Names) {
+        self.names.extend(new_names.names);
+        self.dedupe();
+    }
+
+    ///
+    /// Dedupe a names object based on the tokenized
+    /// version of each name
+    ///
+    pub fn dedupe(mut self) {
+        let mut tokenized: HashMap<String, _> = HashMap::new();
+
+        let mut new_names: Vec<Name> = Vec::new();
+
+        for name in self.names {
+            if tokenized.contains_key(&name.tokenized_string()) {
+                continue;
+            }
+
+            tokenized.insert(name.tokenized_string(), true);
+            new_names.push(name);
+        }
+        self.names = new_names;
     }
 
     ///
@@ -210,6 +241,25 @@ mod tests {
         let names_sorted = Names::new(vec![
             Name::new(String::from("Route 123"), 2, &context),
             Name::new(String::from("Test 123"), 0, &context),
+            Name::new(String::from("Highway 123"), -1, &context)
+        ], &context);
+
+        assert_eq!(names, names_sorted);
+    }
+
+    #[test]
+    fn test_names_dedupe() {
+        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
+
+        let mut names = Names::new(vec![
+            Name::new(String::from("Highway 123"), -1, &context),
+            Name::new(String::from("Highway 123"), -1, &context),
+        ], &context);
+
+        names.dedupe();
+
+        let names_sorted = Names::new(vec![
+            Name::new(String::from("Highway 123"), -1, &context)
             Name::new(String::from("Highway 123"), -1, &context)
         ], &context);
 

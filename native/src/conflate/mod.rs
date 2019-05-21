@@ -185,7 +185,12 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
             modified_obj.insert(String::from("props"), props);
         } else {
+            let props_arr = props.as_array_mut().unwrap();
+            let props_base = props_arr.pop().unwrap();
 
+            for props in props_arr {
+
+            }
         }
 
         let modified = Address::from_value(modified).unwrap();
