@@ -38,6 +38,7 @@ test('Compare', (t) => {
     t.deepEquals(JSON.parse(rl.next()), {
         action: 'create',
         type: 'Feature',
+        version: 0,
         properties: {
             number: 112,
             street: [{

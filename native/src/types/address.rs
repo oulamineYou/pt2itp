@@ -317,7 +317,11 @@ impl Address {
         }).collect();
 
         self.props.insert(String::from("street"), serde_json::to_value(names).unwrap());
-        self.props.insert(String::from("source"), serde_json::value::Value::String(self.source));
+
+        if self.source != String::from("") {
+            self.props.insert(String::from("source"), serde_json::value::Value::String(self.source));
+        }
+
         self.props.insert(String::from("number"), serde_json::value::Value::String(self.number));
 
         geojson::Feature {
