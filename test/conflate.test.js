@@ -40,7 +40,7 @@ test('Compare', (t) => {
         type: 'Feature',
         version: 0,
         properties: {
-            number: 112,
+            number: '112',
             street: [{
                 display: '4th ST NE',
                 priority: 0

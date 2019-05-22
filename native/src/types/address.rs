@@ -308,9 +308,9 @@ impl Address {
 
         let names: Vec<InputName> = self.names.names.into_iter().filter(|name| {
             if !generated {
-                name.source == String::from("generated")
+                name.source != String::from("generated")
             } else {
-                false
+                true
             }
         }).map(|name| {
             InputName::from(name)
