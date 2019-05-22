@@ -236,8 +236,6 @@ impl Address {
     ///to_tsv with a copy stream is far more efficient
     ///
     pub fn to_db(&self, conn: &impl postgres::GenericConnection, table: impl ToString) -> Result<(), postgres::error::Error> {
-        let geom = postgis::ewkb::Point::new(self.geom[0], self.geom[1], Some(4326)).as_ewkb().to_hex_ewkb();
-
         conn.execute(format!("
             INSERT INTO {table} (
                 id,
@@ -256,7 +254,7 @@ impl Address {
                 $5,
                 $6,
                 $7,
-                $8
+                ST_SetSRID(ST_MakePoint($8, $9), 4326)
             )
         ",
             table = table.to_string()
@@ -268,7 +266,8 @@ impl Address {
             &self.source,
             &self.output,
             &serde_json::value::Value::from(self.props.clone()),
-            &geom
+            &self.geom[0],
+            &self.geom[1]
         ])?;
 
         Ok(())
