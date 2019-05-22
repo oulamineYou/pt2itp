@@ -78,11 +78,16 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     ", &[]).unwrap();
 
     conn.execute("
-         CREATE TABLE modified (
-            id          BIGINT,
-            version     BIGINT,
-            props       JSONB,
-            geom        GEOMETRY(Point, 4326)
+        CREATE UNLOGGED TABLE modified (
+            id BIGINT,
+            version BIGINT,
+            netid BIGINT,
+            names JSONB,
+            number TEXT,
+            source TEXT,
+            output BOOLEAN,
+            props JSONB,
+            geom GEOMETRY(POINT, 4326)
         );
     ", &[]).unwrap();
 
@@ -146,7 +151,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
                 let link = link[0];
 
-                link.to_db(&conn, "modified");
+                link.to_db(&conn, "modified").unwrap();
             },
             None => {
                 output.write(GeoJson::Feature(addr.to_geojson(hecate::Action::Create, false)).to_string().as_bytes()).unwrap();

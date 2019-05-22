@@ -235,17 +235,17 @@ impl Address {
     ///features or if they are being infrequently written.
     ///to_tsv with a copy stream is far more efficient
     ///
-    pub fn to_db(&self, conn: &impl postgres::GenericConnection, table: impl ToString) -> bool {
+    pub fn to_db(&self, conn: &impl postgres::GenericConnection, table: impl ToString) -> Result<(), postgres::error::Error> {
         let geom = postgis::ewkb::Point::new(self.geom[0], self.geom[1], Some(4326)).as_ewkb().to_hex_ewkb();
 
-        match conn.execute(format!("
+        conn.execute(format!("
             INSERT INTO {table} (
                 id,
                 version,
                 names,
                 number,
                 source,
-                output
+                output,
                 props,
                 geom
             ) VALUES (
@@ -269,10 +269,9 @@ impl Address {
             &self.output,
             &serde_json::value::Value::from(self.props.clone()),
             &geom
-        ]) {
-            Ok(_) => true,
-            Err(_) => false
-        }
+        ])?;
+
+        Ok(())
     }
 
 
