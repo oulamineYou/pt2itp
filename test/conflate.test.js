@@ -28,7 +28,7 @@ test('Compare', (t) => {
         context: {
             country: 'us',
             region: 'dc',
-            languages: ['en'],
+            languages: ['en']
         },
         db: 'pt_test'
     }, (err) => {
