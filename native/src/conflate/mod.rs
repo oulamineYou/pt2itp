@@ -237,7 +237,7 @@ pub fn compare(potential: &Address, persistents: &mut Vec<Address>) -> Option<i6
         linker::Link::new(persistent.id.unwrap(), &persistent.names)
     }).collect();
 
-    match linker::linker(potential_link, persistent_links) {
+    match linker::linker(potential_link, persistent_links, true) {
         Some(link) => Some(link.id),
         None => None
     }
