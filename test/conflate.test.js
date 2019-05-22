@@ -31,33 +31,31 @@ test('Compare', (t) => {
             languages: ['en'],
         },
         db: 'pt_test'
-    }, (err) => {
-        t.error(err);
-
-        const rl = new ReadLine('/tmp/output.geojson');
-
-        t.deepEquals(JSON.parse(rl.next()), {
-            action: 'create',
-            type: 'Feature',
-            properties: {
-                number: 112,
-                street: [{
-                    display: '4th ST NE',
-                    priority: 0
-                }]
-            },
-            geometry: {
-                type: 'Point',
-                coordinates: [-77.00080543756485, 38.89128752230519]
-            }
-        });
-
-        t.doesNotThrow(() => {
-            fs.accessSync('/tmp/error-persistent');
-        });
-
-        fs.unlinkSync('/tmp/output.geojson');
-        fs.unlinkSync('/tmp/error-persistent');
-        t.end();
     });
+
+    const rl = new ReadLine('/tmp/output.geojson');
+
+    t.deepEquals(JSON.parse(rl.next()), {
+        action: 'create',
+        type: 'Feature',
+        properties: {
+            number: 112,
+            street: [{
+                display: '4th ST NE',
+                priority: 0
+            }]
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [-77.00080543756485, 38.89128752230519]
+        }
+    });
+
+    t.doesNotThrow(() => {
+        fs.accessSync('/tmp/error-persistent');
+    });
+
+    fs.unlinkSync('/tmp/output.geojson');
+    fs.unlinkSync('/tmp/error-persistent');
+    t.end();
 });
