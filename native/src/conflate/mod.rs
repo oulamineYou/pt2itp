@@ -142,17 +142,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
                 let link = link[0];
 
-                conn.execute("
-                    INSERT INTO modified (id, version, props, geom) VALUES (
-                        $1, $2, $3, ST_SetSRID(ST_MakePoint($4, $5), 4326)
-                    );
-                ", &[
-                    &link.id,
-                    &link.version,
-                    &serde_json::Value::from(link.props.clone()),
-                    &link.geom[0],
-                    &link.geom[1]
-                ]).unwrap();
+                link.to_db(&conn, "modified");
             },
             None => {
                 output.write(GeoJson::Feature(addr.to_geojson(hecate::Action::Create, false)).to_string().as_bytes()).unwrap();
