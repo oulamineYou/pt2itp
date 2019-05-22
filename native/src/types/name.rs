@@ -4,10 +4,10 @@ use crate::Tokenized;
 
 ///
 /// InputName is only used internally to serialize a names array to the
-/// Names type. It should not be used unless as an intermediary into the Names type
+/// Names type. It should not be used unless as an intermediary into or out of the Names type
 ///
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
-struct InputName {
+pub struct InputName {
     /// Street Name
     pub display: String,
 
@@ -53,6 +53,10 @@ impl Names {
                     synonyms.append(&mut text::syn_ca_french(&name, &context));
                 }
             }
+        }
+
+        for synonym in synonyms.iter_mut() {
+            synonym.source = String::from("generated");
         }
 
         names.append(&mut synonyms);
@@ -161,7 +165,7 @@ pub struct Name {
     /// When choosing which street name is primary, order by priority
     pub priority: i8,
 
-    /// Geometry Type of a given name (network/address)
+    /// Geometry Type of a given name (network/address/generated)
     pub source: String,
 
     /// full token structure tokenless is derived from

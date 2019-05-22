@@ -155,7 +155,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 ]).unwrap();
             },
             None => {
-                output.write(GeoJson::Feature(addr.to_geojson(hecate::Action::Create)).to_string().as_bytes()).unwrap();
+                output.write(GeoJson::Feature(addr.to_geojson(hecate::Action::Create, false)).to_string().as_bytes()).unwrap();
             }
         };
     }
@@ -167,8 +167,8 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 'type', 'Feature',
                 'action', 'modify',
                 'version', version,
-                'props', JSONB_AGG(props),
-                'geom', ST_AsGeoJSON(geom)
+                'properties', JSONB_AGG(props),
+                'geometry', ST_AsGeoJSON(geom)
             )
         FROM
             modified
@@ -180,12 +180,12 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     for mut modified in modifieds {
         let modified_obj = modified.as_object_mut().unwrap();
-        let mut props = modified_obj.remove(&String::from("props")).unwrap();
+        let mut props = modified_obj.remove(&String::from("properties")).unwrap();
 
         if props.as_array().unwrap().len() == 1 {
             let props = props.as_array_mut().unwrap().pop().unwrap();
 
-            modified_obj.insert(String::from("props"), props);
+            modified_obj.insert(String::from("properties"), props);
         } else {
             // Future TODO: This currently just grabs the first property
             // and merges names together, it does not attempt to merge
@@ -221,7 +221,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
         let modified = Address::from_value(modified).unwrap();
 
-        output.write(GeoJson::Feature(modified.to_geojson(hecate::Action::Modify)).to_string().as_bytes()).unwrap();
+        output.write(GeoJson::Feature(modified.to_geojson(hecate::Action::Modify, false)).to_string().as_bytes()).unwrap();
     }
 
     Ok(cx.boolean(true))

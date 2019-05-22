@@ -2,7 +2,7 @@ use postgis::ewkb::AsEwkbPoint;
 use postgis::ewkb::EwkbWrite;
 use regex::{Regex, RegexSet};
 
-use crate::{Context, Names, Name, hecate};
+use crate::{Context, Names, Name, hecate, types::name::InputName};
 
 /// A representation of a single Address
 #[derive(Debug)]
@@ -233,7 +233,10 @@ impl Address {
     /// Outputs Hecate Compatible GeoJSON feature,
     /// omitting PT2ITP specific properties
     ///
-    pub fn to_geojson(mut self, action: hecate::Action) -> geojson::Feature {
+    /// action: Hecate action to conditionally attach to output geojson feature
+    /// generated: Should generated synonyms be output
+    ///
+    pub fn to_geojson(mut self, action: hecate::Action, generated: bool) -> geojson::Feature {
         let mut members: serde_json::map::Map<String, serde_json::Value> = serde_json::map::Map::new();
 
         if action != hecate::Action::None {
@@ -256,8 +259,18 @@ impl Address {
             _ => ()
         };
 
+        let names: Vec<InputName> = self.names.names.into_iter().filter(|name| {
+            if !generated {
+                name.source == String::from("generated")
+            } else {
+                false
+            }
+        }).map(|name| {
+            InputName::from(name)
+        }).collect();
+
+        self.props.insert(String::from("street"), serde_json::to_value(names).unwrap());
         self.props.insert(String::from("source"), serde_json::value::Value::String(self.source));
-        self.props.insert(String::from("names"), serde_json::to_value(self.names.names).unwrap());
         self.props.insert(String::from("number"), serde_json::value::Value::String(self.number));
 
         geojson::Feature {
