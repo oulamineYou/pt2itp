@@ -263,14 +263,14 @@ mod tests {
             Name::new(String::from("Highway 123"), -1, &context),
         ], &context);
 
-        let mut names2 = Names::new(vec![
+        let names2 = Names::new(vec![
             Name::new(String::from("Highway 123"), -1, &context),
             Name::new(String::from("Highway 123"), -1, &context),
         ], &context);
 
         names.concat(names2);
 
-        let mut names_concat = Names::new(vec![
+        let names_concat = Names::new(vec![
             Name::new(String::from("Highway 123"), -1, &context),
         ], &context);
 
