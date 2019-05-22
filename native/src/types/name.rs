@@ -15,6 +15,15 @@ struct InputName {
     pub priority: i8
 }
 
+impl From<Name> for InputName {
+    fn from(name: Name) -> Self {
+        InputName {
+            display: name.display,
+            priority: name.priority
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Names {
     pub names: Vec<Name>
