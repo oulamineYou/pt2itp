@@ -74,6 +74,10 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let conn = Connection::connect(format!("postgres://postgres@localhost:5432/{}", &args.db).as_str(), TlsMode::None).unwrap();
 
     conn.execute("
+        DROP TABLE IF EXISTS modified;
+    ", &[]).unwrap();
+
+    conn.execute("
          CREATE TABLE modified (
             id          BIGINT,
             version     BIGINT,
@@ -206,8 +210,6 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
             props_base_obj.insert(String::from("display"), serde_json::to_value(names_base.names).unwrap());
         }
-
-        println!("{:?}", modified);
 
         let modified = Address::from_value(modified).unwrap();
 
