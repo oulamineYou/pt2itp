@@ -228,6 +228,53 @@ impl Address {
         )
     }
 
+    ///
+    ///Insert an address into a given database
+    ///
+    ///Only use this function for a small number or address
+    ///features or if they are being infrequently written.
+    ///to_tsv with a copy stream is far more efficient
+    ///
+    pub fn to_db(self, conn: impl postgres::GenericConnection, table: String) -> bool {
+        let geom = postgis::ewkb::Point::new(self.geom[0], self.geom[1], Some(4326)).as_ewkb().to_hex_ewkb();
+
+        match conn.execute(format!("
+            INSERT INTO {table} (
+                id,
+                version,
+                names,
+                number,
+                source,
+                output
+                props,
+                geom
+            ) VALUES (
+                $1,
+                $2,
+                $3,
+                $4,
+                $5,
+                $6,
+                $7,
+                $8
+            )
+        ",
+            table = table
+        ).as_str(), &[
+            &self.id,
+            &self.version,
+            &serde_json::to_value(self.names.names).unwrap(),
+            &self.number,
+            &self.source,
+            &self.output,
+            &serde_json::value::Value::from(self.props),
+            &geom
+        ]) {
+            Ok(_) => true,
+            Err(_) => false
+        }
+    }
+
 
     ///
     /// Outputs Hecate Compatible GeoJSON feature,
