@@ -221,6 +221,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             }
 
             props_base_obj.insert(String::from("street"), serde_json::to_value(names_base.names).unwrap());
+            modified_obj.insert(String::from("properties"), props_base);
         }
 
         let modified = match modified {
@@ -229,8 +230,14 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 panic!("Modified should always be an object");
             }
         };
-
-        let modified: geojson::Feature = geojson::Feature::from_json_object(modified).unwrap();
+        let modified: geojson::Feature = match geojson::Feature::from_json_object(modified) {
+            Ok(m) => {
+                m
+            }
+            Err(e) => {
+                panic!(e);
+            }
+        };
 
         output.write(format!("{}\n", modified.to_string()).as_bytes()).unwrap();
     }
