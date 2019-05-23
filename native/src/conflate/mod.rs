@@ -215,7 +215,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 let prop_obj = prop.as_object_mut().unwrap();
 
                 let names_new: Vec<InputName> = serde_json::from_value(prop_obj.remove(&String::from("street")).unwrap()).unwrap();
-                let names_new = Names::from_input(names_base, &context);
+                let names_new = Names::from_input(names_new, &context);
 
                 names_base.concat(names_new);
             }
