@@ -87,9 +87,10 @@ test('Compare - MODIFY', (t) => {
     const rl = new ReadLine('/tmp/output.geojson');
 
     t.deepEquals(JSON.parse(rl.next()), {
-        action: 'create',
+        id: 1,
+        version: 2,
+        action: 'modify',
         type: 'Feature',
-        version: 0,
         properties: {
             number: '112',
             street: [{

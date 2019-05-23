@@ -223,7 +223,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             }
         };
 
-        let modified = GeoJson::from_json_object(modified).unwrap();
+        let modified: geojson::Feature = geojson::Feature::from_json_object(modified).unwrap();
 
         output.write(format!("{}\n", modified.to_string()).as_bytes()).unwrap();
     }
