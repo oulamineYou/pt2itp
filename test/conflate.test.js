@@ -103,7 +103,7 @@ test('Compare - MODIFY', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [ -77.0008054375648, 38.8912875223052 ]
+            coordinates: [-77.0008054375648, 38.8912875223052]
         }
     });
 
