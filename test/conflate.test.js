@@ -92,7 +92,7 @@ test('Compare - MODIFY', (t) => {
         action: 'modify',
         type: 'Feature',
         properties: {
-            number: '112',
+            number: 108,
             street: [{
                 display: '4th ST NE',
                 priority: 0
@@ -100,7 +100,7 @@ test('Compare - MODIFY', (t) => {
         },
         geometry: {
             type: 'Point',
-            coordinates: [-77.00080543756485, 38.89128752230519]
+            coordinates: [ -77.0008054375648, 38.8912875223052 ]
         }
     });
 

@@ -13,6 +13,7 @@ use crate::{
     Address,
     hecate,
     util::linker,
+    types::name::InputName,
     stream::{GeoStream, AddrStream}
 };
 
@@ -137,7 +138,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
         match compare(&addr, &mut persistents) {
             Some(link) => {
-                let link: Vec<&Address> = persistents.iter().filter(|persistent| {
+                let mut link: Vec<&mut Address> = persistents.iter_mut().filter(|persistent| {
                     if link == persistent.id.unwrap() {
                         true
                     } else {
@@ -149,7 +150,16 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                     panic!("Duplicate IDs are not allowed in input data");
                 }
 
-                let link = link[0];
+                let link = link.pop().unwrap();
+
+                let mut new_names: Vec<InputName> = Vec::with_capacity(addr.names.names.len());
+                for name in addr.names.names {
+                    new_names.push(InputName::from(name));
+                }
+
+                let new_names = serde_json::to_value(new_names).unwrap();
+
+                link.props.insert(String::from("street"), new_names);
 
                 link.to_db(&conn, "modified").unwrap();
             },
