@@ -154,7 +154,9 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
                 let mut new_names: Vec<InputName> = Vec::with_capacity(addr.names.names.len());
                 for name in addr.names.names {
-                    new_names.push(InputName::from(name));
+                    if name.source != String::from("generated") {
+                        new_names.push(InputName::from(name));
+                    }
                 }
 
                 let new_names = serde_json::to_value(new_names).unwrap();
