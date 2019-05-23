@@ -154,7 +154,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 link.to_db(&conn, "modified").unwrap();
             },
             None => {
-                output.write(GeoJson::Feature(addr.to_geojson(hecate::Action::Create, false)).to_string().as_bytes()).unwrap();
+                output.write(format!("{}\n", GeoJson::Feature(addr.to_geojson(hecate::Action::Create, false)).to_string()).as_bytes()).unwrap();
             }
         };
     }
@@ -167,7 +167,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 'action', 'modify',
                 'version', version,
                 'properties', JSONB_AGG(props),
-                'geometry', ST_AsGeoJSON(geom)
+                'geometry', ST_AsGeoJSON(geom)::JSON
             )
         FROM
             modified
@@ -225,7 +225,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
         let modified = GeoJson::from_json_object(modified).unwrap();
 
-        output.write(modified.to_string().as_bytes()).unwrap();
+        output.write(format!("{}\n", modified.to_string()).as_bytes()).unwrap();
     }
 
     Ok(cx.boolean(true))
