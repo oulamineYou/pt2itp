@@ -99,10 +99,11 @@ if (require.main === module) {
         }
         case ('conflate'): {
             const conflate_arg = require('minimist')(process.argv, Context.args({
-                string: ['input', 'output', 'languages', 'db'],
+                string: ['in_persistent', 'in_address', 'output', 'languages', 'db'],
                 boolean: ['hecate'],
                 alias: {
-                    database: 'db'
+                    database: 'db',
+                    'in_address': 'in_addresses'
                 }
             }));
 
@@ -113,7 +114,8 @@ if (require.main === module) {
             }
 
             require('./native/index.node').conflate({
-                input: conflate_arg.input,
+                in_persistent: conflate_arg.in_persistent,
+                in_address: conflate_arg.in_address,
                 output: conflate_arg.output,
                 languages: conflate_arg.languages,
                 hecate: conflate_arg.hecate,
