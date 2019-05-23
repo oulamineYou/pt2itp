@@ -67,6 +67,16 @@ impl Names {
         }
     }
 
+    pub fn from_input(names: Vec<InputName>, context: &Context) -> Self {
+        let mut full_names: Vec<Name> = Vec::with_capacity(names.len());
+
+        for name in names {
+            full_names.push(Name::new(name.display, name.priority, &context));
+        }
+
+        Names::new(full_names, &context)
+    }
+
     ///
     /// Parse a Names object from a serde_json value, returning
     /// an empty names vec if unparseable
