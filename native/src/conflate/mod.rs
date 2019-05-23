@@ -216,9 +216,16 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             props_base_obj.insert(String::from("display"), serde_json::to_value(names_base.names).unwrap());
         }
 
-        let modified = Address::from_value(modified).unwrap();
+        let modified = match modified {
+            serde_json::Value::Object(modified) => modified,
+            _ => {
+                panic!("Modified should always be an object");
+            }
+        };
 
-        output.write(GeoJson::Feature(modified.to_geojson(hecate::Action::Modify, false)).to_string().as_bytes()).unwrap();
+        let modified = GeoJson::from_json_object(modified).unwrap();
+
+        output.write(modified.to_string().as_bytes()).unwrap();
     }
 
     Ok(cx.boolean(true))

@@ -116,7 +116,7 @@ impl Address {
     pub fn from_value(value: serde_json::Value) -> Result<Self, String> {
         let mut value = match value {
             serde_json::Value::Object(obj) => obj,
-            _ => { return Err(String::from("Address::from_row value must be JSON Object")); }
+            _ => { return Err(String::from("Address::from_value value must be JSON Object")); }
         };
 
         let names: Names = match value.get(&String::from("names")) {
@@ -138,7 +138,7 @@ impl Address {
         let props = match value.remove(&String::from("props")) {
             Some(props) => match props {
                 serde_json::Value::Object(obj) => obj,
-                _ => { return Err(String::from("Address::from_row value must be JSON Object")); }
+                _ => { return Err(String::from("Address::from_value value must be JSON Object")); }
             },
             None => { return Err(String::from("props key/value is required")); }
         };
