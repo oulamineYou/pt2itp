@@ -96,6 +96,9 @@ test('Compare - MODIFY', (t) => {
             street: [{
                 display: '4th ST NE',
                 priority: 0
+            },{
+                display: 'DC Route 101',
+                priority: -1
             }]
         },
         geometry: {

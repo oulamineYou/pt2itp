@@ -207,7 +207,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             let mut props_base = props_arr.pop().unwrap();
             let props_base_obj = props_base.as_object_mut().unwrap();
 
-            let names_base: Vec<Name> = serde_json::from_value(props_base_obj.remove(&String::from("display")).unwrap()).unwrap();
+            let names_base: Vec<Name> = serde_json::from_value(props_base_obj.remove(&String::from("street")).unwrap()).unwrap();
 
             let mut names_base = Names {
                 names: names_base
@@ -216,7 +216,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             for prop in props_arr {
                 let prop_obj = prop.as_object_mut().unwrap();
 
-                let names_new: Vec<Name> = serde_json::from_value(prop_obj.remove(&String::from("display")).unwrap()).unwrap();
+                let names_new: Vec<Name> = serde_json::from_value(prop_obj.remove(&String::from("street")).unwrap()).unwrap();
 
                 let names_new = Names {
                     names: names_new
@@ -225,7 +225,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 names_base.concat(names_new);
             }
 
-            props_base_obj.insert(String::from("display"), serde_json::to_value(names_base.names).unwrap());
+            props_base_obj.insert(String::from("street"), serde_json::to_value(names_base.names).unwrap());
         }
 
         let modified = match modified {

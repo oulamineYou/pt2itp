@@ -150,10 +150,13 @@ impl Names {
 
     ///
     /// Set the source on all the given names
+    /// that don't have a source yet set
     ///
     pub fn set_source(&mut self, source: String) {
         for name in self.names.iter_mut() {
-            name.source = source.clone();
+            if name.source == String::from("") {
+                name.source = source.clone();
+            }
         }
     }
 }
