@@ -116,6 +116,26 @@ impl Names {
     }
 
     ///
+    /// Test to see if the given names argument has synonyms
+    /// that the self names object do not
+    ///
+    pub fn has_diff(&self, names: &Names) -> bool {
+        let mut tokenized: HashMap<String, _> = HashMap::new();
+
+        for self_name in self.names.iter() {
+            tokenized.insert(self_name.tokenized_string(), ());
+        }
+
+        for name in names.names.iter() {
+            if !tokenized.contains_key(&name.tokenized_string()) {
+                return false;
+            }
+        }
+
+        true
+    }
+
+    ///
     /// Dedupe a names object based on the tokenized
     /// version of each name
     ///

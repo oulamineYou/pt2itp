@@ -223,10 +223,9 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
         let modified = match modified {
             serde_json::Value::Object(modified) => modified,
-            _ => {
-                panic!("Modified should always be an object");
-            }
+            _ => { panic!("Modified should always be an object"); }
         };
+
         let modified: geojson::Feature = match geojson::Feature::from_json_object(modified) {
             Ok(m) => m,
             Err(e) => { panic!(e); }
