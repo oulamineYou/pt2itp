@@ -8,7 +8,6 @@ use geojson::GeoJson;
 use neon::prelude::*;
 
 use crate::{
-    Name,
     Names,
     Address,
     hecate,
@@ -135,7 +134,6 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             let paddr = Address::from_value(paddr).unwrap();
             persistents.push(paddr);
         }
-
         match compare(&addr, &mut persistents) {
             Some(link) => {
                 let mut link: Vec<&mut Address> = persistents.iter_mut().filter(|persistent| {
@@ -166,7 +164,8 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 link.to_db(&conn, "modified").unwrap();
             },
             None => {
-                output.write(format!("{}\n", GeoJson::Feature(addr.to_geojson(hecate::Action::Create, false)).to_string()).as_bytes()).unwrap();
+                let result = output.write(format!("{}\n", GeoJson::Feature(addr.to_geojson(hecate::Action::Create, false)).to_string()).as_bytes());
+                result.unwrap();
             }
         };
     }
@@ -201,9 +200,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             // Future TODO: This currently just grabs the first property
             // and merges names together, it does not attempt to merge
             // other properties
-
             let props_arr = props.as_array_mut().unwrap();
-
             let mut props_base = props_arr.pop().unwrap();
             let props_base_obj = props_base.as_object_mut().unwrap();
 
@@ -231,12 +228,8 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             }
         };
         let modified: geojson::Feature = match geojson::Feature::from_json_object(modified) {
-            Ok(m) => {
-                m
-            }
-            Err(e) => {
-                panic!(e);
-            }
+            Ok(m) => m,
+            Err(e) => { panic!(e); }
         };
 
         output.write(format!("{}\n", modified.to_string()).as_bytes()).unwrap();
