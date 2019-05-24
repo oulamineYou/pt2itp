@@ -150,18 +150,20 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
                 let link = link.pop().unwrap();
 
-                let mut new_names: Vec<InputName> = Vec::with_capacity(addr.names.names.len());
-                for name in addr.names.names {
-                    if name.source != String::from("generated") {
-                        new_names.push(InputName::from(name));
+                if addr.names.has_diff(&link.names) {
+                    let mut new_names: Vec<InputName> = Vec::with_capacity(addr.names.names.len());
+                    for name in addr.names.names {
+                        if name.source != String::from("generated") {
+                            new_names.push(InputName::from(name));
+                        }
                     }
+
+                    let new_names = serde_json::to_value(new_names).unwrap();
+
+                    link.props.insert(String::from("street"), new_names);
+
+                    link.to_db(&conn, "modified").unwrap();
                 }
-
-                let new_names = serde_json::to_value(new_names).unwrap();
-
-                link.props.insert(String::from("street"), new_names);
-
-                link.to_db(&conn, "modified").unwrap();
             },
             None => {
                 let result = output.write(format!("{}\n", GeoJson::Feature(addr.to_geojson(hecate::Action::Create, false)).to_string()).as_bytes());
