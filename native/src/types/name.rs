@@ -128,11 +128,11 @@ impl Names {
 
         for name in names.names.iter() {
             if !tokenized.contains_key(&name.tokenized_string()) {
-                return false;
+                return true;
             }
         }
 
-        true
+        false
     }
 
     ///
@@ -364,6 +364,27 @@ mod tests {
             "display": "Main St NE",
             "priority": 0
         }])), &context).unwrap(), expected);
+    }
+
+    #[test]
+    fn test_names_has_diff() {
+        let context = Context::new(String::from("us"), None, Tokens::new(HashMap::new()));
+
+        let a_name = Names::new(vec![Name::new("Main St", 0, &context)], &context);
+        let b_name = Names::new(vec![Name::new("Main St", 0, &context)], &context);
+        assert_eq!(a_name.has_diff(&b_name), false);
+
+        let a_name = Names::new(vec![Name::new("US Route 1", 0, &context)], &context);
+        let b_name = Names::new(vec![Name::new("us route 1", 0, &context)], &context);
+        assert_eq!(a_name.has_diff(&b_name), false);
+
+        let a_name = Names::new(vec![Name::new("highway 1", 0, &context), Name::new("US Route 1", 0, &context)], &context);
+        let b_name = Names::new(vec![Name::new("us route 1", 0, &context)], &context);
+        assert_eq!(a_name.has_diff(&b_name), false);
+
+        let a_name = Names::new(vec![Name::new("us route 1", 0, &context)], &context);
+        let b_name = Names::new(vec![Name::new("highway 1", 0, &context), Name::new("US Route 1", 0, &context)], &context);
+        assert_eq!(a_name.has_diff(&b_name), true);
     }
 
     #[test]
