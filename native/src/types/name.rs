@@ -117,7 +117,7 @@ impl Names {
 
     ///
     /// Test to see if the given names argument has synonyms
-    /// that the self names object do not
+    /// that the self names object does not
     ///
     pub fn has_diff(&self, names: &Names) -> bool {
         let mut tokenized: HashMap<String, _> = HashMap::new();

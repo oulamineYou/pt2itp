@@ -134,6 +134,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
             let paddr = Address::from_value(paddr).unwrap();
             persistents.push(paddr);
         }
+
         match compare(&addr, &mut persistents) {
             Some(link) => {
                 let mut link: Vec<&mut Address> = persistents.iter_mut().filter(|persistent| {
@@ -150,7 +151,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
                 let link = link.pop().unwrap();
 
-                if addr.names.has_diff(&link.names) {
+                if link.names.has_diff(&addr.names) {
                     let mut new_names: Vec<InputName> = Vec::with_capacity(addr.names.names.len());
                     for name in addr.names.names {
                         if name.source != String::from("generated") {
@@ -166,8 +167,7 @@ pub fn conflate(mut cx: FunctionContext) -> JsResult<JsBoolean> {
                 }
             },
             None => {
-                let result = output.write(format!("{}\n", GeoJson::Feature(addr.to_geojson(hecate::Action::Create, false)).to_string()).as_bytes());
-                result.unwrap();
+                output.write(format!("{}\n", GeoJson::Feature(addr.to_geojson(hecate::Action::Create, false)).to_string()).as_bytes()).unwrap();
             }
         };
     }
